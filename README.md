@@ -30,25 +30,22 @@ Ensure that [NodeJS](https://nodejs.org/), v9.4.0 or greater, is installed.
     npm install
     ```
 
-2. In a separate shell window, start ganache:
+2. build and run the application:
 
-    ```script
-    npm start arc-js.ganache
+    ```shell
+    npm run start
     ```
 
-3. Migrate the Arc contracts to Ganache:
 
-    ```script
-    npm start arc-js.ganache.migrate
-    ```
+## Build and Run for Debugging
 
-4. Build the application for development:
+1. Build the application for development:
 
     ```script
     npm start build.development
     ```
 
-5. Run the application:
+2. Run the application:
 
     ```shell
     npm start browse.development
@@ -58,11 +55,11 @@ or manually browse to: http://localhost:8090/
 
 ## Build and Run for Debugging with Hot Module Replacement
 
-1. Replace steps 4 and 5 [from above](#runApp) with:
+1. Build the application for development and start the webpack server:
 
-```shell
-  npm start build.development.andServe
-```
+    ```shell
+    npm start build.development.andServe
+    ```
 
 2. Browse to http://localhost:8090.
 
@@ -70,8 +67,16 @@ Now when you modify the source it will be automatically loaded into the running 
 
 ## Build and Run for Production
 
-Replace steps 4 and 5 [from above](#runApp) with:
+1. Build the application for production and start a server:
 
-```shell
-  npm start build.production.andServe
-```
+    ```shell
+    npm start build.production.andServe
+    ```
+
+2. Run the application:
+
+    ```shell
+    npm start browse.production
+    ```
+
+or manually browse to: http://localhost:8091/

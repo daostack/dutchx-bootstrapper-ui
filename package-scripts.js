@@ -8,15 +8,8 @@ const { config: { port: E2E_PORT } } = require("./test/protractor.conf");
 module.exports = {
   scripts: {
     default: series(
-      "nps arc-js.ganache.runAsync",
-      "nps arc-js.migrateContracts",
-      "nps build.development",
-      "nps browse"
+      "nps build.production.andServe"
     ),
-    /**
-     * Migrate contracts using daostack-arc.js.  For usage, see this readme.md, the 
-     * daostack-arc.js readme.md and its package-scripts.js.
-     */
     "arc-js": {
       ganache: "npm explore @daostack/arc.js -- npm start ganache",
       ganacheDb: {
@@ -26,8 +19,7 @@ module.exports = {
         unzip: "npm explore @daostack/arc.js -- npm start ganacheDb.unzip",
         restoreFromZip: "npm explore @daostack/arc.js -- npm start ganacheDb.restoreFromZip"
       },
-      migrateContracts: "npm explore @daostack/arc.js -- npm start migrateContracts",
-      createGenesisDao: "npm explore @daostack/arc.js -- npm start createGenesisDao"
+      migrateContracts: "npm explore @daostack/arc.js -- npm start migrateContracts"
     },
     test: {
       default: "nps test.jest",
