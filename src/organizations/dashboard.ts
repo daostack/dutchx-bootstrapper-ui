@@ -1,5 +1,5 @@
 import { autoinject } from "aurelia-framework";
-import { DaoService, VanilleDAO } from "../services/DaoService";
+import { DaoService, DaoEx } from "../services/DaoService";
 import { TokenService } from "../services/TokenService";
 import { ArcService, WrapperService, Hash, StandardTokenWrapper, Utils } from "../services/ArcService";
 import { SchemeService, SchemeInfo } from "../services/SchemeService";
@@ -14,7 +14,7 @@ import { SchemePermissionsSelector } from 'resources/customElements/schemePermis
 @autoinject
 export class DAODashboard {
 
-  private org: VanilleDAO;
+  private org: DaoEx;
   private address: string;
   private orgName: string;
   private tokenSymbol: string;
@@ -76,7 +76,7 @@ export class DAODashboard {
       // this.userReputation = await this.org.reputation.getBalanceOf(this.web3Service.defaultAccount);
       // this.userNativeTokens = await token.getBalanceOf(this.web3Service.defaultAccount);
 
-      this.subscription = this.org.subscribe(VanilleDAO.daoSchemeSetChangedEvent, this.handleSchemeSetChanged.bind(this));
+      this.subscription = this.org.subscribe(DaoEx.daoSchemeSetChangedEvent, this.handleSchemeSetChanged.bind(this));
     } else {
       // don't force the user to see this as a snack every time.  A corrupt DAO may never be repaired.  A message will go to the console.
       // this.eventAggregator.publish("handleException", new EventConfigException(`Error loading DAO: ${avatarAddress}`, ex));
@@ -227,7 +227,7 @@ export class DAODashboard {
     // }, 0);
   }
 
-  private async handleSchemeSetChanged(params: { dao: VanilleDAO, scheme: SchemeInfo }) {
+  private async handleSchemeSetChanged(params: { dao: DaoEx, scheme: SchemeInfo }) {
     let schemeInfo = params.scheme;
     let addTo: Array<SchemeInfo>;
     let removeFrom: Array<SchemeInfo>;

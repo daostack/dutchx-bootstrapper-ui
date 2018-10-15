@@ -9,7 +9,7 @@ import '../static/styles.scss';
 export class App {
   router: Router;
   private isConnected: boolean;
-  private logger = LogManager.getLogger("Vanille");
+  private logger = LogManager.getLogger("DxBootStrapper");
   private healthy: boolean = false;
   private network: string;
 

@@ -9,7 +9,7 @@ import {
 import { Web3Service } from "../services/Web3Service";
 import { includeEventsIn, Subscription } from "aurelia-event-aggregator";
 import { LogManager } from "aurelia-framework";
-import { VanilleDAO } from "../entities/DAO";
+import { DaoEx } from "../entities/DAO";
 import { EventAggregator } from "aurelia-event-aggregator";
 import { EventConfigException, SnackLifetime } from "../entities/GeneralEvents";
 
@@ -23,14 +23,14 @@ export class DaoService {
     includeEventsIn(this);
   }
 
-  private daoCache = new Map<string, VanilleDAO>();
-  private logger = LogManager.getLogger("Vanille");
+  private daoCache = new Map<string, DaoEx>();
+  private logger = LogManager.getLogger("DxBootStrapper");
 
   public async daoAt(
     avatarAddress: string,
     takeFromCache: boolean = true
-  ): Promise<VanilleDAO> {
-    let dao: VanilleDAO;
+  ): Promise<DaoEx> {
+    let dao: DaoEx;
     let cachedDao = this.daoCache.get(avatarAddress);
 
     if (!takeFromCache || !cachedDao) {
@@ -38,7 +38,7 @@ export class DaoService {
         const org = await DAO.at(avatarAddress);
 
         if (org) {
-          dao = await VanilleDAO.fromArcJsDao(org, this.arcService, this.web3);
+          dao = await DaoEx.fromArcJsDao(org, this.arcService, this.web3);
           this.logger.debug(`loaded dao ${dao.name}: ${dao.address}`);
         } // else error will already have been logged by arc.js
       } catch (ex) {
@@ -61,4 +61,4 @@ export class DaoService {
   }
 }
 
-export { VanilleDAO } from "../entities/DAO";
+export { DaoEx } from "../entities/DAO";

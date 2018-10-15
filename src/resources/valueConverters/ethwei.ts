@@ -13,7 +13,7 @@ export class EthweiValueConverter {
     private web3: Web3Service) { }
 
   /**
-   * Eth string to Wei BigNumber <==  NOTE you always end up with BigNumber in your model
+   * ETH string to Wei BigNumber <==  NOTE you always end up with BigNumber in your model
    * 
    * When the string cannot be converted to a number, this will return the original string.
    * This helps the user see the original mistake.  Validation will need to make sure that the
@@ -30,7 +30,7 @@ export class EthweiValueConverter {
   }
 
   /**
-   *  Wei BigNumber|number to Eth string
+   *  Wei BigNumber|number to ETH string
    * @param weiValue
    */
   toView(weiValue: number | BigNumber, base: number = 10): string {

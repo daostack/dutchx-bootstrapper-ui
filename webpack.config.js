@@ -175,7 +175,7 @@ module.exports = ({ production, server, extractCss, coverage, network } = {}) =>
         { from: 'static/favicon.ico' },
         { from: 'static/daostack-icon-white.svg' },
         { from: 'static/daostack-icon-black.svg' },
-        { from: 'static/00-Gnosis-Logo-Positive-White.svg' },
+        { from: 'static/dutchx-white.svg' },
         { from: 'static/gno_token.svg' },
         { from: 'static/MGN_token_blue@3x.png' },
         { from: 'static/ETHEREUM-ICON_Black_small.png' },

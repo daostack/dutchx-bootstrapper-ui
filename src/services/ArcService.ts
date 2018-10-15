@@ -13,7 +13,7 @@ export class ArcService {
     this.contractCache = new Map<string, Map<Arc.Address, TruffleContract>>();
   }
 
-  public logger = LogManager.getLogger("Vanille");
+  public logger = LogManager.getLogger("DxBootStrapper");
 
   /**
    * The schemes managed by Arc

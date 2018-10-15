@@ -9,7 +9,7 @@ export class ConsoleLogService {
 
   // probably doesn't really need to be a disposable collection since this is a singleton service
   subscriptions: DisposableCollection = new DisposableCollection();
-  logger = LogManager.getLogger("Vanille");
+  logger = LogManager.getLogger("DxBootStrapper");
 
   constructor(
     eventAggregator: EventAggregator

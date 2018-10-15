@@ -1,12 +1,12 @@
 import { Address } from 'services/ArcService';
 import { SchemeInfo } from 'services/SchemeService';
-import { VanilleDAO } from 'services/DaoService';
+import { DaoEx } from 'services/DaoService';
 
 export interface SchemeDashboardModel {
   friendlyName: string;
   name: string;
   address: Address;
-  org: VanilleDAO;
+  org: DaoEx;
   orgName: string;
   orgAddress: Address;
   allSchemes: Array<SchemeInfo>;

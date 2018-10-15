@@ -1,6 +1,6 @@
 import { SchemeInfo } from "../services/SchemeService";
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
-import { VanilleDAO } from 'services/DaoService';
+import { DaoEx } from 'services/DaoService';
 
 export class DaoSchemeDashboard {
   /**
@@ -17,7 +17,7 @@ export class DaoSchemeDashboard {
    * short name (used by ArcService.getContract())
    */
   name: string;
-  org: VanilleDAO;
+  org: DaoEx;
   orgName: string;
   allSchemes: Array<SchemeInfo>;
 

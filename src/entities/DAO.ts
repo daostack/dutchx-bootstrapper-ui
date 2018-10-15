@@ -10,7 +10,7 @@ import { SchemeInfo } from "../entities/SchemeInfo";
 import { Web3Service, BigNumber } from "../services/Web3Service";
 import { GlobalConstraintInfo } from "../entities/GlobalConstraintInfo";
 
-export class VanilleDAO extends DAO {
+export class DaoEx extends DAO {
 
   public address: string;
   public name: string;
@@ -21,7 +21,7 @@ export class VanilleDAO extends DAO {
   private addConstraintEvent;
   private removeConstraintEvent;
   public arcService: ArcService;
-  private logger = LogManager.getLogger("Vanille");
+  private logger = LogManager.getLogger("DxBootStrapper");
   public omega: BigNumber; // in wei
   /**
    * a Scheme has been added or removed from a DAO.
@@ -43,9 +43,9 @@ export class VanilleDAO extends DAO {
   public static async fromArcJsDao(
     org: DAO
     , arcService: ArcService
-    , web3: Web3Service): Promise<VanilleDAO> {
+    , web3: Web3Service): Promise<DaoEx> {
 
-    let newDAO = Object.assign(new VanilleDAO(), org);
+    let newDAO = Object.assign(new DaoEx(), org);
     newDAO.arcService = arcService;
     newDAO.address = org.avatar.address;
     newDAO.name = org.name;
@@ -112,7 +112,7 @@ export class VanilleDAO extends DAO {
       }
 
       if (changed) {
-        this.publish(VanilleDAO.daoSchemeSetChangedEvent,
+        this.publish(DaoEx.daoSchemeSetChangedEvent,
           {
             dao: this,
             scheme: schemeInfo
@@ -183,7 +183,7 @@ export class VanilleDAO extends DAO {
       }
 
       if (changed) {
-        this.publish(VanilleDAO.daoConstraintSetChangedEvent,
+        this.publish(DaoEx.daoConstraintSetChangedEvent,
           {
             dao: this,
             gc: constraintInfo
