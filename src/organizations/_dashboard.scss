@@ -1,11 +1,9 @@
 
 .dashboard-header {
   text-align: center;
-  background-color: $color-ds-darkblue;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  color: $color-ds-white;
-  margin-bottom: 3rem;
+  padding-top: 4rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .dashboard-header .dao-name {
@@ -20,7 +18,8 @@
 }
 
 .dashboard-header .hover-icon img {
-  width: 2rem;
+  width: 4rem;
+  margin-bottom: 2rem;
 }
 
 .dashboard-header .hover-icon {

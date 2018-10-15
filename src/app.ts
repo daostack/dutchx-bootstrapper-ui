@@ -48,7 +48,7 @@ export class App {
 
   configureRouter(config: RouterConfiguration, router: Router) {
 
-    config.title = 'DutchX Bootstrapper';
+    config.title = 'DutchX Reputation Bootstrapper';
     /**
      * can be connected 
      */

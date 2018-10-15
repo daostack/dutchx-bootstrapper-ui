@@ -1,26 +1,22 @@
 <template>
   <div if.bind="!dataLoaded">
-    <pageloading>Thanks for waiting while we fetch the data for this DAO...</pageloading>
+    <pageloading>Thanks for waiting while we fetch the data for DutchX...</pageloading>
   </div>
   <div else>
     <div if.bind="!org" class="container admin-page">
       <h3>Please ensure you are connected to the right blockchain network.</h3>
     </div>
     <div else ref="dashboardElement">
+
       <div class="dashboard-header">
-        <div class="dao-name">
-          <!-- <img src="../../static/daostack-icon-white.svg" /> -->
-          DutchX Reputation Bootstrapper
-        </div>
-        <div>
-          <!-- <img class="hover-icon" id="reputationHoverIcon" style="margin-right:.5rem" src="../../static/ds_icon_reputation-01.svg" /> -->
-          <a href="#" class="hover-icon" id="avatarHoverIcon"><img src="../../static/ds_icon_avatar-01.svg" /></a>
-        </div>
+        <a href="#" class="hover-icon" id="avatarHoverIcon"><img src="../../static/dutchx-blue.svg" /></a>
+        <h4>Welcome to the DutchX Reputation Bootstrapper!</h2>
       </div>
 
       <div class="dashboard-schemes-container row" id="accordion_arc_schemes" role="tablist" show.bind="registeredArcSchemes.length">
         <div class="col-8 offset-2">
-          <h3>Dashboards</h3>
+          <hr style="margin-bottom: 1.5rem" />
+          <h5>How would you like to claim your reputation?</h5>
           <ul class="list-group clean dashboard-schemes">
             <li class="list-group-item" repeat.for="scheme of registeredArcSchemes">
               <div class="row scheme-use-button" data-toggle="collapse" data-target="#${scheme.name}" aria-expanded="false"

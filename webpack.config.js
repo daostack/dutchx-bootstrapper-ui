@@ -16,7 +16,7 @@ const when = (condition, config, negativeConfig) =>
   condition ? ensureArray(config) : ensureArray(negativeConfig)
 
 // primary config:
-const title = 'DutchX Bootstrapper';
+const title = 'DutchX Reputation Bootstrapper';
 let outDir;
 const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
@@ -176,6 +176,7 @@ module.exports = ({ production, server, extractCss, coverage, network } = {}) =>
         { from: 'static/daostack-icon-white.svg' },
         { from: 'static/daostack-icon-black.svg' },
         { from: 'static/dutchx-white.svg' },
+        { from: 'static/dutchx-blue.svg' },
         { from: 'static/gno_token.svg' },
         { from: 'static/MGN_token_blue@3x.png' },
         { from: 'static/ETHEREUM-ICON_Black_small.png' },
