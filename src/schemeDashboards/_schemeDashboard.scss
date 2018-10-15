@@ -1,0 +1,33 @@
+.tab-pane {
+  border-top:none;
+  padding-top:2rem;
+}
+
+.org-name {
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.scheme-tabs .tab-content {
+  padding:.5rem;
+  padding-top:2rem;
+}
+
+.scheme-tabs {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.tab-content form {
+  padding-left:1rem;
+  padding-top:1rem;
+}
+
+.btn-submit-proposal {
+  @extend .btn;
+  @extend .btn-primary;
+}
+
+.scheme-dashboard {
+  width: 100%;
+}

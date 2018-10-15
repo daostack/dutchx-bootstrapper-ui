@@ -1,0 +1,110 @@
+﻿import { ArcService } from './services/ArcService';
+/// <reference types="aurelia-loader-webpack/src/webpack-hot-interface"/>
+import { Aurelia } from 'aurelia-framework';
+import { PLATFORM } from 'aurelia-pal';
+import * as Bluebird from 'bluebird';
+import { Web3Service } from "./services/Web3Service";
+import { InitializeArcJs, AccountService, Address } from '@daostack/arc.js';
+
+import 'arrive'; // do bmd does it's thing whenever views are attached
+import "popper.js";
+import 'bootstrap-material-design';
+import { SnackbarService } from "./services/SnackbarService";
+import { ConsoleLogService } from "./services/ConsoleLogService";
+import { ConfigService, LogLevel } from "./services/ArcService";
+import { DateService } from "./services/DateService";
+import { EventConfigException } from 'entities/GeneralEvents';
+
+// remove out if you don't want a Promise polyfill (remove also from webpack.config.js)
+Bluebird.config({ warnings: { wForgottenReturn: false } });
+
+// supplied by Webpack
+export async function configure(aurelia: Aurelia) {
+  aurelia.use
+    .standardConfiguration();
+
+  // for now, always on for trouble-shooting:  if (process.env.env == "development") {
+  aurelia.use.developmentLogging();
+  ConfigService.set("logLevel", LogLevel.all);
+  // }
+
+  // Uncomment the line below to enable animation.
+  // aurelia.use.plugin(PLATFORM.moduleName('aurelia-animator-css'));
+  // if the css animator is enabled, add swap-order="after" to all router-view elements
+
+  // Anyone wanting to use HTMLImports to load views, will need to install the following plugin.
+  // aurelia.use.plugin(PLATFORM.moduleName('aurelia-html-import-template-loader'));
+
+  aurelia.use.globalResources([
+    PLATFORM.moduleName("resources/bindingBehaviors/async"),
+    PLATFORM.moduleName("resources/customElements/EtherscanLink/EtherscanLink"),
+    PLATFORM.moduleName("resources/customElements/EthBalance/EthBalance"),
+    PLATFORM.moduleName("resources/customElements/UsersAddress/UsersAddress"),
+    PLATFORM.moduleName("resources/customElements/arcSchemesDropdown/arcSchemesDropdown"),
+    PLATFORM.moduleName("resources/customElements/schemePermissions/schemePermissions"),
+    // PLATFORM.moduleName("resources/customElements/TokenTicker/TokenTicker"),
+    PLATFORM.moduleName("resources/customElements/GenBalance/GenBalance"),
+    PLATFORM.moduleName("resources/customElements/locksForReputation/locksForReputation"),
+    PLATFORM.moduleName("resources/customElements/lockersForReputation/lockersForReputation"),
+    PLATFORM.moduleName("resources/customElements/copyToClipboardButton/copyToClipboardButton"),
+    PLATFORM.moduleName("resources/customElements/spinButton.html"),
+    PLATFORM.moduleName("resources/customElements/instructions.html"),
+    PLATFORM.moduleName("resources/customElements/pageLoading.html"),
+    PLATFORM.moduleName("resources/customAttributes/click-to-route"),
+    PLATFORM.moduleName("resources/customAttributes/blur-image"),
+    PLATFORM.moduleName("resources/valueConverters/toUpper"),
+    PLATFORM.moduleName("resources/valueConverters/number"),
+    PLATFORM.moduleName("resources/valueConverters/round"),
+    PLATFORM.moduleName("resources/valueConverters/ethwei"),
+    PLATFORM.moduleName("resources/valueConverters/keys"),
+    PLATFORM.moduleName("resources/valueConverters/date"),
+    PLATFORM.moduleName("resources/valueConverters/timespan"),
+    PLATFORM.moduleName("resources/valueConverters/boolean"),
+    PLATFORM.moduleName("resources/valueConverters/secondsDays"),
+    PLATFORM.moduleName("footer.html"),
+    PLATFORM.moduleName("header.html")
+  ]);
+
+  PLATFORM.moduleName("./schemeDashboards/ExternalLocking4Reputation");
+  PLATFORM.moduleName("./schemeDashboards/LockingEth4Reputation");
+  PLATFORM.moduleName("./schemeDashboards/LockingToken4Reputation");
+  PLATFORM.moduleName("./schemeDashboards/FixedReputationAllocation");
+  PLATFORM.moduleName("./schemeDashboards/Auction4Reputation");
+
+  await aurelia.start();
+
+  try {
+
+    const web3 = await InitializeArcJs({
+      // process.env.network is poked-in by webpack if it is defined
+      useNetworkDefaultsFor: process.env.network,
+      watchForAccountChanges: true,
+      filter: {}
+    });
+
+    // TODO: make this configurable in the application GUI
+    ConfigService.set("estimateGas", true);
+
+    AccountService.subscribeToAccountChanges((account: Address) => {
+      // TODO: should prompt user here with appropriate warning that the current account has changed
+      window.location.reload();
+    });
+
+    // just to initialize them and get them running
+    aurelia.container.get(ConsoleLogService);
+    aurelia.container.get(SnackbarService);
+    aurelia.container.get(DateService);
+
+    const web3Service = aurelia.container.get(Web3Service);
+
+    await web3Service.initialize(web3);
+
+    const arcService = aurelia.container.get(ArcService) as ArcService;
+    await arcService.initialize();
+
+  } catch (ex) {
+    console.log(`Error initializing blockchain services: ${ex}`);
+  }
+
+  await aurelia.setRoot(PLATFORM.moduleName('app'));
+}

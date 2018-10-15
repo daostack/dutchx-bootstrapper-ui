@@ -1,0 +1,28 @@
+<template>
+  <instructions>Lock with an external contract, redeem reputation.</instructions>
+  <div class="arc-scheme-dashboard">
+    <spinbutton onclick.call="refresh()" as-button="true" text="Refresh" spin.to-view="refreshing" title="Refresh"></spinbutton>
+    <form>
+      <div if.bind="!lockingPeriodIsEnded" class="card" style="margin-bottom: 2rem">
+        <div class="card-body">
+          <div class="card-title">Lock</div>
+          <div if.to-view="!lockingPeriodIsEnded && alreadyLocked">You have already locked</div>
+          <div else class="form-group bmd-form-group">
+            <button class="btn-submit-proposal" click.delegate="lock()">Submit
+              Lock for the Current Account</button>
+          </div>
+        </div>
+      </div>
+
+      <div if.bind="lockingPeriodIsEnded" class="card">
+        <div class="card-body">
+          <div class="card-title">Redeem</div>
+          <div if.to-view="!userScore" class="mb-3">You have nothing to redeem</div>
+          <div else class="form-group bmd-form-group">
+            <button class="btn-submit-proposal" click.delegate="redeem()">Redeem Reputation</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</template>

@@ -1,0 +1,10 @@
+node_modules
+.DS_STORE
+npm-debug.log*
+yarn-error.log
+/dist
+/dist_prod
+/demo
+/test/coverage*
+/.chrome
+/.vscode

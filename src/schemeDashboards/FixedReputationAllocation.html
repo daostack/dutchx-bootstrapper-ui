@@ -1,0 +1,33 @@
+<template>
+  <instructions>Enable the reputation to be redeemed, or add beneficiaries.</instructions>
+  <div class="arc-scheme-dashboard">
+    <spinbutton onclick.call="refresh()" as-button="true" text="Refresh" spin.to-view="refreshing" title="Refresh"></spinbutton>
+    <form>
+      <!-- <div class="form-group bmd-form-group">
+            <label class="bmd-label-static" for="beneficiaryAddress">Beneficiary Address</label>
+            <etherscanlink address.one-time="beneficiaryAddress"></etherscanlink>
+          </div> -->
+      <div if.to-view="isEnabled" class="form-group bmd-form-group">
+        <button class="btn-submit-proposal" click.delegate="setEnabled()">Enable Redemptions...</button>
+      </div>
+      <div if.to-view="!isEnabled">
+        <div class="card" style="margin-bottom: 1.5rem">
+          <div class="card-body">
+            <div class="form-group bmd-form-group" style="width: 23rem;">
+              <input class="form-control" value.bind="beneficiary & updateTrigger:'blur'" placeholder="Beneficiary account address" />
+            </div>
+            <div class="form-group bmd-form-group">
+              <button class="btn-submit-proposal" click.delegate="addBeneficiary(beneficiary)">Add a Beneficiary...</button>
+            </div>
+            <div class="form-group bmd-form-group">
+              <textarea class="form-control" rows="3" value.bind="beneficiaries & updateTrigger:'blur'" placeholder="Comma-separated list of beneficiary account addresses"></textarea>
+            </div>
+            <div class="form-group bmd-form-group">
+              <button class="btn-submit-proposal" click.delegate="addBeneficiaries(beneficiaries)">Add Beneficiaries...</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</template>

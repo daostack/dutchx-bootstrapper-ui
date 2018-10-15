@@ -1,0 +1,48 @@
+import { App } from '../../src/app';
+import { PLATFORM } from 'aurelia-pal';
+
+class RouterStub {
+  routes;
+
+  configure(handler) {
+    handler(this);
+  }
+
+  map(routes) {
+    this.routes = routes;
+  }
+}
+
+describe('the App module', () => {
+  let app: App;
+  let mockedRouter: any;
+
+  beforeEach(() => {
+    mockedRouter = new RouterStub();
+
+    let fakeWeb3Service = {
+      isConnected: true,
+      defaultAccount: {}
+    };
+
+    let fakeArcService = {
+      arcContracts: []
+    };
+
+    app = new App(fakeWeb3Service as any, fakeArcService as any);
+    app.configureRouter(mockedRouter, mockedRouter);
+  });
+
+  it('contains a router property', () => {
+    expect(app.router).toBeDefined();
+  });
+
+  // commented-out until Aurelia fixes its d.ts to reference title:
+  // it('configures the router title', () => {
+  //   expect(app.router.title).toEqual('DAOstack Vanille');
+  // });
+
+  it('should have a dashboar route', () => {
+    expect(app.router.routes).toContainEqual({ route: ['', 'daoDashboard/:address?'], name: 'daoDashboard', moduleId: PLATFORM.moduleName('./organizations/dashboard'), nav: false, title: 'Dashboard' });
+  });
+});

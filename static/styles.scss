@@ -1,0 +1,352 @@
+// @import "~static/bootstrap";
+// @import "~mdbootstrap-sass/data/colors";
+// @import "~bootstrap-sass/utilities/text";
+// @import "~bootstrap-sass/buttons";
+
+
+/** 
+  DAOstack palette.
+  Note that some of these colors are hard-coded in index.ejs.  TODO: Compile these colors into a straight
+  .css file for inclusion in index.ejs.
+*/
+$color-ds-black: #000000;
+$color-ds-grey-7: #202020;
+$color-ds-grey-6: #4C4C4C;
+$color-ds-grey-5: #757575;
+$color-ds-grey-4: #9B9B9B;
+$color-ds-grey-3: #B5B5B5;
+$color-ds-grey-2: #CECECE;
+$color-ds-grey-1: #EDEDED;
+$color-ds-white: #FFFFFF;
+$color-ds-lightblue: #48E3E6;
+$color-ds-darkblue: #007BBC;
+$color-ds-yellow: #FFD110;
+$color-ds-bluegreen: #1AAAAD;
+$color-ds-green: #3DBB7E;
+$color-ds-red: #E8290A;
+$color-ds-orange: #F25C05;
+
+$popover-bg:  $color-ds-black;
+$popover-arrow-color: $color-ds-black;
+$popover-header-color: $color-ds-white;
+$popover-body-color: $color-ds-white;
+$popover-max-width: 23rem;
+
+@import "~BMD/core"; 
+
+@import "./src/schemeDashboards/schemeDashboard";
+@import "./src/organizations/dashboard";
+@import "./src/resources/customElements/copyToClipboardButton/copyToClipboardButton";
+@import "./src/services/snackbars";
+
+body {
+  font-weight: 300;
+  overflow: hidden;
+}
+
+.container.admin-page {
+   margin-top: 3rem;
+}
+
+.root {
+  padding: 0;
+}
+
+header, .navbar.header {
+  background-color: $color-ds-black !important;
+  height: 4.8rem;
+}
+
+.content-body {
+  overflow: auto;
+  padding-bottom: 1.5rem;
+}
+
+footer, .navbar.footer {
+  background-color: $color-ds-grey-7 !important;
+}
+
+.navbar.header {
+  z-index: 2000; // not sure why this is needed, but otherwise stuff tends to randomly appear on top of the header
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.navbar.header .logo {
+  margin-left:.2rem;
+  margin-right:1.2rem;
+  height:2rem;
+ }
+
+.navbar.header .company-name {
+  margin-right:1rem;
+  display: inline-block;
+}
+
+.navbar.footer {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  color: $color-ds-white;
+}
+
+.navbar.footer .addresses {
+  text-align:right;
+  display: inline-block;
+}
+
+.navbar.footer .addresses .userBalance {
+  margin-left: 1.0rem;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.navbar.footer .addresses .userAddress {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+h1 {
+  font-weight: 400;
+}
+
+h2 {
+  margin-bottom: 3rem; 
+}
+
+section h4 {
+  margin-bottom: 1rem;
+}
+
+.bg-warning {
+  background-color: $color-ds-red !important; }
+
+.footer {
+  font-size: .9rem;
+}
+
+.footer img.logo {
+  height: 1rem;
+}
+
+.footer a,
+.footer button,
+.footer .ethbalance,
+.footer  .genbalance,
+.footer etherscanlink a,
+.snackbar-action-wrapper etherscanlink a,
+.snackbar-action-wrapper .copy-to-clip-button,
+.footer .copy-to-clip-button,
+.popover etherscanlink a,
+.popover .copy-to-clip-button
+ {
+  color: $color-ds-yellow;
+}
+
+.footer a:hover, 
+.snackbar-action-wrapper etherscanlink a:hover,
+.snackbar-action-wrapper .copy-to-clip-button:hover,
+.popover etherscanlink a:hover,
+.popover .copy-to-clip-button:hover
+{
+  color: $color-ds-yellow;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a.bg-warning:focus, a.bg-warning:hover {
+  background-color: $color-ds-red !important; }
+
+.text-warning {
+  color: $color-ds-red !important; }
+
+a.text-warning:focus, a.text-warning:hover {
+  color: $color-ds-red !important; }
+
+.text-primary {
+  color: $color-ds-black !important;
+}
+
+.network-name {
+  color: $color-ds-white !important;
+}
+
+.btn-primary {
+  color: $color-ds-white !important;
+  background-color: $color-ds-black  !important;
+}
+
+.btn-primary {
+  color: $color-ds-white !important;
+  background-color: $color-ds-black  !important;
+}
+
+.tooltip {
+  z-index: 999999;
+}
+
+@media print {
+  .hidden-print, .hidden-print * {
+      display: none !important;
+  }
+  .visible-print, .visible-print * {
+    display: inherit !important;
+  }
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.nofocus:focus {
+  outline: none;
+}
+
+.hidden {
+  display:none;
+}
+
+.hot {
+  cursor: pointer;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.progress {
+  height: 1.25rem;
+}
+
+.form-group.address {
+  width: 20rem;
+}
+
+.form-group.address input.form-control {
+  width: inherit;
+}
+
+form {
+  padding-top: 0 !important;
+}
+
+.instructions {
+  margin-top: -1.5rem;
+  margin-left: -1rem;
+  margin-right: -1rem !important;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  color: $color-ds-white;
+  background-color: $color-ds-lightblue;
+}
+
+.instructions-body {
+  font-size: 1.1rem;
+  font-style: italic;
+  padding-left: 1rem;
+}
+
+.instructions i {
+  font-size: 2rem;
+}
+
+.arc-schemes-dropdown-button
+.voting-machine-dropdown-button
+.global-constraints-dropdown-button {
+  font-weight: bold;
+}
+
+/** eliminate the nasty 32 pixel margin that BMD adds **/
+.list-group.clean .list-group-item :first-child {
+  margin-right: unset; /* override BMD */
+}
+
+.list-group.clean .list-group-item .material-icons:last-child {
+  padding-left: unset !important;
+}
+
+.form-section-header {
+  font-weight: bold;
+  padding-top: 1.5rem;
+}
+
+.fee-input {
+  width:7rem;
+}
+
+.dropdown {
+  display: inline-block;
+}
+
+/* animate page transitions */
+/* section.au-enter-active {
+  animation: fadeInRight 1s;
+} */
+
+/* div.au-stagger {
+  /* 50ms will be applied between each successive enter operation
+  animation-delay: 50ms;
+} */
+
+.smallEtherScanlLink {
+  line-height: 1rem;
+  display:inline-block;
+  width:4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table.plain-table th, .table.plain-table td {
+    border-top-width: 0;
+}
+
+.collapseButtonIcon {
+  text-decoration: none !important;
+}
+
+.collapseButtonIcon:not(.collapsed)::after {
+  color: $color-ds-grey-4;
+  content: "\0020\25B2";
+}
+
+.collapseButtonIcon.collapsed::after {
+  color: $color-ds-grey-4;
+  content: "\0020\25BC";
+}
+
+label {
+  white-space: nowrap;
+}
+
+.input-group-text {
+  display: inline-block;
+  margin-right: .4rem !important;
+}
+
+.bmd-help + div.input-group-append > button.btn-submit-proposal {
+  padding-top: .6rem;
+}
+
+div.buttonAtTop {
+  margin-top: -1.75rem;
+  margin-left: .5rem;
+  margin-bottom: .5rem;
+}
+
+div.buttonAtTop > div.bmd-form-group {
+  padding-top: 0;
+}
+
+div.buttonAtTop .btn,
+div.buttonAtTop .btn {
+  padding-left: .5rem;
+}
+
+td.has-etherscan-link {
+  padding-top: .15rem;
+  padding-bottom: 0;
+}
+
+form .card-title {
+  font-size: 1.1rem;
+}

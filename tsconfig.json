@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "sourceRoot": "src",
+    "baseUrl": "src",
+    "importHelpers": true,
+    "noImplicitAny": false
+  },
+  "lib": [
+    "es2015",
+    "es2017",
+    "dom"
+  ],
+  "include": [
+    "./src/**/*",
+    "custom_typings"
+  ]
+}
