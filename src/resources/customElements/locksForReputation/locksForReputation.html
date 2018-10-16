@@ -1,15 +1,19 @@
 <template>
-  <div if.to-view="_locks.length === 0">There are no locks to show</div>
-  <table else class="table">
+  <table class="table">
     <thead class="thead-light">
       <tr>
         <!-- <th>Lock Id</th> -->
-        <th style="text-align:center">Now Locked</th>
+        <th style="text-align:center">Amount Not Released</th>
         <th>Locking Period End Date</th>
-        <th if.to-view="anyCanRelease && !noReleaseFunction">&nbsp;</th>
+        <th>Release</th>
       </tr>
     </thead>
     <tbody>
+      <div as-element="tr" if.to-view="_locks.length === 0" colspan="100">
+        <td>
+          No locks have been submitted
+        </td>
+      </div>
       <tr repeat.for="lock of _locks">
         <!-- <td>${lock.lockId }</td> -->
         <td style="text-align:center;padding-top: 1.3rem;">${lock.amount | ethwei}</td>

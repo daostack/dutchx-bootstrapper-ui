@@ -32,12 +32,12 @@ export class DAODashboard {
   private dataLoaded: boolean = false;
   private dashboardElement: any;
 
-  private dutchXSchemes = new Map<string, { description: string, icon?: string }>([
-    ["Auction4Reputation", { description: "BID GEN", icon: './daostack-icon-black.svg' }],
-    ["ExternalLocking4Reputation", { description: "LOCK MGN", icon: './MGN_token_blue@3x.png' }],
-    // ["FixedReputationAllocation", { description: "REDEEM YOUR COUPON" }],
-    ["LockingEth4Reputation", { description: "LOCK ETH", icon: './ETHEREUM-ICON_Black_small.png' }],
-    ["LockingToken4Reputation", { description: "LOCK GNO", icon: './gno_token.svg' }],
+  private dutchXSchemes = new Map<string, { description: string, icon?: string, position: number }>([
+    ["LockingEth4Reputation", { description: "LOCK ETH", icon: './ETHEREUM-ICON_Black_small.png', position: 1 }],
+    ["LockingToken4Reputation", { description: "LOCK GNO", icon: './gno_token.svg', position: 2 }],
+    ["ExternalLocking4Reputation", { description: "LOCK MGN", icon: './MGN_token_blue@3x.png', position: 3 }],
+    ["Auction4Reputation", { description: "BID GEN", icon: './daostack-icon-black.svg', position: 4 }],
+    // ["FixedReputationAllocation", { description: "REDEEM YOUR COUPON" , position: 5 }],
   ]);
 
   constructor(
@@ -184,7 +184,10 @@ export class DAODashboard {
 
     this.registeredArcSchemes = schemes.filter((s: SchemeInfo) => s.inArc && s.inDao)
       // DutchX: hack to remove all but the DutchX contracts
-      .filter((s: SchemeInfo) => this.dutchXSchemes.has(s.name));
+      .filter((s: SchemeInfo) => this.dutchXSchemes.has(s.name))
+      .sort((a: SchemeInfo, b: SchemeInfo) =>
+        this.dutchXSchemes.get(a.name).position - this.dutchXSchemes.get(b.name).position
+      );
 
     this.registeredArcSchemes.map((s) => { s.friendlyName = this.dutchXSchemes.get(s.name).description; });
     this.unregisteredArcSchemes = schemes.filter((s: SchemeInfo) => s.inArc && !s.inDao);

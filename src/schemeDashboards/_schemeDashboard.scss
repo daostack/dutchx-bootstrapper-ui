@@ -26,6 +26,7 @@
 .btn-submit-proposal {
   @extend .btn;
   @extend .btn-primary;
+  margin-bottom: 1.5rem;
 }
 
 .scheme-dashboard {
