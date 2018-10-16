@@ -1,6 +1,6 @@
 <template>
   <div if.bind="!dataLoaded">
-    <pageloading>Thanks for waiting while we fetch the data for DutchX...</pageloading>
+    <pageloading></pageloading>
   </div>
   <div else>
     <div if.bind="!org" class="container admin-page">
@@ -13,34 +13,40 @@
         <h4>Welcome to the DutchX Reputation Bootstrapper!</h2>
       </div>
 
-      <div class="dashboard-schemes-container row" id="accordion_arc_schemes" role="tablist" show.bind="registeredArcSchemes.length">
-        <div class="col-8 offset-2">
-          <hr style="margin-bottom: 1.5rem" />
-          <h5>How would you like to claim your reputation?</h5>
-          <ul class="list-group clean dashboard-schemes">
-            <li class="list-group-item" repeat.for="scheme of registeredArcSchemes">
-              <div class="row scheme-use-button" data-toggle="collapse" data-target="#${scheme.name}" aria-expanded="false"
-                aria-controls="#${scheme.name}">
-                <div class="col-11">
-                  <div class="scheme-icon">
-                    <img if.one-time="dutchXSchemes.get(scheme.name).icon" src.one-time="dutchXSchemes.get(scheme.name).icon" />
+      <div if.bind="!schemesLoaded">
+        <pageloading></pageloading>
+      </div>
+      <div else>
+
+        <div class="dashboard-schemes-container row" id="accordion_arc_schemes" role="tablist" show.bind="registeredArcSchemes.length">
+          <div class="col-8 offset-2">
+            <hr style="margin-bottom: 1.5rem" />
+            <h5>How would you like to claim your reputation?</h5>
+            <ul class="list-group clean dashboard-schemes">
+              <li class="list-group-item" repeat.for="scheme of registeredArcSchemes">
+                <div class="row scheme-use-button" data-toggle="collapse" data-target="#${scheme.name}" aria-expanded="false"
+                  aria-controls="#${scheme.name}">
+                  <div class="col-11">
+                    <div class="scheme-icon">
+                      <img if.one-time="dutchXSchemes.get(scheme.name).icon" src.one-time="dutchXSchemes.get(scheme.name).icon" />
+                    </div>
+                    <div class="scheme-name">
+                      ${scheme.friendlyName}
+                    </div>
                   </div>
-                  <div class="scheme-name">
-                    ${scheme.friendlyName}
+                  <div class="scheme-arrow-down col-1"><span class="material-icons">keyboard_arrow_down</span></div>
+                  <div class="scheme-arrow-up col-1"><span class="material-icons">keyboard_arrow_up</span></div>
+                </div>
+                <div id.bind="scheme.name" class="scheme-dashboard collapse" data-parent="#accordion_arc_schemes">
+                  <div class="card">
+                    <div class="card-block">
+                      <compose view-model.bind="getDashboardView(scheme)" model.bind="schemeDashboardViewModel(scheme)"></compose>
+                    </div>
                   </div>
                 </div>
-                <div class="scheme-arrow-down col-1"><span class="material-icons">keyboard_arrow_down</span></div>
-                <div class="scheme-arrow-up col-1"><span class="material-icons">keyboard_arrow_up</span></div>
-              </div>
-              <div id.bind="scheme.name" class="scheme-dashboard collapse" data-parent="#accordion_arc_schemes">
-                <div class="card">
-                  <div class="card-block">
-                    <compose view-model.bind="getDashboardView(scheme)" model.bind="schemeDashboardViewModel(scheme)"></compose>
-                  </div>
-                </div>
-              </div>
-            </li>
-          </ul>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

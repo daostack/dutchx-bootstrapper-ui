@@ -21,6 +21,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   lockingPeriodIsEnded: boolean;
   lockCount: number;
   refreshing: boolean = false;
+  loaded: boolean = false;
   maxLockingPeriod: number;
   lockerInfo: LockerInfo;
   userAddress: Address;
@@ -43,7 +44,10 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   async activate(model: SchemeDashboardModel) {
     this.wrapper = await WrapperService.factories[model.name].at(model.address);
     this.userAddress = this.web3Service.defaultAccount;
-    return this.refresh();
+  }
+
+  attached() {
+    return this.refresh().then(() => { this.loaded = true; });
   }
 
   protected async refresh() {

@@ -30,6 +30,7 @@ export class DAODashboard {
   // private userReputation;
   // private userNativeTokens;
   private dataLoaded: boolean = false;
+  private schemesLoaded: boolean = false;
   private dashboardElement: any;
 
   private dutchXSchemes = new Map<string, { description: string, icon?: string, position: number }>([
@@ -204,6 +205,7 @@ export class DAODashboard {
 
     this.polishDom();
 
+    this.schemesLoaded = true;
     return Promise.resolve();
   }
 
