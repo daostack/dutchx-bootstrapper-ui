@@ -14,15 +14,14 @@
             <div else class="row" style="width: 30rem;">
               <div class="col-6">
                 <div class="form-group bmd-form-group">
-                  <label for="lockAmount">Tokens to Lock</label>
+                  <label for="lockAmount">Number of Tokens to Lock</label>
                   <input class="form-control" type='number' id="lockAmount" value.bind="amount | ethwei & updateTrigger:'blur'" />
                 </div>
               </div>
               <div class="col-6">
                 <div class="form-group bmd-form-group">
-                  <label for="lockingPeriod">Lock for How Long</label>
+                  <label for="lockingPeriod">For How Long (in days)</label>
                   <input class="form-control" id="lockingPeriod" value.bind="period  | secondsDays & updateTrigger:'blur'" />
-                  <span class="bmd-help">In days. Will be rounded down to the nearest second.</span>
                 </div>
               </div>
             </div>

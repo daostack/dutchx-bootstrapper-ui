@@ -116,9 +116,10 @@
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
-    "@daostack/arc.js": "0.0.0-alpha.dxbsui-test.1",
+    "@daostack/arc.js": "0.0.0-alpha.dxbsui-test.4",
     "arrive": "^2.4.1",
     "aurelia-bootstrapper": "^2.1.1",
+    "aurelia-configuration": "^2.0.0",
     "aurelia-dialog": "^2.0.0-rc.3",
     "bluebird": "^3.5.2",
     "bootstrap": "^4.1.1",

@@ -10,6 +10,7 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { EventConfigFailure } from '../entities/GeneralEvents';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { SchemePermissionsSelector } from 'resources/customElements/schemePermissions/schemePermissions';
+import { AureliaConfiguration } from "aurelia-configuration";
 
 @autoinject
 export class DAODashboard {
@@ -19,8 +20,6 @@ export class DAODashboard {
   private orgName: string;
   private tokenSymbol: string;
   // private daoTokenbalance: BigNumber;
-  // private daoEthbalance: BigNumber;
-  // private daoGenbalance: BigNumber;
   private registeredArcSchemes: Array<SchemeInfo>;
   private unregisteredArcSchemes: Array<SchemeInfo>;
   private nonArcSchemes: Array<SchemeInfo>;
@@ -49,14 +48,14 @@ export class DAODashboard {
     , private aureliaHelperService: AureliaHelperService
     , private web3Service: Web3Service
     , private eventAggregator: EventAggregator
+    , private appConfig: AureliaConfiguration
   ) {
   }
 
   async activate(options: any) {
 
     // DutchX hardcoded avatar
-    this.address = options.address ||
-      ((this.web3Service.networkName == "Ganache") ? "0xf7b7be05d6c115184f78226f905b643dd577fa6b" : "0xeeb9d711c43d9c79a8cbf30f859dbdbb80c2b9cf");
+    this.address = options.address || this.appConfig.get("daoAddress");
     this.org = await this.daoService.daoAt(this.address);
     if (this.org) {
       this.orgName = this.org.name;
@@ -64,12 +63,12 @@ export class DAODashboard {
       // this.tokenSymbol = await this.tokenService.getTokenSymbol(token);
       // // in Wei
       // this.daoTokenbalance = await this.tokenService.getTokenBalance(token, this.org.address);
-      // this.daoEthbalance = await this.web3Service.getBalance(this.org.address);
+      // this.userGnoBalance = await this.web3Service.getBalance(this.org.address);
       // try {
-      //   const genToken = await this.tokenService.getGlobalGenToken();
-      //   this.daoGenbalance = await this.tokenService.getTokenBalance(genToken, this.org.address);
+      //   this.userGnoBalance = await this.tokenService.getUserTokenBalance(this.appConfig.get("gnoTokenAddress"));
+      //   this.userMgnBalance = await this.tokenService.getUserTokenBalance(this.appConfig.get("mgnTokenAddress"));
       // } catch (ex) {
-      //   this.daoGenbalance = new BigNumber(0);
+      //   this.userMgnBalance = new BigNumber(0);
       // }
 
       // // in Wei

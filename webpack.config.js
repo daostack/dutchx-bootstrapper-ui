@@ -38,17 +38,13 @@ const scssRules = [...cssRules,
 /**
  * @return {webpack.Configuration}
  */
-module.exports = ({ production, server, extractCss, coverage, network } = {}) => {
+module.exports = ({ production, server, extractCss, coverage } = {}) => {
 
   let env = production ? 'production' : 'development';
 
   outDir = path.resolve(__dirname, production ? 'dist_prod' : 'dist');
 
-  // also taking from OS environment which is the only way I've found to supply it when when needed by HMR
-  network = network || process.env.arcjs_network;
-
   console.log(`env: ${env}`);
-  console.log(`network: ${network}`);
 
   return {
 
@@ -144,9 +140,7 @@ module.exports = ({ production, server, extractCss, coverage, network } = {}) =>
     plugins: [
       new webpack.DefinePlugin({
         'process.env': {
-          env: JSON.stringify(env),
-          network: JSON.stringify(network)
-          //"process.env.NODE_ENV": JSON.stringify("production")
+          env: JSON.stringify(env)
         },
       }),
       new AureliaPlugin(),
@@ -173,6 +167,7 @@ module.exports = ({ production, server, extractCss, coverage, network } = {}) =>
       }),
       new CopyWebpackPlugin([
         { from: 'static/favicon.ico' },
+        { from: 'static/app-config.json' },
         { from: 'static/daostack-icon-white.svg' },
         { from: 'static/daostack-icon-black.svg' },
         { from: 'static/dutchx-white.svg' },

@@ -1,0 +1,27 @@
+{
+  "Ganache": {
+    "daoAddress": "0xf7b7be05d6c115184f78226f905b643dd577fa6b",
+    "gnoTokenAddress": "",
+    "mgnTokenAddress": ""
+  },
+  "Kovan": {
+    "daoAddress": "0xd430db7364184c7d6c0d50457c502616f8cafad3",
+    "gnoTokenAddress": "0xde119a8f2a8e339d9d8a235c88d4aa403951b0ec",
+    "mgnTokenAddress": "0x98709b83af325a46edfac2f053a730a2980b3682"
+  },
+  "Ropsten": {
+    "daoAddress": "",
+    "gnoTokenAddress": "",
+    "mgnTokenAddress": ""
+  },
+  "Rinkeby": {
+    "daoAddress": "",
+    "gnoTokenAddress": "",
+    "mgnTokenAddress": ""
+  },
+  "Live": {
+    "daoAddress": "",
+    "gnoTokenAddress": "0x6810e776880c02933d47db1b9fc05908e5386b96",
+    "mgnTokenAddress": "0x9a770bf7bd5ea9744e3779fc15920aef6eadef5d"
+  }
+}

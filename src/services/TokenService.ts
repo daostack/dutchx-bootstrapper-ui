@@ -1,8 +1,6 @@
 import { autoinject } from "aurelia-framework";
 import { Web3Service, BigNumber } from "./Web3Service";
-import { ArcService, TruffleContract, Address } from './ArcService';
-import { DaoService } from "./DaoService";
-import { DaoTokenFactoryType, DaoTokenWrapper } from '../../node_modules/@daostack/arc.js';
+import { ArcService, Address, StandardTokenFactory, StandardTokenWrapper, Utils, DaoTokenWrapper } from './ArcService';
 
 @autoinject
 export class TokenService {
@@ -10,53 +8,80 @@ export class TokenService {
   constructor(
     private web3: Web3Service
     , private arcService: ArcService
-    , private daoService: DaoService
   ) { }
 
-  public async getTokenSymbol(token: TruffleContract): Promise<string> {
+  public async getDaoTokenSymbol(token: DaoTokenWrapper): Promise<string> {
     return await token.getTokenSymbol();
   }
 
-  public async getTokenName(token: TruffleContract): Promise<string> {
+  public async getDaoTokenName(token: DaoTokenWrapper): Promise<string> {
     return await token.getTokenName();
   }
 
   /**
    * in Wei by default
-   * @param token 
+   * @param tokenAddress 
    */
-  public async getUserTokenBalance(token: TruffleContract, inEth: boolean = false): Promise<BigNumber> {
-    let userAddress = this.web3.defaultAccount;
-    return this.getTokenBalance(token, userAddress, inEth);
-  }
-
-  public async getTokenBalance(
-    token: TruffleContract,
-    address: Address,
+  public async getUserStandardTokenBalance(
+    token: StandardTokenWrapper,
     inEth: boolean = false): Promise<BigNumber> {
 
-    let amount = await token.getBalanceOf(address);
+    let userAddress = this.web3.defaultAccount;
+    return this.getStandardTokenBalance(token, userAddress, inEth);
+  }
+
+  public async getUserTokenBalance(
+    tokenAddress: Address,
+    inEth: boolean = false): Promise<BigNumber> {
+
+    let userAddress = this.web3.defaultAccount;
+
+    return this.getTokenBalance(tokenAddress, userAddress, inEth);
+  }
+
+  public async getStandardTokenBalance(
+    token: StandardTokenWrapper,
+    accountAddress: Address,
+    inEth: boolean = false): Promise<BigNumber> {
+
+    let amount = await token.getBalanceOf(accountAddress);
     if (inEth) {
       amount = this.web3.fromWei(amount);
     }
     return amount;
   }
 
-  // public async getDAOstackNativeToken(): Promise<TruffleContract> {
-  //   const daoStack = await this.daoService.GetDaostack();
-  //   return this.getTokenFromAddress(daoStack.token.address);
-  // }
+  public async getTokenBalance(
+    tokenAddress: Address,
+    accountAddress: Address,
+    inEth: boolean = false): Promise<BigNumber> {
 
-  public async getGlobalGenToken(): Promise<TruffleContract | undefined> {
+    const token = await this.getStandardToken(tokenAddress);
+
+    if (!token) {
+      return new BigNumber(0);
+    }
+
+    return this.getStandardTokenBalance(token, accountAddress, inEth);
+  }
+
+  public getGenTokenBalance(): Promise<BigNumber | undefined> {
     try {
-      return await DaoTokenWrapper.getGenToken();
+      let userAddress = this.web3.defaultAccount;
+      return Utils.getGenTokenBalance(userAddress);
     } catch {
       // then we don't know the address of the GEN token
       return Promise.resolve(undefined);
     }
   }
 
-  public getTokenFromAddress(address: Address): Promise<TruffleContract> {
-    return this.arcService.getContract("DAOToken", address);
+  public async getGlobalGenToken(): Promise<StandardTokenWrapper | undefined> {
+    const address = await Utils.getGenTokenAddress();
+    return this.getStandardToken(address);
+  }
+
+
+  public getStandardToken(address: Address): Promise<StandardTokenWrapper> {
+    return StandardTokenFactory.at(address);
   }
 }

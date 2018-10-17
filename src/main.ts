@@ -4,7 +4,7 @@ import { Aurelia } from 'aurelia-framework';
 import { PLATFORM } from 'aurelia-pal';
 import * as Bluebird from 'bluebird';
 import { Web3Service } from "./services/Web3Service";
-import { InitializeArcJs, AccountService, Address } from '@daostack/arc.js';
+import { InitializeArcJs, AccountService, Address, Utils } from '@daostack/arc.js';
 
 import 'arrive'; // do bmd does it's thing whenever views are attached
 import "popper.js";
@@ -13,15 +13,23 @@ import { SnackbarService } from "./services/SnackbarService";
 import { ConsoleLogService } from "./services/ConsoleLogService";
 import { ConfigService, LogLevel } from "./services/ArcService";
 import { DateService } from "./services/DateService";
-import { EventConfigException } from 'entities/GeneralEvents';
+import { AureliaConfiguration } from "aurelia-configuration";
 
 // remove out if you don't want a Promise polyfill (remove also from webpack.config.js)
 Bluebird.config({ warnings: { wForgottenReturn: false } });
 
 // supplied by Webpack
 export async function configure(aurelia: Aurelia) {
+
+  let appConfig: AureliaConfiguration;
+
   aurelia.use
-    .standardConfiguration();
+    .standardConfiguration()
+    .plugin(PLATFORM.moduleName('aurelia-configuration'), config => {
+      config.setDirectory('./');
+      config.setConfig('app-config.json');
+      appConfig = config;
+    });
 
   // for now, always on for trouble-shooting:  if (process.env.env == "development") {
   aurelia.use.developmentLogging();
@@ -40,10 +48,8 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName("resources/customElements/EtherscanLink/EtherscanLink"),
     PLATFORM.moduleName("resources/customElements/EthBalance/EthBalance"),
     PLATFORM.moduleName("resources/customElements/UsersAddress/UsersAddress"),
-    PLATFORM.moduleName("resources/customElements/arcSchemesDropdown/arcSchemesDropdown"),
-    PLATFORM.moduleName("resources/customElements/schemePermissions/schemePermissions"),
     // PLATFORM.moduleName("resources/customElements/TokenTicker/TokenTicker"),
-    PLATFORM.moduleName("resources/customElements/GenBalance/GenBalance"),
+    PLATFORM.moduleName("resources/customElements/TokenBalance/TokenBalance"),
     PLATFORM.moduleName("resources/customElements/locksForReputation/locksForReputation"),
     PLATFORM.moduleName("resources/customElements/lockersForReputation/lockersForReputation"),
     PLATFORM.moduleName("resources/customElements/copyToClipboardButton/copyToClipboardButton"),
@@ -61,7 +67,7 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName("resources/valueConverters/timespan"),
     PLATFORM.moduleName("resources/valueConverters/boolean"),
     PLATFORM.moduleName("resources/valueConverters/secondsDays"),
-    PLATFORM.moduleName("footer.html"),
+    PLATFORM.moduleName("footer"),
     PLATFORM.moduleName("header.html")
   ]);
 
@@ -71,16 +77,19 @@ export async function configure(aurelia: Aurelia) {
   PLATFORM.moduleName("./schemeDashboards/FixedReputationAllocation");
   PLATFORM.moduleName("./schemeDashboards/Auction4Reputation");
 
+  PLATFORM.moduleName("./schemeDashboards/Auction4Reputation");
+
   await aurelia.start();
 
   try {
 
     const web3 = await InitializeArcJs({
-      // process.env.network is poked-in by webpack if it is defined
-      useNetworkDefaultsFor: process.env.network,
       watchForAccountChanges: true,
       filter: {}
     });
+
+    const network = await Utils.getNetworkName();
+    appConfig.setEnvironment(network);
 
     // TODO: make this configurable in the application GUI
     ConfigService.set("estimateGas", true);

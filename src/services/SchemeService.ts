@@ -1,5 +1,5 @@
 import { autoinject } from "aurelia-framework";
-import { ArcService, ContractWrapperInfo, TruffleContract, SchemePermissions } from './ArcService';
+import { ArcService, ContractWrapperInfo, SchemePermissions } from './ArcService';
 import { DaoService } from '../services/DaoService';
 import { SchemeInfo } from "../entities/SchemeInfo";
 import { EventAggregator } from 'aurelia-event-aggregator';

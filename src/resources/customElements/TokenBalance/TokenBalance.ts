@@ -1,11 +1,13 @@
-import { bindable, containerless, customElement, autoinject } from 'aurelia-framework';
+import { bindable, containerless, customElement, autoinject, bindingMode } from 'aurelia-framework';
 import { TokenService } from "../../../services/TokenService";
-import { BigNumber } from '../../../services/Web3Service';
+import { Address } from 'services/ArcService';
 
 @autoinject
 @containerless
-@customElement("genbalance")
-export class GenBalance {
+@customElement("tokenbalance")
+export class TokenBalance {
+
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) token: Address;
 
   private balance: string;
   private text: string;
@@ -30,7 +32,7 @@ export class GenBalance {
 
   async readBalance() {
 
-    const token = await this.tokenService.getGlobalGenToken();
+    const token = await this.tokenService.getStandardToken(this.token);
 
     if (token) {
       this.getBalance(token);
@@ -46,7 +48,7 @@ export class GenBalance {
   }
   async getBalance(token) {
     try {
-      this.balance = (await this.tokenService.getUserTokenBalance(token, true)).toFixed(2);
+      this.balance = (await this.tokenService.getUserStandardTokenBalance(token, true)).toFixed(2);
       this.text = this.balance.toString();
     } catch {
     }
