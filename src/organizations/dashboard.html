@@ -10,14 +10,13 @@
 
       <div class="dashboard-header">
         <a href="#" class="hover-icon logo" id="avatarHoverIcon"><img src="../../static/dutchx-blue.svg" /></a>
-        <h4>Welcome to the DutchX Reputation Bootstrapper!</h2>
+        <h4>Welcome to the DutchX DAO</h2>
       </div>
 
       <div if.bind="!schemesLoaded">
         <pageloading></pageloading>
       </div>
       <div else>
-
         <div class="dashboard-schemes-container row" id="accordion_arc_schemes" role="tablist" show.bind="registeredArcSchemes.length">
           <div class="col-8 offset-2">
             <hr style="margin-bottom: 1.5rem" />
@@ -46,6 +45,25 @@
                 </div>
               </li>
             </ul>
+          </div>
+        </div>
+
+        <div class="redeemSection">
+          <div class="row">
+            <div class="col-6 offset-3">
+              <div class="title">Reputation Redemption</div>
+              <div class="body">
+                The bootstrapping period will end at ${lockingPeriodEndDate | date:'friendlyDateTime'}.
+                After that time you will be able to redeem your earned reputation simply by clicking the 'Redeem'
+                button below.
+                The total amount of reputation you have earned will be transferred to your ETH address.
+              </div>
+              <div class="redeem-controls">
+                <button id="globalRedeemBtn" class="btn btn-outline-secondary" disabled.bind="!canRedeem"
+                  click.delegate="redeem">Redeem</button>
+                <div if.bind="!canRedeem">The redemption period has not yet begun</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

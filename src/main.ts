@@ -68,7 +68,7 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName("resources/valueConverters/boolean"),
     PLATFORM.moduleName("resources/valueConverters/secondsDays"),
     PLATFORM.moduleName("footer"),
-    PLATFORM.moduleName("header.html")
+    PLATFORM.moduleName("header")
   ]);
 
   PLATFORM.moduleName("./schemeDashboards/ExternalLocking4Reputation");

@@ -1,26 +1,25 @@
-<template bindable="router, network">
-  <nav class="header navbar fixed-top navbar-expand-lg navbar-dark">
-
-    <a class="navbar-brand" href="#">
-      <img src="../static/dutchx-blue.svg" class="logo d-inline-block align-top" alt="">
-      <div class="company-name">DutchX Reputation Bootstrapper</div>
-    </a>
+<template>
+  <nav class="header navbar fixed-top navbar-expand-lg navbar-dark flex-column flex-sm-row">
 
     <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button> -->
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li repeat.for="row of router.navigation" class="nav-item ${ row.isActive ? 'active' : '' }">
-          <a class="nav-link" href.bind="row.href">${ row.title }</a>
-        </li>
-      </ul>
+    <a class="navbar-brand flex-sm-shrink-1 text-sm-left" href="#">
+      <img src="../static/dutchx-blue.svg" class="logo d-inline-block align-top" alt="">
+      <div class="company-name">DutchX</div>
+    </a>
+
+    <div class="flex-sm-grow-1 text-sm-center nav-link">
+      <etherscanlink tooltip.one-time="avatarAddressTooptip" address.one-time="avatarAddress"></etherscanlink>
     </div>
-    <div if.bind="network !== 'Live'" class="navbar-text ml-auto text-danger">
+
+    <a href="#" class="anchor-secondary text-sm-right nav-link nowrap">Report Bug</a>
+    <a href="#" class="anchor-secondary text-sm-right nav-link">Forum</a>
+    <div if.bind="network !== 'Live'" class="text-sm-right navbar-text text-danger nowrap">
       Testing (${network})
     </div>
-    <div else class="navbar-text ml-auto network-name">Live</div>
+    <div else class="text-sm-right navbar-text network-name nowrap">Live (mainnet)</div>
   </nav>
 </template>

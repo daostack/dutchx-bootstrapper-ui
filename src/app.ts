@@ -37,6 +37,7 @@ export class App {
 
       $('.content-body').css(
         {
+          "top": `${headerHeight}px`,
           "max-height": `${bodyHeight - footerHeight - headerHeight}px`
         });
     }

@@ -1,10 +1,10 @@
 <template>
   <span class="etherscanlink">
-    <a class="${css}" if.bind="networkExplorerUri" href='${networkExplorerUri}' target='${internal ? "" : "_blank"}'>
+    <a ref="hotElement" class="${css}" if.bind="networkExplorerUri" href='${networkExplorerUri}' target='${internal ? "" : "_blank"}'>
       ${text || address}
     </a>
 
-    <span else class="${css}">
+    <span ref="coldElement" else class="${css}">
       ${text || address}
     </span>
 

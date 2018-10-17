@@ -36,7 +36,6 @@ $popover-max-width: 23rem;
 
 @import "./src/schemeDashboards/schemeDashboard";
 @import "./src/organizations/dashboard";
-@import "./src/resources/customElements/copyToClipboardButton/copyToClipboardButton";
 @import "./src/services/snackbars";
 
 body {
@@ -52,14 +51,10 @@ body {
   padding: 0;
 }
 
-header, .navbar.header {
-  background-color: $color-ds-black !important;
-  height: 4.8rem;
-}
-
 .content-body {
   overflow: auto;
-  padding-bottom: 1.5rem;
+  /* so top can be repositioned when header height changes (see app.ts) */
+  position: relative;
 }
 
 footer, .navbar.footer {
@@ -67,9 +62,10 @@ footer, .navbar.footer {
 }
 
 .navbar.header {
+  background-color: $color-ds-black !important;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
   z-index: 2000; // not sure why this is needed, but otherwise stuff tends to randomly appear on top of the header
-  padding-top: 0;
-  padding-bottom: 0;
 }
 
 .navbar.header .logo {
@@ -79,7 +75,6 @@ footer, .navbar.footer {
  }
 
 .navbar.header .company-name {
-  margin-right:1rem;
   display: inline-block;
 }
 
@@ -105,6 +100,11 @@ footer, .navbar.footer {
   white-space: nowrap;
 }
 
+etherscanlink .nav-link {
+  padding: 0;
+}
+
+
 h1 {
   font-weight: 400;
 }
@@ -128,14 +128,26 @@ section h4 {
   height: 1rem;
 }
 
+.header a.anchor-secondary {
+  color: $color-ds-white;
+}
+
+.header a.anchor-secondary:hover {
+  color: $color-ds-white;
+  text-decoration: underline;
+}
+
+
 .footer a,
 .footer button,
 .footer .ethbalance,
 .footer  .genbalance,
 .footer etherscanlink a,
+.header a,
 .snackbar-action-wrapper etherscanlink a,
 .snackbar-action-wrapper .copy-to-clip-button,
 .footer .copy-to-clip-button,
+.header .copy-to-clip-button,
 .popover etherscanlink a,
 .popover .copy-to-clip-button
  {
@@ -143,6 +155,8 @@ section h4 {
 }
 
 .footer a:hover, 
+.header a:hover,
+.header .copy-to-clip-button:hover,
 .snackbar-action-wrapper etherscanlink a:hover,
 .snackbar-action-wrapper .copy-to-clip-button:hover,
 .popover etherscanlink a:hover,
@@ -150,6 +164,13 @@ section h4 {
 {
   color: $color-ds-yellow;
   background-color: transparent;
+}
+
+.footer a:hover, 
+.header etherscanlink a:hover,
+.snackbar-action-wrapper etherscanlink a:hover,
+.popover etherscanlink a:hover,
+{
   text-decoration: underline;
 }
 
@@ -287,15 +308,6 @@ form {
   animation-delay: 50ms;
 } */
 
-.smallEtherScanlLink {
-  line-height: 1rem;
-  display:inline-block;
-  width:4rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .table.plain-table th, .table.plain-table td {
     border-top-width: 0;
 }
@@ -357,6 +369,30 @@ td.has-etherscan-link {
   font-size: 1rem;
 }
 
-.pageloading img {
-  margin:auto;
+.pageloading i {
+  color: $color-ds-lightblue;
+}
+
+etherscanlink {
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.smallEtherScanlLink {
+  display:inline-block;
+  vertical-align: middle;
+  width:4rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.copy-to-clip-button {
+  color: $color-ds-black;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.copy-to-clip-button:hover {
+  background-color: transparent;
+  color: $color-ds-black;
 }

@@ -1,5 +1,6 @@
 
 .dashboard-header {
+  color: $color-ds-darkblue;
   text-align: center;
   padding-top: 4rem;
   padding-bottom: 1rem;
@@ -86,4 +87,41 @@
 
 .dashboard-schemes li.list-group-item:not(.selected):hover {
   background-color: $color-ds-lightblue;
+}
+
+.redeemSection {
+  background-color: $color-ds-darkblue;
+  color: $color-ds-white;
+  vertical-align: middle;
+  display: inline-block;
+  width:100%;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.redeemSection .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.redeemSection .title {
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.redeemSection .body {
+  margin-bottom: 1.5rem;
+}
+
+.redeemSection .redeem-controls {
+  text-align:center;
+}
+
+#globalRedeemBtn, #globalRedeemBtn:hover {
+  border-color: $color-ds-white;
+  color: $color-ds-white;
+  margin-bottom: 2rem;
 }

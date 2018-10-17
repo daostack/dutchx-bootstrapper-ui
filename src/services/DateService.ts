@@ -88,7 +88,7 @@ export class DateService {
       },
       {
         "key": "friendlyDateTime",
-        "format": "HH[h]mm dddd MMMM Do, YYYY"
+        "format": "HH[:]mm dddd MMMM Do, YYYY"
       },
       {
         "key": "json",

@@ -1,24 +1,25 @@
-﻿import { bindable, customElement, autoinject } from 'aurelia-framework';
+﻿import { bindable, customElement, autoinject, bindingMode } from 'aurelia-framework';
 import { Web3Service } from '../../../services/Web3Service';
 
 @autoinject
 @customElement("etherscanlink")
 export class EtherscanLink {
 
-  @bindable
-  address: string;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) address: string;
 
-  @bindable
-  text?: string;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) text?: string;
 
-  @bindable
-  type: string;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) type: string;
 
   /**
    * set add classes on the text
    */
-  @bindable
-  css: string;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) css: string;
+
+  /**
+   * bootstrap config for a tooltip
+   */
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) tooltip?: any;
 
   clipbutton: HTMLElement;
 
@@ -27,6 +28,9 @@ export class EtherscanLink {
   copyMessage: string;
 
   internal: boolean = false;
+
+  coldElement: HTMLElement;
+  hotElement: HTMLElement;
 
   constructor(private web3: Web3Service) {
   }
@@ -52,5 +56,13 @@ export class EtherscanLink {
       // go with etherscan
       this.networkExplorerUri = `http://${targetedNetwork}.etherscan.io/${this.type === "tx" ? "tx" : "address"}/${this.address}`;
     }
+
+    /** timeout so setting of this.networkExplorerUri takes effect in DOM */
+    setTimeout(() => {
+      if (this.tooltip) {
+        (<any>$(this.hotElement)).tooltip(this.tooltip);
+        (<any>$(this.coldElement)).tooltip(this.tooltip);
+      }
+    }, 0);
   }
 }

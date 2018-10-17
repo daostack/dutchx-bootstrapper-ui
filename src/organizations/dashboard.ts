@@ -19,18 +19,16 @@ export class DAODashboard {
   private address: string;
   private orgName: string;
   private tokenSymbol: string;
-  // private daoTokenbalance: BigNumber;
   private registeredArcSchemes: Array<SchemeInfo>;
   private unregisteredArcSchemes: Array<SchemeInfo>;
   private nonArcSchemes: Array<SchemeInfo>;
   private arcSchemes: Array<SchemeInfo>;
   private subscription;
-  // private omega;
-  // private userReputation;
-  // private userNativeTokens;
   private dataLoaded: boolean = false;
   private schemesLoaded: boolean = false;
   private dashboardElement: any;
+  private lockingPeriodEndDate: Date;
+  private canRedeem: boolean = false;
 
   private dutchXSchemes = new Map<string, { description: string, icon?: string, position: number }>([
     ["LockingEth4Reputation", { description: "LOCK ETH", icon: './ETHEREUM-ICON_Black_small.png', position: 1 }],
@@ -50,6 +48,7 @@ export class DAODashboard {
     , private eventAggregator: EventAggregator
     , private appConfig: AureliaConfiguration
   ) {
+    this.lockingPeriodEndDate = new Date(appConfig.get("lockingPeriodEndDate"));
   }
 
   async activate(options: any) {
@@ -59,23 +58,6 @@ export class DAODashboard {
     this.org = await this.daoService.daoAt(this.address);
     if (this.org) {
       this.orgName = this.org.name;
-      // let token = this.org.token;
-      // this.tokenSymbol = await this.tokenService.getTokenSymbol(token);
-      // // in Wei
-      // this.daoTokenbalance = await this.tokenService.getTokenBalance(token, this.org.address);
-      // this.userGnoBalance = await this.web3Service.getBalance(this.org.address);
-      // try {
-      //   this.userGnoBalance = await this.tokenService.getUserTokenBalance(this.appConfig.get("gnoTokenAddress"));
-      //   this.userMgnBalance = await this.tokenService.getUserTokenBalance(this.appConfig.get("mgnTokenAddress"));
-      // } catch (ex) {
-      //   this.userMgnBalance = new BigNumber(0);
-      // }
-
-      // // in Wei
-      // this.omega = this.org.omega;
-      // this.userReputation = await this.org.reputation.getBalanceOf(this.web3Service.defaultAccount);
-      // this.userNativeTokens = await token.getBalanceOf(this.web3Service.defaultAccount);
-
       this.subscription = this.org.subscribe(DaoEx.daoSchemeSetChangedEvent, this.handleSchemeSetChanged.bind(this));
     } else {
       // don't force the user to see this as a snack every time.  A corrupt DAO may never be repaired.  A message will go to the console.
@@ -83,6 +65,10 @@ export class DAODashboard {
       this.eventAggregator.publish("handleFailure",
         new EventConfigFailure(`Error loading DAO: ${this.address}`));
     }
+
+    const msUntilCanRedeem = this.lockingPeriodEndDate.getTime() - new Date().getTime();
+    setTimeout(() => { this.canRedeem = true; }, msUntilCanRedeem);
+
     this.dataLoaded = true;
     return Promise.resolve();
   }
@@ -206,6 +192,10 @@ export class DAODashboard {
 
     this.schemesLoaded = true;
     return Promise.resolve();
+  }
+
+  private redeem() {
+    if (this.canRedeem) { }
   }
 
   private async findNonDeployedArcScheme(scheme: SchemeInfo): Promise<SchemeInfo | null> {
