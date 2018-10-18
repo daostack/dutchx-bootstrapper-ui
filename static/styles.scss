@@ -38,6 +38,14 @@ $popover-max-width: 23rem;
 @import "./src/organizations/dashboard";
 @import "./src/services/snackbars";
 
+.color-green {
+  color: $color-ds-green !important;
+}
+
+.color-red {
+  color: $color-ds-red !important;
+}
+
 body {
   font-weight: 300;
   overflow: hidden;
@@ -185,10 +193,6 @@ a.text-warning:focus, a.text-warning:hover {
 
 .text-primary {
   color: $color-ds-black !important;
-}
-
-.network-name {
-  color: $color-ds-white !important;
 }
 
 .btn-primary {
