@@ -66,9 +66,7 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
       app: ['aurelia-bootstrapper'],
       vendor: [
         'bluebird',
-        '@daostack/arc.js',
-        'ethereumjs-tx',
-        'truffle-contract'
+        '@daostack/arc.js'
       ],
     },
     output: {
@@ -180,6 +178,12 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
         { from: 'node_modules/snackbarjs/dist/snackbar.min.css' },
         { from: 'node_modules/bootstrap-material-design/dist/css/bootstrap-material-design.min.css' },
       ]),
+      // remove all moment.js locale files
+      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      // filter ABI contract files
+      new webpack.ContextReplacementPlugin(
+        /@daostack[/\\]arc.js[/\\]migrated_contracts$/,
+        /UController.json|Avatar.json|DAOToken.json|Reputation.json|StandardToken.json|Auction4Reputation.json|ExternalLocking4Reputation.json|FixedReputationAllocation.json|Locking4Reputation.json|LockingEth4Reputation.json|LockingToken4Reputation.json/),
       ...when(extractCss, new ExtractTextPlugin({
         filename: production ? '[contenthash].css' : '[id].css',
         allChunks: true,
