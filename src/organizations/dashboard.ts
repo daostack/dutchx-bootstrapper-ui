@@ -30,11 +30,11 @@ export class DAODashboard {
   private lockingPeriodEndDate: Date;
   private canRedeem: boolean = false;
 
-  private dutchXSchemes = new Map<string, { description: string, icon?: string, position: number }>([
-    ["LockingEth4Reputation", { description: "LOCK ETH", icon: './ETHEREUM-ICON_Black_small.png', position: 1 }],
-    ["LockingToken4Reputation", { description: "LOCK GNO", icon: './gno_token.svg', position: 2 }],
-    ["ExternalLocking4Reputation", { description: "LOCK MGN", icon: './MGN_token_blue@3x.png', position: 3 }],
-    ["Auction4Reputation", { description: "BID GEN", icon: './daostack-icon-black.svg', position: 4 }],
+  private dutchXSchemes = new Map<string, { description: string, icon?: string, icon_hover?: string, position: number }>([
+    ["LockingEth4Reputation", { description: "LOCK ETH", icon: './eth_icon_color.svg', icon_hover: './eth_icon_white.svg', position: 1 }],
+    ["LockingToken4Reputation", { description: "LOCK GNO", icon: './gno_icon_color.svg', icon_hover: './gno_icon_white.svg', position: 2 }],
+    ["ExternalLocking4Reputation", { description: "LOCK MGN", icon: './mgn_icon_color.svg', icon_hover: './mgn_icon_white.svg', position: 3 }],
+    ["Auction4Reputation", { description: "BID GEN", icon: './gen_icon_color.svg', icon_hover: './gen_icon_white.svg', position: 4 }],
     // ["FixedReputationAllocation", { description: "REDEEM YOUR COUPON" , position: 5 }],
   ]);
 
@@ -67,7 +67,10 @@ export class DAODashboard {
     }
 
     const msUntilCanRedeem = this.lockingPeriodEndDate.getTime() - new Date().getTime();
-    setTimeout(() => { this.canRedeem = true; }, msUntilCanRedeem);
+    setTimeout(() => {
+      this.canRedeem = true;
+      $('#globalRedeemBtn').addClass('enabled');
+    }, msUntilCanRedeem);
 
     this.dataLoaded = true;
     return Promise.resolve();
@@ -195,7 +198,7 @@ export class DAODashboard {
   }
 
   private redeem() {
-    if (this.canRedeem) { }
+    if (this.canRedeem) { alert('this will redeem for all contracts'); }
   }
 
   private async findNonDeployedArcScheme(scheme: SchemeInfo): Promise<SchemeInfo | null> {

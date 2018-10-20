@@ -3,14 +3,14 @@
     <thead class="thead-light">
       <tr>
         <!-- <th>Lock Id</th> -->
-        <th style="text-align:center">Amount Not Released</th>
-        <th>Locking Period End Date</th>
+        <th style="text-align:center;width: 20%;">Amount Not Released</th>
+        <th>Locking Period End</th>
         <th>Release</th>
       </tr>
     </thead>
     <tbody>
-      <tr if.to-view="_locks.length === 0" colspan="100">
-        <td>
+      <tr if.to-view="_locks.length === 0">
+        <td colspan="100" style="text-align: center">
           No locks have been submitted
         </td>
       </tr>

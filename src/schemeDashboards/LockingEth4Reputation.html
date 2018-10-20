@@ -1,46 +1,52 @@
 <template>
-  <div if.bind="!loaded">
+  <div class="pageloader" if.bind="!loaded">
     <pageloading></pageloading>
   </div>
   <div else>
-    <instructions>Lock ETH for a given period of time, release the ETH and redeem reputation.</instructions>
-    <div class="arc-scheme-dashboard">
-      <spinbutton onclick.call="refresh()" as-button="true" text="Refresh" spin.to-view="refreshing" title="Refresh"></spinbutton>
+    <instructions>Select the amount of ETH you would like to lock and the length you wish to lock it for. You can lock
+      as much ETH as you like, for up to 3 months. At the end of the initialization period, your reputation will be
+      calculated pro rata according to the total locked ETH.</instructions>
+    <div class="scheme-dashboard-body">
       <form with.bind="lockModel">
 
-        <div class="card" style="margin-bottom: 2rem">
-          <div class="card-body">
-            <div if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't lock</div>
-            <div else class="row" style="width: 30rem;">
-              <div class="col-6">
-                <div class="form-group bmd-form-group">
-                  <label for="lockAmount">Amount of ETH to Lock</label>
-                  <input class="form-control" type='number' id="lockAmount" value.bind="amount | ethwei & updateTrigger:'blur'" />
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="form-group bmd-form-group">
-                  <label for="lockingPeriod">For How Long (in days)</label>
-                  <input class="form-control" id="lockingPeriod" value.bind="period  | secondsDays & updateTrigger:'blur'" />
-                </div>
+        <div if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't lock</div>
+        <div else>
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group bmd-form-group">
+                <label for="lockAmount">ETH to lock</label>
+                <input class="form-control" type='number' id="lockAmount" value.bind="amount | ethwei & updateTrigger:'blur'" />
               </div>
             </div>
-            <div class="form-group bmd-form-group">
-              <button class="btn-submit-proposal" click.delegate="lock()">Submit</button>
+            <div class="col-4">
+              <div class="form-group bmd-form-group">
+                <label for="lockingPeriod">How long (in days)</label>
+                <input class="form-control" id="lockingPeriod" value.bind="period  | secondsDays & updateTrigger:'blur'" />
+              </div>
             </div>
-
-            <locks-for-reputation locks.to-view="locks" release.call="release({lock})" wrapper.one-time="wrapper"></locks-for-reputation>
           </div>
-        </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group bmd-form-group">
+                <button class="btn-submit btn-sm" click.delegate="lock()">Submit</button>
+                <spinbutton onclick.call="refresh()" css="btn btn-secondary btn-sm" as-button="true" text="Refresh"
+                  spin.to-view="refreshing" title="Refresh"></spinbutton>
+              </div>
+            </div>
+          </div>
 
-        <div if.bind="lockingPeriodIsEnded" class="card">
-          <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <locks-for-reputation locks.to-view="locks" release.call="release({lock})" wrapper.one-time="wrapper"></locks-for-reputation>
+            </div>
+          </div>
+
+          <div if.bind="lockingPeriodIsEnded">
             <div if.to-view="!userScore" class="mb-3">You have nothing to redeem</div>
             <div else class="form-group bmd-form-group">
-              <button class="btn-submit-proposal" click.delegate="redeem()">Redeem Reputation</button>
+              <button class="btn-submit" click.delegate="redeem()">Redeem Reputation</button>
             </div>
           </div>
-        </div>
       </form>
     </div>
   </div>

@@ -1,26 +1,31 @@
 <template>
-  <div if.bind="!loaded">
+  <div class="pageloader" if.bind="!loaded">
     <pageloading></pageloading>
   </div>
   <div else>
-    <instructions>Lock with an external contract, redeem reputation.</instructions>
-    <div class="arc-scheme-dashboard">
-      <spinbutton onclick.call="refresh()" as-button="true" text="Refresh" spin.to-view="refreshing" title="Refresh"></spinbutton>
+    <instructions>Your MGN tokens are locked by default in the DutchX smart contract. Reputation will be distributed to
+      all MGN holders who opt in on receiving DutchX DAO reputation. All you need to do is activate this option here.</instructions>
+
+    <div class="scheme-dashboard-body">
+
       <form>
-        <div if.bind="!lockingPeriodIsEnded" class="card" style="margin-bottom: 2rem">
-          <div class="card-body">
-            <div if.to-view="!lockingPeriodIsEnded && alreadyLocked">You have already submitted a lock</div>
-            <div else class="form-group bmd-form-group">
-              <button class="btn-submit-proposal" click.delegate="lock()">Activate locked MGN</button>
-            </div>
+        <div if.bind="!lockingPeriodIsEnded">
+          <div if.to-view="!lockingPeriodIsEnded && alreadyLocked" style="margin-top: 1rem; text-align: center;">You
+            have already submitted a lock</div>
+          <div else class="form-group bmd-form-group" style="text-align:center">
+            <button class="btn-submit clearWidth" click.delegate="lock()">Activate locked MGN</button>
+            <!-- <spinbutton onclick.call="refresh()" css="btn btn-secondary btn-sm" as-button="true" text="Refresh"
+              spin.to-view="refreshing" title="Refresh"></spinbutton> -->
           </div>
         </div>
 
-        <div if.bind="lockingPeriodIsEnded" class="card">
-          <div class="card-body">
-            <div if.to-view="!userScore" class="mb-3">You have nothing to redeem</div>
-            <div else class="form-group bmd-form-group">
-              <button class="btn-submit-proposal" click.delegate="redeem()">Redeem Reputation</button>
+        <div if.bind="lockingPeriodIsEnded">
+          <div class="row">
+            <div class="col-12">
+              <div if.to-view="!userScore" style="margin-top: 1rem; text-align: center;">You have nothing to redeem</div>
+              <div else class="form-group bmd-form-group" style="text-align:center">
+                <button class="btn-submit clearWidth" click.delegate="redeem()">Redeem Reputation</button>
+              </div>
             </div>
           </div>
         </div>

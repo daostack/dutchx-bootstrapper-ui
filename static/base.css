@@ -1,0 +1,25 @@
+/**
+  This file is for inclusion in index.ejs, before we have access to the scss, which currently
+  we only compile via typescript import and resulting webpack bundling.
+*/
+@font-face {
+  font-family: "DINProLight";
+  src: url("./fonts/dinpro/DINPro-Light.woff");
+  font-weight: 300;
+}
+@font-face {
+  font-family: "DINProLight";
+  src: url("./fonts/dinpro/DINPro-Regular.woff");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "DINProLight";
+  src: url("./fonts/dinpro/DINPro-Bold.woff");
+  font-weight: 500;
+}
+
+body {
+  font-weight: 300;
+  overflow: hidden;
+  font-family: "DINProLite";
+}

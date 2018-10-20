@@ -25,6 +25,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   userHasBid: boolean = false;
   refreshing: boolean = false;
   refreshingLockers: boolean = false;
+  loaded: boolean = false;
 
   constructor(
     protected eventAggregator: EventAggregator
@@ -35,7 +36,10 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
   async activate(model: SchemeDashboardModel) {
     this.wrapper = await WrapperService.factories[model.name].at(model.address);
-    return this.refresh();
+  }
+
+  attached() {
+    return this.refresh().then(() => { this.loaded = true; });
   }
 
   protected async refresh() {

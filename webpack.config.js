@@ -170,9 +170,15 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
         { from: 'static/daostack-icon-black.svg' },
         { from: 'static/dutchx-white.svg' },
         { from: 'static/dutchx-blue.svg' },
-        { from: 'static/gno_token.svg' },
-        { from: 'static/MGN_token_blue@3x.png' },
-        { from: 'static/ETHEREUM-ICON_Black_small.png' },
+        { from: 'static/gno_icon_white.svg' },
+        { from: 'static/gno_icon_color.svg' },
+        { from: 'static/eth_icon_white.svg' },
+        { from: 'static/eth_icon_color.svg' },
+        { from: 'static/mgn_icon_white.svg' },
+        { from: 'static/mgn_icon_color.svg' },
+        { from: 'static/gen_icon_white.svg' },
+        { from: 'static/gen_icon_color.svg' },
+        { from: 'static/base.css' },
         { from: 'node_modules/font-awesome/fonts', to: 'fonts' },
         { from: 'node_modules/font-awesome/css/font-awesome.min.css', to: 'font-awesome.min.css' },
         { from: 'node_modules/snackbarjs/dist/snackbar.min.css' },
@@ -183,7 +189,7 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
       // filter ABI contract files
       new webpack.ContextReplacementPlugin(
         /@daostack[/\\]arc.js[/\\]migrated_contracts$/,
-        /UController.json|Avatar.json|DAOToken.json|Reputation.json|StandardToken.json|Auction4Reputation.json|ExternalLocking4Reputation.json|FixedReputationAllocation.json|Locking4Reputation.json|LockingEth4Reputation.json|LockingToken4Reputation.json/),
+        /UController.json|Avatar.json|DAOToken.json|Reputation.json|StandardToken.json|Auction4Reputation.json|ExternalLocking4Reputation.json|FixedReputationAllocation.json|Locking4Reputation.json|LockingEth4Reputation.json|LockingToken4Reputation.json|BasicToken.json/),
       ...when(extractCss, new ExtractTextPlugin({
         filename: production ? '[contenthash].css' : '[id].css',
         allChunks: true,

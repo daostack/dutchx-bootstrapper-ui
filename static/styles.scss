@@ -32,9 +32,10 @@ $popover-header-color: $color-ds-white;
 $popover-body-color: $color-ds-white;
 $popover-max-width: 23rem;
 
+$font-family-base: "DINProLight";
+
 @import "~BMD/core"; 
 
-@import "./src/schemeDashboards/schemeDashboard";
 @import "./src/organizations/dashboard";
 @import "./src/services/snackbars";
 
@@ -46,10 +47,9 @@ $popover-max-width: 23rem;
   color: $color-ds-red !important;
 }
 
-body {
-  font-weight: 300;
-  overflow: hidden;
-}
+/**
+  See base.css for fonts and body
+**/
 
 .container.admin-page {
    margin-top: 3rem;
@@ -199,11 +199,27 @@ a.text-warning:focus, a.text-warning:hover {
 .btn-primary {
   color: $color-ds-white !important;
   background-color: $color-ds-black  !important;
+  border-color: $color-ds-black  !important;
+  border-width: 1px  !important;
+  border-style: solid  !important;
 }
 
-.btn-primary {
-  color: $color-ds-white !important;
-  background-color: $color-ds-black  !important;
+.btn-primary:hover {
+  color: $color-ds-black !important;
+  background-color: $color-ds-white  !important;
+}
+
+.btn-secondary {
+  color: $color-ds-grey-4 !important;
+  background-color: $color-ds-white  !important;
+  border-color: $color-ds-grey-4  !important;
+  border-width: 1px  !important;
+  border-style: solid  !important;
+}
+
+.btn-secondary:hover {
+  color: $color-ds-black !important;
+  background-color: $color-ds-white  !important;
 }
 
 .tooltip {
@@ -251,18 +267,18 @@ a.text-warning:focus, a.text-warning:hover {
   width: inherit;
 }
 
+.clearWidth {
+  width:initial !important;
+}
+
 form {
   padding-top: 0 !important;
 }
 
 .instructions {
-  margin-top: -1.5rem;
-  margin-left: -1rem;
-  margin-right: -1rem !important;
-  margin-bottom: 1rem;
   padding: 1rem;
   color: $color-ds-white;
-  background-color: $color-ds-lightblue;
+  background-color: $color-ds-darkblue;
 }
 
 .instructions-body {
@@ -340,7 +356,17 @@ label {
   margin-right: .4rem !important;
 }
 
-.bmd-help + div.input-group-append > button.btn-submit-proposal {
+.btn-submit {
+  @extend .btn;
+  @extend .btn-primary;
+}
+
+.btn-submit:hover {
+  @extend .btn:hover;
+  @extend .btn-primary:hover;
+}
+
+.bmd-help + div.input-group-append > button.btn-submit {
   padding-top: .6rem;
 }
 
