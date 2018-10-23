@@ -5,11 +5,10 @@ import { ArcService, WrapperService, Hash, StandardTokenWrapper, Utils } from ".
 import { SchemeService, SchemeInfo } from "../services/SchemeService";
 import { AureliaHelperService } from "../services/AureliaHelperService";
 import { App } from '../app';
-import { BigNumber, Web3Service } from '../services/Web3Service';
+import { Web3Service } from '../services/Web3Service';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { EventConfigFailure } from '../entities/GeneralEvents';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
-import { SchemePermissionsSelector } from 'resources/customElements/schemePermissions/schemePermissions';
 import { AureliaConfiguration } from "aurelia-configuration";
 
 @autoinject
