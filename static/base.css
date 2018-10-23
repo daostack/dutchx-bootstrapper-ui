@@ -4,22 +4,22 @@
 */
 @font-face {
   font-family: "DINProLight";
-  src: url("./fonts/dinpro/DINPro-Light.woff");
+  src: url("./fonts/DINPro-Light.woff");
   font-weight: 300;
 }
 @font-face {
   font-family: "DINProLight";
-  src: url("./fonts/dinpro/DINPro-Regular.woff");
+  src: url("./fonts/DINPro-Regular.woff");
   font-weight: 400;
 }
 @font-face {
   font-family: "DINProLight";
-  src: url("./fonts/dinpro/DINPro-Bold.woff");
+  src: url("./fonts/DINPro-Bold.woff");
   font-weight: 500;
 }
 
 body {
   font-weight: 300;
   overflow: hidden;
-  font-family: "DINProLite";
+  font-family: "DINProLite,Roboto,Helvetica,Arial,sans-serif";
 }
