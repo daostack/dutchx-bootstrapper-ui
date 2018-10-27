@@ -57,6 +57,6 @@ export class ConsoleLogService {
   }
 
   private getMessage(config: EventConfig | string): string {
-    return (typeof (config) == "string") ? config : config.message;
+    return (typeof config == "string") ? config : config.message;
   }
 }

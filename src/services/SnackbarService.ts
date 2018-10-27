@@ -99,7 +99,7 @@ export class SnackbarService {
   }
 
   completeConfig(config: EventConfig | string, defaults: any = {}): EventConfig {
-    if (typeof (config) == "string") {
+    if (typeof config === "string") {
       config = { message: config as string } as EventConfig;
     }
 

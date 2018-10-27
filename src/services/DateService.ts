@@ -192,7 +192,7 @@ export class DateService {
   }
 
   public ticksToTimeSpanString(ms: number): string | null {
-    if ((ms === null) || (typeof (ms) === "undefined")) {
+    if ((ms === null) || (typeof ms === "undefined")) {
       return null;
     }
 
@@ -319,7 +319,7 @@ export class DateService {
     /**
      * format can be either raw or a key into the config (this.formats)
      */
-    if (typeof (params) === "string") {
+    if (typeof params === "string") {
       return { format: this.formats.get(params as string) || params as string };
     } else {
       let parms = params as IFormatParameters;
