@@ -1,12 +1,7 @@
 <template>
   <div class="root container-fluid animated fadeIn">
-    <header if.bind="healthy" router.bind="router" , network.bind="network"></header>
-
     <div class="content-body">
       <router-view></router-view>
     </div>
-
-    <footer if.bind="healthy"></footer>
   </div>
-
 </template>

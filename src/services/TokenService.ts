@@ -1,6 +1,6 @@
 import { autoinject } from "aurelia-framework";
 import { Web3Service, BigNumber } from "./Web3Service";
-import { ArcService, Address, StandardTokenFactory, StandardTokenWrapper, Utils, DaoTokenWrapper } from './ArcService';
+import { ArcService, Address, StandardTokenWrapper, Utils, DaoTokenWrapper, WrapperService } from './ArcService';
 
 @autoinject
 export class TokenService {
@@ -82,6 +82,6 @@ export class TokenService {
 
 
   public getStandardToken(address: Address): Promise<StandardTokenWrapper> {
-    return StandardTokenFactory.at(address);
+    return WrapperService.factories.StandardToken.at(address);
   }
 }

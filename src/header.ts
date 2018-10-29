@@ -1,12 +1,13 @@
 import { autoinject, bindingMode, bindable } from 'aurelia-framework';
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { Address } from 'services/ArcService';
+import { EventAggregator } from 'aurelia-event-aggregator';
 
 @autoinject
 export class Header {
 
   @bindable({ defaultBindingMode: bindingMode.oneTime }) router;
-  @bindable({ defaultBindingMode: bindingMode.oneWay }) network;
+  @bindable({ defaultBindingMode: bindingMode.toView }) network;
 
   private avatarAddress: Address;
   private avatarLink: HTMLElement;
@@ -18,9 +19,14 @@ export class Header {
   };
 
   constructor(
-    appConfig: AureliaConfiguration
+    private appConfig: AureliaConfiguration,
+    eventAggregator: EventAggregator
   ) {
-    this.avatarAddress = appConfig.get("daoAddress");
+    this.initialize();
+    eventAggregator.subscribe("Network.Changed.Id", () => { this.initialize(); });
   }
 
+  initialize() {
+    this.avatarAddress = this.appConfig.get("daoAddress");
+  }
 }

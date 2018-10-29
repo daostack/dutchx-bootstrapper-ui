@@ -1,7 +1,7 @@
 import { autoinject } from "aurelia-framework";
 import { DaoService, DaoEx } from "../services/DaoService";
 import { TokenService } from "../services/TokenService";
-import { ArcService, WrapperService, Hash, StandardTokenWrapper, Utils } from "../services/ArcService";
+import { ArcService, WrapperService, Hash, StandardTokenWrapper, Utils, Address } from "../services/ArcService";
 import { SchemeService, SchemeInfo } from "../services/SchemeService";
 import { AureliaHelperService } from "../services/AureliaHelperService";
 import { App } from '../app';
@@ -10,6 +10,8 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { EventConfigFailure } from '../entities/GeneralEvents';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { AureliaConfiguration } from "aurelia-configuration";
+import { DisposableCollection } from 'services/DisposableCollection';
+import { Redirect, Router } from 'aurelia-router';
 
 @autoinject
 export class DAODashboard {
@@ -22,12 +24,13 @@ export class DAODashboard {
   private unregisteredArcSchemes: Array<SchemeInfo>;
   private nonArcSchemes: Array<SchemeInfo>;
   private arcSchemes: Array<SchemeInfo>;
-  private subscription;
+  private subscriptions = new DisposableCollection();
   private dataLoaded: boolean = false;
   private schemesLoaded: boolean = false;
   private dashboardElement: any;
   private lockingPeriodEndDate: Date;
   private canRedeem: boolean = false;
+  private networkName: string;
 
   private dutchXSchemes = new Map<string, { description: string, icon?: string, icon_hover?: string, position: number }>([
     ["LockingEth4Reputation", { description: "LOCK ETH", icon: './eth_icon_color.svg', icon_hover: './eth_icon_white.svg', position: 1 }],
@@ -39,6 +42,7 @@ export class DAODashboard {
 
   constructor(
     private daoService: DaoService
+    , private web3: Web3Service
     , private tokenService: TokenService
     , private arcService: ArcService
     , private schemeService: SchemeService
@@ -46,109 +50,125 @@ export class DAODashboard {
     , private web3Service: Web3Service
     , private eventAggregator: EventAggregator
     , private appConfig: AureliaConfiguration
+    , private app: App
+    , private router: Router
   ) {
-    this.lockingPeriodEndDate = new Date(appConfig.get("lockingPeriodEndDate"));
+    $(window).resize(this.fixScrollbar);
   }
 
-  async activate(options: any) {
+  canActivate(options: { address: Address }) {
+
+    const route = this.app.getLandingPageRoute();
+    if (route !== "") {
+      setTimeout(() => { this.app.navigateToLandingPage(); }, 0);
+      return false;
+    }
+    return true;
+  }
+
+  async activate(options: { address: Address }) {
+    this.subscriptions.dispose();
+    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => { this.attached(); }));
+    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Account", () => { this.attached(); }));
+
 
     // DutchX hardcoded avatar
     this.address = options.address || this.appConfig.get("daoAddress");
     this.org = await this.daoService.daoAt(this.address);
     if (this.org) {
       this.orgName = this.org.name;
-      this.subscription = this.org.subscribe(DaoEx.daoSchemeSetChangedEvent, this.handleSchemeSetChanged.bind(this));
-    } else {
+      this.subscriptions.push(this.org.subscribe(DaoEx.daoSchemeSetChangedEvent, this.handleSchemeSetChanged.bind(this)));
+
+      this.polishDom();
+    }
+    else {
       // don't force the user to see this as a snack every time.  A corrupt DAO may never be repaired.  A message will go to the console.
       // this.eventAggregator.publish("handleException", new EventConfigException(`Error loading DAO: ${avatarAddress}`, ex));
-      this.eventAggregator.publish("handleFailure",
-        new EventConfigFailure(`Error loading DAO: ${this.address}`));
+      // this.eventAggregator.publish("handleFailure",
+      //   new EventConfigFailure(`Error loading DAO: ${this.address}`));
+      this.router.navigateToRoute("noDao");
     }
-
-    const msUntilCanRedeem = this.lockingPeriodEndDate.getTime() - new Date().getTime();
-    setTimeout(() => {
-      this.canRedeem = true;
-      $('#globalRedeemBtn').addClass('enabled');
-    }, msUntilCanRedeem);
-
     this.dataLoaded = true;
-    return Promise.resolve();
   }
 
-  deactivate() {
-    if (this.subscription) {
-      this.subscription.dispose();
-      this.subscription = null;
-    }
-  }
+  async attached() {
 
-  attached() {
+    this.networkName = this.web3.networkName;
 
-    const dashboard = $(this.dashboardElement);
+    if (this.org) {
+      this.lockingPeriodEndDate = new Date(this.appConfig.get("lockingPeriodEndDate"));
+      const msUntilCanRedeem = this.lockingPeriodEndDate.getTime() - new Date().getTime();
+      setTimeout(() => {
+        this.canRedeem = true;
+        $('#globalRedeemBtn').addClass('enabled');
+      }, msUntilCanRedeem);
 
-    /**
-     * css will reference the 'selected' class
-     */
-    dashboard.on('show.bs.collapse', '.scheme-dashboard', function (e: Event) {
-      // ignore bubbles from nested collapsables
-      if (!$(this).is(<any>e.target)) return;
+      const dashboard = $(this.dashboardElement);
 
-      const button = $(e.target);
-      const li = button.closest('li');
-      li.addClass("selected");
-    });
+      /**
+       * css will reference the 'selected' class
+       */
+      dashboard.on('show.bs.collapse', '.scheme-dashboard', function (e: Event) {
+        // ignore bubbles from nested collapsables
+        if (!$(this).is(<any>e.target)) return;
 
-    dashboard.on('hide.bs.collapse', '.scheme-dashboard', function (e: Event) {
-      // ignore bubbles from nested collapsables
-      if (!$(this).is(<any>e.target)) return;
-
-      const button = $(e.target);
-      const li = button.closest('li');
-      li.removeClass("selected");
-    });
-
-
-    const button = $("#avatarHoverIcon") as any;
-    let popover;
-
-    const hidePopover = () => {
-      if (popover) {
-        button.popover('hide');
-        popover = null;
-      }
-    };
-
-    button.popover({
-      toggle: "popover",
-      placement: "bottom",
-      trigger: "manual",
-      container: "body",
-      title: `DAO Address`,
-      content: `<div class="nowrap"><etherscanlink address='${this.address}'></etherscanlink></div>`,
-      html: true
-    })
-      .click((evt: any) => {
-        button.popover('toggle');
-      })
-      .on('shown.bs.popover', (evt: any) => {
-        popover = $('.popover.show')[0];
-
-        // note this won't work so great if another popover is already showing
-        this.aureliaHelperService.enhanceElement(popover, this);
-
-        $('body').on('click', ".root", hidePopover);
-        $('body').on('keyup', ".root", (evt: any) => {
-          if (evt.keyCode == 27) {
-            hidePopover();
-          }
-        });
-      })
-      .on('hide.bs.popover', (evt: any) => {
-        $('body').off('click', ".root")
-        $('body').off('keyup', ".root")
+        const button = $(e.target);
+        const li = button.closest('li');
+        li.addClass("selected");
       });
 
-    return this.loadSchemes();
+      dashboard.on('hide.bs.collapse', '.scheme-dashboard', function (e: Event) {
+        // ignore bubbles from nested collapsables
+        if (!$(this).is(<any>e.target)) return;
+
+        const button = $(e.target);
+        const li = button.closest('li');
+        li.removeClass("selected");
+      });
+
+
+      const button = $("#avatarHoverIcon") as any;
+      let popover;
+
+      const hidePopover = () => {
+        if (popover) {
+          button.popover('hide');
+          popover = null;
+        }
+      };
+
+      button.popover({
+        toggle: "popover",
+        placement: "bottom",
+        trigger: "manual",
+        container: "body",
+        title: `DAO Address`,
+        content: `<div class="nowrap"><etherscanlink address='${this.address}'></etherscanlink></div>`,
+        html: true
+      })
+        .click((evt: any) => {
+          button.popover('toggle');
+        })
+        .on('shown.bs.popover', (evt: any) => {
+          popover = $('.popover.show')[0];
+
+          // note this won't work so great if another popover is already showing
+          this.aureliaHelperService.enhanceElement(popover, this);
+
+          $('body').on('click', ".root", hidePopover);
+          $('body').on('keyup', ".root", (evt: any) => {
+            if (evt.keyCode == 27) {
+              hidePopover();
+            }
+          });
+        })
+        .on('hide.bs.popover', (evt: any) => {
+          $('body').off('click', ".root")
+          $('body').off('keyup', ".root")
+        });
+
+      return this.loadSchemes();
+    }
   }
 
   async loadSchemes() {
@@ -201,12 +221,12 @@ export class DAODashboard {
   }
 
   private async findNonDeployedArcScheme(scheme: SchemeInfo): Promise<SchemeInfo | null> {
+    const code = await (<any>Promise).promisify((callback: any): any =>
+      this.web3Service.web3.eth.getCode(scheme.address, callback))();
     for (const wrapperName in WrapperService.nonUniversalSchemeFactories) {
       const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
       if (factory) {
         const contract = await factory.ensureSolidityContract();
-        const code = await (<any>Promise).promisify((callback: any): any =>
-          this.web3Service.web3.eth.getCode(scheme.address, callback))();
         const found = code === contract.deployedBinary;
         if (found) {
           const wrapper = await factory.at(scheme.address);
@@ -217,10 +237,23 @@ export class DAODashboard {
     return null;
   }
 
-  private polishDom() {
-    // setTimeout(() => {
+  private fixScrollbar() {
 
-    // }, 0);
+    const bodyHeight = $(window).outerHeight();
+    const footerHeight = $('.footer.navbar').outerHeight();
+    const headerHeight = $('.header.navbar').outerHeight();
+
+    $('.content-body').css(
+      {
+        "top": `${headerHeight}px`,
+        "max-height": `${bodyHeight - footerHeight - headerHeight}px`
+      });
+  }
+
+  private polishDom() {
+    setTimeout(() => {
+      this.fixScrollbar();
+    }, 0);
   }
 
   private async handleSchemeSetChanged(params: { dao: DaoEx, scheme: SchemeInfo }) {

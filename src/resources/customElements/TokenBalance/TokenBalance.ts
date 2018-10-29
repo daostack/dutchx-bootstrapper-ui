@@ -1,29 +1,45 @@
 import { bindable, containerless, customElement, autoinject, bindingMode } from 'aurelia-framework';
 import { TokenService } from "../../../services/TokenService";
 import { Address } from 'services/ArcService';
+import { EventAggregator } from 'aurelia-event-aggregator';
 
 @autoinject
 @containerless
 @customElement("tokenbalance")
 export class TokenBalance {
 
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) token: Address;
+  @bindable({ defaultBindingMode: bindingMode.toView }) token: Address;
 
   private balance: string;
   private text: string;
 
   constructor(
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    eventAggregator: EventAggregator
   ) {
+    eventAggregator.subscribe("Network.Changed.Account", () => { this.initialize(); });
   }
 
   private events;
 
-  attached() {
+  initialize() {
+    this.stop();
     this.readBalance();
   }
 
+  attached() {
+    this.initialize();
+  }
+
   detached() {
+    this.stop();
+  }
+
+  tokenChanged() {
+    this.initialize();
+  }
+
+  stop() {
     if (this.events) {
       this.events.stopWatching();
       this.events = null;
@@ -32,17 +48,22 @@ export class TokenBalance {
 
   async readBalance() {
 
-    const token = await this.tokenService.getStandardToken(this.token);
+    if (this.token) {
 
-    if (token) {
-      this.getBalance(token);
+      const token = await this.tokenService.getStandardToken(this.token);
 
-      this.events = token.contract.allEvents({ fromBlock: 'latest' });
-
-      this.events.watch(() => {
+      if (token) {
         this.getBalance(token);
-      });
-    } else {
+
+        this.events = token.contract.allEvents({ fromBlock: 'latest' });
+
+        this.events.watch(() => {
+          this.getBalance(token);
+        });
+      }
+    }
+
+    if (!this.events) {
       this.text = `N/A`;
     }
   }

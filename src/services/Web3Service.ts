@@ -11,7 +11,7 @@ import {
   BlockWithTransactionData
 } from "web3";
 import { BigNumber } from 'bignumber.js';
-import { Hash, Address } from './ArcService';
+import { Hash, Address, Utils } from './ArcService';
 
 @autoinject()
 export class Web3Service {
@@ -23,6 +23,7 @@ export class Web3Service {
   }
 
   public get web3(): Web3 { return this._web3; }
+  public set web3(newVal: Web3) { this._web3 = newVal; }
 
   public get accounts(): Array<string> { return this.web3 ? this.web3.eth.accounts : []; }
 
@@ -93,26 +94,6 @@ export class Web3Service {
      */
     BigNumber.config({ ERRORS: false });
 
-    let getNetworkFromID = (id: string): string => {
-      switch (id) {
-        case "1":
-          return "Live";
-        case "2":
-          return "Morden";
-        case "3":
-          return "Ropsten";
-        case "4":
-          return "Rinkeby";
-        case "42":
-          return "Kovan";
-        // the id that arc.js hardwires for ganache
-        case "1512051714758":
-          return "Ganache";
-        default:
-          return "Unknown";
-      }
-    };
-
     return new Promise<Web3>((resolve, reject) => {
       try {
         web3.version.getNetwork(async (err, chainId) => {
@@ -131,7 +112,7 @@ export class Web3Service {
               //   return reject(new Error(`Web3Service.initialize failed: connected to the wrong network, expected: ${Web3Service.Network}, actual: ${getNetworkFromID(chainId)}`));
               // } else {
 
-              this.networkName = getNetworkFromID(chainId);
+              this.networkName = await Utils.getNetworkName();
 
               const connected = await (<any>Promise).promisify(web3.net.getListening)()
                 .then((isListening: boolean) => {

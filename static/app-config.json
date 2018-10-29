@@ -6,7 +6,7 @@
     "mgnTokenAddress": ""
   },
   "Kovan": {
-    "daoAddress": "0xd430db7364184c7d6c0d50457c502616f8cafad3",
+    "daoAddress": "0x7eae73d7b1358695440c7453a2a438147f62c1e1",
     "gnoTokenAddress": "0xde119a8f2a8e339d9d8a235c88d4aa403951b0ec",
     "mgnTokenAddress": "0x98709b83af325a46edfac2f053a730a2980b3682"
   },

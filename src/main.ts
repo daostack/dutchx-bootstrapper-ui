@@ -4,7 +4,7 @@ import { Aurelia } from 'aurelia-framework';
 import { PLATFORM } from 'aurelia-pal';
 import * as Bluebird from 'bluebird';
 import { Web3Service } from "./services/Web3Service";
-import { InitializeArcJs, AccountService, Address, Utils } from '@daostack/arc.js';
+import { InitializeArcJs, AccountService, Address, Utils, Web3 } from '@daostack/arc.js';
 
 import 'arrive'; // do bmd does it's thing whenever views are attached
 import "popper.js";
@@ -14,6 +14,9 @@ import { ConsoleLogService } from "./services/ConsoleLogService";
 import { ConfigService, LogLevel } from "./services/ArcService";
 import { DateService } from "./services/DateService";
 import { AureliaConfiguration } from "aurelia-configuration";
+import { EventAggregator } from 'aurelia-event-aggregator';
+import { Router } from 'aurelia-router';
+import { App } from 'app';
 
 // remove out if you don't want a Promise polyfill (remove also from webpack.config.js)
 Bluebird.config({ warnings: { wForgottenReturn: false } });
@@ -83,33 +86,53 @@ export async function configure(aurelia: Aurelia) {
 
   try {
 
-    const web3 = await InitializeArcJs({
-      watchForAccountChanges: true,
-      filter: {}
+    const initializeApp = async (): Promise<Web3> => {
+      const web3 = await InitializeArcJs({
+        useMetamaskEthereumWeb3Provider: true,
+        watchForAccountChanges: true,
+        watchForNetworkChanges: true,
+        filter: {}
+      });
+
+      const network = await Utils.getNetworkName();
+      appConfig.setEnvironment(network);
+
+      // TODO: make this configurable in the application GUI
+      ConfigService.set("estimateGas", true);
+
+      // just to initialize them and get them running
+      aurelia.container.get(ConsoleLogService);
+      aurelia.container.get(SnackbarService);
+      aurelia.container.get(DateService);
+
+      const web3Service = aurelia.container.get(Web3Service) as Web3Service;
+
+      await web3Service.initialize(web3);
+
+      const arcService = aurelia.container.get(ArcService) as ArcService;
+      await arcService.initialize();
+
+      return web3;
+    };
+
+
+    const eventAggregator = aurelia.container.get(EventAggregator) as EventAggregator;
+
+    const app = aurelia.container.get(App) as App;
+
+    AccountService.subscribeToAccountChanges(async (account: Address) => {
+      await initializeApp();
+      app.navigateToLandingPage();
+      eventAggregator.publish("Network.Changed.Account", account);
     });
 
-    const network = await Utils.getNetworkName();
-    appConfig.setEnvironment(network);
-
-    // TODO: make this configurable in the application GUI
-    ConfigService.set("estimateGas", true);
-
-    AccountService.subscribeToAccountChanges((account: Address) => {
-      // TODO: should prompt user here with appropriate warning that the current account has changed
-      window.location.reload();
+    AccountService.subscribeToNetworkChanges(async (networkId: number) => {
+      await initializeApp();
+      app.navigateToLandingPage();
+      eventAggregator.publish("Network.Changed.Id", networkId);
     });
 
-    // just to initialize them and get them running
-    aurelia.container.get(ConsoleLogService);
-    aurelia.container.get(SnackbarService);
-    aurelia.container.get(DateService);
-
-    const web3Service = aurelia.container.get(Web3Service);
-
-    await web3Service.initialize(web3);
-
-    const arcService = aurelia.container.get(ArcService) as ArcService;
-    await arcService.initialize();
+    await initializeApp();
 
   } catch (ex) {
     console.log(`Error initializing blockchain services: ${ex}`);

@@ -1,5 +1,6 @@
 import { bindable, containerless, customElement, autoinject } from 'aurelia-framework';
 import { Web3Service } from "../../../services/Web3Service";
+import { EventAggregator } from 'aurelia-event-aggregator';
 
 @autoinject
 @containerless
@@ -8,18 +9,31 @@ export class EthBalance {
 
   private ethBalance: string = '';
   private rawBalance: string = '';
-  private ethAddress: string;
   private filter: any;
   private textElement: HTMLElement;
 
-  constructor(private web3: Web3Service) {
-    this.ethAddress = this.web3.defaultAccount;
+  constructor(private web3: Web3Service,
+    eventAggregator: EventAggregator) {
+    eventAggregator.subscribe("Network.Changed.Account", () => { this.initialize(); });
+    eventAggregator.subscribe("Network.Changed.Id", () => { this.initialize(); });
   }
 
   text: string;
 
+  initialize(): Promise<void> {
+    this.stop();
+    return this.readBalance();
+  }
+
+  stop() {
+    if (this.filter) {
+      this.filter.stopWatching();
+      this.filter = null;
+    }
+  }
+
   attached() {
-    this.readBalance().then(() => {
+    this.initialize().then(() => {
       (<any>$(this.textElement)).tooltip(
         {
           toggle: "tooltip",
@@ -28,14 +42,11 @@ export class EthBalance {
           trigger: "hover"
         }
       )
-    });
+    })
   }
 
   detached() {
-    if (this.filter) {
-      this.filter.stopWatching();
-      this.filter = null;
-    }
+    this.stop();
   }
 
   async readBalance() {
@@ -50,7 +61,8 @@ export class EthBalance {
 
   async getBalance() {
     try {
-      const balance = this.web3.fromWei(await this.web3.getBalance(this.ethAddress));
+      const ethAddress = this.web3.defaultAccount;
+      const balance = this.web3.fromWei(await this.web3.getBalance(ethAddress));
       this.rawBalance = balance.toString(10);
       this.ethBalance = balance.toExponential(2);
       this.text = `${this.ethBalance} ETH`;

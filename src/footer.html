@@ -2,11 +2,20 @@
   <nav class="footer navbar fixed-bottom">
     <span>Powered by <a target="_blank" href="http://daostack.io">DAOstack</a> <img class="logo" src="../static/daostack-icon-white.svg" /></span>
     <div class="addresses">
-      <div class="userBalance">Your GNO Balance:
-        <tokenbalance token.bind="gnoAddress"></tokenbalance>
+      <div class="userBalance">Your address:
+        <usersaddress></usersaddress>
       </div>
-      <div class="userBalance">MGN Balance:
-        <tokenbalance token.bind="mgnAddress"></tokenbalance>
+      <div class="userBalance">GNO:
+        <tokenbalance token.to-view="gnoAddress"></tokenbalance>
+      </div>
+      <div class="userBalance">MGN:
+        <tokenbalance token.to-view="mgnAddress"></tokenbalance>
+      </div>
+      <div class="userBalance">ETH:
+        <ethbalance></ethbalance>
+      </div>
+      <div class="userBalance">GEN:
+        <tokenbalance token.to-view="genAddress"></tokenbalance>
       </div>
     </div>
   </nav>
