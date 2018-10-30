@@ -6,13 +6,12 @@ import { Web3Service } from 'services/Web3Service';
 export class LocksForReputation {
 
   constructor(private web3Service: Web3Service) {
-    this.currentAccount = web3Service.defaultAccount;
   }
 
   _locks: Array<LockInfo>;
 
-  currentAccount: Address;
   anyCanRelease: boolean;
+  loading: boolean = true;
   // anyCanRedeem: boolean;
 
   @bindable({ defaultBindingMode: bindingMode.oneWay }) locks: Promise<Array<LockInfo>>;
@@ -26,6 +25,7 @@ export class LocksForReputation {
   }
 
   async locksChanged(newLocks: Promise<Array<LockInfo>>) {
+    this.loading = true;
     const _tmpLocks = await newLocks as Array<LockInfoX>;
 
     for (const lock of _tmpLocks) {
@@ -35,6 +35,7 @@ export class LocksForReputation {
     this.anyCanRelease = _tmpLocks.filter((l: LockInfoX) => l.canRelease).length > 0;
     // this.anyCanRedeem = _tmpLocks.filter((l: LockInfoX) => l.canRedeem).length > 0;
     this._locks = _tmpLocks;
+    this.loading = false;
   }
 
   private async _release(lock: LockInfoX) {

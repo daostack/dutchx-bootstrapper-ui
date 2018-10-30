@@ -9,11 +9,9 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   alreadyLocked: boolean;
   protected wrapper: ExternalLocking4ReputationWrapper;
 
-  async refresh() {
-    await super.refresh();
-    super.refreshing = true;
+  async accountChanged() {
     this.alreadyLocked = await this.wrapper.getAccountHasLocked(this.web3Service.defaultAccount);
-    super.refreshing = false;
+    return super.accountChanged();
   }
 
   protected async lock(): Promise<boolean> {

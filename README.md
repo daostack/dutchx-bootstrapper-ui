@@ -1,6 +1,6 @@
 [![Build Status](https://api.travis-ci.org/daostack/dutchx-bootstrapper-ui.svg?branch=master)](https://travis-ci.org/daostack/dutchx-bootstrapper-ui)
 
-# DutchX Reputation Bootstrapper
+# DutchX Initializer
 
 ## Introduction
 

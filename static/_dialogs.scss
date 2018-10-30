@@ -1,0 +1,50 @@
+@import "./colors";
+
+.dialog {
+  color: $color-ds-black;
+  background-color: $color-ds-white;
+}
+
+.dialog .title {
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.dialog img.logo {
+  margin-right: .25rem;
+}
+
+.dialog .body div {
+  margin-bottom: 1rem;
+}
+
+.dialog .body .important {
+  font-weight: 500;
+}
+
+.dialog .body .buttonContainer,
+.dialog .body .userAddressContainer
+{
+  text-align: center;
+}
+
+.dialog .body  etherscanlink a,
+.dialog .body  etherscanlink a:hover,
+.dialog .body .copy-to-clip-button,
+.dialog .body .copy-to-clip-button:hover
+{
+  color: $color-ds-darkblue;
+}
+
+ux-dialog {
+  max-width: 50rem;
+  border-radius: 0 !important;
+  border-width: 0 !important;
+  border-top-width: .5rem !important;
+  border-top-color: $color-ds-black !important;
+}
+
+ux-dialog-overlay.active {
+  background-color:$color-ds-black;
+  opacity: .5 !important;
+}

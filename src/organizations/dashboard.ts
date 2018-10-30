@@ -1,44 +1,59 @@
-import { autoinject } from "aurelia-framework";
+import { autoinject, computedFrom, observable } from "aurelia-framework";
 import { DaoService, DaoEx } from "../services/DaoService";
 import { TokenService } from "../services/TokenService";
-import { ArcService, WrapperService, Hash, StandardTokenWrapper, Utils, Address } from "../services/ArcService";
+import { ArcService, Address, WrapperService } from "../services/ArcService";
 import { SchemeService, SchemeInfo } from "../services/SchemeService";
 import { AureliaHelperService } from "../services/AureliaHelperService";
-import { App } from '../app';
 import { Web3Service } from '../services/Web3Service';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { EventConfigFailure } from '../entities/GeneralEvents';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { AureliaConfiguration } from "aurelia-configuration";
 import { DisposableCollection } from 'services/DisposableCollection';
-import { Redirect, Router } from 'aurelia-router';
+import { Router } from 'aurelia-router';
+import { NetworkConnectionWizards } from 'services/networkConnectionWizards';
+import { EventConfigFailure } from 'entities/GeneralEvents';
+import { App } from 'app';
 
 @autoinject
 export class DAODashboard {
 
-  private org: DaoEx;
   private address: string;
   private orgName: string;
   private tokenSymbol: string;
-  private registeredArcSchemes: Array<SchemeInfo>;
-  private unregisteredArcSchemes: Array<SchemeInfo>;
-  private nonArcSchemes: Array<SchemeInfo>;
-  private arcSchemes: Array<SchemeInfo>;
+  private dutchXSchemes: Array<SchemeInfo>;
   private subscriptions = new DisposableCollection();
-  private dataLoaded: boolean = false;
+  private avatarLoading: boolean = true;
+  private avatarLoaded: boolean = false;
   private schemesLoaded: boolean = false;
+  private schemesLoading: boolean = false;
   private dashboardElement: any;
   private lockingPeriodEndDate: Date;
   private canRedeem: boolean = false;
   private networkName: string;
+  private options: { address?: Address };
 
-  private dutchXSchemes = new Map<string, { description: string, icon?: string, icon_hover?: string, position: number }>([
+  private _loading: boolean = false;
+
+  private get loading() {
+    return this._loading;
+  }
+
+  private set loading(newValue: boolean) {
+    if (newValue !== this._loading) {
+      this.eventAggregator.publish("DAO.Loading", newValue);
+      this._loading = newValue;
+    }
+  }
+
+  private dutchXSchemeConfigs = new Map<string, { description: string, icon?: string, icon_hover?: string, position: number }>([
     ["LockingEth4Reputation", { description: "LOCK ETH", icon: './eth_icon_color.svg', icon_hover: './eth_icon_white.svg', position: 1 }],
     ["LockingToken4Reputation", { description: "LOCK GNO", icon: './gno_icon_color.svg', icon_hover: './gno_icon_white.svg', position: 2 }],
     ["ExternalLocking4Reputation", { description: "LOCK MGN", icon: './mgn_icon_color.svg', icon_hover: './mgn_icon_white.svg', position: 3 }],
     ["Auction4Reputation", { description: "BID GEN", icon: './gen_icon_color.svg', icon_hover: './gen_icon_white.svg', position: 4 }],
     // ["FixedReputationAllocation", { description: "REDEEM YOUR COUPON" , position: 5 }],
   ]);
+
+  public org: DaoEx;
 
   constructor(
     private daoService: DaoService
@@ -50,128 +65,112 @@ export class DAODashboard {
     , private web3Service: Web3Service
     , private eventAggregator: EventAggregator
     , private appConfig: AureliaConfiguration
-    , private app: App
-    , private router: Router
+    , private networkConnectionWizards: NetworkConnectionWizards
   ) {
     $(window).resize(this.fixScrollbar);
   }
 
-  canActivate(options: { address: Address }) {
+  async activate(options: { address?: Address } = {}) {
 
-    const route = this.app.getLandingPageRoute();
-    if (route !== "") {
-      setTimeout(() => { this.app.navigateToLandingPage(); }, 0);
-      return false;
-    }
-    return true;
-  }
+    this.options = options;
 
-  async activate(options: { address: Address }) {
     this.subscriptions.dispose();
-    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => { this.attached(); }));
-    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Account", () => { this.attached(); }));
+    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => {
+      this.networkName = this.web3.networkName;
+      if (!this.web3.defaultAccount) {
+        this.networkConnectionWizards.run().then(() => {
+          this.loadAvatar();
+        });
+      } else {
+        this.loadAvatar();
+      }
+    }));
+    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Account", () => {
+      if (!this.org) {
+        this.loadAvatar();
+      }
+    }));
+    this.subscriptions.push(this.eventAggregator.subscribe("Avatar.loaded", () => { this.loadSchemes(); }));
 
+    this.networkName = this.web3.networkName;
 
-    // DutchX hardcoded avatar
-    this.address = options.address || this.appConfig.get("daoAddress");
-    this.org = await this.daoService.daoAt(this.address);
-    if (this.org) {
-      this.orgName = this.org.name;
-      this.subscriptions.push(this.org.subscribe(DaoEx.daoSchemeSetChangedEvent, this.handleSchemeSetChanged.bind(this)));
-
-      this.polishDom();
+    if (!this.web3.defaultAccount) {
+      this.networkConnectionWizards.run().then(() => {
+        this.loadAvatar();
+      });
+    } else {
+      this.loadAvatar();
     }
-    else {
-      // don't force the user to see this as a snack every time.  A corrupt DAO may never be repaired.  A message will go to the console.
-      // this.eventAggregator.publish("handleException", new EventConfigException(`Error loading DAO: ${avatarAddress}`, ex));
-      // this.eventAggregator.publish("handleFailure",
-      //   new EventConfigFailure(`Error loading DAO: ${this.address}`));
-      this.router.navigateToRoute("noDao");
-    }
-    this.dataLoaded = true;
   }
 
   async attached() {
 
-    this.networkName = this.web3.networkName;
+    this.lockingPeriodEndDate = new Date(this.appConfig.get("lockingPeriodEndDate"));
+    const msUntilCanRedeem = this.lockingPeriodEndDate.getTime() - new Date().getTime();
+    setTimeout(() => {
+      this.canRedeem = true;
+      $('#globalRedeemBtn').addClass('enabled');
+    }, msUntilCanRedeem);
 
-    if (this.org) {
-      this.lockingPeriodEndDate = new Date(this.appConfig.get("lockingPeriodEndDate"));
-      const msUntilCanRedeem = this.lockingPeriodEndDate.getTime() - new Date().getTime();
-      setTimeout(() => {
-        this.canRedeem = true;
-        $('#globalRedeemBtn').addClass('enabled');
-      }, msUntilCanRedeem);
+    const dashboard = $(this.dashboardElement);
 
-      const dashboard = $(this.dashboardElement);
+    /**
+     * css will reference the 'selected' class
+     */
+    dashboard.on('show.bs.collapse', '.scheme-dashboard', function (e: Event) {
+      // ignore bubbles from nested collapsables
+      if (!$(this).is(<any>e.target)) return;
 
-      /**
-       * css will reference the 'selected' class
-       */
-      dashboard.on('show.bs.collapse', '.scheme-dashboard', function (e: Event) {
-        // ignore bubbles from nested collapsables
-        if (!$(this).is(<any>e.target)) return;
+      const button = $(e.target);
+      const li = button.closest('li');
+      li.addClass("selected");
+    });
 
-        const button = $(e.target);
-        const li = button.closest('li');
-        li.addClass("selected");
-      });
+    dashboard.on('hide.bs.collapse', '.scheme-dashboard', function (e: Event) {
+      // ignore bubbles from nested collapsables
+      if (!$(this).is(<any>e.target)) return;
 
-      dashboard.on('hide.bs.collapse', '.scheme-dashboard', function (e: Event) {
-        // ignore bubbles from nested collapsables
-        if (!$(this).is(<any>e.target)) return;
+      const button = $(e.target);
+      const li = button.closest('li');
+      li.removeClass("selected");
+    });
 
-        const button = $(e.target);
-        const li = button.closest('li');
-        li.removeClass("selected");
-      });
-
-
-      const button = $("#avatarHoverIcon") as any;
-      let popover;
-
-      const hidePopover = () => {
-        if (popover) {
-          button.popover('hide');
-          popover = null;
-        }
-      };
-
-      button.popover({
-        toggle: "popover",
-        placement: "bottom",
-        trigger: "manual",
-        container: "body",
-        title: `DAO Address`,
-        content: `<div class="nowrap"><etherscanlink address='${this.address}'></etherscanlink></div>`,
-        html: true
-      })
-        .click((evt: any) => {
-          button.popover('toggle');
-        })
-        .on('shown.bs.popover', (evt: any) => {
-          popover = $('.popover.show')[0];
-
-          // note this won't work so great if another popover is already showing
-          this.aureliaHelperService.enhanceElement(popover, this);
-
-          $('body').on('click', ".root", hidePopover);
-          $('body').on('keyup', ".root", (evt: any) => {
-            if (evt.keyCode == 27) {
-              hidePopover();
-            }
-          });
-        })
-        .on('hide.bs.popover', (evt: any) => {
-          $('body').off('click', ".root")
-          $('body').off('keyup', ".root")
-        });
-
-      return this.loadSchemes();
-    }
+    this.polishDom();
   }
 
-  async loadSchemes() {
+  async loadAvatar(): Promise<DaoEx | undefined> {
+    this.avatarLoaded = this.schemesLoaded = this.schemesLoading = false;
+    this.avatarLoading = this.loading = true;
+    this.org = undefined;
+
+    const address = this.options.address || this.appConfig.get("daoAddress");
+    if (address) {
+      // DutchX hardcoded avatar
+      this.org = await this.daoService.daoAt(address);
+    }
+
+    if (this.org) {
+      this.address = this.org.address;
+      this.orgName = this.org.name;
+      this.avatarLoaded = true;
+    }
+
+    this.avatarLoading = false;
+    this.polishDom();
+
+    if (this.org) {
+      this.eventAggregator.publish("Avatar.loaded", this.org);
+    } else {
+      // noop if already running
+      this.loading = false;
+      this.networkConnectionWizards.run();
+    }
+
+    return this.org;
+  }
+
+  async loadSchemes(): Promise<boolean> {
+    this.schemesLoading = this.loading = true;
     /**
      * Get all schemes associated with the DAO.  These can include non-Arc schemes.
      */
@@ -190,30 +189,31 @@ export class DAODashboard {
       }
     }
 
-    this.registeredArcSchemes = schemes.filter((s: SchemeInfo) => s.inArc && s.inDao)
+    this.dutchXSchemes = schemes.filter((s: SchemeInfo) => s.inArc && s.inDao)
       // DutchX: hack to remove all but the DutchX contracts
-      .filter((s: SchemeInfo) => this.dutchXSchemes.has(s.name))
+      .filter((s: SchemeInfo) => this.dutchXSchemeConfigs.has(s.name))
       .sort((a: SchemeInfo, b: SchemeInfo) =>
-        this.dutchXSchemes.get(a.name).position - this.dutchXSchemes.get(b.name).position
+        this.dutchXSchemeConfigs.get(a.name).position - this.dutchXSchemeConfigs.get(b.name).position
       );
 
-    this.registeredArcSchemes.map((s) => { s.friendlyName = this.dutchXSchemes.get(s.name).description; });
-    this.unregisteredArcSchemes = schemes.filter((s: SchemeInfo) => s.inArc && !s.inDao);
-    this.nonArcSchemes = schemes.filter((s: SchemeInfo) => !s.inArc);
-    this.arcSchemes = schemes.filter((s: SchemeInfo) => s.inArc);
+    this.dutchXSchemes.map((s) => { s.friendlyName = this.dutchXSchemeConfigs.get(s.name).description; });
 
-    /**
-     * Go through the nonArcSchemes and see whether we can identify any of them.
-     * 
-     * Selecting from WrapperService.nonUniversalSchemeFactories, get the contract 
-     */
-
-    // const factory = WrapperService.nonUniversalSchemeFactories.LockingEth4Reputation;
+    this.schemesLoaded = this.dutchXSchemes.length !== this.dutchXSchemeConfigs.keys.length;
+    if (!this.schemesLoaded) {
+      this.eventAggregator.publish("handleFailure", new EventConfigFailure(`not all of the required contracts were found`));
+      this.networkConnectionWizards.run(); // no-op if already running
+    } else {
+      this.eventAggregator.publish("DAO.loaded", this.org);
+    }
+    this.schemesLoading = this.loading = false;
 
     this.polishDom();
 
-    this.schemesLoaded = true;
-    return Promise.resolve();
+    return Promise.resolve(this.schemesLoaded);
+  }
+
+  private loadingChanged(newValue: boolean) {
+    this.eventAggregator.publish("DAO.Loading", newValue);
   }
 
   private redeem() {
@@ -239,9 +239,9 @@ export class DAODashboard {
 
   private fixScrollbar() {
 
-    const bodyHeight = $(window).outerHeight();
-    const footerHeight = $('.footer.navbar').outerHeight();
-    const headerHeight = $('.header.navbar').outerHeight();
+    const bodyHeight = $(window).outerHeight() || 0;
+    const footerHeight = $('.footer.navbar').outerHeight() || 0;
+    const headerHeight = $('.header.navbar').outerHeight() || 0;
 
     $('.content-body').css(
       {
@@ -251,57 +251,7 @@ export class DAODashboard {
   }
 
   private polishDom() {
-    setTimeout(() => {
-      this.fixScrollbar();
-    }, 0);
-  }
-
-  private async handleSchemeSetChanged(params: { dao: DaoEx, scheme: SchemeInfo }) {
-    let schemeInfo = params.scheme;
-    let addTo: Array<SchemeInfo>;
-    let removeFrom: Array<SchemeInfo>;
-
-    if (!schemeInfo.inArc) {
-      const foundScheme = await this.findNonDeployedArcScheme(schemeInfo);
-      if (foundScheme) {
-        schemeInfo = foundScheme;
-      }
-    }
-
-    if (schemeInfo.inDao) { // adding
-      if (schemeInfo.inArc) {
-        addTo = this.registeredArcSchemes;
-        removeFrom = this.unregisteredArcSchemes;
-      } else { // adding non-Arc scheme to the DAO, not actually possible yet, but for completeness...
-        addTo = this.nonArcSchemes;
-      }
-    }
-    else { // removing
-      if (schemeInfo.inArc) {
-        addTo = this.unregisteredArcSchemes;
-        removeFrom = this.registeredArcSchemes;
-      } else {
-        removeFrom = this.nonArcSchemes;
-      }
-    }
-
-    if (removeFrom) {
-      let index = this.getSchemeIndexFromAddress(schemeInfo.address, removeFrom);
-      if (index !== -1) // shouldn't ever be -1
-      {
-        // in case we're re-adding below, lets move the existing schemeInfo instance, in case that helps retain any information
-        removeFrom.splice(index, 1)[0];
-      }
-    }
-
-    if (addTo) {
-      let index = this.getSchemeIndexFromAddress(schemeInfo.address, addTo); // should always be -1
-      if (index === -1) {
-        addTo.push(schemeInfo);
-      }
-    }
-
-    this.polishDom();
+    setTimeout(() => { this.fixScrollbar(); }, 0);
   }
 
   getDashboardView(scheme: SchemeInfo): string {
@@ -328,7 +278,6 @@ export class DAODashboard {
       orgName: this.orgName,
       orgAddress: this.address,
       tokenSymbol: this.tokenSymbol,
-      allSchemes: this.arcSchemes
     },
       scheme)
   }

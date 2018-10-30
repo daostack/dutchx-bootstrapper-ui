@@ -1,6 +1,6 @@
-<template>
+<template bindable="icononly">
   <div class="pageloading">
-    <div class="text">
+    <div if.bind="!icononly" class="text">
       <slot>Thanks for waiting while we fetch the data from the network...</slot>
     </div>
     <i class="fa fa-circle-o-notch fa-spin fa-2x"></i>

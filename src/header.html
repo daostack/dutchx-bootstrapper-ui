@@ -2,17 +2,18 @@
   <nav class="header navbar fixed-top navbar-expand-lg navbar-dark flex-column flex-sm-row">
 
     <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigationDutchX">
       <span class="navbar-toggler-icon"></span>
     </button> -->
 
     <a class="navbar-brand flex-sm-shrink-1 text-sm-left" href="#">
-      <img src="../static/dutchx-blue.svg" class="logo d-inline-block align-top" alt="">
-      <div class="company-name">DutchX</div>
+      <img src="../static/dutchx-blue.svg" class="logo d-inline-block align-top" alt="DutchX">
+      <div class="company-name">DutchX Initializer</div>
     </a>
 
     <div class="flex-sm-grow-1 text-sm-center nav-link">
-      <etherscanlink css="header-link" tooltip.one-time="avatarAddressTooptip" address.to-view="avatarAddress"></etherscanlink>
+      <etherscanlink show.bind="avatarAddress" css="header-link" tooltip.one-time="avatarAddressTooptip"
+        address.to-view="avatarAddress"></etherscanlink>
     </div>
 
     <a href="#" target="_blank" class="anchor-secondary text-sm-right nav-link nowrap">Report Bug</a>

@@ -1,0 +1,70 @@
+<template>
+  <ux-dialog>
+    <ux-dialog-body class="dialog" with.bind="model">
+      <div if.to-view="loading">
+        <pageloading><img src="../../../../static/dutchx-blue.svg" class="logo d-inline-block align-top" alt="DutchX">
+          Loading DutchX Initializer...</pageloading>
+      </div>
+      <div else>
+        <div class="title">
+          <img src="../../../../static/dutchx-blue.svg" class="logo d-inline-block align-top" alt="DutchX">
+          DutchX Initializer
+        </div>
+        <div class="body">
+          <div if.bind="!isConnected">
+            <span class="important">Welcome to DutchX Initializer!</span>
+
+            To proceed further, we need you to select a blockchain network to which the DutchX
+            Initializer DAO has been deployed.
+            Using MetaMask, select a blockchain network and log in to your MetaMask wallet (or create a new
+            wallet if you haven't yet done so).
+          </div>
+
+          <div if.bind="isConnected && !hasAccount">
+            <span class="important">Congratulations!</span> You have connected to the ${networkName}
+            blockchain network. For the next
+            steps:
+
+            <ol>
+              <li>If you have not already done so, log in to MetaMask.</li>
+              <li>Tell MetaMask to give DutchX Initializer access to your accounts by clicking the "Allow..." button
+                below.
+                MetaMask will ask you to confirm that you wish to grant permission for this website, DutchX
+                Initializer, to
+                access the accounts in your MetaMask wallet, solely for the purposes of using DutchX Initializer. <span
+                  class="important">Note</span>
+                that
+                after granting permission, whenever DutchX Initializer wants to transfer tokens or ETH on your behalf,
+                MetaMask will continue prompt you as usual for your permission to submit every transaction.</li>
+            </ol>
+
+
+
+            <div class="userAddressContainer">Your account: <etherscanlink address="${userAccount}"></etherscanlink>
+            </div>
+            <div class="buttonContainer"><button class="btn btn-submit" click.delegate="confirm()">Allow DutchX
+                Initializer to Access Your Account</button></div>
+          </div>
+
+          <div if.bind="isConnected && hasAccount">
+            We can't find DutchX Initializer on the ${networkName} blockchain.
+            Using MetaMask, please ensure you are connected to blockchain to which Dutch Initializer has been deployed.
+            If you are connected to the Main Ethereum Network and DutchX Initializer is failing to load,
+            please submit a detailed help request via the
+            <a href="https://daotalk.org/" target="_blank">Forum</a>.
+          </div>
+
+          <div if.bind="!isConnected || !hasAccount">
+            <span class="important">Important:</span> Reputation earned by locking tokens cannot be
+            transferred. Please select the account you intend to use for
+            voting within DutchX Initializer. Once an account has been detected, you should be automatically logged
+            in.
+            Remember, you can change your account anytime, but you
+            can't transfer reputation between accounts, so be sure to settle on a single account that you will use
+            consistently here in DutchX Initializer.
+          </div>
+        </div>
+      </div>
+      </div>
+      </div>
+</template>

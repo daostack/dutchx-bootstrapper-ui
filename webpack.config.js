@@ -16,7 +16,7 @@ const when = (condition, config, negativeConfig) =>
   condition ? ensureArray(config) : ensureArray(negativeConfig)
 
 // primary config:
-const title = 'DutchX Reputation Bootstrapper';
+const title = 'DutchX Initializer';
 let outDir;
 const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');

@@ -40,7 +40,7 @@ export class App {
 
   configureRouter(config: RouterConfiguration, router: Router) {
 
-    config.title = 'DutchX Reputation Bootstrapper';
+    config.title = 'DutchX Initializer';
 
     /**
      * first set the landing page.
@@ -111,32 +111,5 @@ export class App {
 
   public static hasDashboard(schemeName: string): boolean {
     return App.SchemeDashboards.indexOf(schemeName) !== -1;
-  }
-
-  public getLandingPageRoute(): string {
-    /**
-     * can be connected 
-     */
-    const haveDAOstack = !!this.arcService.arcContracts;
-    const isConnected = this.web3.isConnected;
-    const noAccount = !this.web3.defaultAccount;
-
-    this.isConnected = isConnected && haveDAOstack;
-
-    if (isConnected && noAccount) {
-      return "noaccount";
-    }
-    else if (!haveDAOstack) {
-      return "notconnected";
-    }
-    else {
-      return "";
-    }
-  }
-
-  public navigateToLandingPage(): boolean {
-    const route = this.getLandingPageRoute();
-    this.router.navigate(route);
-    return (route === "");
   }
 }

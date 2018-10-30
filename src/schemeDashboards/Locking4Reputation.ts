@@ -6,6 +6,7 @@ import { EventConfigTransaction, EventConfigException, EventConfigFailure } from
 import { BigNumber, Web3Service } from '../services/Web3Service';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { Utils } from 'services/utils';
+import { IDisposable } from 'services/IDisposable';
 
 @autoinject
 export abstract class Locking4Reputation extends DaoSchemeDashboard {
@@ -25,6 +26,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   maxLockingPeriod: number;
   lockerInfo: LockerInfo;
   userAddress: Address;
+  subscription: IDisposable;
   locks: Array<LockInfo>;
   get userScore(): number { return this.lockerInfo ? this.web3Service.fromWei(this.lockerInfo.score).toNumber() : 0; }
 
@@ -43,15 +45,24 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   async activate(model: SchemeDashboardModel) {
     this.wrapper = await WrapperService.factories[model.name].at(model.address);
-    this.userAddress = this.web3Service.defaultAccount;
   }
 
   attached() {
-    return this.refresh().then(() => { this.loaded = true; });
+    this.userAddress = this.web3Service.defaultAccount;
+    this.subscription = this.eventAggregator.subscribe("Network.Changed.Account", () => {
+      this.userAddress = this.web3Service.defaultAccount;
+      this.accountChanged();
+    });
+    return this.refresh();
+  }
+
+  detached() {
+    this.subscription.dispose();
   }
 
   protected async refresh() {
     this.refreshing = true;
+    this.loaded = false;
     this.totalLocked = await this.wrapper.getTotalLocked();
     this.totalLockedLeft = await this.wrapper.getTotalLockedLeft();
     this.totalScore = await this.wrapper.getTotalScore();
@@ -63,9 +74,15 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
     this.lockingPeriodIsEnded = blockDate > this.lockingEndTime;
     this.maxLockingPeriod = await this.wrapper.getMaxLockingPeriod();
+    return this.accountChanged().then(() => {
+      this.refreshing = false;
+      this.loaded = true;
+    });
+  }
+
+  async accountChanged() {
     this.lockModel.lockerAddress = this.userAddress;
     this.lockerInfo = await this.getLockerInfo();
-    this.refreshing = false;
     return this.getLocks();
   }
 

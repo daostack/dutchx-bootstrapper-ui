@@ -19,7 +19,6 @@ export class DaoSchemeDashboard {
   name: string;
   org: DaoEx;
   orgName: string;
-  allSchemes: Array<SchemeInfo>;
 
   activate(model: SchemeDashboardModel) {
     this.friendlyName = model.friendlyName;
@@ -28,6 +27,5 @@ export class DaoSchemeDashboard {
     this.org = model.org;
     this.orgName = model.orgName;
     this.orgAddress = model.orgAddress;
-    this.allSchemes = model.allSchemes;
   }
 }

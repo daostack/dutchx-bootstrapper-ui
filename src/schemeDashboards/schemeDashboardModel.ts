@@ -9,5 +9,4 @@ export interface SchemeDashboardModel {
   org: DaoEx;
   orgName: string;
   orgAddress: Address;
-  allSchemes: Array<SchemeInfo>;
 }

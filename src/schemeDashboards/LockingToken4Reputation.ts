@@ -10,9 +10,9 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
   protected async refresh() {
     await super.refresh();
-    super.refreshing = true;
+    this.refreshing = true;
     this.tokenAddress = (await this.wrapper.getToken()).address;
-    super.refreshing = false;
+    this.refreshing = false;
   }
 
   protected async lock(): Promise<boolean> {

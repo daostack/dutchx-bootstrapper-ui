@@ -1,5 +1,8 @@
 <template>
-  <table class="table">
+  <div class="pageloader" if.bind="loading" class="margin-top: 1.5rem;">
+    <pageloading>Loading locks...</pageloading>
+  </div>
+  <table else class="table">
     <thead class="thead-light">
       <tr>
         <!-- <th>Lock Id</th> -->

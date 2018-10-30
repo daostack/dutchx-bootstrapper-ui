@@ -2,7 +2,7 @@ import { PageObject_Home } from './home.po';
 import { browser, element, by, By, $, $$, ExpectedConditions } from 'aurelia-protractor-plugin/protractor';
 import { config } from '../protractor.conf';
 
-describe('DutchX Reputation Bootstrapper app', function () {
+describe('DutchX Initializer app', function () {
   let poHome: PageObject_Home;
 
   beforeEach(async () => {
@@ -12,7 +12,7 @@ describe('DutchX Reputation Bootstrapper app', function () {
   });
 
   it('should load the page and display the initial page title', async () => {
-    await expect(poHome.getCurrentPageTitle()).toBe('Dashboard | DutchX Reputation Bootstrapper');
+    await expect(poHome.getCurrentPageTitle()).toBe('Dashboard | DutchX Initializer');
   });
 
   it('should display greeting', async () => {

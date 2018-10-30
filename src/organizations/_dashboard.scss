@@ -1,3 +1,8 @@
+.main-spinner .pageloading i {
+  font-size: 4rem;
+  margin-bottom: 2rem;
+}
+
 .dashboard-main-content .row,
  {
   /* avoids overflow in x for the entire page and the appearance of a horix scrollbar */
@@ -19,7 +24,7 @@
 }
 
 .dashboard-header .logo img {
-  width: 4rem;
+  height: 4rem;
   margin-bottom: 2rem;
 }
 
@@ -73,7 +78,7 @@
 
 .initializationSection .bullet {
 display: inline-block;
-background-color: $black;
+background-color: $color-ds-black;
 margin-right: 1rem;
 @extend .rounded-circle;
 width: 1.7rem;

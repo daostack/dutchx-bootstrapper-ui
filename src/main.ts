@@ -32,6 +32,10 @@ export async function configure(aurelia: Aurelia) {
       config.setDirectory('./');
       config.setConfig('app-config.json');
       appConfig = config;
+    })
+    .plugin(PLATFORM.moduleName('aurelia-dialog'), (configuration) => {
+      // custom configuration
+      configuration.settings.keyboard = false;
     });
 
   // for now, always on for trouble-shooting:  if (process.env.env == "development") {
@@ -51,10 +55,8 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName("resources/customElements/EtherscanLink/EtherscanLink"),
     PLATFORM.moduleName("resources/customElements/EthBalance/EthBalance"),
     PLATFORM.moduleName("resources/customElements/UsersAddress/UsersAddress"),
-    // PLATFORM.moduleName("resources/customElements/TokenTicker/TokenTicker"),
     PLATFORM.moduleName("resources/customElements/TokenBalance/TokenBalance"),
     PLATFORM.moduleName("resources/customElements/locksForReputation/locksForReputation"),
-    PLATFORM.moduleName("resources/customElements/lockersForReputation/lockersForReputation"),
     PLATFORM.moduleName("resources/customElements/copyToClipboardButton/copyToClipboardButton"),
     PLATFORM.moduleName("resources/customElements/spinButton.html"),
     PLATFORM.moduleName("resources/customElements/instructions.html"),
@@ -70,6 +72,7 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName("resources/valueConverters/timespan"),
     PLATFORM.moduleName("resources/valueConverters/boolean"),
     PLATFORM.moduleName("resources/valueConverters/secondsDays"),
+    PLATFORM.moduleName("resources/dialogs/connectToNet/connectToNet"),
     PLATFORM.moduleName("footer"),
     PLATFORM.moduleName("header")
   ]);
@@ -122,13 +125,13 @@ export async function configure(aurelia: Aurelia) {
 
     AccountService.subscribeToAccountChanges(async (account: Address) => {
       await initializeApp();
-      app.navigateToLandingPage();
+      // app.navigateToLandingPage();
       eventAggregator.publish("Network.Changed.Account", account);
     });
 
     AccountService.subscribeToNetworkChanges(async (networkId: number) => {
       await initializeApp();
-      app.navigateToLandingPage();
+      // app.navigateToLandingPage();
       eventAggregator.publish("Network.Changed.Id", networkId);
     });
 

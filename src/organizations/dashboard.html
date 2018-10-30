@@ -1,14 +1,11 @@
 <template>
-  <div if.bind="!dataLoaded" class="container admin-page">
-    <h3>
-      <pageloading></pageloading>
-    </h3>
-  </div>
-  <div else ref="dashboardElement" class="dashboard-main-content animated fadeIn">
-    <header router.bind="router" network.to-view="networkName"></header>
+  <header router.bind="router" network.to-view="networkName"></header>
+
+  <div ref="dashboardElement" class="dashboard-main-content animated fadeIn">
 
     <div class="dashboard-header">
-      <a href="#" class="hover-icon logo" id="avatarHoverIcon"><img src="../../static/dutchx-blue.svg" /></a>
+      <pageloading if.bind="loading" icononly="true" class="main-spinner"></pageloading>
+      <a else href="#" class="hover-icon logo" id="avatarHoverIcon"><img src="../../static/dutchx-blue.svg" /></a>
       <div class="title">Welcome to the DutchX DAO</div>
     </div>
 
@@ -68,80 +65,82 @@
       </div>
     </div>
 
-    <div class="schemesSection">
-      <div if.bind="!schemesLoaded">
-        <pageloading></pageloading>
-      </div>
-      <div else>
-        <div class="row justify-content-around" id="accordion_arc_schemes" role="tablist" show.bind="registeredArcSchemes.length">
-          <div class="col-12 col-md-4" style="min-width: 25rem">
-            <div class="body">How would you like to obtain reputation in DutchX?</div>
-            <ul class="list-group clean dashboard-schemes">
-              <li class="list-group-item" repeat.for="scheme of registeredArcSchemes">
-                <div class="scheme-use-button" data-toggle="collapse" data-target="#${scheme.name}" aria-expanded="false"
-                  aria-controls="#${scheme.name}">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td style="width:10%">
-                          <div class="scheme-icon">
-                            <img class="not-selected" src.one-time="dutchXSchemes.get(scheme.name).icon" />
-                            <img class="selected" src.one-time="dutchXSchemes.get(scheme.name).icon_hover" />
-                          </div>
-                        </td>
-                        <td style="text-align:left; width:10%; white-space:nowrap">
-                          <div class="scheme-name">
-                            ${scheme.friendlyName}
-                          </div>
-                        </td>
-                        <td style="text-align:right; width:80%">
-                          <div class="scheme-name">
-                            <div style="display:inline-block; width:100%; text-align: right;">
-                              <div class="scheme-arrow-down"><span class="material-icons">keyboard_arrow_down</span></div>
-                              <div class="scheme-arrow-up"><span class="material-icons">keyboard_arrow_up</span></div>
+    <div if.bind="avatarLoaded">
+      <div class="schemesSection">
+        <div if.bind="!schemesLoaded">
+          <pageloading></pageloading>
+        </div>
+        <div else>
+          <div class="row justify-content-around" id="accordion_arc_schemes" role="tablist" show.bind="dutchXSchemes.length">
+            <div class="col-12 col-md-4" style="min-width: 25rem">
+              <div class="body">How would you like to obtain reputation in DutchX?</div>
+              <ul class="list-group clean dashboard-schemes">
+                <li class="list-group-item" repeat.for="scheme of dutchXSchemes">
+                  <div class="scheme-use-button" data-toggle="collapse" data-target="#${scheme.name}" aria-expanded="false"
+                    aria-controls="#${scheme.name}">
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td style="width:10%">
+                            <div class="scheme-icon">
+                              <img class="not-selected" src.one-time="dutchXSchemeConfigs.get(scheme.name).icon" />
+                              <img class="selected" src.one-time="dutchXSchemeConfigs.get(scheme.name).icon_hover" />
                             </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                          </td>
+                          <td style="text-align:left; width:10%; white-space:nowrap">
+                            <div class="scheme-name">
+                              ${scheme.friendlyName}
+                            </div>
+                          </td>
+                          <td style="text-align:right; width:80%">
+                            <div class="scheme-name">
+                              <div style="display:inline-block; width:100%; text-align: right;">
+                                <div class="scheme-arrow-down"><span class="material-icons">keyboard_arrow_down</span></div>
+                                <div class="scheme-arrow-up"><span class="material-icons">keyboard_arrow_up</span></div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div id.bind="scheme.name" class="scheme-dashboard collapse" data-parent="#accordion_arc_schemes">
+                    <compose view-model.bind="getDashboardView(scheme)" model.bind="schemeDashboardViewModel(scheme)"></compose>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="col-12 col-md-5">
+              <div class="pie-chart">
+                <div class="body">On ${lockingPeriodEndDate | date:'friendlyDateTime'} the initialization phase will
+                  end and reputation will be redeemable</div>
+                <div class="chart">
+                  <img src="../../static/ds_dutchx_pie_chart_01-1.png" />
                 </div>
-                <div id.bind="scheme.name" class="scheme-dashboard collapse" data-parent="#accordion_arc_schemes">
-                  <compose view-model.bind="getDashboardView(scheme)" model.bind="schemeDashboardViewModel(scheme)"></compose>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div class="col-12 col-md-5">
-            <div class="pie-chart">
-              <div class="body">On ${lockingPeriodEndDate | date:'friendlyDateTime'} the initialization phase will
-                end and reputation will be redeemable</div>
-              <div class="chart">
-                <img src="../../static/ds_dutchx_pie_chart_01-1.png" />
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="redeemSection">
-      <div class="row">
-        <div class="col-6 offset-3">
-          <div class="title">Redeem Reputation</div>
-          <div class="body">
-            The initialization period will end at ${lockingPeriodEndDate | date:'friendlyDateTime'}.
-            After that time you will be able to redeem your earned reputation simply by clicking the 'Redeem'
-            button below.
-            The total amount of reputation you have earned will be transferred to your ETH address.
-          </div>
-          <div class="redeem-controls">
-            <button id="globalRedeemBtn" class="btn btn-outline-secondary" disabled.bind="!canRedeem" click.delegate="redeem()">Redeem</button>
-            <div if.bind="!canRedeem">The redemption period has not yet begun</div>
+      <div class="redeemSection">
+        <div class="row">
+          <div class="col-6 offset-3">
+            <div class="title">Redeem Reputation</div>
+            <div class="body">
+              The initialization period will end at ${lockingPeriodEndDate | date:'friendlyDateTime'}.
+              After that time you will be able to redeem your earned reputation simply by clicking the 'Redeem'
+              button below.
+              The total amount of reputation you have earned will be transferred to your ETH address.
+            </div>
+            <div class="redeem-controls">
+              <button id="globalRedeemBtn" class="btn btn-outline-secondary" disabled.bind="!canRedeem" click.delegate="redeem()">Redeem</button>
+              <div if.bind="!canRedeem">The redemption period has not yet begun</div>
+            </div>
           </div>
         </div>
       </div>
+      <footer></footer>
     </div>
-    <footer></footer>
   </div>
 </template>
