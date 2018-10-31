@@ -13,7 +13,7 @@ export class App {
   public static msUntilCanLock: number;
   public static msUntilCanRedeem: number;
 
-  private router: Router;
+  public router: Router;
 
   constructor(
     private web3: Web3Service

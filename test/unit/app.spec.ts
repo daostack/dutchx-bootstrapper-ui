@@ -11,6 +11,8 @@ class RouterStub {
   map(routes) {
     this.routes = routes;
   }
+
+  fallbackRoute(route: string) { }
 }
 
 describe('the App module', () => {
@@ -29,7 +31,11 @@ describe('the App module', () => {
       arcContracts: []
     };
 
-    app = new App(fakeWeb3Service as any, fakeArcService as any);
+    let fakeAppConfigService = {
+      get: (name: string): string => { return ""; }
+    };
+
+    app = new App(fakeWeb3Service as any, fakeArcService as any, fakeAppConfigService as any);
     app.configureRouter(mockedRouter, mockedRouter);
   });
 
@@ -42,7 +48,7 @@ describe('the App module', () => {
   //   expect(app.router.title).toEqual('DAOstack DxBootStrapper');
   // });
 
-  it('should have a dashboar route', () => {
-    expect(app.router.routes).toContainEqual({ route: ['', 'dashboard/:address?'], name: 'dashboard', moduleId: PLATFORM.moduleName('./organizations/dashboard'), nav: false, title: 'Dashboard' });
+  it('should have a dashboard route', () => {
+    expect(app.router.routes).toContainEqual({ route: ['dashboard/:address?'], name: 'dashboard', moduleId: PLATFORM.moduleName('./organizations/dashboard'), nav: false, title: 'Dashboard' });
   });
 });
