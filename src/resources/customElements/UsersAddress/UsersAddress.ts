@@ -1,4 +1,4 @@
-import { bindable, containerless, customElement, autoinject } from 'aurelia-framework';
+import { bindable, containerless, customElement, autoinject, bindingMode } from 'aurelia-framework';
 import { Web3Service } from "../../../services/Web3Service";
 import { EventAggregator } from 'aurelia-event-aggregator';
 
@@ -6,6 +6,11 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 @containerless
 @customElement("usersaddress")
 export class UsersAddress {
+
+  /**
+   * bootstrap config for a tooltip
+   */
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) tooltip?: any;
 
   private usersAddress: string;
 

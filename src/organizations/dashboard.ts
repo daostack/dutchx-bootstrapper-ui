@@ -104,9 +104,8 @@ export class DAODashboard {
   }
 
   async attached() {
-
-    this.lockingPeriodEndDate = new Date(this.appConfig.get("lockingPeriodEndDate"));
-    const msUntilCanRedeem = this.lockingPeriodEndDate.getTime() - new Date().getTime();
+    this.lockingPeriodEndDate = App.lockingPeriodEndDate;
+    const msUntilCanRedeem = App.msUntilCanRedeem;
     setTimeout(() => {
       this.canRedeem = true;
       $('#globalRedeemBtn').addClass('enabled');

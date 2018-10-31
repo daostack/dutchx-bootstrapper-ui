@@ -2,7 +2,6 @@ import { autoinject } from 'aurelia-framework';
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { Address, Utils } from 'services/ArcService';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { DisposableCollection } from 'services/DisposableCollection';
 
 @autoinject
 export class Footer {

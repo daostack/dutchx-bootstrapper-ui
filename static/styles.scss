@@ -53,7 +53,6 @@ footer, .navbar.footer {
   background-color: $color-ds-black !important;
   padding-top: .5rem;
   padding-bottom: .5rem;
-  z-index: 2000; // not sure why this is needed, but otherwise stuff tends to randomly appear on top of the header
 }
 
 .navbar.header .logo {
@@ -146,6 +145,7 @@ section h4 {
 .footer a:hover, 
 .header a:hover,
 .header .copy-to-clip-button:hover,
+.footer .copy-to-clip-button:hover,
 .snackbar-action-wrapper etherscanlink a:hover,
 .snackbar-action-wrapper .copy-to-clip-button:hover,
 .popover etherscanlink a:hover,
@@ -200,7 +200,7 @@ a.text-warning:focus, a.text-warning:hover {
 }
 
 .tooltip {
-  z-index: 999999;
+  z-index: 999; // high but still below the dialog underlay
 }
 
 @media print {

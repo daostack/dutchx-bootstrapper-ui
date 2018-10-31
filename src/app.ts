@@ -1,30 +1,25 @@
-import { autoinject, LogManager } from 'aurelia-framework';
-import { Router, RouterConfiguration, NavigationInstruction } from 'aurelia-router';
+import { autoinject } from 'aurelia-framework';
+import { Router, RouterConfiguration } from 'aurelia-router';
 import { PLATFORM } from 'aurelia-pal';
 import { Web3Service } from "./services/Web3Service";
 import { ArcService } from "./services/ArcService";
 import '../static/styles.scss';
-import { EventAggregator } from 'aurelia-event-aggregator';
+import { AureliaConfiguration } from 'aurelia-configuration';
 
 @autoinject
 export class App {
-  router: Router;
-  private isConnected: boolean;
-  private logger = LogManager.getLogger("DxBootStrapper");
-  private healthy: boolean = false;
+  public static lockingPeriodEndDate: Date;
+  public static msUntilCanRedeem: number;
+
+  private router: Router;
 
   constructor(
-    private web3: Web3Service,
-    private arcService: ArcService,
-    eventAggregator: EventAggregator
+    private web3: Web3Service
+    , private arcService: ArcService
+    , appConfig: AureliaConfiguration
   ) {
-    this.initialize();
-    eventAggregator.subscribe("Network.Changed.Id", () => {
-      this.initialize();
-    });
-  }
-
-  initialize() {
+    App.lockingPeriodEndDate = new Date(appConfig.get("lockingPeriodEndDate"));
+    App.msUntilCanRedeem = App.lockingPeriodEndDate.getTime() - new Date().getTime();
   }
 
   attached() {
@@ -112,4 +107,6 @@ export class App {
   public static hasDashboard(schemeName: string): boolean {
     return App.SchemeDashboards.indexOf(schemeName) !== -1;
   }
+
+  public static
 }

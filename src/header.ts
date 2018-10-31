@@ -11,7 +11,7 @@ export class Header {
 
   private avatarAddress: Address;
   private avatarLink: HTMLElement;
-  private avatarAddressTooptip = {
+  private avatarAddressTooltip = {
     toggle: "tooltip",
     placement: "bottom",
     title: "DutchX DAO Avatar Address",

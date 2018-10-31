@@ -4,6 +4,7 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { Web3Service } from 'services/Web3Service';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { Address, Utils } from '@daostack/arc.js';
+// import { AureliaConfiguration } from 'aurelia-configuration';
 
 @autoinject
 export class ConnectToNet {
@@ -13,13 +14,17 @@ export class ConnectToNet {
   subscriptions: DisposableCollection = new DisposableCollection();
   loading: boolean = false;
   userAccount: Address;
+  isDone: boolean;
+  // lockingPeriodEndDate: Date;
 
   constructor(
-    private controller: DialogController,
-    private eventAggregator: EventAggregator,
-    private web3: Web3Service) { }
+    private controller: DialogController
+    , private eventAggregator: EventAggregator
+    // , private appConfig: AureliaConfiguration
+    , private web3: Web3Service) { }
 
   activate(model: ConnectToNetModel) {
+    // this.lockingPeriodEndDate = new Date(this.appConfig.get("lockingPeriodEndDate"))
     this.networkName = this.web3.networkName;
     this.model = model;
     this.subscriptions.push(this.eventAggregator.subscribe("DAO.loaded", () => { this.close(); }));
