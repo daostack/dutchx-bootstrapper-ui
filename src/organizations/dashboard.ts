@@ -10,6 +10,7 @@ import { DisposableCollection } from 'services/DisposableCollection';
 import { NetworkConnectionWizards } from 'services/networkConnectionWizards';
 import { EventConfigFailure } from 'entities/GeneralEvents';
 import { App } from 'app';
+import { DialogCloseResult } from 'aurelia-dialog';
 
 @singleton(false)
 @autoinject
@@ -74,8 +75,10 @@ export class Dashboard {
     this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => {
       this.networkName = this.web3.networkName;
       if (!this.web3.defaultAccount) {
-        this.networkConnectionWizards.run().then(() => {
-          this.loadAvatar();
+        this.networkConnectionWizards.run().then((result: DialogCloseResult) => {
+          if (!result.wasCancelled) {
+            this.loadAvatar();
+          }
         });
       } else {
         this.loadAvatar();
@@ -91,8 +94,10 @@ export class Dashboard {
     this.networkName = this.web3.networkName;
 
     if (!this.web3.defaultAccount) {
-      this.networkConnectionWizards.run().then(() => {
-        this.loadAvatar();
+      this.networkConnectionWizards.run().then((result: DialogCloseResult) => {
+        if (!result.wasCancelled) {
+          this.loadAvatar();
+        }
       });
     } else {
       this.loadAvatar();
@@ -102,6 +107,7 @@ export class Dashboard {
   deactivate() {
     this.subscriptions.dispose();
     this.networkConnectionWizards.close();
+    this.clearScrollbar();
   }
 
   async attached() {
@@ -251,6 +257,14 @@ export class Dashboard {
       {
         "top": `${headerHeight}px`,
         "max-height": `${bodyHeight - footerHeight - headerHeight}px`
+      });
+  }
+
+  private clearScrollbar() {
+    $('.content-body').css(
+      {
+        "top": `0px`,
+        "max-height": `initial`
       });
   }
 

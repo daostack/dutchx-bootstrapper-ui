@@ -58,7 +58,7 @@ export class NetworkConnectionWizards {
 
   public close() {
     if (this.dialogViewModel) {
-      this.dialogViewModel.close();
+      this.dialogViewModel.close(true);
     }
   }
 }
