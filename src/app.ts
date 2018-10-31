@@ -9,6 +9,8 @@ import { AureliaConfiguration } from 'aurelia-configuration';
 @autoinject
 export class App {
   public static lockingPeriodEndDate: Date;
+  public static lockingPeriodStartDate: Date;
+  public static msUntilCanLock: number;
   public static msUntilCanRedeem: number;
 
   private router: Router;
@@ -18,7 +20,9 @@ export class App {
     , private arcService: ArcService
     , appConfig: AureliaConfiguration
   ) {
+    App.lockingPeriodStartDate = new Date(appConfig.get("lockingPeriodStartDate"));
     App.lockingPeriodEndDate = new Date(appConfig.get("lockingPeriodEndDate"));
+    App.msUntilCanLock = App.lockingPeriodStartDate.getTime() - new Date().getTime();
     App.msUntilCanRedeem = App.lockingPeriodEndDate.getTime() - new Date().getTime();
   }
 
@@ -67,10 +71,17 @@ export class App {
         title: 'Not Connected'
       },
       {
+        route: ['', 'landing'],
+        name: 'landing',
+        moduleId: PLATFORM.moduleName('./landing'),
+        nav: false,
+        title: 'Home'
+      },
+      {
         // 'address' will be present in the object passed to the 'activate' method of the viewmodel
         // DutchX: set address to be optional, and this page as the default (instead of Home)
-        route: ['', 'daoDashboard/:address?'],
-        name: 'daoDashboard',
+        route: ['dashboard/:address?'],
+        name: 'dashboard',
         moduleId: PLATFORM.moduleName('./organizations/dashboard'),
         nav: false,
         title: 'Dashboard'

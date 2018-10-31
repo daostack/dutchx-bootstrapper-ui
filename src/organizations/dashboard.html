@@ -1,11 +1,11 @@
 <template>
-  <header router.bind="router" network.to-view="networkName"></header>
+  <header network.to-view="networkName"></header>
 
   <div ref="dashboardElement" class="dashboard-main-content animated fadeIn">
 
     <div class="dashboard-header">
       <pageloading if.bind="loading" icononly="true" class="main-spinner"></pageloading>
-      <a else href="#" class="hover-icon logo" id="avatarHoverIcon"><img src="../../static/dutchx-blue.svg" /></a>
+      <img else class="logo" src="../../static/dutchx-blue.svg" />
       <div class="title">Welcome to DutchX Initializer</div>
     </div>
 
@@ -59,7 +59,7 @@
 
             <div class="box">You will be able to redeem reputation and all locked ETH or tokens will be
               automatically unlocked at
-              the close of the initialization phase, ending ${lockingPeriodEndDate | date:'friendlyDateTime'}.</div>
+              the close of the initialization phase, ending ${lockingPeriodEndDate | date:'friendlyDate'}.</div>
           </div>
         </div>
       </div>
@@ -112,7 +112,7 @@
             </div>
             <div class="col-12 col-md-5">
               <div class="pie-chart">
-                <div class="body">On ${lockingPeriodEndDate | date:'friendlyDateTime'} the initialization phase will
+                <div class="body">On ${lockingPeriodEndDate | date:'friendlyDate'} the initialization phase will
                   end and reputation will be redeemable</div>
                 <div class="chart">
                   <img src="../../static/ds_dutchx_pie_chart_01-1.png" />
@@ -128,7 +128,7 @@
           <div class="col-6 offset-3">
             <div class="title">Redeem Reputation</div>
             <div class="body">
-              The initialization period will end at ${lockingPeriodEndDate | date:'friendlyDateTime'}.
+              The initialization period will end at ${lockingPeriodEndDate | date:'friendlyDate'}.
               After that time you will be able to redeem your earned reputation simply by clicking the 'Redeem'
               button below.
               The total amount of reputation you have earned will be transferred to your ETH address.

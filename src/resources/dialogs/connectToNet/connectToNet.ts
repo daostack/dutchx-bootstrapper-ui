@@ -28,6 +28,7 @@ export class ConnectToNet {
     this.networkName = this.web3.networkName;
     this.model = model;
     this.subscriptions.push(this.eventAggregator.subscribe("DAO.loaded", () => { this.close(); }));
+    this.subscriptions.push(this.eventAggregator.subscribe("DAO.loaded", () => { this.close(); }));
     this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => {
       this.networkName = this.web3.networkName;
       this.userAccount = this.web3.defaultAccount;
@@ -43,7 +44,7 @@ export class ConnectToNet {
     });
   }
 
-  close() {
+  public close() {
     this.subscriptions.dispose();
     this.controller.close(true);
   }

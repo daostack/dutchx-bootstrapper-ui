@@ -1,21 +1,19 @@
-import { autoinject, computedFrom, observable } from "aurelia-framework";
+import { autoinject, computedFrom, observable, singleton } from "aurelia-framework";
 import { DaoService, DaoEx } from "../services/DaoService";
-import { TokenService } from "../services/TokenService";
-import { ArcService, Address, WrapperService } from "../services/ArcService";
+import { Address, WrapperService } from "../services/ArcService";
 import { SchemeService, SchemeInfo } from "../services/SchemeService";
-import { AureliaHelperService } from "../services/AureliaHelperService";
 import { Web3Service } from '../services/Web3Service';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { AureliaConfiguration } from "aurelia-configuration";
 import { DisposableCollection } from 'services/DisposableCollection';
-import { Router } from 'aurelia-router';
 import { NetworkConnectionWizards } from 'services/networkConnectionWizards';
 import { EventConfigFailure } from 'entities/GeneralEvents';
 import { App } from 'app';
 
+@singleton(false)
 @autoinject
-export class DAODashboard {
+export class Dashboard {
 
   private address: string;
   private orgName: string;
@@ -58,10 +56,7 @@ export class DAODashboard {
   constructor(
     private daoService: DaoService
     , private web3: Web3Service
-    , private tokenService: TokenService
-    , private arcService: ArcService
     , private schemeService: SchemeService
-    , private aureliaHelperService: AureliaHelperService
     , private web3Service: Web3Service
     , private eventAggregator: EventAggregator
     , private appConfig: AureliaConfiguration
@@ -72,9 +67,10 @@ export class DAODashboard {
 
   async activate(options: { address?: Address } = {}) {
 
+    $("body").css("overflow", "hidden");
+
     this.options = options;
 
-    this.subscriptions.dispose();
     this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => {
       this.networkName = this.web3.networkName;
       if (!this.web3.defaultAccount) {
@@ -101,6 +97,11 @@ export class DAODashboard {
     } else {
       this.loadAvatar();
     }
+  }
+
+  deactivate() {
+    this.subscriptions.dispose();
+    this.networkConnectionWizards.close();
   }
 
   async attached() {
@@ -138,31 +139,35 @@ export class DAODashboard {
   }
 
   async loadAvatar(): Promise<DaoEx | undefined> {
-    this.avatarLoaded = this.schemesLoaded = this.schemesLoading = false;
-    this.avatarLoading = this.loading = true;
-    this.org = undefined;
-
     const address = this.options.address || this.appConfig.get("daoAddress");
-    if (address) {
-      // DutchX hardcoded avatar
-      this.org = await this.daoService.daoAt(address);
-    }
 
-    if (this.org) {
-      this.address = this.org.address;
-      this.orgName = this.org.name;
-      this.avatarLoaded = true;
-    }
+    if (!this.org || (address !== this.org.address)) {
 
-    this.avatarLoading = false;
-    this.polishDom();
+      this.avatarLoaded = this.schemesLoaded = this.schemesLoading = false;
+      this.avatarLoading = this.loading = true;
+      this.org = undefined;
 
-    if (this.org) {
-      this.eventAggregator.publish("Avatar.loaded", this.org);
-    } else {
-      // noop if already running
-      this.loading = false;
-      this.networkConnectionWizards.run();
+      if (address) {
+        // DutchX hardcoded avatar
+        this.org = await this.daoService.daoAt(address);
+      }
+
+      if (this.org) {
+        this.address = this.org.address;
+        this.orgName = this.org.name;
+        this.avatarLoaded = true;
+      }
+
+      this.avatarLoading = false;
+      this.polishDom();
+
+      if (this.org) {
+        this.eventAggregator.publish("Avatar.loaded", this.org);
+      } else {
+        // noop if already running
+        this.loading = false;
+        this.networkConnectionWizards.run();
+      }
     }
 
     return this.org;

@@ -6,7 +6,6 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 @autoinject
 export class Header {
 
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) router;
   @bindable({ defaultBindingMode: bindingMode.toView }) network;
 
   private avatarAddress: Address;

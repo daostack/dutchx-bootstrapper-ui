@@ -191,7 +191,9 @@ export class DateService {
     return this.createMoment(dt).valueOf();
   }
 
-  public ticksToTimeSpanString(ms: number): string | null {
+  public ticksToTimeSpanString(
+    ms: number,
+    resolution: TimespanResolution = TimespanResolution.milliseconds): string | null {
     if ((ms === null) || (typeof ms === "undefined")) {
       return null;
     }
@@ -207,23 +209,23 @@ export class DateService {
 
     let result: string = "";
 
-    if (days) {
+    if (days && (resolution >= TimespanResolution.days)) {
       result = `${days} days`;
     }
 
-    if (hours) {
+    if (hours && (resolution >= TimespanResolution.hours)) {
       result += `${result.length ? ', ' : ''}${hours} hours`;
     }
 
-    if (minutes) {
+    if (minutes && (resolution >= TimespanResolution.minutes)) {
       result += `${result.length ? ', ' : ''}${minutes} minutes`;
     }
 
-    if (seconds) {
+    if (seconds && (resolution >= TimespanResolution.seconds)) {
       result += `${result.length ? ', ' : ''}${seconds} seconds`;
     }
 
-    if (ms) {
+    if (ms && (resolution === TimespanResolution.milliseconds)) {
       result += `${result.length ? ', ' : ''}${ms} milliseconds`;
     }
 
@@ -342,4 +344,12 @@ export interface IFormatParameters {
   format?: string;
   // see notes above about utc
   utc?: boolean;
+}
+
+export enum TimespanResolution {
+  days,
+  hours,
+  minutes,
+  seconds,
+  milliseconds
 }

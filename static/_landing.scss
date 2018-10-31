@@ -1,0 +1,63 @@
+@import "./colors";
+
+.landing-page {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.landing-page .countdown {
+  font-size: 1.5rem;
+  text-align: center;
+  font-weight: 500;
+  color: $color-ds-green;
+  margin-bottom: 2rem;
+}
+
+.landing-page .main-header .logo {
+  height: 4rem;
+  margin-bottom: 2rem;
+}
+
+.landing-page .main-header {
+  font-size: 2.4rem;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.landing-page .header {
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.landing-page .body-text {
+  margin-bottom: 1rem;
+}
+
+.landing-page .question {
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.pie-chart {
+  padding-top:2rem;
+  padding-bottom:2rem;
+  padding-left:1rem;
+  padding-right:1rem;
+  text-align: center;
+}
+
+.pie-chart img {
+  max-width:80%; max-height:auto;
+}
+
+.landing-page .icon {
+  text-align: center;
+}
+
+.landing-page .icon .section-icon {
+  width: 7rem;
+  margin-bottom: 1.5rem;
+}

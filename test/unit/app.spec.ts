@@ -43,6 +43,6 @@ describe('the App module', () => {
   // });
 
   it('should have a dashboar route', () => {
-    expect(app.router.routes).toContainEqual({ route: ['', 'daoDashboard/:address?'], name: 'daoDashboard', moduleId: PLATFORM.moduleName('./organizations/dashboard'), nav: false, title: 'Dashboard' });
+    expect(app.router.routes).toContainEqual({ route: ['', 'dashboard/:address?'], name: 'dashboard', moduleId: PLATFORM.moduleName('./organizations/dashboard'), nav: false, title: 'Dashboard' });
   });
 });

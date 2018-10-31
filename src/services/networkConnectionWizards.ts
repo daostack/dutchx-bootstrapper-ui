@@ -6,10 +6,7 @@ import { ConnectToNet } from "../resources/dialogs/connectToNet/connectToNet";
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { DialogOpenResult, DialogController } from 'aurelia-dialog';
 import { DisposableCollection } from 'services/DisposableCollection';
-import { DialogCancellableOpenResult } from 'aurelia-dialog';
-import { DialogOpenPromise } from 'aurelia-dialog';
 import { DialogCloseResult } from 'aurelia-dialog';
-import { AureliaHelperService } from 'services/AureliaHelperService';
 
 @autoinject
 export class NetworkConnectionWizards {
@@ -26,6 +23,7 @@ export class NetworkConnectionWizards {
   hasAccount: boolean;
   subscriptions: DisposableCollection;
   promise: Promise<DialogCloseResult>;
+  dialogViewModel: ConnectToNet;
 
   public run(): Promise<DialogCloseResult> {
 
@@ -46,12 +44,21 @@ export class NetworkConnectionWizards {
     /**
      * the dialog will close itself when a dao is loaded
      */
-    return this.promise = this.dialogService.open(ConnectToNet, this)
-      .whenClosed((result: DialogCloseResult) => {
+    return this.promise = (this.dialogService.open(ConnectToNet, this)
+      .then((openDialogResult: DialogOpenResult) => {
+        this.dialogViewModel = openDialogResult.controller.controller.viewModel as ConnectToNet;
+        return openDialogResult.closeResult;
+      }) as any)
+      .then((result: DialogCloseResult) => {
         this.subscriptions.dispose();
         this.promise = null;
         return result;
       });
   }
 
+  public close() {
+    if (this.dialogViewModel) {
+      this.dialogViewModel.close();
+    }
+  }
 }
