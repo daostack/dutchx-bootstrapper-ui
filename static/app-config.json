@@ -1,6 +1,6 @@
 {
-  "lockingPeriodStartDate": "2019-01-15",
-  "lockingPeriodEndDate": "2019-02-15",
+  "lockingPeriodStartDate": "2019-01-15 00:00:00",
+  "lockingPeriodEndDate": "2019-02-15 00:00:00",
   "Ganache": {
     "daoAddress": "0xf7b7be05d6c115184f78226f905b643dd577fa6b",
     "gnoTokenAddress": "",
