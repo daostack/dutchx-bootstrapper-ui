@@ -46,7 +46,17 @@
 .landing-page .question {
   font-weight: 400;
   margin-bottom: 1rem;
+  text-align: center;
+  text-decoration: underline;
 }
+
+// .landing-page .question::after {
+//   content: " ~";
+// }
+
+// .landing-page .question::before {
+//   content: "~ ";
+// }
 
 .landing-page .important {
   font-weight: 400;
