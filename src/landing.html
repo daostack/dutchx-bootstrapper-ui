@@ -1,13 +1,13 @@
 <template>
   <div class="landing-page container animated fadeIn">
     <div><button class="btn btn-link" click.delegate="router.navigateToRoute('dashboard', null,  {trigger: true})">Dashboard</button></div>
-    <div class="countdown">${msUntilCanLockCountdown() | timespan:"seconds" & signal:'countdown'} to
-      take part in:</div>
-
     <div class="main-header">
       <img class="logo" src="../static/dutchx-blue.svg" />
       <div class="title">DutchX DAO</div>
     </div>
+
+    <div class="countdown">${msUntilCanLockCountdown() | timespan:"seconds" & signal:'countdown'} to
+      take part in:</div>
 
     <div class="icon-section">
       <div class="icon"><img class="section-icon" src="../static/placeholder-icon.svg" /></div>
@@ -54,7 +54,7 @@
     <div class="icon-section">
       <div class="icon"><img class="section-icon" src="../static/placeholder-icon.svg" /></div>
 
-      <div class="header">Questions and Answers</div>
+      <div class="header">How and What?</div>
 
       <div class="question">What is the Mission?</div>
 
@@ -143,10 +143,11 @@
         Initiation Phase.
       </div>
 
-      <div class="question">What are the various steps in this process?</div>
+      <div class="question">What are the steps in this process?</div>
 
       <div class="body-text">
-        DAOstack and Gnosis are working full-speed for you! These are the steps to have a fully functional DutchX DAO:
+        <a href="https://daostack.io" target="_blank">DAOstack</a> and <a href="https://www.gnosis.pm/" target="_blank">Gnosis</a>
+        are working full-speed for you! These are the steps towards a fully functional DutchX DAO:
       </div>
 
       <ol>

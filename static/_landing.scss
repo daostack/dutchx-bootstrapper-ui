@@ -37,6 +37,8 @@
   border-bottom-width: .25rem;
   border-bottom-style: solid;
   margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
 }
 
 .landing-page .body-text {
@@ -49,14 +51,6 @@
   text-align: center;
   text-decoration: underline;
 }
-
-// .landing-page .question::after {
-//   content: " ~";
-// }
-
-// .landing-page .question::before {
-//   content: "~ ";
-// }
 
 .landing-page .important {
   font-weight: 400;
