@@ -15,14 +15,14 @@
 
 .landing-page .main-header .logo {
   height: 4rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .landing-page .main-header {
-  font-size: 2.4rem;
+  font-size: 3rem;
   font-weight: 400;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
 .landing-page .header {
@@ -30,6 +30,13 @@
   font-weight: 400;
   text-align: center;
   margin-bottom: 1.5rem;
+}
+
+.landing-page .icon-section {
+  border-bottom-color: $color-ds-darkblue;
+  border-bottom-width: .25rem;
+  border-bottom-style: solid;
+  margin-bottom: 2rem;
 }
 
 .landing-page .body-text {
@@ -45,7 +52,7 @@
   font-weight: 400;
 }
 
-.pie-chart {
+.landing-page .pie-chart {
   padding-top:2rem;
   padding-bottom:2rem;
   padding-left:1rem;
@@ -53,7 +60,7 @@
   text-align: center;
 }
 
-.pie-chart img {
+.landing-page .pie-chart img {
   max-width:80%; max-height:auto;
 }
 
