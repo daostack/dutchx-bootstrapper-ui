@@ -17,6 +17,7 @@ import { AureliaConfiguration } from "aurelia-configuration";
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { Router } from 'aurelia-router';
 import { App } from 'app';
+import { AlertService } from 'services/alertService';
 
 // remove out if you don't want a Promise polyfill (remove also from webpack.config.js)
 Bluebird.config({ warnings: { wForgottenReturn: false } });
@@ -73,6 +74,7 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName("resources/valueConverters/boolean"),
     PLATFORM.moduleName("resources/valueConverters/secondsDays"),
     PLATFORM.moduleName("resources/dialogs/connectToNet/connectToNet"),
+    PLATFORM.moduleName("resources/dialogs/alert/alert"),
     PLATFORM.moduleName("footer"),
     PLATFORM.moduleName("header")
   ]);
@@ -105,6 +107,7 @@ export async function configure(aurelia: Aurelia) {
 
       // just to initialize them and get them running
       aurelia.container.get(ConsoleLogService);
+      aurelia.container.get(AlertService);
       aurelia.container.get(SnackbarService);
       aurelia.container.get(DateService);
 

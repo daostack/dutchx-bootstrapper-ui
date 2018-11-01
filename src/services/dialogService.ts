@@ -1,5 +1,11 @@
 import { autoinject } from "aurelia-framework";
-import { DialogService as AureliaDialogService, DialogCloseResult, DialogSettings, DialogCancellableOpenResult, DialogOpenPromise } from "aurelia-dialog";
+import {
+  DialogService as AureliaDialogService,
+  DialogSettings,
+  DialogCancellableOpenResult,
+  DialogOpenPromise
+} from "aurelia-dialog";
+import { Alert } from "../resources/dialogs/alert/alert";
 
 @autoinject
 export class DialogService {
@@ -22,18 +28,9 @@ export class DialogService {
       }, settings));
   };
 
-  /**
-   * showing a dialog tends makes the vertical scrollbar disappear (the modal background?).
-   * so if it's there, force it to remain.  if it's not, don't.
-   * todo: don't do this if the dialog isn't meant to be modal?
-   */
-  // private adjustScroll() {
-  //   if (this.browserService.verticalScrollBarIsShowing()) {
-  //     $('body').addClass("showVerticalScroll");
-  //   } else {
-  //     $('body').removeClass("showVerticalScroll");
-  //   }
-  // }
+  public alert(message: string): DialogOpenPromise<DialogCancellableOpenResult> {
+    return this.open(Alert, { message });
+  }
 }
 
 export interface IPromptOptions {

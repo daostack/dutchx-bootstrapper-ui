@@ -23,7 +23,7 @@ export class SnackbarService {
     eventAggregator: EventAggregator
     , private aureliaHelperService: AureliaHelperService
   ) {
-    this.subscriptions.push(eventAggregator.subscribe("handleException", (config: EventConfigException | any) => this.handleException(config)));
+    // this.subscriptions.push(eventAggregator.subscribe("handleException", (config: EventConfigException | any) => this.handleException(config)));
     this.subscriptions.push(eventAggregator.subscribe("handleSuccess", (config: EventConfig | string) => this.handleSuccess(config)));
     this.subscriptions.push(eventAggregator.subscribe("handleWarning", (config: EventConfig | string) => this.handleWarning(config)));
     this.subscriptions.push(eventAggregator.subscribe("handleFailure", (config: EventConfig | string) => this.handleFailure(config)));
@@ -42,6 +42,9 @@ export class SnackbarService {
           const snackbarConfig = that.getSnackbarConfig(config);
           snackbarConfig.onClose = resolve;
           let $snackbar = (<any>$).snackbar(snackbarConfig);
+          if (config.actionType === ActionType.closebutton) {
+            config.action = () => { $snackbar("hide"); }
+          }
           // for actions, but this means you can put binding code in the message too, 
           // where the config is the bindingContext
           that.aureliaHelperService.enhanceElement($snackbar[0], config);
@@ -69,15 +72,15 @@ export class SnackbarService {
   /**
    * @param config Can be EventConfig or just the thrown exception
    */
-  public handleException(config: EventConfigException | any) {
-    if (!(config instanceof EventConfigException)) {
-      // then config is the exception itself
-      let ex = config as any;
-      config = { message: `${ex}`, style: "snack-failure", duration: 0 } as any;
-    }
+  // public handleException(config: EventConfigException | any) {
+  //   if (!(config instanceof EventConfigException)) {
+  //     // then config is the exception itself
+  //     let ex = config as any;
+  //     config = { message: `${ex.message ? ex.message : ex}`, style: "snack-failure", duration: 0 } as any;
+  //   }
 
-    this.serveSnack(config);
-  }
+  //   this.serveSnack(config);
+  // }
 
   public handleFailure(config: EventConfig | string) {
     this.serveSnack(config);
@@ -122,10 +125,10 @@ export class SnackbarService {
     switch (config.actionType) {
       case ActionType.address:
         text = config.actionText || config.address;
-        templateAction = `<span class="snackbar-action-wrapper"> <etherscanlink address="${config.address}" text="${text}" type="${config.addressType || 'address'}"></etherscanlink></span>`;
+        templateAction = `<span class="snackbar-action-wrapper"><etherscanlink address="${config.address}" text="${text}" type="${config.addressType || 'address'}"></etherscanlink></span>`;
         break;
       case ActionType.button:
-        templateAction = `<span class="snackbar-action-wrapper"> <button type="button" class="btn" click.delegate='action()'>${config.actionText}</button></span>`;
+        templateAction = `<span class="snackbar-action-wrapper"><button type="button" class="btn" click.delegate='action()'>${config.actionText}</button></span>`;
         break;
     }
     return `${templateMessage}${templateAction}`;

@@ -60,10 +60,8 @@ export class EventConfig {
 export class EventConfigFailure extends EventConfig {
   constructor(
     message: string = "An error occurred"
-    , type: EventMessageType = EventMessageType.Failure
-    , lifetime: SnackLifetime = SnackLifetime.closeButton
   ) {
-    super(message, type, lifetime);
+    super(message, EventMessageType.Failure, SnackLifetime.closeButton);
     this.message = `${this.message}`;
   }
 }
@@ -72,11 +70,10 @@ export class EventConfigException extends EventConfig {
   constructor(
     message: string = "An error occurred"
     , public exception: any
-    , type: EventMessageType = EventMessageType.Exception
-    , lifetime: SnackLifetime = SnackLifetime.closeButton
   ) {
-    super(message, type, lifetime);
-    this.message = `${this.message}: ${exception}`;
+    super(message, EventMessageType.Exception, SnackLifetime.closeButton);
+    // the stack trace, etc, will be logged by ConsoleLogService
+    this.message = this.message;
   }
 }
 
@@ -107,10 +104,8 @@ export class EventConfigAddress extends EventConfig {
      * text to display instead of address
      */
     , public actionText: string
-    , type: EventMessageType = EventMessageType.Info
-    , lifetime: SnackLifetime = SnackLifetime.clickToDismiss
   ) {
-    super(message, type, lifetime);
+    super(message, EventMessageType.Info, SnackLifetime.clickToDismiss);
     this.actionType = ActionType.address;
     this.addressType = "address";
   }
@@ -124,10 +119,8 @@ export class EventConfigTransaction extends EventConfigAddress {
      * text to display instead of address
      */
     , public actionText: string = "See Transaction"
-    , type: EventMessageType = EventMessageType.Info
-    , lifetime: SnackLifetime = SnackLifetime.clickToDismiss
   ) {
-    super(message, address, actionText, type, lifetime);
+    super(message, address, actionText);
     this.actionType = ActionType.address;
     this.addressType = "tx";
   }

@@ -1,0 +1,14 @@
+<template>
+  <ux-dialog>
+    <ux-dialog-body class="dialog alert" with.bind="model">
+      <div class="title">
+        <img src="../../../../static/dutchx-blue.svg" class="logo d-inline-block align-top" alt="DutchX">
+        DutchX Initializer
+      </div>
+      <div class="body">${message}</div>
+    </ux-dialog-body>
+    <ux-dialog-footer>
+      <button click.trigger="controller.ok(person)">Ok</button>
+    </ux-dialog-footer>
+  </ux-dialog>
+</template>

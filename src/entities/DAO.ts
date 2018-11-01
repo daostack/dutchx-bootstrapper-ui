@@ -167,8 +167,6 @@ export class DaoEx extends DAO {
         contractWrapper = <any>{ address: constraintAddress };
       }
 
-      //let permissions = await this.controller.getSchemePermissions(schemeAddress);
-
       let constraintInfo = GlobalConstraintInfo.fromContractWrapper(contractWrapper, adding);
       let changed = false;
       // TODO: get unknown name from Arc

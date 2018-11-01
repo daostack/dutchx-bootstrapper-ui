@@ -11,7 +11,7 @@ import { includeEventsIn, Subscription } from "aurelia-event-aggregator";
 import { LogManager } from "aurelia-framework";
 import { DaoEx } from "../entities/DAO";
 import { EventAggregator } from "aurelia-event-aggregator";
-import { EventConfigException, SnackLifetime } from "../entities/GeneralEvents";
+import { EventConfigException, SnackLifetime, EventConfig } from "../entities/GeneralEvents";
 
 @autoinject
 export class DaoService {
@@ -45,7 +45,7 @@ export class DaoService {
         // don't force the user to see this as a snack every time.  A corrupt DAO may never be repaired.  A message will go to the console.
         // this.eventAggregator.publish("handleException", new EventConfigException(`Error loading DAO: ${avatarAddress}`, ex));
         this.eventAggregator.publish("handleException",
-          new EventConfigException(`Error loading DAO: ${avatarAddress}`, ex, undefined, SnackLifetime.none));
+          new EventConfig(`Error loading DAO: ${avatarAddress}: ${ex}`, undefined, SnackLifetime.none));
 
         return null;
       }

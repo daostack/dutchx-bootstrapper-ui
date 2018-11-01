@@ -4,8 +4,6 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { Web3Service } from 'services/Web3Service';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { Address, Utils } from '@daostack/arc.js';
-import { SSL_OP_NETSCAPE_CA_DN_BUG } from 'constants';
-// import { AureliaConfiguration } from 'aurelia-configuration';
 
 @autoinject
 export class ConnectToNet {

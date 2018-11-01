@@ -66,17 +66,6 @@ export class SchemeService {
 
     return schemes;
   }
-
-  public async getSchemePermissions(name: string, schemeAddress?: string): Promise<SchemePermissions> {
-    try {
-      const contract = await this.arcService.getContract(name, schemeAddress);
-      const permissions = contract.getDefaultPermissions();
-      return SchemePermissions.fromString(permissions);
-    } catch (ex) {
-      this.eventAggregator.publish("handleException", new EventConfigException(`Error getting scheme permissions`, ex));
-      return null;
-    }
-  }
 }
 
 export { SchemeInfo } from "../entities/SchemeInfo";
