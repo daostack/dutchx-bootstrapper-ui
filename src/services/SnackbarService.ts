@@ -26,7 +26,7 @@ export class SnackbarService {
     // this.subscriptions.push(eventAggregator.subscribe("handleException", (config: EventConfigException | any) => this.handleException(config)));
     this.subscriptions.push(eventAggregator.subscribe("handleSuccess", (config: EventConfig | string) => this.handleSuccess(config)));
     this.subscriptions.push(eventAggregator.subscribe("handleWarning", (config: EventConfig | string) => this.handleWarning(config)));
-    this.subscriptions.push(eventAggregator.subscribe("handleFailure", (config: EventConfig | string) => this.handleFailure(config)));
+    // this.subscriptions.push(eventAggregator.subscribe("handleFailure", (config: EventConfig | string) => this.handleFailure(config)));
     this.subscriptions.push(eventAggregator.subscribe("showMessage", (config: EventConfig | string) => this.showMessage(config)));
 
     this.snackQueue = new Subject<EventConfig>();
@@ -82,9 +82,9 @@ export class SnackbarService {
   //   this.serveSnack(config);
   // }
 
-  public handleFailure(config: EventConfig | string) {
-    this.serveSnack(config);
-  }
+  // public handleFailure(config: EventConfig | string) {
+  //   this.serveSnack(config);
+  // }
 
   public handleWarning(config: EventConfig | string) {
     this.serveSnack(config);
