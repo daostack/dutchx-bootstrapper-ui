@@ -29,7 +29,7 @@ export class DialogService {
   };
 
   public alert(message: string): DialogOpenPromise<DialogCancellableOpenResult> {
-    return this.open(Alert, { message });
+    return this.open(Alert, { message }, { keyboard: true });
   }
 }
 

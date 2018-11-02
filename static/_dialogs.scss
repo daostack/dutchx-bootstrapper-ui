@@ -5,13 +5,17 @@
   background-color: $color-ds-white;
 }
 
-.dialog .title {
-  font-weight: 400;
-  margin-bottom: 1rem;
+.dialog ux-dialog-header {
+  font-weight: 500;
+  font-size: 1.2rem;
 }
 
-.dialog img.logo {
-  margin-right: .25rem;
+
+.dialog img.logo,
+ux-dialog-header .material-icons {
+  position: relative;
+  top: .3rem;
+  margin-right: .4rem;
 }
 
 .dialog .body div {

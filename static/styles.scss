@@ -16,6 +16,7 @@ $font-family-base: "DINPro";
 @import "~BMD/core"; 
 
 @import "./dialogs";
+@import "./alert";
 @import "./landing";
 @import "./src/organizations/dashboard";
 @import "./src/services/snackbars";

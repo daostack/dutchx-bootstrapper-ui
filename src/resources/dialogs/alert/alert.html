@@ -1,14 +1,14 @@
 <template>
-  <ux-dialog>
-    <ux-dialog-body class="dialog alert" with.bind="model">
-      <div class="title">
-        <img src="../../../../static/dutchx-blue.svg" class="logo d-inline-block align-top" alt="DutchX">
-        DutchX Initializer
-      </div>
+  <ux-dialog class="dialog alert">
+    <ux-dialog-header>
+      <span class="material-icons">error_outline</span>
+      An error occurred
+    </ux-dialog-header>
+    <ux-dialog-body with.bind="model">
       <div class="body">${message}</div>
     </ux-dialog-body>
     <ux-dialog-footer>
-      <button click.trigger="controller.ok(person)">Ok</button>
+      <button class="btn btn-secondary" ref="okButton" click.trigger="controller.ok()">Ok</button>
     </ux-dialog-footer>
   </ux-dialog>
 </template>
