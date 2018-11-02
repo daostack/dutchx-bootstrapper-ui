@@ -1,4 +1,4 @@
-import { autoinject } from 'aurelia-framework';
+import { autoinject, computedFrom } from 'aurelia-framework';
 import { DaoSchemeDashboard } from "./schemeDashboard"
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { ArcService, WrapperService, LockingOptions, LockerInfo, LockInfo, Locking4ReputationWrapper, Address } from "../services/ArcService";
@@ -28,6 +28,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   userAddress: Address;
   subscription: IDisposable;
   locks: Array<LockInfo>;
+  @computedFrom("lockerInfo")
   get userScore(): number { return this.lockerInfo ? this.web3Service.fromWei(this.lockerInfo.score).toNumber() : 0; }
 
   lockModel: LockingOptions = {

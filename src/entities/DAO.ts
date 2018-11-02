@@ -8,18 +8,14 @@ import { LogManager } from 'aurelia-framework';
 import { includeEventsIn, Subscription } from 'aurelia-event-aggregator';
 import { SchemeInfo } from "../entities/SchemeInfo";
 import { Web3Service, BigNumber } from "../services/Web3Service";
-import { GlobalConstraintInfo } from "../entities/GlobalConstraintInfo";
 
 export class DaoEx extends DAO {
 
   public address: string;
   public name: string;
   private schemesCache: Map<string, SchemeInfo>;
-  private constraintsCache: Map<string, GlobalConstraintInfo>;
   private registerSchemeEvent;
   private unRegisterSchemeEvent;
-  private addConstraintEvent;
-  private removeConstraintEvent;
   public arcService: ArcService;
   private logger = LogManager.getLogger("DxBootStrapper");
   public omega: BigNumber; // in wei
@@ -116,75 +112,6 @@ export class DaoEx extends DAO {
           {
             dao: this,
             scheme: schemeInfo
-          });
-      }
-    }
-  }
-
-  private async _getCurrentConstraints(): Promise<Array<SchemeInfo>> {
-    return (await super.getGlobalConstraints()).map((s: DaoGlobalConstraintInfo) => GlobalConstraintInfo.fromOrganizationGlobalConstraintInfo(s));
-  }
-
-  /**
-   * returns all global constraints in this DAO
-   */
-  public async allGlobalConstraints(): Promise<Array<GlobalConstraintInfo>> {
-    if (!this.constraintsCache) {
-      this.constraintsCache = new Map<string, GlobalConstraintInfo>();
-      let constraints = await this._getCurrentConstraints();
-      for (let gc of constraints) {
-        this.constraintsCache.set(gc.address, gc);
-      }
-      this.watchConstraints();
-      this.logger.debug(`Finished loading global constraints for ${this.name}: ${this.address}`);
-    }
-
-    return Array.from(this.constraintsCache.values());
-  }
-
-  private watchConstraints(): void {
-    this.addConstraintEvent = this.controller.AddGlobalConstraint({}, { fromBlock: "latest", toBlock: "latest" });
-    this.addConstraintEvent.watch((err, eventsArray) => this.handleConstraintEvent(err, eventsArray, true));
-
-    this.removeConstraintEvent = this.controller.RemoveGlobalConstraint({}, { fromBlock: "latest", toBlock: "latest" });
-    this.removeConstraintEvent.watch((err, eventsArray) => this.handleConstraintEvent(err, eventsArray, false));
-  }
-
-  private async handleConstraintEvent(err, eventsArray, adding: boolean): Promise<void> {
-    let newConstraintsArray = [];
-    if (!(eventsArray instanceof Array)) {
-      eventsArray = [eventsArray];
-    }
-    let count = eventsArray.length;
-    for (let i = 0; i < count; i++) {
-      // work-around: https://github.com/daostack/daostack/issues/263
-      let constraintAddress = eventsArray[i].args._globalconstraint || eventsArray[i].args._globalConstraint;
-      let constraintParamsHash = eventsArray[i].args._params;
-      let contractWrapper = this.arcService.contractWrapperFromAddress(constraintAddress) as any;
-
-      if (!contractWrapper) {
-        // then it is a non-arc scheme or TODO: is an Arc scheme that is older or newer than the one Arc is telling us about
-        contractWrapper = <any>{ address: constraintAddress };
-      }
-
-      let constraintInfo = GlobalConstraintInfo.fromContractWrapper(contractWrapper, adding);
-      let changed = false;
-      // TODO: get unknown name from Arc
-      if (adding && !this.constraintsCache.has(constraintAddress)) {
-        changed = true;
-        this.logger.debug(`caching gc: ${contractWrapper.name ? contractWrapper.name : "[unknown]"}: ${contractWrapper.address}`);
-        this.constraintsCache.set(constraintAddress, constraintInfo);
-      } else if (!adding && this.constraintsCache.has(constraintAddress)) {
-        changed = true;
-        this.logger.debug(`uncaching gc: ${contractWrapper.name ? contractWrapper.name : "[unknown]"}: ${contractWrapper.address}`);
-        this.constraintsCache.delete(constraintAddress);
-      }
-
-      if (changed) {
-        this.publish(DaoEx.daoConstraintSetChangedEvent,
-          {
-            dao: this,
-            gc: constraintInfo
           });
       }
     }
