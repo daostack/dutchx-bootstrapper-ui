@@ -42,9 +42,6 @@ export class SnackbarService {
           const snackbarConfig = that.getSnackbarConfig(config);
           snackbarConfig.onClose = resolve;
           let $snackbar = (<any>$).snackbar(snackbarConfig);
-          if (config.actionType === ActionType.closebutton) {
-            config.action = () => { $snackbar("hide"); }
-          }
           // for actions, but this means you can put binding code in the message too, 
           // where the config is the bindingContext
           that.aureliaHelperService.enhanceElement($snackbar[0], config);
