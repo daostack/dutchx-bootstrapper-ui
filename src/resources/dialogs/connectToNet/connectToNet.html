@@ -15,12 +15,8 @@
             There seems to be no connection to the blockchain. Please make sure you are logged into MetaMask.
           </p>
 
-          <div if.bind="isConnected && !hasAccount">
-            <p>If you are logged in to MetaMask and have selected your desired account, please allow the DutchX
-              Initializer to access your account:</p>
-
-            <p class="buttonContainer"><button class="btn btn-submit" click.delegate="confirm()">Allow the DutchX
-                Initializer to Access Your Account</button></p>
+          <div if.bind="landed && isConnected && !hasAccount">
+            <p>Please ensure you have logged into MetaMask.</p>
           </div>
 
           <div if.bind="!landed || !hasAccount">
@@ -30,6 +26,14 @@
             </p>
             <!-- "OK" (`land`) will take us off the info panel -->
             <p if.bind="!landed" class="buttonContainer"><button class="btn btn-submit" click.delegate="land()">OK</button></p>
+          </div>
+
+          <div if.bind="landed && isConnected && !hasAccount && !hasApprovedAccountAccess">
+            <p>If or when you have logged in to MetaMask and have selected your desired account, then please allow
+              the DutchX Initializer to access your account:</p>
+
+            <p class="buttonContainer"><button class="btn btn-submit" click.delegate="confirm()">Allow the DutchX
+                Initializer to Access Your Account</button></p>
           </div>
 
           <div if.bind="landed && isConnected && hasAccount">

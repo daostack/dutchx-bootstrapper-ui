@@ -98,7 +98,13 @@ export class Web3Service {
     console.log(`Connected to Ethereum (${this.networkName})`);
     this._web3 = web3;
     this.isConnected = true;
-    this.defaultAccount = await this.getDefaultAccount();
+    try {
+      this.defaultAccount = await this.getDefaultAccount();
+    }
+    catch
+    {
+      this.defaultAccount = undefined;
+    }
     return web3;
   }
 

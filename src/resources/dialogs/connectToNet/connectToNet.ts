@@ -13,7 +13,7 @@ export class ConnectToNet {
   subscriptions: DisposableCollection = new DisposableCollection();
   userAccount: Address;
   isDone: boolean;
-  // lockingPeriodEndDate: Date;
+  hasApprovedAccountAccess: boolean;
 
   constructor(
     private controller: DialogController
@@ -25,6 +25,13 @@ export class ConnectToNet {
     // this.lockingPeriodEndDate = new Date(this.appConfig.get("lockingPeriodEndDate"))
     this.networkName = this.web3.networkName;
     this.model = model;
+    const theWindow = (window as any);
+    this.hasApprovedAccountAccess =
+      theWindow.ethereum &&
+      theWindow.ethereum._metamask &&
+      theWindow.ethereum._metamask.isApproved &&
+      theWindow.ethereum._metamask.isApproved();
+
     this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => {
       this.networkName = this.web3.networkName;
       this.userAccount = this.web3.defaultAccount;
