@@ -28,14 +28,14 @@ export class NetworkConnectionWizards {
   promise: Promise<DialogCloseResult>;
   dialogViewModel: ConnectToNet;
 
-  public run(hasDao: boolean): Promise<DialogCloseResult> {
+  public run(skipLanding: boolean): Promise<DialogCloseResult> {
 
     if (this.promise) {
       return this.promise;
     }
 
     /** don't show the intro if we already have a DAO */
-    this.landed = hasDao;
+    this.landed = skipLanding;
 
     /** but assume we're going to look for another DAO */
     this.hasDao = false;

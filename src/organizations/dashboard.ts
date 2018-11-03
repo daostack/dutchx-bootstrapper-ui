@@ -179,7 +179,7 @@ export class Dashboard {
         this.eventAggregator.publish("Avatar.loaded", this.org);
       } else {
         this.loading = false;
-        this.networkConnectionWizards.run(false); // noop if already running
+        this.networkConnectionWizards.run(true); // noop if already running
       }
     }
 
@@ -218,7 +218,7 @@ export class Dashboard {
     this.schemesLoaded = this.dutchXSchemes.length !== this.dutchXSchemeConfigs.keys.length;
     if (!this.schemesLoaded) {
       this.eventAggregator.publish("handleFailure", new EventConfigFailure(`not all of the required contracts were found`));
-      this.networkConnectionWizards.run(false); // no-op if already running
+      this.networkConnectionWizards.run(true); // no-op if already running
     } else {
       this.eventAggregator.publish("DAO.loaded", this.org);
     }
