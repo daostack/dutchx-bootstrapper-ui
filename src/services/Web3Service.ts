@@ -12,6 +12,7 @@ import {
 } from "web3";
 import { BigNumber } from 'bignumber.js';
 import { Hash, Address, Utils } from './ArcService';
+import { Web3EventService } from '@daostack/arc.js';
 
 @autoinject()
 export class Web3Service {
@@ -86,76 +87,23 @@ export class Web3Service {
     });
   }
 
-  public initialize(web3): Promise<Web3> {
-
+  public async initialize(web3): Promise<Web3> {
     /**
      * so won't throw exceptions and we can use methods like .isNaN().
      * See: https://mikemcl.github.io/bignumber.js/#errors
      */
     BigNumber.config({ ERRORS: false });
 
-    return new Promise<Web3>((resolve, reject) => {
-      try {
-        web3.version.getNetwork(async (err, chainId) => {
-          if (!err) {
-            try {
-
-              // console.log(`Targetted network: ${Web3Service.Network}`)
-              // let targetedNetworkId = getIdFromNetwork(Web3Service.Network);
-
-              // console.log(`Found chainId ${chainId}, targetedNetworkId: ${targetedNetworkId}`);
-              // if you're targeting ganache then it'll accept any network id.  Otherwise,
-              // they have to match.
-              // TODO:  Other networks besides kovan and ropsten?  Take  ID instead of name for network?
-              // this._isCorrectChain = (targetedNetworkId === chainId) || (targetedNetworkId === ganacheNetworkId);
-              // if (!this._isCorrectChain) {
-              //   return reject(new Error(`Web3Service.initialize failed: connected to the wrong network, expected: ${Web3Service.Network}, actual: ${getNetworkFromID(chainId)}`));
-              // } else {
-
-              this.networkName = await Utils.getNetworkName();
-
-              const connected = await (<any>Promise).promisify(web3.net.getListening)()
-                .then((isListening: boolean) => {
-                  return isListening;
-                })
-                .catch((error: Error) => {
-                  return false;
-                });
-
-              if (connected) {
-                console.log(`Connected to Ethereum (${this.networkName})`);
-                this._web3 = web3;
-                this.isConnected = true;
-                this.defaultAccount = await this.getDefaultAccount();
-                return resolve(this._web3);
-              } else {
-                return reject(new Error(`Web3Service.initialize failed: isConnected: false`));
-              }
-              //}
-            } catch (ex) {
-              return reject(new Error(`Web3Service.initialize failed: ${ex}`));
-            }
-          } else {
-            return reject(new Error(`Web3Service.initialize failed: isConnected: ${this.isConnected}`));
-          }
-        });
-      } catch (ex) {
-        return reject(new Error(`Web3Service.initialize failed: ${ex}`));
-      }
-    });
+    this.networkName = await Utils.getNetworkName();
+    console.log(`Connected to Ethereum (${this.networkName})`);
+    this._web3 = web3;
+    this.isConnected = true;
+    this.defaultAccount = await this.getDefaultAccount();
+    return web3;
   }
 
-  private async getDefaultAccount(): Promise<string> {
-
-    return (<any>Promise).promisify(this.web3.eth.getAccounts)().then((accounts: Array<any>) => {
-      const defaultAccount = this.web3.eth.defaultAccount = accounts[0];
-
-      if (!defaultAccount) {
-        throw new Error("accounts[0] is not set");
-      }
-
-      return defaultAccount;
-    });
+  private getDefaultAccount(): Promise<string> {
+    return Utils.getDefaultAccount();
   }
 }
 

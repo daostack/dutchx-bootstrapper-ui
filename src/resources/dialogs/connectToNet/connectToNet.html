@@ -2,7 +2,7 @@
   <ux-dialog class="dialog">
     <ux-dialog-header>
       <img src="../../../../static/dutchx-blue.svg" class="logo d-inline-block align-top" alt="DutchX">
-      DutchX Initializer
+      Welcome to the DutchX Initializer
     </ux-dialog-header>
     <ux-dialog-body with.bind="model">
       <div class="body">
@@ -11,71 +11,38 @@
             Fetching the DutchX DAO...</pageloading>
         </div>
         <div else>
-          <!-- <div if.bind="isDone">
-          <span class="important">Welcome to DutchX Initializer!</span>
-
-          Welcome to the reputation Bootstrapper for the DutchX DAO.
-          Anyone can own reputation in the DutchX DAO and there are multiple ways to get your REP: Lock GNO or ETH
-          for a defined period of time (up to 3 months), linking your locked Magnolia (MGN) tokens, or bidding GEN in a
-          REP
-          auction. A portion of the reputation will be allocated to each of those options as described in the pie chart
-          below. You are welcome to use any or all of the methods, to optimize the amount of REP you’ll eventually
-          receive. Redeeming REP will be enabled once the 3 months initialization stage is complete, on
-          ${lockingPeriodEndDate | date:'friendly'}.
-
-          <div class="buttonContainer"><button class="btn btn-submit" click.delegate="close()">Ok</button></div>
-        </div> -->
-
-          <div if.bind="!isConnected">
-            <span class="important">Welcome to DutchX Initializer!</span>
-
-            To proceed further, we need you to select a blockchain network to which the DutchX
-            Initializer DAO has been deployed.
-            Using MetaMask, select a blockchain network and log in to your MetaMask wallet (or create a new
-            wallet if you haven't yet done so).
-          </div>
+          <p if.bind="landed && !isConnected">
+            There seems to be no connection to the blockchain. Please make sure you are logged into MetaMask.
+          </p>
 
           <div if.bind="isConnected && !hasAccount">
-            <span class="important">Congratulations!</span> You have connected to the ${networkName}
-            blockchain network. For the next steps:
+            <p>If you are logged in to MetaMask and have selected your desired account, please allow the DutchX
+              Initializer to access your account:</p>
 
-            <ol>
-              <li>If you have not already done so, log in to MetaMask.</li>
-              <li>Tell MetaMask to give DutchX Initializer access to your accounts by clicking the "Allow..." button
-                below.
-                MetaMask will ask you to confirm that you wish to grant permission for this website, DutchX
-                Initializer, to
-                access the accounts in your MetaMask wallet, solely for the purposes of using DutchX Initializer. <span
-                  class="important">Note:</span>
-                After granting permission, whenever DutchX Initializer wants to transfer tokens or ETH on your behalf,
-                MetaMask will continue prompt you as usual for your permission to submit each transaction.</li>
-            </ol>
-
-            <!-- <div class="userAddressContainer">Your account: <etherscanlink address="${userAccount}"></etherscanlink>
-            </div> -->
-            <div class="buttonContainer"><button class="btn btn-submit" click.delegate="confirm()">Allow DutchX
-                Initializer to Access Your Account</button></div>
+            <p class="buttonContainer"><button class="btn btn-submit" click.delegate="confirm()">Allow the DutchX
+                Initializer to Access Your Account</button></p>
           </div>
 
-          <div if.bind="isConnected && hasAccount">
-            We can't find DutchX Initializer on the ${networkName} blockchain.
-            Using MetaMask, please ensure you are connected to a blockchain to which DutchX Initializer has been
-            deployed.
-            If you are connected to the Live (Mainnet) network and DutchX Initializer is failing to load,
-            please submit a detailed help request via the DAOstack
-            <a href="https://daotalk.org/" target="_blank">Forum</a>.
+          <div if.bind="!landed || !hasAccount">
+            <p>
+              <span class="important">Important:</span> Reputation earned by locking tokens cannot be transferred.
+              Please select in MetaMask the account you intend to use for voting within the DAO in the future.
+            </p>
+            <!-- "OK" (`land`) will take us off the info panel -->
+            <p if.bind="!landed" class="buttonContainer"><button class="btn btn-submit" click.delegate="land()">OK</button></p>
           </div>
 
-          <div if.bind="!isConnected || !hasAccount">
-            <span class="important">Important:</span> Reputation earned by locking tokens cannot be
-            transferred. Please be sure you have selected the account that you intend to use for
-            voting within DutchX Initializer.
-            Remember, though you can select a different account at any time, because you
-            can't transfer reputation between accounts you must be sure to settle on a single account that you will use
-            consistently here in DutchX Initializer.
+          <div if.bind="landed && isConnected && hasAccount">
+            <p if.bind="!hasDao">
+              Please check MetaMask and make sure you are logged in and connected to the Main Ethereum Network.
+            </p>
+            <div else>
+              <!-- we're landed and have a DAO -->
+              <p style="text-align: center">[Disclaimer]</p>
+              <p class="buttonContainer"><button class="btn btn-submit" click.delegate="accept()">Accept</button></p>
+            </div>
           </div>
         </div>
-      </div>
     </ux-dialog-body>
   </ux-dialog>
 </template>

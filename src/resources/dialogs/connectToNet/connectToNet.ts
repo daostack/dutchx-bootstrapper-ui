@@ -3,7 +3,7 @@ import { autoinject } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { Web3Service } from 'services/Web3Service';
 import { DisposableCollection } from 'services/DisposableCollection';
-import { Address, Utils } from '@daostack/arc.js';
+import { Address } from '@daostack/arc.js';
 
 @autoinject
 export class ConnectToNet {
@@ -11,7 +11,6 @@ export class ConnectToNet {
   model: ConnectToNetModel;
   networkName: string;
   subscriptions: DisposableCollection = new DisposableCollection();
-  loading: boolean = false;
   userAccount: Address;
   isDone: boolean;
   // lockingPeriodEndDate: Date;
@@ -26,21 +25,22 @@ export class ConnectToNet {
     // this.lockingPeriodEndDate = new Date(this.appConfig.get("lockingPeriodEndDate"))
     this.networkName = this.web3.networkName;
     this.model = model;
-    this.subscriptions.push(this.eventAggregator.subscribe("DAO.loaded", () => { this.close(); }));
-    this.subscriptions.push(this.eventAggregator.subscribe("DAO.loaded", () => { this.close(); }));
     this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => {
       this.networkName = this.web3.networkName;
       this.userAccount = this.web3.defaultAccount;
     }));
-    this.subscriptions.push(this.eventAggregator.subscribe("DAO.Loading", (onOff: boolean): void => {
-      this.loading = onOff;
-    }));
+  }
+
+  land() {
+    this.model.land();
+  }
+
+  accept() {
+    this.close(false);
   }
 
   confirm() {
-    Utils.getUserApprovalForAccounts().then(() => {
-      this.close();
-    });
+    this.model.confirm();
   }
 
   public close(cancelled: boolean = false) {
@@ -52,4 +52,9 @@ export class ConnectToNet {
 interface ConnectToNetModel {
   isConnected: boolean;
   hasAccount: boolean;
+  loading: boolean;
+  landed: boolean;
+  hasDao: boolean;
+  confirm: () => void;
+  land: () => void;
 }

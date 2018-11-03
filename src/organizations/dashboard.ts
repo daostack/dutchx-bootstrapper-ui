@@ -33,6 +33,10 @@ export class Dashboard {
 
   private _loading: boolean = false;
 
+  /**
+   * true if loading the avatar or its schemes
+   */
+  @computedFrom("_loading")
   private get loading() {
     return this._loading;
   }
@@ -71,42 +75,46 @@ export class Dashboard {
     $("body").css("overflow", "hidden");
 
     this.options = options;
-
+    /*******************
+     * Handle network change.  Must load a new DAO.
+     */
     this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => {
       this.networkName = this.web3.networkName;
-      if (!this.web3.defaultAccount) {
-        this.networkConnectionWizards.run().then((result: DialogCloseResult) => {
-          if (!result.wasCancelled) {
-            this.loadAvatar();
-          }
-        });
-      } else {
-        this.loadAvatar();
-      }
+      this.loadAvatar();
     }));
+
+    /*******************
+     * Handle account change.  Load a DAO if we don't already have one.
+     * This shiould only happen when there was already a network and an account.
+     */
     this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Account", () => {
       if (!this.org) {
         this.loadAvatar();
       }
     }));
+
+    /*******************
+     * Handle avatar loaded.  Load schemes.
+     */
     this.subscriptions.push(this.eventAggregator.subscribe("Avatar.loaded", () => { this.loadSchemes(); }));
 
     this.networkName = this.web3.networkName;
 
-    if (!this.web3.defaultAccount) {
-      this.networkConnectionWizards.run().then((result: DialogCloseResult) => {
-        if (!result.wasCancelled) {
-          this.loadAvatar();
-        }
-      });
-    } else {
+    /*******************
+     * Start wizard if there is no DAO, otherwise we're good
+     */
+    if (!this.org) {
+      /**
+       * we'll handle events from here to load a DAO
+       */
+      this.networkConnectionWizards.run(false);
       this.loadAvatar();
     }
   }
 
   deactivate() {
     this.subscriptions.dispose();
-    this.networkConnectionWizards.close();
+    this.networkConnectionWizards.close(true);
     this.clearScrollbar();
   }
 
@@ -170,9 +178,8 @@ export class Dashboard {
       if (this.org) {
         this.eventAggregator.publish("Avatar.loaded", this.org);
       } else {
-        // noop if already running
         this.loading = false;
-        this.networkConnectionWizards.run();
+        this.networkConnectionWizards.run(false); // noop if already running
       }
     }
 
@@ -211,7 +218,7 @@ export class Dashboard {
     this.schemesLoaded = this.dutchXSchemes.length !== this.dutchXSchemeConfigs.keys.length;
     if (!this.schemesLoaded) {
       this.eventAggregator.publish("handleFailure", new EventConfigFailure(`not all of the required contracts were found`));
-      this.networkConnectionWizards.run(); // no-op if already running
+      this.networkConnectionWizards.run(false); // no-op if already running
     } else {
       this.eventAggregator.publish("DAO.loaded", this.org);
     }
