@@ -27,7 +27,7 @@
           <div if.bind="((isConnected && !hasAccount) || (!landed && hasDao))">
             <p>
               <span class="important">Important:</span> Reputation earned by locking tokens cannot be transferred.
-              Please ensure you will be using the account you intend to use in the future for voting within the DAO.
+              Please ensure you have selected the account you intend to use in the future for voting within the DAO.
             </p>
             <!-- "OK" (`land`) will take us off the info panel -->
             <p if.bind="hasDao" class="buttonContainer"><button class="btn btn-submit" click.delegate="land()">OK</button></p>
