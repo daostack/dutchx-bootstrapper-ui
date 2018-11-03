@@ -22,7 +22,7 @@ export class NetworkConnectionWizards {
   isConnected: boolean;
   hasAccount: boolean;
   loading: boolean = false;
-  landed: boolean = false;
+  skipLanding: boolean = false;
   hasDao: boolean = false;
   subscriptions: DisposableCollection;
   promise: Promise<DialogCloseResult>;
@@ -35,14 +35,15 @@ export class NetworkConnectionWizards {
     }
 
     /** don't show the intro if we already have a DAO */
-    this.landed = skipLanding;
+    this.skipLanding = skipLanding;
 
     /** but assume we're going to look for another DAO */
     this.hasDao = false;
 
     const connectionChanged = () => {
-      this.isConnected = this.web3.isConnected && !!this.arcService.arcContracts;
+      this.isConnected = this.web3.isConnected; // && !!this.arcService.arcContracts;
       this.hasAccount = !!this.web3.defaultAccount;
+      this.hasDao = false;
     };
 
     this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => connectionChanged()));
@@ -82,10 +83,6 @@ export class NetworkConnectionWizards {
 
   public isRunning(): boolean {
     return !!this.promise;
-  }
-
-  private land() {
-    this.landed = true;
   }
 
   private confirm() {

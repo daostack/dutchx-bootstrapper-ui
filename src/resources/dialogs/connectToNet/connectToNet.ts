@@ -14,6 +14,7 @@ export class ConnectToNet {
   userAccount: Address;
   isDone: boolean;
   hasApprovedAccountAccess: boolean;
+  landed: boolean;
 
   constructor(
     private controller: DialogController
@@ -24,6 +25,7 @@ export class ConnectToNet {
   activate(model: ConnectToNetModel) {
     // this.lockingPeriodEndDate = new Date(this.appConfig.get("lockingPeriodEndDate"))
     this.networkName = this.web3.networkName;
+    this.landed = model.skipLanding;
     this.model = model;
     const theWindow = (window as any);
     this.hasApprovedAccountAccess =
@@ -39,7 +41,7 @@ export class ConnectToNet {
   }
 
   land() {
-    this.model.land();
+    this.landed = true;
   }
 
   accept() {
@@ -60,8 +62,7 @@ interface ConnectToNetModel {
   isConnected: boolean;
   hasAccount: boolean;
   loading: boolean;
-  landed: boolean;
+  skipLanding: boolean;
   hasDao: boolean;
   confirm: () => void;
-  land: () => void;
 }

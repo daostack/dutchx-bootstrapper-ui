@@ -11,24 +11,29 @@
             Fetching the DutchX DAO...</pageloading>
         </div>
         <div else>
-          <p if.bind="landed && !isConnected">
-            There seems to be no connection to the blockchain. Please make sure you are logged into MetaMask.
+          <p if.bind="!isConnected">
+            There seems to be no connection to the blockchain.
+            Please install and/or enable the <a href="https://metamask.io/" target="_blank">MetaMask browser extension</a>,
+            then refresh this browser page so you can access the <a href="https://daotalk.org/c/dutchx-dao" target="_blank">DutchX</a>
+            Initializer.
+
           </p>
 
-          <div if.bind="landed && isConnected && !hasAccount">
-            <p>Please ensure you have logged into MetaMask.</p>
+          <div if.bind="isConnected && !hasAccount">
+            <p>Please ensure you have logged into MetaMask to access the <a href="https://daotalk.org/c/dutchx-dao"
+                target="_blank">DutchX</a> Initializer.</p>
           </div>
 
-          <div if.bind="!landed || !hasAccount">
+          <div if.bind="((isConnected && !hasAccount) || (!landed && hasDao))">
             <p>
               <span class="important">Important:</span> Reputation earned by locking tokens cannot be transferred.
-              Please select in MetaMask the account you intend to use for voting within the DAO in the future.
+              Please ensure you will be using the account you intend to use in the future for voting within the DAO.
             </p>
             <!-- "OK" (`land`) will take us off the info panel -->
-            <p if.bind="!landed" class="buttonContainer"><button class="btn btn-submit" click.delegate="land()">OK</button></p>
+            <p if.bind="hasDao" class="buttonContainer"><button class="btn btn-submit" click.delegate="land()">OK</button></p>
           </div>
 
-          <div if.bind="landed && isConnected && !hasAccount && !hasApprovedAccountAccess">
+          <div if.bind="isConnected && !hasAccount && !hasApprovedAccountAccess">
             <p>If or when you have logged in to MetaMask and have selected your desired account, then please allow
               the DutchX Initializer to access your account:</p>
 
@@ -36,12 +41,13 @@
                 Initializer to Access Your Account</button></p>
           </div>
 
-          <div if.bind="landed && isConnected && hasAccount">
+          <div if.bind="isConnected && hasAccount">
             <p if.bind="!hasDao">
               Please check MetaMask and make sure you are logged in and connected to the Main Ethereum Network.
             </p>
-            <div else>
-              <!-- we're landed and have a DAO -->
+
+            <div if.bind="landed && hasDao">
+              <!-- we have a DAO -->
               <p style="text-align: center">[Disclaimer]</p>
               <p class="buttonContainer"><button class="btn btn-submit" click.delegate="accept()">Accept</button></p>
             </div>
