@@ -56,3 +56,7 @@ ux-dialog-overlay.active {
 ux-dialog-body {
   padding-bottom: .25rem !important;
 }
+
+.dialog.connections pageloading .fa-spin {
+  margin-top: .4rem;
+}

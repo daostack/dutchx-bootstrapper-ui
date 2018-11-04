@@ -41,12 +41,6 @@ $font-family-base: "DINPro";
   padding: 0;
 }
 
-.content-body {
-  overflow: auto;
-  /* so top can be repositioned when header height changes (see app.ts) */
-  position: relative;
-}
-
 footer, .navbar.footer {
   background-color: $color-ds-grey-7 !important;
 }

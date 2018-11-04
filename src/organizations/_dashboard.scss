@@ -3,6 +3,12 @@
   margin-bottom: 2rem;
 }
 
+.dashboard-main-content {
+  overflow: auto;
+  /* so top can be repositioned when header height changes (see fixScrollbar) */
+  position: relative;
+}
+
 .dashboard-main-content .row,
  {
   /* avoids overflow in x for the entire page and the appearance of a horix scrollbar */

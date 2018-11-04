@@ -115,7 +115,6 @@ export class Dashboard {
   deactivate() {
     this.subscriptions.dispose();
     this.networkConnectionWizards.close(true);
-    this.clearScrollbar();
   }
 
   async attached() {
@@ -256,22 +255,14 @@ export class Dashboard {
 
   private fixScrollbar() {
 
-    const bodyHeight = $(window).outerHeight() || 0;
-    const footerHeight = $('.footer.navbar').outerHeight() || 0;
-    const headerHeight = $('.header.navbar').outerHeight() || 0;
+    const bodyHeight = $(window).height() || 0;
+    const footerHeight = $('.footer.navbar').height() || 0;
+    const headerHeight = $('.header.navbar').height() || 0;
 
-    $('.content-body').css(
+    $('.dashboard-main-content').css(
       {
         "top": `${headerHeight}px`,
         "max-height": `${bodyHeight - footerHeight - headerHeight}px`
-      });
-  }
-
-  private clearScrollbar() {
-    $('.content-body').css(
-      {
-        "top": `0px`,
-        "max-height": `initial`
       });
   }
 
