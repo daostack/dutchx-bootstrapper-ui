@@ -12,8 +12,8 @@
         <div if.bind="!lockingPeriodIsEnded">
           <div if.to-view="!lockingPeriodIsEnded && alreadyLocked" style="margin-top: 1rem; text-align: center;">You
             have already submitted a lock</div>
-          <div else class="form-group bmd-form-group" style="text-align:center">
-            <button class="btn-submit clearWidth" click.delegate="lock()">Activate locked MGN</button>
+          <div else class="form-group bmd-form-group">
+            <button class="btn-submit clearWidth" click.delegate="lock()">Activate</button>
             <!-- <spinbutton onclick.call="refresh()" css="btn btn-secondary btn-sm" as-button="true" text="Refresh"
               spin.to-view="refreshing" title="Refresh"></spinbutton> -->
           </div>

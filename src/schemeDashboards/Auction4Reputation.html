@@ -19,7 +19,7 @@
                 <label for="bidAmount">Tokens to bid</label>
                 <input id="bidAmount" class="form-control" type="number" value.bind="bidAmount | ethwei & updateTrigger:'blur'" />
               </div>
-              <div class="form-group bmd-form-group">
+              <div class="form-group">
                 <button class="btn-submit btn-sm" click.delegate="bid(bidAmount)">Bid</button>
               </div>
             </div>

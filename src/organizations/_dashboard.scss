@@ -46,10 +46,10 @@
   padding-top:4rem;
   padding-bottom:4rem;
   border-bottom-color: $color-ds-lightblue;
-  border-bottom-width: .2rem;
+  border-bottom-width: .3rem;
   border-bottom-style: solid;
   border-top-color: $color-ds-lightblue;
-  border-top-width: .2rem;
+  border-top-width: .3rem;
   border-top-style: solid;
 }
 
@@ -202,6 +202,8 @@ text-align: center;
   border-bottom-style: solid;
   background-color: $color-ds-white;
   margin-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .scheme-dashboard .scheme-dashboard-body .btn-submit,

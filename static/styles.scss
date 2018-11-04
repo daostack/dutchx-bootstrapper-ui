@@ -262,11 +262,15 @@ form {
 
 .instructions-body {
   font-size: 1.1rem;
-  font-style: italic;
   padding-left: 1rem;
 }
 
-.instructions i {
+.instructions-icon {
+    vertical-align: top;
+    padding-top: .5rem;
+}
+
+.instructions-icon i {
   font-size: 2rem;
 }
 
@@ -345,6 +349,19 @@ label {
   @extend .btn-primary:hover;
 }
 
+.btn-link {
+  color: $color-ds-darkblue;
+  font-weight: 400;
+  text-transform: none;
+}
+
+.btn-link:hover {
+  color: $color-ds-darkblue;
+  text-decoration: underline;
+  font-weight: 400;
+  text-transform: none;
+}
+
 .bmd-help + div.input-group-append > button.btn-submit {
   padding-top: .6rem;
 }
@@ -380,7 +397,7 @@ td.has-etherscan-link {
 }
 
 .pageloading i {
-  color: $color-ds-lightblue;
+  color: $color-ds-darkblue;
 }
 
 etherscanlink {
@@ -408,5 +425,9 @@ etherscanlink {
 }
 
 .pageloading {
+  font-weight: 400;
+}
+
+.table thead th {
   font-weight: 400;
 }

@@ -6,23 +6,23 @@
     <thead class="thead-light">
       <tr>
         <!-- <th>Lock Id</th> -->
-        <th style="text-align:center;width: 20%;">Amount Not Released</th>
+        <th style="text-align:left;width: 20%;">Amount Not Released</th>
         <th>Locking Period End</th>
         <th>Release</th>
       </tr>
     </thead>
     <tbody>
       <tr if.to-view="_locks.length === 0">
-        <td colspan="100" style="text-align: center">
+        <td colspan="100" style="text-align: center; padding-top: 1rem">
           No locks have been submitted
         </td>
       </tr>
       <tr repeat.for="lock of _locks">
         <!-- <td>${lock.lockId }</td> -->
-        <td style="text-align:center;padding-top: 1.3rem;">${lock.amount | ethwei}</td>
-        <td style="padding-top: 1.3rem;">${lock.releaseTime | date:'friendlyDateTime' }</td>
+        <td style="text-align:left;padding-top: 1.3rem;">${lock.amount | ethwei}</td>
+        <td style="padding-top: 1.3rem; white-space:nowrap">${lock.releaseTime | date:'friendlyDateTime' }</td>
         <td if.to-view="anyCanRelease && !noReleaseFunction"><button if.to-view="lock.canRelease" click.delegate="_release(lock)"
-            class="btn btn-secondary btn-sm">Release</button></td>
+            class="btn btn-link">Release</button></td>
       </tr>
     </tbody>
   </table>

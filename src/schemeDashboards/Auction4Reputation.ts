@@ -52,6 +52,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     this.auctionsStartTime = await this.wrapper.getAuctionsStartTime();
     this.auctionsEndTime = await this.wrapper.getAuctionsEndTime();
     // this.numberOfAuctions = await this.wrapper.getNumberOfAuctions();
+
     this.auctionIsOver = (await Utils.lastBlockDate(this.web3Service.web3)) >= this.auctionsEndTime;
     this.refreshing = false;
   }
@@ -113,6 +114,15 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   async _userHasBid(auctionId: number): Promise<void> {
     this.userHasBid = (await this.wrapper.getBid(this.web3Service.defaultAccount, auctionId)).gt(0);
   }
+
+  // async _totalBids(auctionId: number): Promise<BigNumber> {
+  //   let totalBids = new BigNumber(0);
+  //   const numAuctions = await this.wrapper.getNumberOfAuctions();
+  //   for (let auctionId = 0; auctionId < numAuctions; ++auctionId) {
+  //     totalBids.add(await this.wrapper.getAuctionTotalBid(auctionId));
+  //   }
+  //   return totalBids;
+  // }
 
   private setAuctionId(auctionId: number): void {
     this.auctionId = auctionId;

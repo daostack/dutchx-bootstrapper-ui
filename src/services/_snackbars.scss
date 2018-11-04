@@ -1,3 +1,6 @@
+.snackbar {
+  max-width: 37rem;
+}
 
 .snackbar.snack-failure .snackbar-content {
   @extend .bg-danger;
@@ -29,4 +32,12 @@
 .snackbar-action-wrapper button:hover {
   background-color: transparent;
   text-decoration: underline;
+}
+
+.snackbar-message-text {
+  margin-right:.25rem;
+}
+
+#snackbar-container {
+  z-index: 999;
 }
