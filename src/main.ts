@@ -15,7 +15,6 @@ import { ConfigService, LogLevel } from "./services/ArcService";
 import { DateService } from "./services/DateService";
 import { AureliaConfiguration } from "aurelia-configuration";
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { Router } from 'aurelia-router';
 import { App } from 'app';
 import { AlertService } from 'services/alertService';
 
@@ -29,6 +28,7 @@ export async function configure(aurelia: Aurelia) {
 
   aurelia.use
     .standardConfiguration()
+    .plugin(PLATFORM.moduleName('aurelia-animator-css'))
     .plugin(PLATFORM.moduleName('aurelia-configuration'), config => {
       config.setDirectory('./');
       config.setConfig('app-config.json');
@@ -141,7 +141,9 @@ export async function configure(aurelia: Aurelia) {
     await initializeApp();
 
   } catch (ex) {
-    console.log(`Error initializing blockchain services: ${ex}`);
+    console.log(`Error initializing application: ${ex}`);
+    //const dialogService = aurelia.container.get(DialogService) as DialogService;
+    // dialogService.alert(`Sorry, an error occurred initializing the application`)
   }
 
   await aurelia.setRoot(PLATFORM.moduleName('app'));

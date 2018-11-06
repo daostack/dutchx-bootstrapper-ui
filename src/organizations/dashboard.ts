@@ -72,8 +72,6 @@ export class Dashboard {
 
   async activate(options: { address?: Address } = {}) {
 
-    $("body").css("overflow", "hidden");
-
     this.options = options;
     /*******************
      * Handle network change.  Must load a new DAO.
@@ -118,6 +116,12 @@ export class Dashboard {
   }
 
   async attached() {
+
+    /** 
+     * prevents some jitter
+     */
+    this.fixScrollbar();
+
     this.lockingPeriodEndDate = App.lockingPeriodEndDate;
     const msUntilCanRedeem = App.msUntilCanRedeem;
     setTimeout(() => {

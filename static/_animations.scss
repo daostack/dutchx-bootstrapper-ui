@@ -1,0 +1,52 @@
+.animated-page.au-enter {
+opacity: 0 !important;
+}
+
+.animated-page.au-enter-active {
+animation: fadeIn .8s;
+}
+
+// .animated-page.au-leave-active {
+// animation: fadeOut 2s;
+// }
+
+.animated-page.au-stagger {
+animation-delay: 50ms;
+}
+
+@keyframes fadeIn {
+0% { opacity: 0; }
+100% { opacity: 1; }
+}
+
+@keyframes fadeOut {
+0% { opacity: 1; }
+100% { opacity: 0; }
+}
+
+// .animated-banner.au-enter {
+// position: relative !important;
+// bottom: 0px;
+// }
+
+// .animated-banner.au-enter-active {
+// animation: slideIn 2s;
+// }
+
+// .animated-banner.au-leave-active {
+// animation: slideOut 2s;
+// }
+
+// .animated-banner.au-stagger {
+// animation-delay: 50ms;
+// }
+
+// @keyframes slideIn {
+// 0% { bottom: 0px; }
+// 100% { bottom: 600px; }
+// }
+
+// @keyframes slideOut {
+// 0% { bottom: 600px; }
+// 100% { bottom: 0px; }
+// }
