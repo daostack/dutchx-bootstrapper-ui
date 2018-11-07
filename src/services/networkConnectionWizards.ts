@@ -27,6 +27,7 @@ export class NetworkConnectionWizards {
   subscriptions: DisposableCollection;
   promise: Promise<DialogCloseResult>;
   dialogViewModel: ConnectToNet;
+  hasApprovedAccountAccess: boolean;
 
   public run(skipLanding: boolean): Promise<DialogCloseResult> {
 
@@ -40,13 +41,15 @@ export class NetworkConnectionWizards {
     /** but assume we're going to look for another DAO */
     this.hasDao = false;
 
-    const connectionChanged = () => {
+    const connectionChanged = async () => {
       this.isConnected = this.web3.isConnected; // && !!this.arcService.arcContracts;
       this.hasAccount = !!this.web3.defaultAccount;
-      this.hasDao = false;
+      const theWindow = (window as any);
+      this.hasApprovedAccountAccess =
+        await theWindow.ethereum._metamask.isApproved();
     };
 
-    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => connectionChanged()));
+    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => { this.hasDao = false; connectionChanged() }));
     this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Account", () => connectionChanged()));
     this.subscriptions.push(this.eventAggregator.subscribe("DAO.loaded", () => { this.hasDao = true; }));
     this.subscriptions.push(this.eventAggregator.subscribe("DAO.Loading", (onOff: boolean): void => {

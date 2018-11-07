@@ -13,7 +13,6 @@ export class ConnectToNet {
   subscriptions: DisposableCollection = new DisposableCollection();
   userAccount: Address;
   isDone: boolean;
-  hasApprovedAccountAccess: boolean;
   landed: boolean;
 
   constructor(
@@ -27,12 +26,6 @@ export class ConnectToNet {
     this.networkName = this.web3.networkName;
     this.landed = model.skipLanding;
     this.model = model;
-    const theWindow = (window as any);
-    this.hasApprovedAccountAccess =
-      theWindow.ethereum &&
-      theWindow.ethereum._metamask &&
-      theWindow.ethereum._metamask.isApproved &&
-      await theWindow.ethereum._metamask.isApproved();
 
     this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => {
       this.networkName = this.web3.networkName;
@@ -64,5 +57,6 @@ interface ConnectToNetModel {
   loading: boolean;
   skipLanding: boolean;
   hasDao: boolean;
+  hasApprovedAccountAccess: boolean;
   confirm: () => void;
 }

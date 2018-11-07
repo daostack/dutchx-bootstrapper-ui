@@ -16,12 +16,11 @@
             Please install and/or enable the <a href="https://metamask.io/" target="_blank">MetaMask browser extension</a>,
             then refresh this browser page so you can access the <a href="https://daotalk.org/c/dutchx-dao" target="_blank">DutchX</a>
             Initializer.
-
           </p>
 
           <div if.bind="isConnected && !hasAccount">
-            <p>Please ensure you have logged into MetaMask to access the <a href="https://daotalk.org/c/dutchx-dao"
-                target="_blank">DutchX</a> Initializer.</p>
+            <p>Please ensure you have logged into MetaMask to
+              access the <a href="https://daotalk.org/c/dutchx-dao" target="_blank">DutchX</a> Initializer.
           </div>
 
           <div if.bind="((isConnected && !hasAccount) || (!landed && hasDao))">
@@ -30,7 +29,8 @@
               Please ensure you have selected the account you intend to use in the future for voting within the DAO.
             </p>
             <!-- "OK" (`land`) will take us off the info panel -->
-            <p if.bind="hasDao" class="buttonContainer"><button class="btn btn-submit" click.delegate="land()">OK</button></p>
+            <p if.bind="hasDao && hasApprovedAccountAccess" class="buttonContainer"><button class="btn btn-submit"
+                click.delegate="land()">OK</button></p>
           </div>
 
           <div if.bind="isConnected && !hasAccount && !hasApprovedAccountAccess">
