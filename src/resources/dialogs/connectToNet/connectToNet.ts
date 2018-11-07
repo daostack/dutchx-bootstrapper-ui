@@ -22,7 +22,7 @@ export class ConnectToNet {
     // , private appConfig: AureliaConfiguration
     , private web3: Web3Service) { }
 
-  activate(model: ConnectToNetModel) {
+  async activate(model: ConnectToNetModel) {
     // this.lockingPeriodEndDate = new Date(this.appConfig.get("lockingPeriodEndDate"))
     this.networkName = this.web3.networkName;
     this.landed = model.skipLanding;
@@ -32,7 +32,7 @@ export class ConnectToNet {
       theWindow.ethereum &&
       theWindow.ethereum._metamask &&
       theWindow.ethereum._metamask.isApproved &&
-      theWindow.ethereum._metamask.isApproved();
+      await theWindow.ethereum._metamask.isApproved();
 
     this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => {
       this.networkName = this.web3.networkName;
