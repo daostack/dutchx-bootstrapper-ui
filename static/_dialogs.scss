@@ -22,7 +22,7 @@ ux-dialog-header .material-icons {
   margin-bottom: 1rem;
 }
 
-.dialog .body .important {
+ux-dialog-body .important {
   font-weight: 500;
 }
 
@@ -41,11 +41,15 @@ ux-dialog-header .material-icons {
 }
 
 ux-dialog {
-  max-width: 50rem;
   border-radius: 0 !important;
   border-width: 0 !important;
+}
+
+ux-dialog.connections,
+ux-dialog.alert {
   border-top-width: .5rem !important;
   border-top-color: $color-ds-black !important;
+  max-width: 50rem;
 }
 
 ux-dialog-overlay.active {
@@ -53,7 +57,8 @@ ux-dialog-overlay.active {
   opacity: .5 !important;
 }
 
-ux-dialog-body {
+ux-dialog.connections ux-dialog-body,
+ux-dialog.alert ux-dialog-body {
   padding-bottom: .25rem !important;
 }
 

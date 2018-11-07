@@ -1,0 +1,11 @@
+<template>
+  <div ref="banner" show.to-view="message" class="banner au-animate">
+    <div class="body">
+      <span class="message">${message}</span>
+      <button type="button" class="close" aria-label="Close" ref="okButton" click.trigger="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+
+</template>

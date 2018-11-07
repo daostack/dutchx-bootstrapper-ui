@@ -17,7 +17,7 @@ $font-family-base: "DINPro";
 
 @import "./animations";
 @import "./dialogs";
-@import "./alert";
+@import "./banner";
 @import "./landing";
 @import "./src/organizations/dashboard";
 @import "./src/services/snackbars";
@@ -50,6 +50,7 @@ footer, .navbar.footer {
   background-color: $color-ds-black !important;
   padding-top: .5rem;
   padding-bottom: .5rem;
+  z-index: 998;
 }
 
 .navbar.header .logo {

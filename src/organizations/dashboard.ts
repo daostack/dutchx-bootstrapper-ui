@@ -261,12 +261,10 @@ export class Dashboard {
 
     const bodyHeight = $(window).height() || 0;
     const footerHeight = $('.footer.navbar').height() || 0;
-    const headerHeight = $('.header.navbar').height() || 0;
 
     $('.dashboard-main-content').css(
       {
-        "top": `${headerHeight}px`,
-        "max-height": `${bodyHeight - footerHeight - headerHeight}px`
+        "max-height": `${bodyHeight - footerHeight}px`
       });
   }
 

@@ -3,15 +3,15 @@
 }
 
 .snackbar.snack-failure .snackbar-content {
-  @extend .bg-danger;
+  background-color: $color-ds-red;
 }
 
 .snackbar.snack-info .snackbar-content {
-  @extend .bg-info;
+  background-color: $color-ds-lightblue;
 }
 .snackbar.snack-warning .snackbar-content {
-  @extend .bg-warning;
-  @extend .text-dark;
+  background-color: $color-ds-orange;
+  color: $color-ds-darkblue;
 }
 
 .snackbar-action-wrapper > button {

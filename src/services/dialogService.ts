@@ -32,11 +32,3 @@ export class DialogService {
     return this.open(Alert, { message }, { keyboard: true });
   }
 }
-
-export interface IPromptOptions {
-  text: string;
-  ok?: boolean;
-  cancel?: boolean;
-  yesNo?: boolean;
-  title?: string;
-}
