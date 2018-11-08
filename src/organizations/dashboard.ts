@@ -260,11 +260,12 @@ export class Dashboard {
   private fixScrollbar() {
 
     const bodyHeight = $(window).height() || 0;
-    const footerHeight = $('.footer.navbar').height() || 0;
+    const headerHeight = $('.header.navbar').outerHeight() || 0;
+    const footerHeight = $('.footer.navbar').outerHeight() || 0;
 
     $('.dashboard-main-content').css(
       {
-        "max-height": `${bodyHeight - footerHeight}px`
+        "max-height": `${bodyHeight - footerHeight - headerHeight}px`
       });
   }
 

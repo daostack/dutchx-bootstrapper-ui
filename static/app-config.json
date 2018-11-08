@@ -9,17 +9,17 @@
   "Kovan": {
     "daoAddress": "0x7eae73d7b1358695440c7453a2a438147f62c1e1",
     "gnoTokenAddress": "0xde119a8f2a8e339d9d8a235c88d4aa403951b0ec",
-    "mgnTokenAddress": "0x98709b83af325a46edfac2f053a730a2980b3682"
+    "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb"
   },
   "Ropsten": {
     "daoAddress": "",
-    "gnoTokenAddress": "0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c",
+    "gnoTokenAddress": "",
     "mgnTokenAddress": ""
   },
   "Rinkeby": {
     "daoAddress": "",
     "gnoTokenAddress": "",
-    "mgnTokenAddress": ""
+    "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb"
   },
   "Live": {
     "daoAddress": "",

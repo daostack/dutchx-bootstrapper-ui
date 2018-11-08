@@ -122,6 +122,7 @@
     "aurelia-bootstrapper": "^2.1.1",
     "aurelia-configuration": "^2.0.0",
     "aurelia-dialog": "^2.0.0-rc.3",
+    "axios": "^0.18.0",
     "bluebird": "^3.5.2",
     "bootstrap": "^4.1.1",
     "bootstrap-material-design": "^4.1.1",

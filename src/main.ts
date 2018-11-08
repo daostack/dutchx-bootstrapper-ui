@@ -3,9 +3,9 @@
 import { Aurelia } from 'aurelia-framework';
 import { PLATFORM } from 'aurelia-pal';
 import * as Bluebird from 'bluebird';
-import { Web3Service } from "./services/Web3Service";
+import { Web3Service, BigNumber } from "./services/Web3Service";
 import { InitializeArcJs, AccountService, Address, Utils, Web3 } from '@daostack/arc.js';
-
+import axios from "axios";
 import 'arrive'; // do bmd does it's thing whenever views are attached
 import "popper.js";
 import 'bootstrap-material-design';
@@ -92,6 +92,7 @@ export async function configure(aurelia: Aurelia) {
   try {
 
     const initializeApp = async (): Promise<Web3> => {
+
       const web3 = await InitializeArcJs({
         useMetamaskEthereumWeb3Provider: true,
         watchForAccountChanges: true,
@@ -99,10 +100,22 @@ export async function configure(aurelia: Aurelia) {
         filter: {}
       });
 
-      const network = await Utils.getNetworkName();
-      appConfig.setEnvironment(network);
+      const networkName = await Utils.getNetworkName();
+      appConfig.setEnvironment(networkName);
 
-      // TODO: make this configurable in the application GUI
+      if (networkName === 'Live') {
+        ConfigService.set("gasPriceAdjustment", async (defaultGasPrice: BigNumber) => {
+          try {
+            const response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json');
+            // the api gives results if 10*Gwei
+            const gasPrice = response.data.fast / 10;
+            return web3.toWei(gasPrice, 'gwei');
+          } catch (e) {
+            return defaultGasPrice;
+          }
+        });
+      }
+
       ConfigService.set("estimateGas", true);
 
       // just to initialize them and get them running

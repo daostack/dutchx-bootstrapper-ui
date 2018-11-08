@@ -69,18 +69,12 @@ footer, .navbar.footer {
   color: $color-ds-white;
 }
 
-.navbar.footer .addresses {
-  text-align:right;
-  display: inline-block;
-}
-
-.navbar.footer .addresses .userBalance {
-  margin-left: 1.0rem;
+.navbar.footer .userBalance {
   display: inline-block;
   white-space: nowrap;
 }
 
-.navbar.footer .addresses .userAddress {
+.navbar.footer .userAddress {
   display: inline-block;
   white-space: nowrap;
 }
