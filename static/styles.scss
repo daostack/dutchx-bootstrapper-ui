@@ -79,6 +79,11 @@ footer, .navbar.footer {
   white-space: nowrap;
 }
 
+.navbar.footer .userBalance .balance,
+.navbar.footer .userBalance .ethbalance {
+  color: $color-ds-white;
+}
+
 etherscanlink .nav-link {
   padding: 0;
 }

@@ -78,7 +78,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
       let result = await this.wrapper.bid({ amount });
 
-      this.eventAggregator.publish("handleSuccess", new EventConfigTransaction(
+      this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
         `bid ${this.web3Service.fromWei(amount)} token(s), for: ${currentAccount}`, result.tx));
 
     } catch (ex) {
@@ -86,34 +86,34 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     }
   }
 
-  protected async redeem(auctionId: number, beneficiaryAddress: Address) {
+  // protected async redeem(auctionId: number, beneficiaryAddress: Address) {
 
-    /**
-     * TODO!!!:  will there be a problem with timezones here???
-     * Should get this id from Arc, see: https://github.com/daostack/arc/issues/548
-     * In any case, it can't be replired-upon that the current auction will not have changed between now and when
-     * execution actually reached the contract.
-     */
-    // const currentAuctionId = Math.floor((Date.now() - this.auctionsStartTime.getTime()) / 1000 / this.auctionPeriod);
-    // const amountMayRedeem = await this.wrapper.getBid(beneficiaryAddress, currentAuctionId);
+  //   /**
+  //    * TODO!!!:  will there be a problem with timezones here???
+  //    * Should get this id from Arc, see: https://github.com/daostack/arc/issues/548
+  //    * In any case, it can't be replired-upon that the current auction will not have changed between now and when
+  //    * execution actually reached the contract.
+  //    */
+  //   // const currentAuctionId = Math.floor((Date.now() - this.auctionsStartTime.getTime()) / 1000 / this.auctionPeriod);
+  //   // const amountMayRedeem = await this.wrapper.getBid(beneficiaryAddress, currentAuctionId);
 
-    try {
+  //   try {
 
-      let result = await this.wrapper.redeem({ auctionId, beneficiaryAddress });
+  //     let result = await this.wrapper.redeem({ auctionId, beneficiaryAddress });
 
-      this.eventAggregator.publish("handleSuccess", new EventConfigTransaction(
-        `Redeemed in auctionId ${auctionId}, for: ${beneficiaryAddress}`, result.tx));
+  //     this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
+  //       `Redeemed in auctionId ${auctionId}, for: ${beneficiaryAddress}`, result.tx));
 
-      this.auctionId = -1;
+  //     this.auctionId = -1;
 
-    } catch (ex) {
-      this.eventAggregator.publish("handleException", new EventConfigException(`Error redeeming in auctionId ${auctionId}, for: ${beneficiaryAddress}`, ex));
-    }
-  }
+  //   } catch (ex) {
+  //     this.eventAggregator.publish("handleException", new EventConfigException(`Error redeeming in auctionId ${auctionId}, for: ${beneficiaryAddress}`, ex));
+  //   }
+  // }
 
-  async _userHasBid(auctionId: number): Promise<void> {
-    this.userHasBid = (await this.wrapper.getBid(this.web3Service.defaultAccount, auctionId)).gt(0);
-  }
+  // async _userHasBid(auctionId: number): Promise<void> {
+  //   this.userHasBid = (await this.wrapper.getBid(this.web3Service.defaultAccount, auctionId)).gt(0);
+  // }
 
   // async _totalBids(auctionId: number): Promise<BigNumber> {
   //   let totalBids = new BigNumber(0);
@@ -124,8 +124,8 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   //   return totalBids;
   // }
 
-  private setAuctionId(auctionId: number): void {
-    this.auctionId = auctionId;
-    this._userHasBid(auctionId);
-  }
+  // private setAuctionId(auctionId: number): void {
+  //   this.auctionId = auctionId;
+  //   this._userHasBid(auctionId);
+  // }
 }

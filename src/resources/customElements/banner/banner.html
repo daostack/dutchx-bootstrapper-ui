@@ -1,7 +1,7 @@
 <template>
-  <div ref="banner" show.to-view="message" class="banner au-animate">
+  <div ref="banner" show.to-view="showing" class="banner au-animate">
     <div class="body">
-      <span class="message">${message}</span>
+      <span ref="elMessage" class="message"></span>
       <button type="button" class="close" aria-label="Close" ref="okButton" click.trigger="close()">
         <span aria-hidden="true">&times;</span>
       </button>

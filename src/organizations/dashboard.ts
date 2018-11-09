@@ -194,7 +194,7 @@ export class Dashboard {
     /**
      * Get all schemes associated with the DAO.  These can include non-Arc schemes.
      */
-    let schemes = await this.schemeService.getSchemesForDao(this.address);
+    let schemes = (await this.schemeService.getSchemesForDao(this.address));
 
     // add a fake non-Arc scheme
     // schemes.push(<SchemeInfo>{ address: "0x9ac0d209653719c86420bfca5d31d3e695f0b530" });
@@ -245,12 +245,15 @@ export class Dashboard {
       this.web3Service.web3.eth.getCode(scheme.address, callback))();
     for (const wrapperName in WrapperService.nonUniversalSchemeFactories) {
       const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
-      if (factory) {
-        const contract = await factory.ensureSolidityContract();
-        const found = code === contract.deployedBinary;
-        if (found) {
-          const wrapper = await factory.at(scheme.address);
-          return SchemeInfo.fromContractWrapper(wrapper, true);
+      if (factory && this.dutchXSchemeConfigs.has(wrapperName)) {
+        let contract = null;
+        try { contract = await factory.ensureSolidityContract(); } catch { }
+        if (contract) {
+          const found = code === contract.deployedBinary;
+          if (found) {
+            const wrapper = await factory.at(scheme.address);
+            return SchemeInfo.fromContractWrapper(wrapper, true);
+          }
         }
       }
     }
@@ -260,12 +263,12 @@ export class Dashboard {
   private fixScrollbar() {
 
     const bodyHeight = $(window).height() || 0;
-    const headerHeight = $('.header.navbar').outerHeight() || 0;
-    const footerHeight = $('.footer.navbar').outerHeight() || 0;
+    const headerHeight = $('.header.navbar').height() || 0;
+    const footerHeight = $('.footer.navbar').height() || 0;
 
     $('.dashboard-main-content').css(
       {
-        "max-height": `${bodyHeight - footerHeight - headerHeight}px`
+        "max-height": `${bodyHeight - headerHeight - footerHeight}px`
       });
   }
 

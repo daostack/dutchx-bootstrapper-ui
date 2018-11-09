@@ -109,11 +109,12 @@ export class AureliaHelperService {
 
   }
 
-  public enhanceElement(el: Element, bindingContext: any): void {
+  public enhanceElement(el: Element, bindingContext: any, reEnhance: boolean = false): void {
     if (el) {
-      if (!el.querySelectorAll('.au-target').length) { // otherwise we would be rebinding something that has already been bound
-        this.templatingEngine.enhance({ element: el, bindingContext: bindingContext });
+      if (reEnhance) {
+        $(el).removeClass("au-target");
       }
+      this.templatingEngine.enhance({ element: el, bindingContext: bindingContext });
     }
   }
 

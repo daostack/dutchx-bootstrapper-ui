@@ -6,8 +6,6 @@
 }
 
 .banner .body {
-  color: $color-ds-white;
-  background-color: $color-ds-red;
   padding-top: 0.75rem;
   padding-right: 1.75rem;
   padding-bottom: 0.75rem;
@@ -15,6 +13,27 @@
   display: inline-block;
   @extend .shadow-sm;
   position: relative; /* for the close icon */
+}
+
+.banner.failure .body {
+  color: $color-ds-white;
+  background-color: $color-ds-red;
+}
+
+.banner.info .body {
+  color: $color-ds-white;
+  background-color: $color-ds-lightblue;
+}
+
+.banner.info .body a {
+  margin-left: .5rem;  
+  color: $color-ds-yellow;
+  text-transform:uppercase;  
+}
+
+.banner.info .body .copy-to-clip-button {
+  margin-left: .5rem;  
+  color: $color-ds-yellow;
 }
 
 .banner .message {

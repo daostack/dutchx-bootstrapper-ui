@@ -20,10 +20,10 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
     return success;
   }
 
-  protected async redeem(): Promise<boolean> {
-    const success = await super.redeem();
-    this.alreadyLocked = !success;
-    return success;
-  }
+  // protected async redeem(): Promise<boolean> {
+  //   const success = await super.redeem();
+  //   this.alreadyLocked = !success;
+  //   return success;
+  // }
 
 }

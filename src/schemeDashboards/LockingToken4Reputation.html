@@ -13,7 +13,7 @@
         <div if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't lock</div>
         <div else>
           <div class="row">
-            <div class="col-4">
+            <div class="col-5">
               <div class="form-group bmd-form-group">
                 <label for="lockAmount">Tokens to lock</label>
                 <input class="form-control" type='number' id="lockAmount" value.bind="amount | ethwei & updateTrigger:'blur'" />
@@ -42,12 +42,12 @@
             </div>
           </div>
 
-          <div if.bind="lockingPeriodIsEnded">
+          <!-- <div if.bind="lockingPeriodIsEnded">
             <div if.to-view="!userScore" class="mb-3">You have nothing to redeem</div>
             <div else class="form-group bmd-form-group">
               <button class="btn-submit" click.delegate="redeem()">Redeem Reputation</button>
             </div>
-          </div>
+          </div> -->
       </form>
     </div>
   </div>

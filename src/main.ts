@@ -82,7 +82,7 @@ export async function configure(aurelia: Aurelia) {
   PLATFORM.moduleName("./schemeDashboards/ExternalLocking4Reputation");
   PLATFORM.moduleName("./schemeDashboards/LockingEth4Reputation");
   PLATFORM.moduleName("./schemeDashboards/LockingToken4Reputation");
-  PLATFORM.moduleName("./schemeDashboards/FixedReputationAllocation");
+  // PLATFORM.moduleName("./schemeDashboards/FixedReputationAllocation");
   PLATFORM.moduleName("./schemeDashboards/Auction4Reputation");
 
   PLATFORM.moduleName("./schemeDashboards/Auction4Reputation");

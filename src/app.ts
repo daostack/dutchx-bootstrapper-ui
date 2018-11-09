@@ -105,7 +105,7 @@ export class App {
     "Auction4Reputation",
     "ContributionReward",
     "ExternalLocking4Reputation",
-    "FixedReputationAllocation",
+    // "FixedReputationAllocation",
     "GenesisProtocol",
     "GlobalConstraintRegistrar",
     "LockingEth4Reputation",
