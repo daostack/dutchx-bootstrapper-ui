@@ -3,12 +3,12 @@
   "lockingPeriodEndDate": "2019-02-15 00:00:00",
   "Ganache": {
     "daoAddress": "0xf7b7be05d6c115184f78226f905b643dd577fa6b",
-    "gnoTokenAddress": "",
-    "mgnTokenAddress": ""
+    "gnoTokenAddress": "0xdcf22b53f327b4f7f3ac42d957834bd962637555",
+    "mgnTokenAddress": "0xdcf22b53f327b4f7f3ac42d957834bd962637555"
   },
   "Kovan": {
-    "daoAddress": "0x7eae73d7b1358695440c7453a2a438147f62c1e1",
-    "gnoTokenAddress": "0xde119a8f2a8e339d9d8a235c88d4aa403951b0ec",
+    "daoAddress": "0x1f33d16762a06abfff2cfe79dd0f0921eea54270",
+    "gnoTokenAddress": "0x6018bf616ec9db02f90c8c8529ddadc10a5c29dc",
     "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb"
   },
   "Ropsten": {
@@ -18,7 +18,7 @@
   },
   "Rinkeby": {
     "daoAddress": "",
-    "gnoTokenAddress": "",
+    "gnoTokenAddress": "0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c",
     "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb"
   },
   "Live": {

@@ -47,30 +47,6 @@ export class App {
      */
     config.map([
       {
-        route: ['noDao'],
-        name: 'noDao',
-        moduleId: PLATFORM.moduleName('./error-pages/noDao/noDao'),
-        nav: false,
-        title: 'DAO Not Found'
-      },
-      {
-        route: ['noaccount'],
-        name: 'noaccount',
-        moduleId: PLATFORM.moduleName('./error-pages/noaccount/noaccount'),
-        nav: false,
-        title: 'No Account'
-      },
-      /**
-       * not connected and/or couldn't get the daostack addresses, either way treat as not connected
-       */
-      {
-        route: ['notconnected'],
-        name: 'notconnected',
-        moduleId: PLATFORM.moduleName('./error-pages/notconnected/notconnected'),
-        nav: false,
-        title: 'Not Connected'
-      },
-      {
         route: ['', 'landing'],
         name: 'landing',
         moduleId: PLATFORM.moduleName('./landing'),
