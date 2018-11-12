@@ -1,167 +1,135 @@
 <template>
-  <div class="landing-page animated-page container au-animate">
-    <div><button class="btn btn-link" click.delegate="router.navigateToRoute('dashboard', null,  {trigger: true})">Dashboard</button></div>
+  <div class="landing-page animated-page container-fluid au-animate">
+    <!-- <div><button class="btn btn-link" click.delegate="router.navigateToRoute('dashboard', null,  {trigger: true})">Dashboard</button></div> -->
+    <div class="countdown"><span class="count">${msUntilCanLockCountdown() | timespan:"days" & signal:'countdown'}</span>
+      to take part in the dxDAO</div>
+
     <div class="main-header">
-      <img class="logo" src="../static/dutchx-blue.svg" />
-      <div class="title">DutchX DAO</div>
+      <img src="../static/header-static.png" />
     </div>
 
-    <div class="countdown">${msUntilCanLockCountdown() | timespan:"seconds" & signal:'countdown'} to
-      take part in:</div>
+    <div class="primary-section">
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <div class="icon"><img src="../static/dutchx-blue.svg" /></div>
 
-    <div class="icon-section">
-      <div class="icon"><img class="section-icon" src="../static/icon-better-way-to-trade.svg" /></div>
+          <div class="header">A Better Way To Trade</div>
 
-      <div class="header">A Better Way To Trade</div>
+          <div class="body-text">
+            <p>
+              The future of decentralized applications is DAOs. The dxDAO is a second-generation DAO, designed to
+              facilitate
+              global, open trade. It will develop, deploy, and govern decentralized trading protocols and platforms.
+            </p>
 
-      <div class="body-text">
-        The DutchX DAO has the mission to facilitate open trade of anything of value. It will develop, deploy, and
-        govern
-        decentralized trading platforms. The first DEX the DutchX DAO will deploy is the DutchX, an open trading
-        protocol
-        for
-        ERC20 tokens using the Dutch auction mechanism to determine a fair value for tokens and mitigate many harmful
-        trading
-        practices such as frontrunning, low liquidity, and third-party risk. You can find all information and
-        documentation
-        about the DutchX here.
-      </div>
-    </div>
-
-    <div class="icon-section">
-      <div class="icon"><img class="section-icon" src="../static/icon-completely-decentralized.svg" /></div>
-
-      <div class="header">Completely Decentralized</div>
-
-      <div class="body-text">
-        A community-owned DAO gives traders, market makers, and community members the unique opportunity to govern the
-        DutchX, allowing them to list tokens, manage fees, update the protocol, and more!
+            <a>
+              The first dApp deployed by the dxDAO will be the DutchX, an open trading protocol for ERC20 tokens using
+              the
+              Dutch auction mechanism. It determines a fair value for tokens, permits trading in low liquidity
+              environments
+              with no third party risk, and mitigates harmful trading practices like front-running. You can find all
+              information and documentation about the DutchX <a href="https://dutchx.readthedocs.io" target="_blank">here</a>,
+              and join the discussion in this <a href="https://daotalk.org/" target="_blank">Forum</a>.
+              </p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="icon-section">
-      <div class="icon"><img class="section-icon" src="../static/icon-holographic-governance.svg" /></div>
+    <div class="secondary-sections">
+      <div class="row">
+        <div class="col-md-12 col-lg-5 offset-lg-1">
+          <div class="section green">
+            <div class="header">The Long-term Mission</div>
+            <div class="body-text">
+              <p>
+                For a decentralized protocol to reach its full potential, every layer of the stack must be
+                decentralized,
+                including governance. When a protocol is sufficiently decentralized at each layer, it becomes more
+                resilient and ultimately more trustworthy for its users.
+              </p>
 
-      <div class="header">Holographic Governance</div>
+              <p>
+                Without a central governing body, protocols and dApps will be able to more easily sustain themselves
+                and
+                adjust when facing adversarial risks. When the direction and parameterization of the protocol is
+                collectively governed, users become more confident that further versions will align with their
+                interests
+              </p>.
 
-      <div class="body-text">
-        Holographic consensus enables the DAO to easily scale, and onboard more traders, liquidity providers, and
-        protocol
-        hackers to its trading ecosystem.
+              <p>
+                In the future, software—through the collective help of human actors—will own itself, run itself, and
+                strategize for itself. Unlimited value exchange is one of the most critical and vulnerable components
+                of
+                the decentralization stack and where this future begins.
+              </p>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12 col-lg-5">
+          <div class="section darkblue">
+            <div class="header">What is there to Govern?</div>
+            <div class="body-text">
+              <a>
+                The dxDAO can decide on any governance questions relating to the dxDAO or the DutchX trading protocol.
+                Some examples include updates of the smart contract logic, whitelisting of tokens, changing the fee
+                structure, incentivizing marketing efforts, asking for an additional security audit, or creating a
+                liquidity provision on the DutchX trading protocol. The DAO may additionally find a need to fund its
+                future <a href="https://github.com/gnosis/dx-daostack" target="_blank">open-source development</a>,
+                which would require decision-making around allocating fees.
+                </p>
+
+                <p>In the future, the dxDAO may then decide to deploy and govern other decentralized trading protocols.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 col-lg-5 offset-lg-1">
+          <div class="section bluegreen">
+            <div class="header">What is the thought behind the initial Reputation distribution?</div>
+            <div class="body-text">
+              dxDAO's initial Reputation distribution seeks to place some priority on participation in the dxDAO by
+              individuals or projects that are interested in the governance of decentralized exchanges, while still
+              making Reputation available to a larger user base.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12 col-lg-5">
+          <div class="section lightblue">
+            <div class="header">How do I vote and what is Reputation?</div>
+            <div class="body-text">
+              Voting will be carried out using <a href="https://alchemy.daostack.io/#/" target="_blank">Alchemy</a>,
+              the friendly DAO interface powered by DAOstack. By default,
+              proposals submitted to the DAO require an absolute majority of voting power to pass—that is, greater than
+              50% of the total Reputation in the DAO. However, this can be changed so that only a relative majority is
+              required, meaning more Reputation votes for the proposal than against it within a given time frame.
+              Whether an absolute or relative majority is required depends on the activity in a prediction market, in
+              which proposals may be "<a href="https://medium.com/daostack/on-the-utility-of-the-gen-token-eb4f341d770e"
+                target="_blank">boosted</a>" when enough tokens are staked to predict a proposal’s passing by the
+              DAO. This tandem system—Reputation-based voting along with token-based predicting—is the essence of the
+              <a href="https://medium.com/daostack/on-the-utility-of-the-gen-token-eb4f341d770e" target="_blank">Holographic
+                Consensus</a> framework developed by DAOstack.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="icon-section">
-      <div class="icon"><img class="section-icon" src="../static/placeholder-icon.svg" /></div>
-
-      <div class="header">How and What?</div>
-
-      <div class="question">What is the Mission?</div>
-
-      <div class="body-text">
-        For a decentralized protocol to reach its full potential, every layer of the stack must be decentralized,
-        including
-        governance. When a protocol is sufficiently decentralized at each layer, it becomes more resilient and
-        ultimately
-        trustworthy for its users.
-      </div class="body-text">
-
-      <div class="body-text">A DAO governed protocol is akin to a hydra. Without a central governing body to eliminate,
-        the protocol becomes
-        self-sustaining and more adaptable to adversarial risks. When the direction and parameterization of the
-        protocol
-        is
-        collectively governed, users become more confident that further versions will align with their interests.</div>
-
-      <div class="body-text">In the future software—through the collective help of human actors—will own, run, and
-        strategize for itself.
-        Unlimited value exchange is one of the most critical and vulnerable components of the decentralization stack
-        and
-        where this future begins.</div>
-
-      <div class="question">What is there to govern?</div>
-
-      <div class="body-text">
-        The DutchX DAO can decide on any governance questions relating to DutchX DAO or the DutchX protocol. Some
-        examples
-        include
-        voting on further reputation distribution, changing the fee structure, incentivizing additional marketing
-        efforts,
-        or
-        liquidity provision on the DutchX protocol. The DAO may additionally find a need to fund its future open-source
-        development, which would require decision-making around allocating collected fees.
+    <div class="pie-chart-section">
+      <div class="row">
+        <div class="col-6 offset-3">
+          <div class="title">How much and how is Reputation exactly distributed?</div>
+          <img class="pie-chart" src="../static/pie-chart-static.png" />
+          <div class="footer">Participants may be part of more than one group, with Reputation accumulating additively.</div>
+        </div>
       </div>
-
-      <div class="question">What is the thought behind the initial reputation distribution?</div>
-
-      <div class="body-text">
-        DutchX DAOs’s initial reputation distribution seeks to widely distribute participation in the DAO to
-        individuals
-        or
-        Ethereum projects that take interest in governance of decentralized applications and exchanges, while still
-        keeping
-        the ways to obtain reputation accessible to a large user base.
-      </div>
-
-      <div class="question">How do you vote and what is Reputation?</div>
-
-      <div class="body-text">
-        Voting will be carried out using Alchemy, the friendly DAO interface powered by DAOstack. Reputation (REP) is
-        the
-        voting power a given address possesses. Governance proposals submitted to the DAO may pass through either an
-        absolute
-        majority of voting power, that is, greater than 50% of the aggregate reputation, or a relative majority,
-        consisting
-        of a simple majority of reputation in a given time frame. The shift in quorum from an absolute majority to a
-        relative
-        majority, called boosting, is powered by the holographic consensus framework.
-      </div>
-
-      <div class="question">How much and how is Reputation exactly distributed?</div>
-
-      <div class="body-text">The initial amount of Reputation (REP) to be distributed is one million.</div>
-
-      <div class="pie-chart">
-        <img src="../static/ds_dutchx_pie_chart_01-1.png" />
-      </div>
-
-      <div class="body-text">
-        There are various different ways to obtain Reputation. The following percentages are split between the
-        participants of each group. The exact mechanism is explained further below.
-      </div>
-      <ul>
-        <li>8% (=fixed 80k REP) are distributed to participants locking ETH</li>
-        <li>30% (=fixed 300k REP) are distributed to participants locking any token traded on the DutchX</li>
-        <li>10% (=fixed 100k REP) are distributed to participants taking part in an auction, selling GEN</li>
-        <li>2% (=fixed 20k REP) are distributed to participants activating their DappCon Ethercard</li>
-        <li>50% (=fixed 500k REP) are distributed to participants activating their Magnolia account</li>
-      </ul>
-
-      <div class="body-text">
-        Participants use as many REP generating methods as you please. Your reputation is then totaled at the end of
-        the
-        Initiation Phase.
-      </div>
-
-      <div class="question">What are the steps in this process?</div>
-
-      <div class="body-text">
-        <a href="https://daostack.io" target="_blank">DAOstack</a> and <a href="https://www.gnosis.pm/" target="_blank">Gnosis</a>
-        are working full-speed for you! These are the steps towards a fully functional DutchX DAO:
-      </div>
-
-      <ol>
-        <li><span class="important">Pre-initiation phase</span> -
-          Working to get this up and running for you. Join the conversation in this forum.</li>
-        <li><span class="important">Initialization Phase - ${lockingPeriodStartDate | date:"friendly"} -
-            ${lockingPeriodEndDate | date:"friendly"}</span> -
-          This is when you can take part in the above-mentioned Reputation distribution.</li>
-        <li><span class="important">Redemption - Beginning ${lockingPeriodEndDate | date:"friendly"}</span> -
-          Immediately after the initiation period is over, you may redeem your REP here. We do not limit this period.</li>
-        <li><span class="important">Governance Phase - Beginning ${lockingPeriodEndDate | date:"friendly"}</span> -
-          Be an active voting member in the DutchX DAO. Join the discussion in this <a href="https://daotalk.org/"
-            target="_blank">Forum</a>.</li>
-      </ol>
+    </div>
+    <div class="join-section">
+      <div class="body">Join the discussion in this <a href="https://daotalk.org/" target="_blank">Forum</a></div>
     </div>
   </div>
 </template>

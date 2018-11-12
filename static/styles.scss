@@ -42,6 +42,16 @@ $font-family-base: "DINPro";
   padding: 0;
 }
 
+a {
+  color: $color-ds-darkblue;
+}
+
+a:hover
+{
+  color: $color-ds-darkblue;
+  text-decoration: underline;
+}
+
 footer, .navbar.footer {
   background-color: $color-ds-grey-7 !important;
 }
@@ -150,11 +160,6 @@ section h4 {
 {
   color: $color-ds-yellow;
   background-color: transparent;
-}
-
-a:hover
-{
-  text-decoration: underline;
 }
 
 a.bg-warning:focus, a.bg-warning:hover {

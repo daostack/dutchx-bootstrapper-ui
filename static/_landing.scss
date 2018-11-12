@@ -1,78 +1,134 @@
 @import "./colors";
 
 .landing-page {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  padding-top: 4rem;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .landing-page .countdown {
-  font-size: 1.5rem;
+  font-size:3rem;
   text-align: center;
-  font-weight: 500;
-  color: $color-ds-green;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
 }
 
-.landing-page .main-header .logo {
-  height: 4rem;
-  margin-bottom: 1.5rem;
+.landing-page .count {
+  font-weight: 500;
+  color: $color-ds-darkblue;
 }
 
 .landing-page .main-header {
-  font-size: 3rem;
-  font-weight: 400;
-  text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 5rem;
 }
 
-.landing-page .header {
-  font-size: 1.2rem;
+.landing-page .main-header img {
+  width: 100%;
+}
+
+
+.landing-page .primary-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.landing-page .primary-section .header {
+  color: $color-ds-darkblue;
+  font-size: 2.5rem;
   font-weight: 400;
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
-.landing-page .icon-section {
-  border-bottom-color: $color-ds-darkblue;
-  border-bottom-width: .25rem;
-  border-bottom-style: solid;
-  margin-bottom: 2rem;
+.landing-page .primary-section .icon {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.landing-page .primary-section .icon img {
+  width: 4rem;
+}
+
+.landing-page .primary-section .body-text {
+  margin-bottom: 1rem;
+}
+
+.landing-page .secondary-sections {
+  background-color: $color-ds-grey-1;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.landing-page .secondary-sections .section {
+  border-top-width: .3rem;
+  border-top-style: solid;
+  margin-top: 2rem;
   padding-bottom: 1rem;
   padding-top: 1rem;
 }
 
-.landing-page .body-text {
-  margin-bottom: 1rem;
+.landing-page .secondary-sections .section.green {
+  border-top-color: $color-ds-green;
 }
 
-.landing-page .question {
+.landing-page .secondary-sections .section.bluegreen {
+  border-top-color: $color-ds-bluegreen;
+}
+
+.landing-page .secondary-sections .section.darkblue {
+  border-top-color: $color-ds-darkblue;
+}
+
+.landing-page .secondary-sections .section.lightblue {
+  border-top-color: $color-ds-lightblue;
+}
+
+.landing-page .secondary-sections .section .header {
+  color: $color-ds-black;
   font-weight: 400;
-  margin-bottom: 1rem;
+  font-size: 1.7rem;
+  margin-bottom: 1.5rem;
+}
+
+.landing-page .pie-chart-section {
+  padding-top:3rem;
+  padding-bottom:3rem;
+  width: 100%;
+  background-color: $color-ds-darkblue;
+  color: $color-ds-white;
   text-align: center;
-  text-decoration: underline;
+}
+
+.landing-page .pie-chart-section .title {
+  font-size:2.5rem;
+  margin-bottom: 2rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.landing-page .pie-chart-section .pie-chart {
+  max-width:100%;
+  max-height:auto;
+  margin-bottom: 2rem;
+}
+
+.landing-page .pie-chart-section .footer {
+  font-size:.9rem;
 }
 
 .landing-page .important {
   font-weight: 400;
 }
 
-.landing-page .pie-chart {
-  padding-top:2rem;
-  padding-bottom:2rem;
-  padding-left:1rem;
-  padding-right:1rem;
+.landing-page .join-section {
+  background-color: $color-ds-black;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
   text-align: center;
-}
-
-.landing-page .pie-chart img {
-  max-width:80%; max-height:auto;
-}
-
-.landing-page .icon {
-  text-align: center;
-}
-
-.landing-page .icon .section-icon {
-  width: 7rem;
-  margin-bottom: 1.5rem;
+  color: $color-ds-white;
+  font-size: 2.6rem;
 }
