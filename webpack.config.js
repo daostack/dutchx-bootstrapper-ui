@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyPlugin = require('uglifyjs-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 const { AureliaPlugin } = require('aurelia-webpack-plugin');
 const { optimize: { CommonsChunkPlugin }, ProvidePlugin } = require('webpack');
 const { TsConfigPathsPlugin, CheckerPlugin } = require('awesome-typescript-loader');
@@ -214,11 +215,9 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
             ecma: 6
           }
         }),
-        // TODO: Azure isn't using the resulting .gz files, and isn't doing nearly as good a
-        // job of compression as this plugin does.  Figure out how to improve that story. 
-        // new CompressionPlugin({
-        //   test: /\.js($|\?)/i
-        // })
+        new CompressionPlugin({
+          test: /\.js($|\?)/i
+        })
       ])
       // , new BundleAnalyzerPlugin({ analyzerMode: 'static' })
     ],

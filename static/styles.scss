@@ -274,12 +274,6 @@ form {
   font-size: 2rem;
 }
 
-.arc-schemes-dropdown-button
-.voting-machine-dropdown-button
-.global-constraints-dropdown-button {
-  font-weight: bold;
-}
-
 /** eliminate the nasty 32 pixel margin that BMD adds **/
 .list-group.clean .list-group-item :first-child {
   margin-right: unset; /* override BMD */
@@ -289,45 +283,12 @@ form {
   padding-left: unset !important;
 }
 
-.form-section-header {
-  font-weight: bold;
-  padding-top: 1.5rem;
-}
-
-.fee-input {
-  width:7rem;
-}
-
 .dropdown {
   display: inline-block;
 }
 
-/* animate page transitions */
-/* section.au-enter-active {
-  animation: fadeInRight 1s;
-} */
-
-/* div.au-stagger {
-  /* 50ms will be applied between each successive enter operation
-  animation-delay: 50ms;
-} */
-
 .table.plain-table th, .table.plain-table td {
     border-top-width: 0;
-}
-
-.collapseButtonIcon {
-  text-decoration: none !important;
-}
-
-.collapseButtonIcon:not(.collapsed)::after {
-  color: $color-ds-grey-4;
-  content: "\0020\25B2";
-}
-
-.collapseButtonIcon.collapsed::after {
-  color: $color-ds-grey-4;
-  content: "\0020\25BC";
 }
 
 label {
@@ -364,21 +325,6 @@ label {
 
 .bmd-help + div.input-group-append > button.btn-submit {
   padding-top: .6rem;
-}
-
-div.buttonAtTop {
-  margin-top: -1.75rem;
-  margin-left: .5rem;
-  margin-bottom: .5rem;
-}
-
-div.buttonAtTop > div.bmd-form-group {
-  padding-top: 0;
-}
-
-div.buttonAtTop .btn,
-div.buttonAtTop .btn {
-  padding-left: .5rem;
 }
 
 td.has-etherscan-link {

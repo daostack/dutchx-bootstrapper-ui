@@ -24,7 +24,7 @@
 }
 
 body {
-  font-weight: 300;
+  font-weight: 300 !important;
   overflow: hidden;
   font-family: "DINPro,Roboto,Helvetica,Arial,sans-serif";
 }

@@ -15,21 +15,8 @@
   <link rel="stylesheet" href="./base.css">
 </head>
 
-<body style="background-color: black; color: white; font-weight: 300">
+<body>
   <div aurelia-app="main">
-    <div class="container-fluid">
-      <div class="row" style="padding-top: 10%; text-align: center">
-        <div class="col-6 offset-3 splash">
-          <img src="./dutchx-white.svg" />
-          <h1>Welcome to the
-            <%- htmlWebpackPlugin.options.metadata.title %>
-          </h1>
-          <div style="margin-bottom:8rem; font-size:1.4rem">Breath deeply while we fetch some JavaScript, connect to
-            the blockchain and load the DAOstack ecosystem...</div>
-          <span class="fa fa-circle-o-notch fa-spin fa-4x"></span>
-        </div>
-      </div>
-    </div>
   </div>
 
   <% if (htmlWebpackPlugin.options.metadata.server) { %>
