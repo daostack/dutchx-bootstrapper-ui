@@ -98,8 +98,7 @@
   padding-bottom: 1.5rem;
   padding-left: 3rem;
   padding-right: 3rem;
-  background-color: $color-ds-white;
-  color: $color-ds-black;
+  color: $color-ds-white;
 }
 
 .landing-page .participation-dates-section .section {
@@ -109,20 +108,11 @@
   text-align: left;
 }
 
-.landing-page .participation-dates-section .section.green {
-  border-top-color: $color-ds-green;
-}
-
-.landing-page .participation-dates-section .section.bluegreen {
-  border-top-color: $color-ds-bluegreen;
-}
-
-.landing-page .participation-dates-section .section.darkblue {
-  border-top-color: $color-ds-darkblue;
-}
-
+.landing-page .participation-dates-section .section.green,
+.landing-page .participation-dates-section .section.bluegreen,
+.landing-page .participation-dates-section .section.darkblue,
 .landing-page .participation-dates-section .section.lightblue {
-  border-top-color: $color-ds-lightblue;
+  border-top-color: $color-ds-green;
 }
 
 .landing-page .participation-dates-section .shortdate {
@@ -133,12 +123,10 @@
 }
 
 .landing-page .participation-dates-section .phase {
-  color: $color-ds-bluegreen;
   font-weight: 500;
 }
 
 .landing-page .participation-dates-section .longdate {
-  color: $color-ds-bluegreen;
   font-weight: 400;
   margin-bottom: .75rem;
 }
