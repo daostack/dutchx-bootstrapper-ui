@@ -94,6 +94,55 @@
   line-height: 2.1rem;
 }
 
+.landing-page .participation-dates-section {
+  padding-bottom: 1.5rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+  background-color: $color-ds-white;
+  color: $color-ds-black;
+}
+
+.landing-page .participation-dates-section .section {
+  margin-top: 1.5rem;
+  border-top-width: .5rem;
+  border-top-style: solid;
+  text-align: left;
+}
+
+.landing-page .participation-dates-section .section.green {
+  border-top-color: $color-ds-green;
+}
+
+.landing-page .participation-dates-section .section.bluegreen {
+  border-top-color: $color-ds-bluegreen;
+}
+
+.landing-page .participation-dates-section .section.darkblue {
+  border-top-color: $color-ds-darkblue;
+}
+
+.landing-page .participation-dates-section .section.lightblue {
+  border-top-color: $color-ds-lightblue;
+}
+
+.landing-page .participation-dates-section .shortdate {
+  text-transform: uppercase;
+  font-weight: 300;
+  font-size: 1.6rem;
+  margin-bottom: .75rem;
+}
+
+.landing-page .participation-dates-section .phase {
+  color: $color-ds-bluegreen;
+  font-weight: 500;
+}
+
+.landing-page .participation-dates-section .longdate {
+  color: $color-ds-bluegreen;
+  font-weight: 400;
+  margin-bottom: .75rem;
+}
+
 .landing-page .pie-chart-section {
   padding-top:3rem;
   padding-bottom:3rem;
@@ -103,6 +152,8 @@
   text-align: center;
   padding-left: 1rem;
   padding-right: 2rem;
+  background: #20afbb;
+  background: radial-gradient(circle, #20afbb 6%, #1a859c 53%, #13687c 100%); 
 }
 
 .landing-page .pie-chart-section .pie-title {

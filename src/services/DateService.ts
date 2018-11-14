@@ -75,6 +75,14 @@ export class DateService {
 
     let formatArray: Array<IFormat> = [
       {
+        "key": "dayofmonth",
+        "format": "MMM Do"
+      },
+      {
+        "key": "shortdate",
+        "format": "MMMM Do, YYYY"
+      },
+      {
         "key": "friendly",
         "format": "dddd MMMM Do, YYYY"
       },

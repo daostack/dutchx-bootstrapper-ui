@@ -13,6 +13,7 @@ export class Landing {
 
   lockingPeriodStartDate: Date;
   lockingPeriodEndDate: Date;
+  governanceStartDate: Date;
   intervalId: any;
 
   constructor(
@@ -24,6 +25,7 @@ export class Landing {
   activate() {
     this.lockingPeriodStartDate = App.lockingPeriodStartDate;
     this.lockingPeriodEndDate = App.lockingPeriodEndDate;
+    this.governanceStartDate = App.governanceStartDate;
     this.intervalId = setInterval(() => { this.signaler.signal('countdown'); }, 1000);
     $("body").css("overflow", "auto");
   }

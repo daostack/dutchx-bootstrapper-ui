@@ -10,6 +10,7 @@ import { AureliaConfiguration } from 'aurelia-configuration';
 export class App {
   public static lockingPeriodEndDate: Date;
   public static lockingPeriodStartDate: Date;
+  public static governanceStartDate: Date;
   public static msUntilCanLock: number;
   public static msUntilCanRedeem: number;
 
@@ -22,6 +23,7 @@ export class App {
   ) {
     App.lockingPeriodStartDate = new Date(appConfig.get("lockingPeriodStartDate"));
     App.lockingPeriodEndDate = new Date(appConfig.get("lockingPeriodEndDate"));
+    App.governanceStartDate = new Date(appConfig.get("governanceStartDate"));
     App.msUntilCanLock = App.lockingPeriodStartDate.getTime() - new Date().getTime();
     App.msUntilCanRedeem = App.lockingPeriodEndDate.getTime() - new Date().getTime();
   }
