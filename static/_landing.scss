@@ -97,10 +97,9 @@
 .landing-page .pie-chart-section {
   padding-top:5rem;
   padding-bottom:5rem;
-  padding-left:3rem;
-  padding-right:3rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
   width: 100%;
-  background-color: $color-ds-darkblue;
   color: $color-ds-white;
   text-align: center;
   background: #20afbb;
@@ -110,8 +109,6 @@
 .landing-page .pie-chart-section .pie-title {
   font-size:2.5rem;
   margin-bottom: 4rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
   line-height: 2.6rem;
 }
 
@@ -124,14 +121,12 @@
   text-align: left;
   padding-top: 1rem;
   margin-bottom: 3rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
 }
 
 .landing-page .participation-dates-section .section .container {
   border-top-width: .5rem;
   border-top-style: solid;
-  border-top-color: $color-ds-green;
+  border-top-color: $color-ds-lightblue;
 }
 
 .landing-page .participation-dates-section .shortdate {
@@ -150,13 +145,36 @@
   margin-bottom: .75rem;
 }
 
+.landing-page .pie-chart-section .pie-chart {
+  margin-bottom: 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 576px) { 
+  .landing-page .pie-chart-section .pie-chart {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 670px) { 
+  .landing-page .pie-chart-section .pie-chart {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .landing-page .pie-chart-section .pie-chart {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
 .landing-page .pie-chart-section .pie-chart img {
   max-width:100%;
   max-height:auto;
-}
-
-.landing-page .pie-chart-section .pie-chart {
-  margin-bottom: 2rem;
 }
 
 .landing-page .pie-chart-section .footer {

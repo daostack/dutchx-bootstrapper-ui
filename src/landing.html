@@ -121,51 +121,57 @@
 
     <div class="pie-chart-section">
 
-      <div class="pie-title">How much and how is Reputation exactly distributed?</div>
+      <div class="row">
+        <div class="col-md-12 col-lg-10 offset-lg-1">
 
-      <div class="participation-dates-section">
-        <div class="row">
-          <div class="col-12 col-md-6 col-xl-3 section">
-            <div class="container">
-              <div class="shortdate">Now</div>
-              <div class="phase">Pre-initiation</div>
-              <div class="body">We are working to get the Reputation initiation interface for the dxDAO up and
-                running.</div>
+          <div class="pie-title">How much and how is Reputation exactly distributed?</div>
+
+          <div class="participation-dates-section">
+            <div class="row">
+              <div class="col-12 col-md-6 col-xl-3 section">
+                <div class="container">
+                  <div class="shortdate">Now</div>
+                  <div class="phase">Pre-initiation</div>
+                  <div class="body">We are working to get the Reputation initiation interface for the dxDAO up and
+                    running.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 col-xl-3 section">
+                <div class="container">
+                  <div class="shortdate">${lockingPeriodStartDate | date:'dayofmonth'}</div>
+                  <div class="phase">Initial Distribution</div>
+                  <div class="longdate">${lockingPeriodStartDate | date:'shortdate'}</div>
+                  <div class="body">This is when you can take part in the above-mentioned Reputation distribution.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 col-xl-3 section">
+                <div class="container">
+                  <div class="shortdate">${lockingPeriodEndDate | date:'dayofmonth'}</div>
+                  <div class="phase">Redeem Reputation</div>
+                  <div class="longdate">${lockingPeriodEndDate | date:'shortdate'}</div>
+                  <div class="body">Immediately after the initiation period is over, you may redeem your REP on this
+                    site.The redemption period will continue indefinitely.</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 col-xl-3 section">
+                <div class="container">
+                  <div class="shortdate">${governanceStartDate | date:'dayofmonth'}</div>
+                  <div class="phase">Governance</div>
+                  <div class="longdate">${governanceStartDate | date:'shortdate'}</div>
+                  <div class="body">Be an active voting member in the dxDAO.</div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="col-12 col-md-6 col-xl-3 section">
-            <div class="container">
-              <div class="shortdate">${lockingPeriodStartDate | date:'dayofmonth'}</div>
-              <div class="phase">Initial Distribution</div>
-              <div class="longdate">${lockingPeriodStartDate | date:'shortdate'}</div>
-              <div class="body">This is when you can take part in the above-mentioned Reputation distribution.</div>
-            </div>
-          </div>
-          <div class="col-12 col-md-6 col-xl-3 section">
-            <div class="container">
-              <div class="shortdate">${lockingPeriodEndDate | date:'dayofmonth'}</div>
-              <div class="phase">Redeem Reputation</div>
-              <div class="longdate">${lockingPeriodEndDate | date:'shortdate'}</div>
-              <div class="body">Immediately after the initiation period is over, you may redeem your REP on this
-                site.The redemption period will continue indefinitely.</div>
-            </div>
-          </div>
-          <div class="col-12 col-md-6 col-xl-3 section">
-            <div class="container">
-              <div class="shortdate">${governanceStartDate | date:'dayofmonth'}</div>
-              <div class="phase">Governance</div>
-              <div class="longdate">${governanceStartDate | date:'shortdate'}</div>
-              <div class="body">Be an active voting member in the dxDAO.</div>
-            </div>
+
+          <div class="pie-chart">
+            <img class="d-none d-md-inline-block" src="../static/pie-chart-static-landscape.svg" />
+            <img class="d-md-none" src="../static/pie-chart-static-portrait.svg" />
+            <div class="footer">Participants may be part of more than one group, with Reputation accumulating
+              additively.</div>
           </div>
         </div>
       </div>
-
-      <div class="pie-chart">
-        <img class="d-none d-md-inline-block" src="../static/pie-chart-static-landscape.svg" />
-        <img class="d-md-none" src="../static/pie-chart-static-portrait.svg" />
-      </div>
-      <div class="footer">Participants may be part of more than one group, with Reputation accumulating additively.</div>
     </div>
     <div class="join-section">
       <div class="body">Join the discussion in this <a href="https://daotalk.org/" target="_blank">Forum</a></div>
