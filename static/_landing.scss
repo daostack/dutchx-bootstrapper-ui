@@ -124,9 +124,16 @@
 }
 
 .landing-page .participation-dates-section .section .container {
+  padding-left: 0;
   border-top-width: .5rem;
   border-top-style: solid;
   border-top-color: $color-ds-lightblue;
+}
+
+.landing-page .participation-dates-section .triangle img {
+  width: .5rem;
+  margin-left: .2rem;
+  margin-bottom: -15px;
 }
 
 .landing-page .participation-dates-section .shortdate {
