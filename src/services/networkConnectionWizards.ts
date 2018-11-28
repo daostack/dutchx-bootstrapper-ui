@@ -34,43 +34,45 @@ export class NetworkConnectionWizards {
       return this.promise;
     }
 
-    /** don't show the intro if we already have a DAO */
-    this.skipLanding = skipLanding;
+    return this.promise = new Promise(async (): Promise<DialogCloseResult> => {
+      /** don't show the intro if we already have a DAO */
+      this.skipLanding = skipLanding;
 
-    /** but assume we're going to look for another DAO */
-    this.hasDao = false;
+      /** but assume we're going to look for another DAO */
+      this.hasDao = false;
 
-    const connectionChanged = async () => {
-      this.isConnected = this.web3.isConnected; // && !!this.arcService.arcContracts;
-      this.hasAccount = !!this.web3.defaultAccount;
-      const theWindow = (window as any);
-      this.hasApprovedAccountAccess =
-        // !theWindow.ethereum happens when there is a local server or otherwise not using metamask
-        !theWindow.ethereum || (await theWindow.ethereum._metamask.isApproved());
-    };
+      const connectionChanged = async () => {
+        this.isConnected = this.web3.isConnected; // && !!this.arcService.arcContracts;
+        this.hasAccount = !!this.web3.defaultAccount;
+        const theWindow = (window as any);
+        this.hasApprovedAccountAccess =
+          // !theWindow.ethereum happens when there is a local server or otherwise not using metamask
+          !theWindow.ethereum || (await theWindow.ethereum._metamask.isApproved());
+      };
 
-    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => { this.hasDao = false; connectionChanged() }));
-    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Account", () => connectionChanged()));
-    this.subscriptions.push(this.eventAggregator.subscribe("DAO.loaded", () => { this.hasDao = true; }));
-    this.subscriptions.push(this.eventAggregator.subscribe("DAO.Loading", (onOff: boolean): void => {
-      this.loading = onOff;
-    }));
+      this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => { this.hasDao = false; connectionChanged() }));
+      this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Account", () => connectionChanged()));
+      this.subscriptions.push(this.eventAggregator.subscribe("DAO.loaded", () => { this.hasDao = true; }));
+      this.subscriptions.push(this.eventAggregator.subscribe("DAO.Loading", (onOff: boolean): void => {
+        this.loading = onOff;
+      }));
 
-    await connectionChanged();
+      await connectionChanged();
 
-    /**
-     * the dialog will close itself when a dao is loaded
-     */
-    return this.promise = (this.dialogService.open(ConnectToNet, this)
-      .then((openDialogResult: DialogOpenResult) => {
-        this.dialogViewModel = openDialogResult.controller.controller.viewModel as ConnectToNet;
-        return openDialogResult.closeResult;
-      }) as any)
-      .then((result: DialogCloseResult) => {
-        this.subscriptions.dispose();
-        this.promise = null;
-        return result;
-      });
+      /**
+       * the dialog will close itself when a dao is loaded
+       */
+      return this.promise = (this.dialogService.open(ConnectToNet, this)
+        .then((openDialogResult: DialogOpenResult) => {
+          this.dialogViewModel = openDialogResult.controller.controller.viewModel as ConnectToNet;
+          return openDialogResult.closeResult;
+        }) as any)
+        .then((result: DialogCloseResult) => {
+          this.subscriptions.dispose();
+          this.promise = null;
+          return result;
+        });
+    });
   }
 
   /**

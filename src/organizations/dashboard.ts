@@ -134,6 +134,8 @@ export class Dashboard {
       await this.initializeNetwork();
     }
 
+    $("body").css("overflow", "hidden");
+
     /*******************
      * Handle account change.  Load a DAO if we don't already have one.
      * This shiould only happen when there was already a network and an account.

@@ -29,12 +29,12 @@ export class App {
   }
 
   attached() {
-    /* override the body style set in the splash screen */
     (<any>$('body'))
-      .css({
-        "color": "black",
-        "background-color": "white"
-      })
+      /* override the body style set in the splash screen */
+      // .css({
+      //   "color": "black",
+      //   "background-color": "white"
+      // })
       .bootstrapMaterialDesign({ global: { label: { className: "bmd-label-floating" } } });
   }
 

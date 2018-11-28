@@ -31,7 +31,6 @@ export class Landing {
   }
 
   deactivate() {
-    $("body").css("overflow", "hidden");
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
