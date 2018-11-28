@@ -12,7 +12,6 @@ import { DialogCloseResult } from 'aurelia-dialog';
 export class NetworkConnectionWizards {
   constructor(
     private dialogService: DialogService
-    , private arcService: ArcService
     , private web3: Web3Service
     , private eventAggregator: EventAggregator
   ) {
@@ -29,7 +28,7 @@ export class NetworkConnectionWizards {
   dialogViewModel: ConnectToNet;
   hasApprovedAccountAccess: boolean;
 
-  public run(skipLanding: boolean): Promise<DialogCloseResult> {
+  public async run(skipLanding: boolean): Promise<DialogCloseResult> {
 
     if (this.promise) {
       return this.promise;
@@ -57,7 +56,7 @@ export class NetworkConnectionWizards {
       this.loading = onOff;
     }));
 
-    connectionChanged();
+    await connectionChanged();
 
     /**
      * the dialog will close itself when a dao is loaded

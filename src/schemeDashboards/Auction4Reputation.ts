@@ -1,4 +1,4 @@
-import { autoinject } from 'aurelia-framework';
+import { autoinject, singleton } from 'aurelia-framework';
 import { DaoSchemeDashboard } from "./schemeDashboard"
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { WrapperService, Address, Auction4ReputationWrapper, StandardTokenWrapper } from "../services/ArcService";
@@ -7,10 +7,12 @@ import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { EventConfigTransaction, EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Utils } from 'services/utils';
 
+@singleton(false)
 @autoinject
 export class Auction4Reputation extends DaoSchemeDashboard {
 
   protected wrapper: Auction4ReputationWrapper;
+  lockingPeriodIsEnded: boolean;
   auctionPeriod: number;
   totalReputationRewardable: BigNumber;
   totalReputationRewardableLeft: BigNumber;
@@ -51,6 +53,8 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     this.totalReputationRewardableLeft = await this.wrapper.getReputationRewardLeft();
     this.auctionsStartTime = await this.wrapper.getAuctionsStartTime();
     this.auctionsEndTime = await this.wrapper.getAuctionsEndTime();
+    const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
+    this.lockingPeriodIsEnded = blockDate > this.auctionsEndTime;
     // this.numberOfAuctions = await this.wrapper.getNumberOfAuctions();
 
     this.auctionIsOver = (await Utils.lastBlockDate(this.web3Service.web3)) >= this.auctionsEndTime;

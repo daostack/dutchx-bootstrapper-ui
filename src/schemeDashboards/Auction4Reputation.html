@@ -11,7 +11,9 @@
 
     <div class="scheme-dashboard-body">
 
-      <form>
+      <div if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't bid</div>
+
+      <form else>
         <div if.to-view="!auctionIsOver">
           <div class="row">
             <div class="col-4">

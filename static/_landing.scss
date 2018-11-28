@@ -158,6 +158,35 @@
   padding-right: 1rem;
 }
 
+
+.landing-page .pie-chart-section .pie-chart img {
+  display:none;
+}
+
+@media (max-width: 500px) { 
+  .landing-page .pie-chart-section .pie-chart img.portrait-small {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 501px) { 
+  .landing-page .pie-chart-section .pie-chart img.portrait-small {
+    display: none;
+  }
+  .landing-page .pie-chart-section .pie-chart img.portrait-medium {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 768px) {
+  .landing-page .pie-chart-section .pie-chart img.portrait-medium {
+    display: none;
+  }
+  .landing-page .pie-chart-section .pie-chart img.landscape {
+    display: inline-block;
+  }
+}
+
 @media (min-width: 576px) { 
   .landing-page .pie-chart-section .pie-chart {
     padding-left: 2rem;

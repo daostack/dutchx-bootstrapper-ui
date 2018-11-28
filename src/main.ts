@@ -93,15 +93,22 @@ export async function configure(aurelia: Aurelia) {
 
     const initializeApp = async (): Promise<Web3> => {
 
+      const networkName = await Utils.getNetworkName();
+      appConfig.setEnvironment(networkName);
+
       const web3 = await InitializeArcJs({
         useMetamaskEthereumWeb3Provider: true,
         watchForAccountChanges: true,
         watchForNetworkChanges: true,
-        filter: {}
+        filter: {},
+        deployedContractAddresses: {
+          rinkeby: {
+            base: {
+              DAOToken: "0x543Ff227F64Aa17eA132Bf9886cAb5DB55DCAddf"
+            }
+          }
+        }
       });
-
-      const networkName = await Utils.getNetworkName();
-      appConfig.setEnvironment(networkName);
 
       if (networkName === 'Live') {
         ConfigService.set("gasPriceAdjustment", async (defaultGasPrice: BigNumber) => {
@@ -137,17 +144,13 @@ export async function configure(aurelia: Aurelia) {
 
     const eventAggregator = aurelia.container.get(EventAggregator) as EventAggregator;
 
-    const app = aurelia.container.get(App) as App;
-
     AccountService.subscribeToAccountChanges(async (account: Address) => {
       await initializeApp();
-      // app.navigateToLandingPage();
       eventAggregator.publish("Network.Changed.Account", account);
     });
 
     AccountService.subscribeToNetworkChanges(async (networkId: number) => {
       await initializeApp();
-      // app.navigateToLandingPage();
       eventAggregator.publish("Network.Changed.Id", networkId);
     });
 

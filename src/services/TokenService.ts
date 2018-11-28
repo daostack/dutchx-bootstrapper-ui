@@ -68,7 +68,7 @@ export class TokenService {
   public getGenTokenBalance(): Promise<BigNumber | undefined> {
     try {
       let userAddress = this.web3.defaultAccount;
-      return Utils.getGenTokenBalance(userAddress);
+      return DaoTokenWrapper.getGenTokenBalance(userAddress);
     } catch {
       // then we don't know the address of the GEN token
       return Promise.resolve(undefined);

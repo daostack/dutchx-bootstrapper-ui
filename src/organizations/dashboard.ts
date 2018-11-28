@@ -49,11 +49,10 @@ export class Dashboard {
   }
 
   private dutchXSchemeConfigs = new Map<string, { description: string, icon?: string, icon_hover?: string, position: number }>([
+    ["Auction4Reputation", { description: "BID GEN", icon: './gen_icon_color.svg', icon_hover: './gen_icon_white.svg', position: 4 }],
+    ["ExternalLocking4Reputation", { description: "LOCK MGN", icon: './mgn_icon_color.svg', icon_hover: './mgn_icon_white.svg', position: 3 }],
     ["LockingEth4Reputation", { description: "LOCK ETH", icon: './eth_icon_color.svg', icon_hover: './eth_icon_white.svg', position: 1 }],
     ["LockingToken4Reputation", { description: "LOCK GNO", icon: './gno_icon_color.svg', icon_hover: './gno_icon_white.svg', position: 2 }],
-    ["ExternalLocking4Reputation", { description: "LOCK MGN", icon: './mgn_icon_color.svg', icon_hover: './mgn_icon_white.svg', position: 3 }],
-    ["Auction4Reputation", { description: "BID GEN", icon: './gen_icon_color.svg', icon_hover: './gen_icon_white.svg', position: 4 }],
-    // ["FixedReputationAllocation", { description: "REDEEM YOUR COUPON" , position: 5 }],
   ]);
 
   public org: DaoEx;
@@ -246,10 +245,21 @@ export class Dashboard {
     for (const wrapperName in WrapperService.nonUniversalSchemeFactories) {
       const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
       if (factory && this.dutchXSchemeConfigs.has(wrapperName)) {
-        let contract = null;
-        try { contract = await factory.ensureSolidityContract(); } catch { }
-        if (contract) {
-          const found = code === contract.deployedBinary;
+        let bytecode = this.appConfig.get(`Contracts.${wrapperName}.bytecode`);
+
+        if (bytecode) {
+          let found = code === bytecode;
+          if (!found) {
+            /**
+             * look in Arc contracts
+             */
+            let contract = null;
+            try { contract = await factory.ensureSolidityContract(); } catch { }
+            if (contract) {
+              found = code === contract.deployedBinary;
+            }
+          }
+
           if (found) {
             const wrapper = await factory.at(scheme.address);
             return SchemeInfo.fromContractWrapper(wrapper, true);
