@@ -24,8 +24,6 @@ export class App {
     App.lockingPeriodStartDate = new Date(appConfig.get("lockingPeriodStartDate"));
     App.lockingPeriodEndDate = new Date(appConfig.get("lockingPeriodEndDate"));
     App.governanceStartDate = new Date(appConfig.get("governanceStartDate"));
-    console.log(`*** governanceStartDate string: ${appConfig.get("governanceStartDate")} ***`);
-    console.log(`*** governanceStartDate: ${App.governanceStartDate} ***`);
     App.msUntilCanLock = App.lockingPeriodStartDate.getTime() - new Date().getTime();
     App.msUntilCanRedeem = App.lockingPeriodEndDate.getTime() - new Date().getTime();
   }

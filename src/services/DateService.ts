@@ -247,8 +247,6 @@ export class DateService {
 
     let parms = this.getSafeParams(params);
 
-    console.log(`*** toString: ${dt} ***`);
-
     return this.createMoment(dt, parms.utc).format(parms.format);
   }
 
@@ -293,8 +291,6 @@ export class DateService {
     }
 
     let parms = this.getSafeParams(params);
-
-    console.log(`*** fromString: ${str} ***`);
 
     // ignore utc, is meaningless here
     return this.createMomentFromString(str, parms.format).toDate();
