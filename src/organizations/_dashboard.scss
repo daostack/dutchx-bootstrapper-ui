@@ -301,15 +301,15 @@ text-align: center;
   border-color: $color-ds-black;
 }
 
-.pie-chart .chart {
-  padding-top:2rem;
-  padding-bottom:2rem;
+.pie-chart {
   padding-left:1rem;
   padding-right:1rem;
 }
 
-.pie-chart .chart img {
-  max-width:100%; max-height:auto;
+.pie-chart img {
+  max-width:100%;
+  max-height:auto;
+  margin-bottom: 2rem;
 }
 
 // Small devices (landscape phones, 576px and up)
