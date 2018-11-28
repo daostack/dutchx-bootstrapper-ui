@@ -1,4 +1,4 @@
-import { autoinject, computedFrom, singleton } from 'aurelia-framework';
+import { autoinject, computedFrom } from 'aurelia-framework';
 import { DaoSchemeDashboard } from "./schemeDashboard"
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { ArcService, WrapperService, LockingOptions, LockerInfo, LockInfo, Locking4ReputationWrapper, Address, ArcTransactionResult, TransactionReceiptTruffle } from "../services/ArcService";
@@ -8,7 +8,6 @@ import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { Utils } from 'services/utils';
 import { IDisposable } from 'services/IDisposable';
 
-@singleton(false)
 @autoinject
 export abstract class Locking4Reputation extends DaoSchemeDashboard {
 

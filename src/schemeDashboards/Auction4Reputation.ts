@@ -1,4 +1,4 @@
-import { autoinject, singleton } from 'aurelia-framework';
+import { autoinject } from 'aurelia-framework';
 import { DaoSchemeDashboard } from "./schemeDashboard"
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { WrapperService, Address, Auction4ReputationWrapper, StandardTokenWrapper } from "../services/ArcService";
@@ -7,7 +7,6 @@ import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { EventConfigTransaction, EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Utils } from 'services/utils';
 
-@singleton(false)
 @autoinject
 export class Auction4Reputation extends DaoSchemeDashboard {
 
