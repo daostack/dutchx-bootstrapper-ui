@@ -1,8 +1,8 @@
 import { autoinject, computedFrom, observable, singleton } from "aurelia-framework";
 import { DaoService, DaoEx } from "../services/DaoService";
-import { Address, WrapperService } from "../services/ArcService";
+import { ArcService, Address, WrapperService, AccountService, InitializeArcJs, ConfigService, Web3, Utils } from "../services/ArcService";
 import { SchemeService, SchemeInfo } from "../services/SchemeService";
-import { Web3Service } from '../services/Web3Service';
+import { Web3Service, BigNumber } from '../services/Web3Service';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { AureliaConfiguration } from "aurelia-configuration";
@@ -10,7 +10,7 @@ import { DisposableCollection } from 'services/DisposableCollection';
 import { NetworkConnectionWizards } from 'services/networkConnectionWizards';
 import { EventConfigFailure } from 'entities/GeneralEvents';
 import { App } from 'app';
-import { DialogCloseResult } from 'aurelia-dialog';
+import axios from "axios";
 
 @singleton(false)
 @autoinject
@@ -32,6 +32,7 @@ export class Dashboard {
   private options: { address?: Address };
 
   private _loading: boolean = false;
+  private initialized: boolean = false;
 
   /**
    * true if loading the avatar or its schemes
@@ -64,31 +65,100 @@ export class Dashboard {
     , private web3Service: Web3Service
     , private eventAggregator: EventAggregator
     , private appConfig: AureliaConfiguration
+    , private arcService: ArcService
     , private networkConnectionWizards: NetworkConnectionWizards
   ) {
+
     $(window).resize(this.fixScrollbar);
+  }
+
+  async initializeNetwork(): Promise<Web3 | undefined> {
+
+    let web3: Web3;
+    this.initialized = false;
+
+    try {
+
+      const networkName = await Utils.getNetworkName();
+      this.appConfig.setEnvironment(networkName);
+
+      web3 = await InitializeArcJs({
+        useMetamaskEthereumWeb3Provider: true,
+        watchForAccountChanges: true,
+        watchForNetworkChanges: true,
+        filter: {},
+        deployedContractAddresses: {
+          rinkeby: {
+            base: {
+              DAOToken: "0x543Ff227F64Aa17eA132Bf9886cAb5DB55DCAddf"
+            }
+          }
+        }
+      });
+
+      if (networkName === 'Live') {
+        ConfigService.set("gasPriceAdjustment", async (defaultGasPrice: BigNumber) => {
+          try {
+            const response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json');
+            // the api gives results if 10*Gwei
+            const gasPrice = response.data.fast / 10;
+            return web3.toWei(gasPrice, 'gwei');
+          } catch (e) {
+            return defaultGasPrice;
+          }
+        });
+      }
+
+      ConfigService.set("estimateGas", true);
+
+      await this.web3Service.initialize(web3);
+
+      await this.arcService.initialize();
+
+      this.initialized = true;
+
+    } catch (ex) {
+      console.log(`Error initializing network: ${ex}`);
+      //const dialogService = aurelia.container.get(DialogService) as DialogService;
+      // dialogService.alert(`Sorry, an error occurred initializing the application`)
+    }
+
+    return web3;
   }
 
   async activate(options: { address?: Address } = {}) {
 
     this.options = options;
-    /*******************
-     * Handle network change.  Must load a new DAO.
-     */
-    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => {
-      this.networkName = this.web3.networkName;
-      this.loadAvatar();
-    }));
+
+    if (!this.initialized) {
+      await this.initializeNetwork();
+    }
 
     /*******************
      * Handle account change.  Load a DAO if we don't already have one.
      * This shiould only happen when there was already a network and an account.
      */
-    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Account", () => {
+    const subscription1 = AccountService.subscribeToAccountChanges(async (account: Address) => {
+      await this.initializeNetwork();
+      this.eventAggregator.publish("Network.Changed.Account", account);
       if (!this.org) {
-        this.loadAvatar();
+        await this.loadAvatar();
       }
-    }));
+    });
+
+    this.subscriptions.push({ dispose: () => subscription1.unsubscribe() });
+
+    /*******************
+     * Handle network change.  Must load a new DAO.
+     */
+    const subscription2 = AccountService.subscribeToNetworkChanges(async (networkId: number) => {
+      await this.initializeNetwork();
+      this.eventAggregator.publish("Network.Changed.Id", networkId);
+      this.networkName = this.web3.networkName;
+      await this.loadAvatar();
+    });
+
+    this.subscriptions.push({ dispose: () => subscription2.unsubscribe() });
 
     /*******************
      * Handle avatar loaded.  Load schemes.
