@@ -47,7 +47,7 @@ export class NetworkConnectionWizards {
         const theWindow = (window as any);
         this.hasApprovedAccountAccess =
           // !theWindow.ethereum happens when there is a local server or otherwise not using metamask
-          !theWindow.ethereum || (await theWindow.ethereum._metamask.isApproved());
+          !theWindow.ethereum || (await theWindow.ethereum._metamask.isEnabled());
       };
 
       this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => { this.hasDao = false; connectionChanged() }));
