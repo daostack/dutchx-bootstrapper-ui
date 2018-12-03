@@ -20,8 +20,9 @@
           </p>
 
           <div if.bind="isConnected && !hasAccount">
-            <p>Please ensure you have logged into MetaMask to
-              access the <a href="https://daotalk.org/c/dutchx-dao" target="_blank">DutchX</a> Initializer.
+            <p>To access the <a href="https://daotalk.org/c/dutchx-dao" target="_blank">DutchX</a> Initializer,
+              please log in to MetaMask, select your desired account and allow the DutchX Initializer to access your
+              account.
           </div>
 
           <div if.bind="((isConnected && !hasAccount) || (!landed && hasDao))">
@@ -34,9 +35,9 @@
                 click.delegate="land()">OK</button></p>
           </div>
 
-          <div if.bind="isConnected && !hasAccount && !hasApprovedAccountAccess">
-            <p>If or when you have logged in to MetaMask and have selected your desired account, then please allow
-              the DutchX Initializer to access your account:</p>
+          <div if.bind="isConnected && (!hasAccount || !hasApprovedAccountAccess)">
+            <!-- <p>Please log in to MetaMask, select your desired account and allow the DutchX Initializer to access your
+              account:</p> -->
 
             <p class="buttonContainer"><button class="btn btn-submit" click.delegate="confirm()">Allow the DutchX
                 Initializer to Access Your Account</button></p>
