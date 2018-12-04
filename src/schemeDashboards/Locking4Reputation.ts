@@ -7,27 +7,28 @@ import { BigNumber, Web3Service } from '../services/Web3Service';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { Utils } from 'services/utils';
 import { IDisposable } from 'services/IDisposable';
+import { LockInfoX } from "resources/customElements/locksForReputation/locksForReputation";
 
 @autoinject
 export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   protected wrapper: Locking4ReputationWrapper;
-  totalLocked: BigNumber;
-  totalLockedLeft: BigNumber;
-  totalScore: BigNumber;
-  totalReputationRewardable: BigNumber;
-  totalReputationRewardableLeft: BigNumber;
+  // totalLocked: BigNumber;
+  // totalLockedLeft: BigNumber;
+  // totalScore: BigNumber;
+  // totalReputationRewardable: BigNumber;
+  // totalReputationRewardableLeft: BigNumber;
+  // lockCount: number;
   lockingStartTime: Date;
   lockingEndTime: Date;
   lockingPeriodIsEnded: boolean;
-  lockCount: number;
   refreshing: boolean = false;
   loaded: boolean = false;
   maxLockingPeriod: number;
   lockerInfo: LockerInfo;
   userAddress: Address;
   subscription: IDisposable;
-  locks: Array<LockInfo>;
+  locks: Array<LockInfoX>;
   @computedFrom("lockerInfo")
   get userScore(): number { return this.lockerInfo ? this.web3Service.fromWei(this.lockerInfo.score).toNumber() : 0; }
 
@@ -64,14 +65,14 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected async refresh() {
     this.refreshing = true;
     this.loaded = false;
-    this.totalLocked = await this.wrapper.getTotalLocked();
-    this.totalLockedLeft = await this.wrapper.getTotalLockedLeft();
-    this.totalScore = await this.wrapper.getTotalScore();
-    this.totalReputationRewardable = await this.wrapper.getReputationReward();
-    this.totalReputationRewardableLeft = await this.wrapper.getReputationRewardLeft();
+    // this.totalLocked = await this.wrapper.getTotalLocked();
+    // this.totalLockedLeft = await this.wrapper.getTotalLockedLeft();
+    // this.totalScore = await this.wrapper.getTotalScore();
+    // this.totalReputationRewardable = await this.wrapper.getReputationReward();
+    // this.totalReputationRewardableLeft = await this.wrapper.getReputationRewardLeft();
+    // this.lockCount = await this.wrapper.getLockCount();
     this.lockingStartTime = await this.wrapper.getLockingStartTime();
     this.lockingEndTime = await this.wrapper.getLockingEndTime();
-    this.lockCount = await this.wrapper.getLockCount();
     const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
     this.lockingPeriodIsEnded = blockDate > this.lockingEndTime;
     this.maxLockingPeriod = await this.wrapper.getMaxLockingPeriod();
@@ -118,7 +119,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       return true;
 
     } catch (ex) {
-      this.eventAggregator.publish("handleException", new EventConfigException(`Error locking for ${this.lockModel.lockerAddress}`, ex));
+      this.eventAggregator.publish("handleException", new EventConfigException(`Error locking`, ex));
     }
 
     return false;
@@ -139,7 +140,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       return true;
 
     } catch (ex) {
-      this.eventAggregator.publish("handleException", new EventConfigException(`Error releasing lock for ${lockInfo.lockerAddress}, lockId: ${lockInfo.lockId} `, ex));
+      this.eventAggregator.publish("handleException", new EventConfigException(`Error releasing lock`, ex));
     }
     return false;
   }
@@ -157,10 +158,13 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   //     return true;
 
   //   } catch (ex) {
-  //     this.eventAggregator.publish("handleException", new EventConfigException(`Error redeeming reputation for ${lockInfo.lockerAddress}`, ex));
+  //     this.eventAggregator.publish("handleException", new EventConfigException(`Error redeeming reputation`, ex));
   //   }
   //   return false;
   // }
+
+
+  protected abstract getLockUnit(lockInfo: LockInfo): Promise<string>;
 
   // DutchX: dupe'd this from LockersForReputation.  Refactor.
   private async getLocks(): Promise<void> {
@@ -169,9 +173,13 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       { _locker: this.userAddress },
       { fromBlock: 0 });
 
-    this.locks = (await fetcher.get())
-      // because _locker isn't indexed
-      .filter((li: LockInfo) => li.lockerAddress === this.userAddress);
+    const locks = await fetcher.get();
+
+    for (const lock of locks) {
+      (lock as LockInfoX).units = await this.getLockUnit(lock as LockInfo);
+    }
+
+    this.locks = locks as Array<LockInfoX>;
   }
 
   private getLockerInfo(): Promise<LockerInfo> {

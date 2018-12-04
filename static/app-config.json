@@ -4,13 +4,45 @@
   "governanceStartDate": "2019-04-04T00:00:00.000Z",
   "Ganache": {
     "daoAddress": "0x98acb62a70474446bb3ff3045d3881f8b4340c27",
-    "gnoTokenAddress": "0xdcf22b53f327b4f7f3ac42d957834bd962637555",
-    "mgnTokenAddress": "0xdcf22b53f327b4f7f3ac42d957834bd962637555"
+    "gnoTokenAddress": "0x7016B1a2d5F5BC5107161Ef111D06dfd09843Ba5",
+    "mgnTokenAddress": "0x7016B1a2d5F5BC5107161Ef111D06dfd09843Ba5",
+    "lockableTokens": [
+      {
+        "address": "0x7016B1a2d5F5BC5107161Ef111D06dfd09843Ba5",
+        "symbol": "MGN"
+      },
+      {
+        "address": "0x7016B1a2d5F5BC5107161Ef111D06dfd09843Ba5",
+        "symbol": "GNO"
+      },
+      {
+        "address": "0x7016B1a2d5F5BC5107161Ef111D06dfd09843Ba5",
+        "symbol": "GEN"
+      },
+      {
+        "address": "0x90dccb7989bc6423f66d16019b5ccd7a2153798a",
+        "symbol": "GDT"
+      }
+    ]
   },
   "Kovan": {
     "daoAddress": "0xaa02da631243429335d3adf1d8942ff71811c88d",
     "gnoTokenAddress": "0x6018bf616ec9db02f90c8c8529ddadc10a5c29dc",
-    "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb"
+    "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb",
+    "lockableTokens": [
+      {
+        "address": "0x4edc383adea781762b74e7082c03f423523e61bb",
+        "symbol": "MGN"
+      },
+      {
+        "address": "0x6018bf616ec9db02f90c8c8529ddadc10a5c29dc",
+        "symbol": "GNO"
+      },
+      {
+        "address": "0x543Ff227F64Aa17eA132Bf9886cAb5DB55DCAddf",
+        "symbol": "GEN"
+      }
+    ]
   },
   "Ropsten": {
     "daoAddress": "",
@@ -20,7 +52,21 @@
   "Rinkeby": {
     "daoAddress": "0x8E2787b94167153c4E7407990C053c0C1b00Fa85",
     "gnoTokenAddress": "0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c",
-    "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb"
+    "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb",
+    "lockableTokens": [
+      {
+        "address": "0x4edc383adea781762b74e7082c03f423523e61bb",
+        "symbol": "MGN"
+      },
+      {
+        "address": "0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c",
+        "symbol": "GNO"
+      },
+      {
+        "address": "0x543Ff227F64Aa17eA132Bf9886cAb5DB55DCAddf",
+        "symbol": "GEN"
+      }
+    ]
   },
   "Live": {
     "daoAddress": "",

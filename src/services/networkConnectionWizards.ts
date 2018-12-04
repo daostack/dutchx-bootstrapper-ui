@@ -57,10 +57,12 @@ export class NetworkConnectionWizards {
          * 
          * Note that on particular browsers, these may not be implemented, in which case we always return true and
          * the UI will need to rely solely on hasAccount.
+         * 
+         * See: https://github.com/MetaMask/metamask-extension/pull/4703#issuecomment-430814765
          */
         const enabled = !theWindow.ethereum._metamask.isEnabled || (await theWindow.ethereum._metamask.isEnabled());
         const approved = !theWindow.ethereum._metamask.isApproved || (await theWindow.ethereum._metamask.isApproved());
-        const unlocked = !theWindow.ethereum._metamask.isUnlocked || (await theWindow.ethereum._metamask.isUnlocked());
+        // const unlocked = !theWindow.ethereum._metamask.isUnlocked || (await theWindow.ethereum._metamask.isUnlocked());
 
         // console.log(`enabled: ${enabled}`);
         // console.log(`approved: ${approved}`);

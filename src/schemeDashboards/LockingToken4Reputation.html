@@ -13,33 +13,50 @@
 
       <form else with.bind="lockModel">
         <div class="row">
-          <div class="col-5">
-            <div class="form-group bmd-form-group">
-              <label for="lockAmount">Tokens to lock</label>
-              <input class="form-control" type='number' id="lockAmount" value.bind="amount | ethwei & updateTrigger:'blur'" />
-            </div>
-          </div>
-          <div class="col-5">
-            <div class="form-group bmd-form-group">
-              <label for="lockingPeriod">Number of days</label>
-              <input class="form-control" id="lockingPeriod" value.bind="period  | secondsDays & updateTrigger:'blur'" />
-            </div>
-          </div>
-        </div>
-        <div class="row">
           <div class="col-12">
-            <div class="form-group">
-              <button class="btn-submit btn-sm" click.delegate="lock()">Submit</button>
+            <div class="form-group bmd-form-group">
+              <div class="dropdown">
+                <a class="dropdown-toggle" id="lockableTokens" href="#" data-toggle="dropdown" aria-haspopup="true"
+                  aria-expanded="false">${selectedToken ? "Selected token: " + selectedToken.symbol : "Select a
+                  Token"}</a>
+
+                <ul class="dropdown-menu" aria-labelledby="lockableTokens">
+                  <li class="dropdown-item" click.delegate="selectToken(tokenSpec)" repeat.for="tokenSpec of lockableTokens">${tokenSpec.symbol}</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-12">
-            <locks-for-reputation locks.to-view="locks" release.call="release({lock})" wrapper.one-time="wrapper"></locks-for-reputation>
+        <div if.bind="selectedToken">
+          <div class="row">
+            <div class="col-5">
+              <div class="form-group bmd-form-group">
+                <label for="lockAmount">Tokens to lock</label>
+                <input class="form-control" type='number' id="lockAmount" value.bind="amount | ethwei & updateTrigger:'blur'" />
+              </div>
+            </div>
+            <div class="col-5">
+              <div class="form-group bmd-form-group">
+                <label for="lockingPeriod">Number of days</label>
+                <input class="form-control" id="lockingPeriod" value.bind="period  | secondsDays & updateTrigger:'blur'" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <button class="btn-submit btn-sm" click.delegate="lock()">Submit</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <locks-for-reputation locks.to-view="locks" release.call="release({lock})" wrapper.one-time="wrapper"></locks-for-reputation>
+            </div>
           </div>
         </div>
-
         <!-- <div if.bind="lockingPeriodIsEnded">
             <div if.to-view="!userScore" class="mb-3">You have nothing to redeem</div>
             <div else class="form-group bmd-form-group">

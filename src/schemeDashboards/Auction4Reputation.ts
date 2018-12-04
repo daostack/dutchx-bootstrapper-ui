@@ -85,7 +85,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
         `bid ${this.web3Service.fromWei(amount)} token(s), for: ${currentAccount}`, result.tx));
 
     } catch (ex) {
-      this.eventAggregator.publish("handleException", new EventConfigException(`Error bidding ${this.web3Service.fromWei(amount)} token(s), for: ${currentAccount}`, ex));
+      this.eventAggregator.publish("handleException", new EventConfigException(`Error bidding ${this.web3Service.fromWei(amount)} token(s)`, ex));
     }
   }
 
@@ -110,7 +110,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   //     this.auctionId = -1;
 
   //   } catch (ex) {
-  //     this.eventAggregator.publish("handleException", new EventConfigException(`Error redeeming in auctionId ${auctionId}, for: ${beneficiaryAddress}`, ex));
+  //     this.eventAggregator.publish("handleException", new EventConfigException(`Error redeeming in auctionId ${auctionId}`, ex));
   //   }
   // }
 

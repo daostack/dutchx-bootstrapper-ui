@@ -26,19 +26,19 @@ export class LocksForReputation {
 
   async locksChanged(newLocks: Promise<Array<LockInfo>>) {
     this.loading = true;
-    const _tmpLocks = await newLocks as Array<LockInfoX>;
+    const _tmpLocks = await newLocks as Array<LockInfoInternal>;
 
     for (const lock of _tmpLocks) {
       //lock.canRedeem = await this.canRedeem(lock);
       lock.canRelease = await this.canRelease(lock);
     }
-    this.anyCanRelease = _tmpLocks.filter((l: LockInfoX) => l.canRelease).length > 0;
-    // this.anyCanRedeem = _tmpLocks.filter((l: LockInfoX) => l.canRedeem).length > 0;
+    this.anyCanRelease = _tmpLocks.filter((l: LockInfoInternal) => l.canRelease).length > 0;
+    // this.anyCanRedeem = _tmpLocks.filter((l: LockInfoInternal) => l.canRedeem).length > 0;
     this._locks = _tmpLocks;
     this.loading = false;
   }
 
-  private async _release(lock: LockInfoX) {
+  private async _release(lock: LockInfoInternal) {
     const success = await this.release({ lock });
     if (success) {
       lock.canRelease = false; // await this.canRelease(lock);
@@ -46,7 +46,7 @@ export class LocksForReputation {
     }
   }
 
-  // private async _redeem(lock: LockInfoX) {
+  // private async _redeem(lock: LockInfoInternal) {
   //   const success = await this.redeem({ lock });
   //   if (success) {
   //     lock.canRedeem = false; // await this.canRedeem(lock);
@@ -72,7 +72,11 @@ export class LocksForReputation {
   // }
 }
 
-interface LockInfoX extends LockInfo {
+export interface LockInfoX extends LockInfo {
+  units: string;
+}
+
+interface LockInfoInternal extends LockInfoX {
   //canRedeem: boolean;
   canRelease: boolean;
 }
