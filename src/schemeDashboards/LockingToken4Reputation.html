@@ -18,7 +18,7 @@
               <div class="dropdown">
                 <a class="dropdown-toggle" id="lockableTokens" href="#" data-toggle="dropdown" aria-haspopup="true"
                   aria-expanded="false">${selectedToken ? "Selected token: " + selectedToken.symbol : "Select a
-                  Token"}</a>
+                  Token to Lock"}</a>
 
                 <ul class="dropdown-menu" aria-labelledby="lockableTokens">
                   <li class="dropdown-item" click.delegate="selectToken(tokenSpec)" repeat.for="tokenSpec of lockableTokens">${tokenSpec.symbol}</li>
@@ -50,11 +50,11 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="row">
-            <div class="col-12">
-              <locks-for-reputation locks.to-view="locks" release.call="release({lock})" wrapper.one-time="wrapper"></locks-for-reputation>
-            </div>
+        <div class="row">
+          <div class="col-12">
+            <locks-for-reputation locks.to-view="locks" release.call="release({lock})" wrapper.one-time="wrapper"></locks-for-reputation>
           </div>
         </div>
         <!-- <div if.bind="lockingPeriodIsEnded">

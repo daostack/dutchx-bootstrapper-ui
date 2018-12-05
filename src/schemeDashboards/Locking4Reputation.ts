@@ -1,13 +1,14 @@
 import { autoinject, computedFrom } from 'aurelia-framework';
 import { DaoSchemeDashboard } from "./schemeDashboard"
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { ArcService, WrapperService, LockingOptions, LockerInfo, LockInfo, Locking4ReputationWrapper, Address, ArcTransactionResult, TransactionReceiptTruffle } from "../services/ArcService";
+import { WrapperService, LockingOptions, LockerInfo, LockInfo, Locking4ReputationWrapper, Address, ArcTransactionResult, TransactionReceiptTruffle } from "../services/ArcService";
 import { EventConfigTransaction, EventConfigException, EventConfigFailure } from "../entities/GeneralEvents";
 import { BigNumber, Web3Service } from '../services/Web3Service';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { Utils } from 'services/utils';
 import { IDisposable } from 'services/IDisposable';
 import { LockInfoX } from "resources/customElements/locksForReputation/locksForReputation";
+// import { App } from 'app';
 
 @autoinject
 export abstract class Locking4Reputation extends DaoSchemeDashboard {
@@ -21,7 +22,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   // lockCount: number;
   lockingStartTime: Date;
   lockingEndTime: Date;
+  lockingPeriodIsStarted: boolean;
   lockingPeriodIsEnded: boolean;
+  inLockingPeriod: boolean;
+  // bootstrappingPeriodStartDate: Date;
+  // bootstrappingPeriodEndDate: Date;
   refreshing: boolean = false;
   loaded: boolean = false;
   maxLockingPeriod: number;
@@ -75,6 +80,10 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     this.lockingEndTime = await this.wrapper.getLockingEndTime();
     const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
     this.lockingPeriodIsEnded = blockDate > this.lockingEndTime;
+    this.lockingPeriodIsStarted = blockDate >= this.lockingStartTime;
+    this.inLockingPeriod = this.lockingPeriodIsStarted && !this.lockingPeriodIsEnded;
+    // this.bootstrappingPeriodStartDate = App.lockingPeriodStartDate;
+    // this.bootstrappingPeriodEndDate = App.lockingPeriodEndDate;
     this.maxLockingPeriod = await this.wrapper.getMaxLockingPeriod();
     return this.accountChanged().then(() => {
       this.refreshing = false;
@@ -114,7 +123,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
         });
 
       this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
-        `lock submitted for ${this.lockModel.lockerAddress}`, result.transactionHash));
+        `lock submitted`, result.transactionHash));
 
       return true;
 
@@ -134,8 +143,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       lockInfo.amount = new BigNumber(0);
 
-      this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
-        `lock released for ${lockInfo.lockerAddress}, lockId: ${lockInfo.lockId} `, result.tx));
+      this.eventAggregator.publish("handleTransaction", new EventConfigTransaction("lock released", result.tx));
 
       return true;
 

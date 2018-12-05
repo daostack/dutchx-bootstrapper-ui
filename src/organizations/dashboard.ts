@@ -194,7 +194,9 @@ export class Dashboard {
     this.fixScrollbar();
 
     this.lockingPeriodEndDate = App.lockingPeriodEndDate;
-    const msUntilCanRedeem = App.msUntilCanRedeem;
+
+    const msUntilCanRedeem = App.lockingPeriodEndDate.getTime() - new Date().getTime();
+
     setTimeout(() => {
       this.canRedeem = true;
       $('#globalRedeemBtn').addClass('enabled');

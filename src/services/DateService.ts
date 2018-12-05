@@ -206,6 +206,8 @@ export class DateService {
       return null;
     }
 
+    let firstResolution: TimespanResolution;
+
     const days = Math.floor(ms / 86400000);
     ms = ms % 86400000;
     const hours = Math.floor(ms / 3600000);
@@ -217,20 +219,40 @@ export class DateService {
 
     let result: string = "";
 
-    if (days && (resolution >= TimespanResolution.days)) {
+    if (days && (resolution <= TimespanResolution.days)) {
       result = `${days} days`;
+      if (!firstResolution) {
+        firstResolution = TimespanResolution.days;
+      }
     }
 
-    if (hours && (resolution >= TimespanResolution.hours)) {
+    if ((hours ||
+      // show zero if not the first or is the res
+      (firstResolution > TimespanResolution.hours) ||
+      (resolution === TimespanResolution.hours)) &&
+      (resolution <= TimespanResolution.hours)) {
       result += `${result.length ? ', ' : ''}${hours} hours`;
+      if (!firstResolution) {
+        firstResolution = TimespanResolution.hours;
+      }
     }
 
-    if (minutes && (resolution >= TimespanResolution.minutes)) {
+    if ((minutes ||
+      // show zero if not the first or is the res
+      (firstResolution > TimespanResolution.minutes) ||
+      (resolution === TimespanResolution.minutes)) &&
+      (resolution <= TimespanResolution.minutes)) {
       result += `${result.length ? ', ' : ''}${minutes} minutes`;
+      if (!firstResolution) {
+        firstResolution = TimespanResolution.minutes;
+      }
     }
 
-    if (seconds && (resolution >= TimespanResolution.seconds)) {
+    if (resolution <= TimespanResolution.seconds) {
       result += `${result.length ? ', ' : ''}${seconds} seconds`;
+      if (!firstResolution) {
+        firstResolution = TimespanResolution.seconds;
+      }
     }
 
     if (ms && (resolution === TimespanResolution.milliseconds)) {
@@ -355,9 +377,9 @@ export interface IFormatParameters {
 }
 
 export enum TimespanResolution {
-  days,
-  hours,
-  minutes,
-  seconds,
-  milliseconds
+  days = 5,
+  hours = 4,
+  minutes = 3,
+  seconds = 2,
+  milliseconds = 1
 }

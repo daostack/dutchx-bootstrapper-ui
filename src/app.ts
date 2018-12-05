@@ -12,7 +12,6 @@ export class App {
   public static lockingPeriodStartDate: Date;
   public static governanceStartDate: Date;
   public static msUntilCanLock: number;
-  public static msUntilCanRedeem: number;
 
   public router: Router;
 
@@ -24,8 +23,6 @@ export class App {
     App.lockingPeriodStartDate = new Date(appConfig.get("lockingPeriodStartDate"));
     App.lockingPeriodEndDate = new Date(appConfig.get("lockingPeriodEndDate"));
     App.governanceStartDate = new Date(appConfig.get("governanceStartDate"));
-    App.msUntilCanLock = App.lockingPeriodStartDate.getTime() - new Date().getTime();
-    App.msUntilCanRedeem = App.lockingPeriodEndDate.getTime() - new Date().getTime();
   }
 
   attached() {
