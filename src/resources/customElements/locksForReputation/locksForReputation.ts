@@ -21,6 +21,10 @@ export class LocksForReputation {
   @bindable({ defaultBindingMode: bindingMode.oneTime }) noReleaseFunction?: boolean = false;
 
   attached() {
+    this.refresh();
+  }
+
+  refresh() {
     this.locksChanged(this.locks);
   }
 

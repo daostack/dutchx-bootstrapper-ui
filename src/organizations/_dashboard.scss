@@ -213,7 +213,7 @@ text-align: center;
   padding-right: 1rem;
 }
 
-.scheme-dashboard .scheme-dashboard-body > div {
+.scheme-dashboard .scheme-dashboard-body > div:first-child {
   padding: 1rem;
 }
 
@@ -344,4 +344,10 @@ text-align: center;
 
 table.locksForRep td button {
   margin-bottom: 0;
+}
+
+.locksRefreshButton .spinbutton-icon {
+  color: $color-ds-darkblue !important;
+  margin-bottom: .5rem;
+  margin-left: .25rem;
 }

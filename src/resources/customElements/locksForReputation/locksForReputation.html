@@ -1,8 +1,6 @@
 <template>
-  <div class="pageloader" if.bind="loading" class="margin-top: 1.5rem;">
-    <pageloading>Loading locks...</pageloading>
-  </div>
-  <table else class="table locksForRep">
+  <spinbutton onclick.call="refresh()" class="locksRefreshButton" spin.to-view="loading" title="Refresh Locks List"></spinbutton>
+  <table class="table locksForRep">
     <thead class="thead-light">
       <tr>
         <!-- <th>Lock Id</th> -->
@@ -24,9 +22,9 @@
         <td>${lock.units}</td>
         <td style="white-space:nowrap">
           ${lock.releaseTime | date:'table-date' }</td>
-        <td style="text-align:center;"><button style="padding-bottom: 0;padding-top: 0" if.to-view="!lock.canRelease"
+        <td style="text-align:center;"><button style="padding-bottom: 0;padding-top: 0" if.to-view="lock.canRelease"
             click.delegate="_release(lock)" class="btn btn-link">Release</button>
-          <div else>n/a</div>
+          <div else>not yet</div>
         </td>
       </tr>
     </tbody>
