@@ -43,7 +43,7 @@ export class DaoService {
         } // else error will already have been logged by arc.js
       } catch (ex) {
         // don't force the user to see this as a snack every time.  A corrupt DAO may never be repaired.  A message will go to the console.
-        // this.eventAggregator.publish("handleException", new EventConfigException(`Error loading DAO: ${avatarAddress}`, ex));
+        // this.eventAggregator.publish("handleException", new EventConfigException(`The DAO could not be loaded: ${avatarAddress}`, ex));
         this.logger.error(`Error loading DAO: ${avatarAddress}: ${ex}`);
         // this.eventAggregator.publish("handleException",
         //   new EventConfig(`Error loading DAO: ${avatarAddress}: ${ex}`, undefined, SnackLifetime.none));

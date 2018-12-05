@@ -26,14 +26,6 @@ export class Landing {
     this.lockingPeriodStartDate = App.lockingPeriodStartDate;
     this.lockingPeriodEndDate = App.lockingPeriodEndDate;
     this.governanceStartDate = App.governanceStartDate;
-    this.intervalId = setInterval(() => { this.signaler.signal('countdown'); }, 1000);
     $("body").css("overflow", "auto");
-  }
-
-  deactivate() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-    }
   }
 }

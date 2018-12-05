@@ -7,21 +7,20 @@
       all MGN holders who opt in on receiving DutchX DAO reputation. All you need to do is activate this option here.</instructions>
 
     <div class="scheme-dashboard-body">
-      <div if.to-view="isYetToLock">
-        <span>${msUntilCanLockCountdown() | timespan:"seconds" & signal:'mgnLockingCountdown'}</span>
+      <div if.to-view="lockingPeriodHasNotStarted">
+        <span>${msUntilCanLockCountdown | timespan:"seconds"}</span>
         until the 24-hour MGN locking period begins
       </div>
 
-      <div if.to-view="canLock">
-        <span>${msRemainingInPeriodCountdown() | timespan:"seconds" & signal:'mgnLockingCountdown'}</span>
+      <div if.to-view="inLockingPeriod">
+        <span>${msRemainingInPeriodCountdown | timespan:"seconds"}</span>
         remaining to lock MGN Tokens
       </div>
 
-      <div if.bind="!isYetToLock && !canLock">The MGN locking period has ended.</div>
+      <div if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't lock.</div>
 
-      <div if.to-view="canLock && alreadyLocked">You have already submitted a lock</div>
-
-      <form if.to-view="canLock && !alreadyLocked">
+      <div if.to-view="inLockingPeriod && alreadyLocked">You have already submitted a lock</div>
+      <form if.to-view="inLockingPeriod && !alreadyLocked">
 
         <div class="form-group bmd-form-group">
           <button class="btn-submit clearWidth" click.delegate="lock()">Activate</button>

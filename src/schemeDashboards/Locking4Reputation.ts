@@ -6,8 +6,8 @@ import { EventConfigTransaction, EventConfigException, EventConfigFailure } from
 import { BigNumber, Web3Service } from '../services/Web3Service';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { Utils } from 'services/utils';
-import { IDisposable } from 'services/IDisposable';
 import { LockInfoX } from "resources/customElements/locksForReputation/locksForReputation";
+import { DisposableCollection } from "services/DisposableCollection";
 // import { App } from 'app';
 
 @autoinject
@@ -22,18 +22,18 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   // lockCount: number;
   lockingStartTime: Date;
   lockingEndTime: Date;
-  lockingPeriodIsStarted: boolean;
+  lockingPeriodHasNotStarted: boolean;
   lockingPeriodIsEnded: boolean;
-  inLockingPeriod: boolean;
-  // bootstrappingPeriodStartDate: Date;
-  // bootstrappingPeriodEndDate: Date;
+  msUntilCanLockCountdown: number;
+  msRemainingInPeriodCountdown: number;
   refreshing: boolean = false;
   loaded: boolean = false;
   maxLockingPeriod: number;
   lockerInfo: LockerInfo;
   userAddress: Address;
-  subscription: IDisposable;
+  subscriptions = new DisposableCollection();
   locks: Array<LockInfoX>;
+  intervalId: any;
   @computedFrom("lockerInfo")
   get userScore(): number { return this.lockerInfo ? this.web3Service.fromWei(this.lockerInfo.score).toNumber() : 0; }
 
@@ -56,15 +56,42 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   attached() {
     this.userAddress = this.web3Service.defaultAccount;
-    this.subscription = this.eventAggregator.subscribe("Network.Changed.Account", () => {
-      this.userAddress = this.web3Service.defaultAccount;
-      this.accountChanged();
-    });
+
+    this.subscriptions.push(this.eventAggregator.subscribe("secondPassed", async (blockDate: Date) => {
+      this.getLockingPeriodIsEnded(blockDate);
+      this.getLockingPeriodHasNotStarted(blockDate);
+      this.getMsUntilCanLockCountdown();
+      this.getMsRemainingInPeriodCountdown();
+    }));
+
     return this.refresh();
   }
 
   detached() {
-    this.subscription.dispose();
+    this.subscriptions.dispose();
+  }
+
+  private getLockingPeriodHasNotStarted(blockDate: Date): boolean {
+    // return this.lockingPeriodHasNotStarted = false;
+    return this.lockingPeriodHasNotStarted = (blockDate < this.lockingStartTime);
+  }
+
+  private getLockingPeriodIsEnded(blockDate: Date): boolean {
+    // return this.lockingPeriodIsEnded = true;
+    return this.lockingPeriodIsEnded = (blockDate > this.lockingEndTime);
+  }
+
+  @computedFrom("lockingPeriodHasNotStarted", "lockingPeriodIsEnded")
+  get inLockingPeriod(): boolean {
+    return !this.lockingPeriodHasNotStarted && !this.lockingPeriodIsEnded;
+  }
+
+  private getMsUntilCanLockCountdown(): number {
+    return this.msUntilCanLockCountdown = this.lockingStartTime.getTime() - Date.now();
+  }
+
+  private getMsRemainingInPeriodCountdown(): number {
+    return this.msRemainingInPeriodCountdown = this.lockingEndTime.getTime() - Date.now();
   }
 
   protected async refresh() {
@@ -76,12 +103,12 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     // this.totalReputationRewardable = await this.wrapper.getReputationReward();
     // this.totalReputationRewardableLeft = await this.wrapper.getReputationRewardLeft();
     // this.lockCount = await this.wrapper.getLockCount();
+
     this.lockingStartTime = await this.wrapper.getLockingStartTime();
     this.lockingEndTime = await this.wrapper.getLockingEndTime();
-    const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
-    this.lockingPeriodIsEnded = blockDate > this.lockingEndTime;
-    this.lockingPeriodIsStarted = blockDate >= this.lockingStartTime;
-    this.inLockingPeriod = this.lockingPeriodIsStarted && !this.lockingPeriodIsEnded;
+    // this.lockingStartTime = new Date(new Date().getTime() + 1200000000);
+    // this.lockingEndTime = new Date(this.lockingStartTime.getTime() + 1300000000);
+
     // this.bootstrappingPeriodStartDate = App.lockingPeriodStartDate;
     // this.bootstrappingPeriodEndDate = App.lockingPeriodEndDate;
     this.maxLockingPeriod = await this.wrapper.getMaxLockingPeriod();
@@ -123,12 +150,12 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
         });
 
       this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
-        `lock submitted`, result.transactionHash));
+        `The lock has been recorded`, result.transactionHash));
 
       return true;
 
     } catch (ex) {
-      this.eventAggregator.publish("handleException", new EventConfigException(`Error locking`, ex));
+      this.eventAggregator.publish("handleException", new EventConfigException(`The lock could not be recorded`, ex));
     }
 
     return false;
@@ -143,12 +170,12 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       lockInfo.amount = new BigNumber(0);
 
-      this.eventAggregator.publish("handleTransaction", new EventConfigTransaction("lock released", result.tx));
+      this.eventAggregator.publish("handleTransaction", new EventConfigTransaction("The lock has been released", result.tx));
 
       return true;
 
     } catch (ex) {
-      this.eventAggregator.publish("handleException", new EventConfigException(`Error releasing lock`, ex));
+      this.eventAggregator.publish("handleException", new EventConfigException(`The lock could not be released`, ex));
     }
     return false;
   }
@@ -161,12 +188,12 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   //     let result = await this.wrapper.redeem(lockInfo);
 
   //     this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
-  //       `Reputation redeemed for ${lockInfo.lockerAddress}`, result.tx));
+  //       `The reputation has been redeemed`, result.tx));
 
   //     return true;
 
   //   } catch (ex) {
-  //     this.eventAggregator.publish("handleException", new EventConfigException(`Error redeeming reputation`, ex));
+  //     this.eventAggregator.publish("handleException", new EventConfigException(`The reputation could not be redeemed`, ex));
   //   }
   //   return false;
   // }

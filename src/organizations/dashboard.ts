@@ -1,4 +1,4 @@
-import { autoinject, computedFrom, observable, singleton } from "aurelia-framework";
+import { autoinject, computedFrom, singleton } from "aurelia-framework";
 import { DaoService, DaoEx } from "../services/DaoService";
 import { ArcService, Address, WrapperService, AccountService, InitializeArcJs, ConfigService, Web3, Utils } from "../services/ArcService";
 import { SchemeService, SchemeInfo } from "../services/SchemeService";

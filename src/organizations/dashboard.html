@@ -132,13 +132,13 @@
               <div class="title">Redeem Reputation</div>
               <div class="body">
                 The DutchX initialization phase will end on ${lockingPeriodEndDate | date:'friendly'}.
-                After that time you will be able to redeem your earned reputation simply by clicking the 'Redeem'
-                button below.
-                The total amount of reputation you have earned will be transferred to your ETH address.
+                <!-- After that time you will be able to redeem your earned reputation simply by clicking the 'Redeem'
+                button below. -->
+                At that time the total amount of reputation you have earned will be transferred to your ETH address.
               </div>
               <div class="redeem-controls">
-                <button id="globalRedeemBtn" class="btn btn-outline-secondary" disabled.bind="!canRedeem"
-                  click.delegate="redeem()">Redeem</button>
+                <!-- <button id="globalRedeemBtn" class="btn btn-outline-secondary" disabled.bind="!canRedeem"
+                  click.delegate="redeem()">Redeem</button> -->
                 <div if.bind="!canRedeem">The redemption phase has not yet begun</div>
               </div>
             </div>

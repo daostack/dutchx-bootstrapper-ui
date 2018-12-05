@@ -5,24 +5,46 @@ import { Web3Service } from "./services/Web3Service";
 import { ArcService } from "./services/ArcService";
 import '../static/styles.scss';
 import { AureliaConfiguration } from 'aurelia-configuration';
+import { BindingSignaler } from "aurelia-templating-resources";
+import { runInThisContext } from "vm";
+import { EventAggregator } from "aurelia-event-aggregator";
+import { Utils } from "services/utils";
 
 @autoinject
 export class App {
   public static lockingPeriodEndDate: Date;
   public static lockingPeriodStartDate: Date;
   public static governanceStartDate: Date;
-  public static msUntilCanLock: number;
+  private intervalId: any;
 
   public router: Router;
 
   constructor(
     private web3: Web3Service
+    , private signaler: BindingSignaler
     , private arcService: ArcService
+    , private eventAggregator: EventAggregator
     , appConfig: AureliaConfiguration
+    , private web3Service: Web3Service
   ) {
     App.lockingPeriodStartDate = new Date(appConfig.get("lockingPeriodStartDate"));
     App.lockingPeriodEndDate = new Date(appConfig.get("lockingPeriodEndDate"));
     App.governanceStartDate = new Date(appConfig.get("governanceStartDate"));
+  }
+
+  activate() {
+    this.intervalId = setInterval(async () => {
+      const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
+      this.signaler.signal('secondPassed');
+      this.eventAggregator.publish("secondPassed", blockDate);
+    }, 1000);
+  }
+
+  deactivate() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
   }
 
   attached() {
@@ -33,8 +55,8 @@ export class App {
       //   "background-color": "white"
       // })
       .bootstrapMaterialDesign({ global: { label: { className: "bmd-label-floating" } } });
-  }
 
+  }
 
   configureRouter(config: RouterConfiguration, router: Router) {
 

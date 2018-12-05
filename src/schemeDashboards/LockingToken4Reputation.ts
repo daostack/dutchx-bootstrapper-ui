@@ -51,7 +51,7 @@ export class LockingToken4Reputation extends Locking4Reputation {
       }
     }
     catch (ex) {
-      this.eventAggregator.publish("handleException", new EventConfigException(`Error approving token transfer`, ex));
+      this.eventAggregator.publish("handleException", new EventConfigException(`The token transfer could not be approved`, ex));
     }
     return false;
   }

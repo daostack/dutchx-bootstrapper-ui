@@ -6,12 +6,12 @@ import { BigNumber, Web3Service } from '../services/Web3Service';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { EventConfigTransaction, EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Utils } from 'services/utils';
+import { DisposableCollection } from "services/DisposableCollection";
 
 @autoinject
 export class Auction4Reputation extends DaoSchemeDashboard {
 
   protected wrapper: Auction4ReputationWrapper;
-  lockingPeriodIsEnded: boolean;
   auctionPeriod: number;
   totalReputationRewardable: BigNumber;
   totalReputationRewardableLeft: BigNumber;
@@ -23,10 +23,12 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   token: StandardTokenWrapper;
   auctionId: number = -1;
   auctionIsOver: boolean;
+  auctionNotBegun: boolean;
   userHasBid: boolean = false;
   refreshing: boolean = false;
   refreshingLockers: boolean = false;
   loaded: boolean = false;
+  subscriptions = new DisposableCollection();
 
   constructor(
     protected eventAggregator: EventAggregator
@@ -39,8 +41,26 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     this.wrapper = await WrapperService.factories[model.name].at(model.address);
   }
 
+  private getAuctionNotBegun(blockDate: Date): boolean {
+    // return this.auctionNotBegun = false;
+    return this.auctionNotBegun = (blockDate < this.auctionsStartTime);
+  }
+
+  private getAuctionIsOver(blockDate: Date): boolean {
+    // return this.auctionIsOver = true;
+    return this.auctionIsOver = (blockDate > this.auctionsEndTime);
+  }
+
   attached() {
+    this.subscriptions.push(this.eventAggregator.subscribe("secondPassed", async (blockDate: Date) => {
+      this.getAuctionNotBegun(blockDate);
+      this.getAuctionIsOver(blockDate);
+    }));
     return this.refresh().then(() => { this.loaded = true; });
+  }
+
+  detached() {
+    this.subscriptions.dispose();
   }
 
   protected async refresh() {
@@ -52,11 +72,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     this.totalReputationRewardableLeft = await this.wrapper.getReputationRewardLeft();
     this.auctionsStartTime = await this.wrapper.getAuctionsStartTime();
     this.auctionsEndTime = await this.wrapper.getAuctionsEndTime();
-    const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
-    this.lockingPeriodIsEnded = blockDate > this.auctionsEndTime;
     // this.numberOfAuctions = await this.wrapper.getNumberOfAuctions();
-
-    this.auctionIsOver = (await Utils.lastBlockDate(this.web3Service.web3)) >= this.auctionsEndTime;
     this.refreshing = false;
   }
 
@@ -82,10 +98,10 @@ export class Auction4Reputation extends DaoSchemeDashboard {
       let result = await this.wrapper.bid({ amount });
 
       this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
-        `bid ${this.web3Service.fromWei(amount)} token(s), for: ${currentAccount}`, result.tx));
+        `The bid has been recorded`, result.tx));
 
     } catch (ex) {
-      this.eventAggregator.publish("handleException", new EventConfigException(`Error bidding ${this.web3Service.fromWei(amount)} token(s)`, ex));
+      this.eventAggregator.publish("handleException", new EventConfigException(`The bid could not be recorded`, ex));
     }
   }
 
@@ -105,12 +121,12 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   //     let result = await this.wrapper.redeem({ auctionId, beneficiaryAddress });
 
   //     this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
-  //       `Redeemed in auctionId ${auctionId}, for: ${beneficiaryAddress}`, result.tx));
+  //       `The reputation has beem redeemed`, result.tx));
 
   //     this.auctionId = -1;
 
   //   } catch (ex) {
-  //     this.eventAggregator.publish("handleException", new EventConfigException(`Error redeeming in auctionId ${auctionId}`, ex));
+  //     this.eventAggregator.publish("handleException", new EventConfigException(`The reputation could not be redeemed`, ex));
   //   }
   // }
 
