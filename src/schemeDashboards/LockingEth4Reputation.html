@@ -7,9 +7,10 @@
       as much ETH as you like, for up to 3 months. At the end of the initialization period, your reputation will be
       calculated pro rata according to the total locked ETH.</instructions>
     <div class="scheme-dashboard-body">
-      <div if.to-view="lockingPeriodHasNotStarted">The locking period has not yet begun, you can't lock.</div>
-      <div if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't lock</div>
-      <form if.bind="inLockingPeriod" with.bind="lockModel">
+      <div class="message" if.to-view="lockingPeriodHasNotStarted">The locking period has not yet begun, you can't
+        lock.</div>
+      <div class="message" if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't lock</div>
+      <form if.to-view="inLockingPeriod" with.bind="lockModel">
         <div class="row">
           <div class="col-5">
             <div class="form-group bmd-form-group">

@@ -213,8 +213,9 @@ text-align: center;
   padding-right: 1rem;
 }
 
-.scheme-dashboard .scheme-dashboard-body > div:first-child {
+.scheme-dashboard .scheme-dashboard-body > div.message {
   padding: 1rem;
+  text-align: center;
 }
 
 .scheme-dashboard .scheme-dashboard-body .btn-submit,

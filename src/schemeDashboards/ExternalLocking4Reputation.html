@@ -7,22 +7,23 @@
       all MGN holders who opt in on receiving DutchX DAO reputation. All you need to do is activate this option here.</instructions>
 
     <div class="scheme-dashboard-body">
-      <div if.to-view="lockingPeriodHasNotStarted">
+      <div class="message" if.to-view="lockingPeriodHasNotStarted">
         <span>${msUntilCanLockCountdown | timespan:"seconds"}</span>
-        until the 24-hour MGN locking period begins
+        until the 24-hour MGN locking period begins.
       </div>
 
-      <div if.to-view="inLockingPeriod">
+      <div class="message" if.to-view="inLockingPeriod && !alreadyLocked">
         <span>${msRemainingInPeriodCountdown | timespan:"seconds"}</span>
-        remaining to lock MGN Tokens
+        remaining to lock MGN Tokens.
       </div>
 
-      <div if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't lock.</div>
+      <div class="message" if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't lock.</div>
 
-      <div if.to-view="inLockingPeriod && alreadyLocked">You have already submitted a lock</div>
-      <form if.to-view="inLockingPeriod && !alreadyLocked">
+      <div class="message" if.to-view="inLockingPeriod && alreadyLocked">You have already submitted a lock.</div>
 
-        <div class="form-group bmd-form-group">
+      <form>
+
+        <div if.to-view="inLockingPeriod && !alreadyLocked" class="form-group bmd-form-group">
           <button class="btn-submit clearWidth" click.delegate="lock()">Activate</button>
           <!-- <spinbutton onclick.call="refresh()" css="btn btn-secondary btn-sm" as-button="true" text="Refresh"
               spin.to-view="refreshing" title="Refresh"></spinbutton> -->

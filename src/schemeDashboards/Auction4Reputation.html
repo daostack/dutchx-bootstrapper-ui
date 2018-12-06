@@ -11,8 +11,8 @@
 
     <div class="scheme-dashboard-body">
 
-      <div if.to-view="auctionNotBegun">The locking period has not yet begun, you can't bid</div>
-      <div if.to-view="auctionIsOver">The locking period has ended, you can't bid</div>
+      <div class="message" if.to-view="auctionNotBegun">The locking period has not yet begun, you can't bid</div>
+      <div class="message" if.to-view="auctionIsOver">The locking period has ended, you can't bid</div>
 
       <form if.bind="!auctionNotBegun && !auctionIsOver">
         <div class="row">

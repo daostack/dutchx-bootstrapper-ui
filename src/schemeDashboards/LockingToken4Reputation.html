@@ -10,10 +10,11 @@
 
     <div class="scheme-dashboard-body">
 
-      <div if.to-view="lockingPeriodHasNotStarted">The locking period has not yet begun, you can't lock.</div>
-      <div if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't lock</div>
+      <div class="message" if.to-view="lockingPeriodHasNotStarted">The locking period has not yet begun, you can't
+        lock.</div>
+      <div class="message" if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't lock</div>
 
-      <form if.bind="inLockingPeriod" with.bind="lockModel">
+      <form if.to-view="inLockingPeriod" with.bind="lockModel">
         <div class="row">
           <div class="col-12">
             <div class="form-group bmd-form-group">

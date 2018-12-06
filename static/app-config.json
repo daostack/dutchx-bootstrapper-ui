@@ -3,20 +3,20 @@
   "lockingPeriodEndDate": "2019-03-21T00:00:00.000Z",
   "governanceStartDate": "2019-04-04T00:00:00.000Z",
   "Ganache": {
-    "daoAddress": "0x98acb62a70474446bb3ff3045d3881f8b4340c27",
-    "gnoTokenAddress": "0x7016B1a2d5F5BC5107161Ef111D06dfd09843Ba5",
-    "mgnTokenAddress": "0x7016B1a2d5F5BC5107161Ef111D06dfd09843Ba5",
+    "daoAddress": "0xcb4e66eca663fdb61818d52a152601ca6afef74f",
+    "gnoTokenAddress": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
+    "mgnTokenAddress": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
     "lockableTokens": [
       {
-        "address": "0x7016B1a2d5F5BC5107161Ef111D06dfd09843Ba5",
+        "address": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
         "symbol": "MGN"
       },
       {
-        "address": "0x7016B1a2d5F5BC5107161Ef111D06dfd09843Ba5",
+        "address": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
         "symbol": "GNO"
       },
       {
-        "address": "0x7016B1a2d5F5BC5107161Ef111D06dfd09843Ba5",
+        "address": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
         "symbol": "GEN"
       },
       {

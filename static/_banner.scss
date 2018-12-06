@@ -11,8 +11,10 @@
   padding-bottom: 0.75rem;
   padding-left: 1.25rem;
   display: inline-block;
-  @extend .shadow-sm;
   position: relative; /* for the close icon */
+  -webkit-box-shadow: 0px 0px 4px 1px rgba(255,255,255,.75);
+  -moz-box-shadow: 0px 0px 4px 1px rgba(255,255,255,.75);
+  box-shadow: 0px 0px 4px 1px rgba(255,255,255,.75);
 }
 
 .banner.failure .body {
