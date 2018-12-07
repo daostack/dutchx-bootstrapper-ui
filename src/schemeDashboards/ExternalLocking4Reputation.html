@@ -24,9 +24,8 @@
       <form>
 
         <div if.to-view="inLockingPeriod && !alreadyLocked" class="form-group bmd-form-group">
-          <button class="btn-submit clearWidth" click.delegate="lock()">Activate</button>
-          <!-- <spinbutton onclick.call="refresh()" css="btn btn-secondary btn-sm" as-button="true" text="Refresh"
-              spin.to-view="refreshing" title="Refresh"></spinbutton> -->
+          <spinbutton onclick.call="lock()" css="btn-submit btn-sm" as-button="true" text="Activate" spin.to-view="locking"
+            title.to-view="locking ? 'Activating lock...' : 'Activate Lock'"></spinbutton>
         </div>
 
         <!-- <div if.bind="lockingPeriodIsEnded">

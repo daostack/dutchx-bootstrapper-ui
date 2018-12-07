@@ -49,7 +49,8 @@
           <div class="row">
             <div class="col-12">
               <div class="form-group">
-                <button class="btn-submit btn-sm" click.delegate="lock()">Submit</button>
+                <spinbutton onclick.call="lock()" css="btn-submit btn-sm" as-button="true" text="Submit" spin.to-view="locking"
+                  title.to-view="locking ? 'Locking...' : 'Submit Lock'"></spinbutton>
               </div>
             </div>
           </div>

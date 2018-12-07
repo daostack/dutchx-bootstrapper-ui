@@ -22,7 +22,8 @@
               <input id="bidAmount" class="form-control" type="number" value.bind="bidAmount | ethwei & updateTrigger:'blur'" />
             </div>
             <div class="form-group">
-              <button class="btn-submit btn-sm" click.delegate="bid(bidAmount)">Bid</button>
+              <spinbutton onclick.call="bid(bidAmount)" css="btn-submit btn-sm" as-button="true" text="Bid"
+                spin.to-view="bidding" title.to-view="bidding ? 'Submitting bid...' : 'Submit Bid'"></spinbutton>
             </div>
           </div>
         </div>

@@ -37,6 +37,8 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
     try {
 
+      this.locking = true;
+
       if (!(await this.getLockBlocker())) {
 
         const token = (await StandardTokenFactory.at(this.selectedToken.address)) as StandardTokenWrapper;
@@ -53,6 +55,7 @@ export class LockingToken4Reputation extends Locking4Reputation {
     catch (ex) {
       this.eventAggregator.publish("handleException", new EventConfigException(`The token transfer could not be approved`, ex));
     }
+    this.locking = false;
     return false;
   }
 

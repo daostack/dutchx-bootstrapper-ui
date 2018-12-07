@@ -29,6 +29,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   refreshingLockers: boolean = false;
   loaded: boolean = false;
   subscriptions = new DisposableCollection();
+  bidding: boolean = false;
 
   constructor(
     protected eventAggregator: EventAggregator
@@ -82,27 +83,31 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
     try {
 
+      this.bidding = true;
+
       const reason = await this.wrapper.getBidBlocker({ amount });
 
       if (reason) {
         this.eventAggregator.publish("handleFailure", new EventConfigFailure(`Can't bid: ${reason}`));
-        return;
+      } else {
+
+        await (await this.token.approve({
+          owner: currentAccount,
+          amount: amount,
+          spender: this.wrapper.address
+        })).watchForTxMined();
+
+        let result = await (await this.wrapper.bid({ amount })).watchForTxMined();
+
+        this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
+          `The bid has been recorded`, result.transactionHash));
       }
-
-      await (await this.token.approve({
-        owner: currentAccount,
-        amount: amount,
-        spender: this.wrapper.address
-      })).watchForTxMined();
-
-      let result = await this.wrapper.bid({ amount });
-
-      this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
-        `The bid has been recorded`, result.tx));
 
     } catch (ex) {
       this.eventAggregator.publish("handleException", new EventConfigException(`The bid could not be recorded`, ex));
     }
+
+    this.bidding = false;
   }
 
   // protected async redeem(auctionId: number, beneficiaryAddress: Address) {

@@ -34,6 +34,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   subscriptions = new DisposableCollection();
   locks: Array<LockInfoX>;
   intervalId: any;
+  locking: boolean = false;
   @computedFrom("lockerInfo")
   get userScore(): number { return this.lockerInfo ? this.web3Service.fromWei(this.lockerInfo.score).toNumber() : 0; }
 
@@ -137,27 +138,30 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   protected async lock(alreadyCheckedForBlock: boolean = false): Promise<boolean> {
 
-    if (!alreadyCheckedForBlock && (await this.getLockBlocker())) {
-      return false;
-    }
-
     try {
+      this.locking = true;
 
-      let result = await (<ArcTransactionResult>(await (<any>this.wrapper).lock(this.lockModel))).watchForTxMined()
-        .then((tx: TransactionReceiptTruffle) => {
-          this.getLocks();
-          return tx;
-        });
+      if (alreadyCheckedForBlock || !(await this.getLockBlocker())) {
 
-      this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
-        `The lock has been recorded`, result.transactionHash));
+        let result = await (<ArcTransactionResult>(await (<any>this.wrapper).lock(this.lockModel))).watchForTxMined()
+          .then((tx: TransactionReceiptTruffle) => {
+            this.getLocks();
+            return tx;
+          });
 
-      return true;
+        this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
+          `The lock has been recorded`, result.transactionHash));
+
+        this.locking = false;
+
+        return true;
+      }
 
     } catch (ex) {
       this.eventAggregator.publish("handleException", new EventConfigException(`The lock could not be recorded`, ex));
     }
 
+    this.locking = false;
     return false;
   }
 
