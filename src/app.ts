@@ -34,9 +34,11 @@ export class App {
 
   activate() {
     this.intervalId = setInterval(async () => {
-      const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
       this.signaler.signal('secondPassed');
-      this.eventAggregator.publish("secondPassed", blockDate);
+      if (this.web3.isConnected) {
+        const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
+        this.eventAggregator.publish("secondPassed", blockDate);
+      }
     }, 1000);
   }
 

@@ -26,7 +26,7 @@
     ]
   },
   "Kovan": {
-    "daoAddress": "0xaa02da631243429335d3adf1d8942ff71811c88d",
+    "daoAddress": "0x449949aa3f11c1d27408a464e30990328fa502ae",
     "gnoTokenAddress": "0x6018bf616ec9db02f90c8c8529ddadc10a5c29dc",
     "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb",
     "lockableTokens": [
