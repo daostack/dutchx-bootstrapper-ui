@@ -208,13 +208,13 @@ export class Dashboard {
       await UtilsInternal.increaseTime(100000000000, this.web3.web3);
     }
 
-    UtilsInternal.runTimerAtDate(this.lockingPeriodEndDate, () => {
+    UtilsInternal.runTimerAtDate(msUntilCanRedeem, () => {
       this.canRedeem = true;
       if (this.org) {
         this.computeRedeemables();
       }
       // $('#globalRedeemBtn').addClass('enabled');
-    }), msUntilCanRedeem);
+    });
 
     const dashboard = $(this.dashboardElement);
 
