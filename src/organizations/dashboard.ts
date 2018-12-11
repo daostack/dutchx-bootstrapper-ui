@@ -162,7 +162,7 @@ export class Dashboard {
       await this.initializeNetwork();
       this.eventAggregator.publish("Network.Changed.Id", networkId);
       this.networkName = this.web3.networkName;
-      if (this.fakeRedeem && this.web3Service.isConnected) {
+      if (this.fakeRedeem && this.web3Service.isConnected && (this.networkName === "Ganache")) {
         await UtilsInternal.increaseTime(100000000000, this.web3.web3);
       }
       await this.loadAvatar();
