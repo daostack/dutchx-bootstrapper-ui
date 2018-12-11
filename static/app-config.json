@@ -1,5 +1,5 @@
 {
-  "lockingPeriodStartDate": "2018-11-01T00:00:00.000Z",
+  "lockingPeriodStartDate": "2019-02-01T00:00:00.000Z",
   "lockingPeriodEndDate": "2019-03-20T00:00:00.000Z",
   "governanceStartDate": "2019-04-04T00:00:00.000Z",
   "Ganache": {
@@ -26,6 +26,9 @@
     ]
   },
   "Kovan": {
+    "lockingPeriodStartDate": "2018-11-01T00:00:00.000Z",
+    "lockingPeriodEndDate": "2019-03-20T00:00:00.000Z",
+    "governanceStartDate": "2019-04-04T00:00:00.000Z",
     "daoAddress": "0xed24ede42dbaf760950cd70e79d447976e81f394",
     "gnoTokenAddress": "0x6018bf616ec9db02f90c8c8529ddadc10a5c29dc",
     "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb",
