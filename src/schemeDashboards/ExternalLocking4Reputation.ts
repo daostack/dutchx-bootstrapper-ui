@@ -1,6 +1,6 @@
 import { autoinject } from 'aurelia-framework';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
-import { ExternalLocking4ReputationWrapper, LockInfo } from '@daostack/arc.js';
+import { ExternalLocking4ReputationWrapper, LockInfo, Address } from '@daostack/arc.js';
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Web3Service } from "services/Web3Service";
 import { AureliaConfiguration } from "aurelia-configuration";
@@ -20,9 +20,9 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
     super(appConfig, eventAggregator, web3Service);
   }
 
-  async accountChanged() {
-    this.alreadyLocked = await this.wrapper.getAccountHasLocked(this.web3Service.defaultAccount);
-    return super.accountChanged();
+  protected async accountChanged(account: Address) {
+    this.alreadyLocked = await this.wrapper.getAccountHasLocked(account);
+    return super.accountChanged(account);
   }
 
   protected async lock(): Promise<boolean> {

@@ -14,7 +14,7 @@ export class LocksForReputation {
   loading: boolean = true;
   // anyCanRedeem: boolean;
 
-  @bindable({ defaultBindingMode: bindingMode.oneWay }) locks: Promise<Array<LockInfo>>;
+  @bindable({ defaultBindingMode: bindingMode.oneWay }) locks: Array<LockInfo>;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) release: ({ lock: LockInfo }) => Promise<boolean>;
   // @bindable({ defaultBindingMode: bindingMode.oneTime }) redeem: ({ lock: LockInfo }) => Promise<boolean>;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) wrapper: Locking4ReputationWrapper;
@@ -28,9 +28,9 @@ export class LocksForReputation {
     this.locksChanged(this.locks);
   }
 
-  async locksChanged(newLocks: Promise<Array<LockInfo>>) {
+  async locksChanged(newLocks: Array<LockInfo>) {
     this.loading = true;
-    const _tmpLocks = await newLocks as Array<LockInfoInternal>;
+    const _tmpLocks = newLocks as Array<LockInfoInternal>;
 
     for (const lock of _tmpLocks) {
       //lock.canRedeem = await this.canRedeem(lock);

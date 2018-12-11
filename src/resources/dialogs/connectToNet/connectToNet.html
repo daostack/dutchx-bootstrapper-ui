@@ -14,7 +14,7 @@
           <p if.bind="!isConnected">
             There seems to be no connection to the blockchain.
             Please install and/or enable the <a href="https://metamask.io/" target="_blank">MetaMask browser extension</a>,
-            point it to the Main Ethereum Network, then refresh this browser page so you can access the <a href="https://daotalk.org/c/dutchx-dao"
+            point it to the <span class="important">Main Ethereum Network</span>, then refresh this browser page so you can access the <a href="https://daotalk.org/c/dutchx-dao"
               target="_blank">DutchX</a>
             Initializer.
           </p>
@@ -27,8 +27,8 @@
 
           <div if.bind="((isConnected && !hasAccount) || (!landed && hasDao))">
             <p>
-              <span class="important">Important:</span> Reputation earned by locking tokens cannot be transferred.
-              Please ensure you have selected the account you intend to use in the future for voting within the DAO.
+              <span class="important">Important</span>: Reputation earned by locking tokens cannot be transferred.
+              Please ensure you have selected the account (ETH Address) you intend to use in the future for voting within the DAO.
             </p>
             <!-- "OK" (`land`) will take us off the info panel -->
             <p if.bind="hasDao && hasApprovedAccountAccess" class="buttonContainer"><button class="btn btn-submit"
@@ -40,7 +40,7 @@
               account:</p> -->
 
             <p class="buttonContainer"><button class="btn btn-submit" click.delegate="confirm()">Allow the DutchX
-                Initializer to Access Your Account</button></p>
+                Initializer to Access Your Account on MetaMask</button></p>
           </div>
 
           <div if.bind="isConnected && hasAccount">

@@ -33,7 +33,6 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   loaded: boolean = false;
   maxLockingPeriod: number;
   lockerInfo: LockerInfo;
-  userAddress: Address;
   subscriptions = new DisposableCollection();
   locks: Array<LockInfoX>;
   intervalId: any;
@@ -58,14 +57,16 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   async activate(model: SchemeDashboardModel) {
     this.wrapper = await WrapperService.factories[model.name].at(model.address);
-    this.lockService = new LockService(this.appConfig, this.wrapper, this.web3Service.defaultAccount);
     return super.activate(model);
   }
 
   async attached() {
-    this.userAddress = this.web3Service.defaultAccount;
 
     await this.refresh();
+
+    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Account", (account: Address) => {
+      this.accountChanged(account);
+    }));
 
     this.subscriptions.push(this.eventAggregator.subscribe("secondPassed", async (blockDate: Date) => {
       if (this.org) {
@@ -122,15 +123,15 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     // this.bootstrappingPeriodStartDate = App.lockingPeriodStartDate;
     // this.bootstrappingPeriodEndDate = App.lockingPeriodEndDate;
     this.maxLockingPeriod = await this.wrapper.getMaxLockingPeriod();
-    return this.accountChanged().then(() => {
+    return this.accountChanged(this.web3Service.defaultAccount).then(() => {
       this.refreshing = false;
       this.loaded = true;
     });
   }
 
-  async accountChanged() {
-    this.lockModel.lockerAddress = this.userAddress;
-    // this.lockerInfo = await this.getLockerInfo();
+  protected async accountChanged(account: Address) {
+    this.lockService = new LockService(this.appConfig, this.wrapper, account);
+    this.lockModel.lockerAddress = account;
     return this.getLocks();
   }
 

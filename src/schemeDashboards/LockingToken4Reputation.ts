@@ -24,8 +24,8 @@ export class LockingToken4Reputation extends Locking4Reputation {
   private selectedToken: TokenSpecification = null;
   protected wrapper: LockingToken4ReputationWrapper;
 
-  async activate(model: SchemeDashboardModel) {
-    await super.activate(model);
+  protected async refresh() {
+    await super.refresh();
     this.lockableTokens = await this.lockService.lockableTokenSpecs;
   }
 
