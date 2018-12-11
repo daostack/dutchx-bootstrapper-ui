@@ -59,7 +59,7 @@ export class Utils {
     var then = date.getTime();
     var diff = Math.max((then - now), 0);
     if (diff > 0x7FFFFFFF) //setTimeout limit is MAX_INT32=(2^31-1)
-      setTimeout(function () { Utils.runTimerAtDate(date, func); }, 0x7FFFFFFF);
+      setTimeout(() => { Utils.runTimerAtDate(date, func); }, 0x7FFFFFFF);
     else
       setTimeout(func, diff);
   }
