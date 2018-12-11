@@ -20,8 +20,13 @@ export class Utils {
    * Returns the last mined block in the chain.
    */
   public static async lastBlockDate(web3: Web3): Promise<Date> {
-    const block = await (<any>Promise).promisify((callback: any): any =>
-      web3.eth.getBlock("latest", callback))() as BlockWithoutTransactionData;
+    let block;
+    do {
+      block = await (<any>Promise).promisify((callback: any): any =>
+        web3.eth.getBlock("latest", callback))() as BlockWithoutTransactionData;
+    }
+    while (!block);
+
     return new Date(block.timestamp * 1000);
   }
 
