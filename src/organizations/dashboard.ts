@@ -1,6 +1,6 @@
 import { autoinject, computedFrom, singleton } from "aurelia-framework";
 import { DaoService, DaoEx } from "../services/DaoService";
-import { ArcService, Address, WrapperService, AccountService, InitializeArcJs, ConfigService, Web3, Utils } from "../services/ArcService";
+import { ArcService, Address, WrapperService, AccountService, InitializeArcJs, ConfigService, Web3, Utils, Locking4ReputationWrapper } from "../services/ArcService";
 import { SchemeService, SchemeInfo } from "../services/SchemeService";
 import { Web3Service, BigNumber } from '../services/Web3Service';
 import { EventAggregator } from 'aurelia-event-aggregator';
@@ -8,9 +8,12 @@ import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { AureliaConfiguration } from "aurelia-configuration";
 import { DisposableCollection } from 'services/DisposableCollection';
 import { NetworkConnectionWizards } from 'services/networkConnectionWizards';
-import { EventConfigFailure } from 'entities/GeneralEvents';
+import { EventConfigFailure, EventConfigException } from 'entities/GeneralEvents';
 import { App } from 'app';
+import { Utils as UtilsInternal } from 'services/utils';
 import axios from "axios";
+import { LockService } from "services/lockServices";
+import { Locking4Reputation } from "schemeDashboards/Locking4Reputation";
 
 @singleton(false)
 @autoinject
@@ -27,10 +30,12 @@ export class Dashboard {
   private schemesLoading: boolean = false;
   private dashboardElement: any;
   private lockingPeriodEndDate: Date;
-  private canRedeem: boolean = false;
+  private fakeRedeem: boolean = true;
+  private canRedeem: boolean = this.fakeRedeem;
   private networkName: string;
   private options: { address?: Address };
-
+  private redeemables: Array<Redeemable> = new Array<Redeemable>();
+  private totalReputationAvailable: BigNumber;
   private _loading: boolean = false;
   private initialized: boolean = false;
 
@@ -157,6 +162,9 @@ export class Dashboard {
       await this.initializeNetwork();
       this.eventAggregator.publish("Network.Changed.Id", networkId);
       this.networkName = this.web3.networkName;
+      if (this.fakeRedeem && this.web3Service.isConnected) {
+        await UtilsInternal.increaseTime(100000000000, this.web3.web3);
+      }
       await this.loadAvatar();
     });
 
@@ -195,11 +203,17 @@ export class Dashboard {
 
     this.lockingPeriodEndDate = App.lockingPeriodEndDate;
 
-    const msUntilCanRedeem = App.lockingPeriodEndDate.getTime() - new Date().getTime();
+    const msUntilCanRedeem = Math.max(this.fakeRedeem ? 0 : this.lockingPeriodEndDate.getTime() - new Date().getTime(), 0);
+    if (this.fakeRedeem && this.web3Service.isConnected) {
+      await UtilsInternal.increaseTime(100000000000, this.web3.web3);
+    }
 
-    setTimeout(() => {
+    UtilsInternal.runTimerAtDate(() => {
       this.canRedeem = true;
-      $('#globalRedeemBtn').addClass('enabled');
+      if (this.org) {
+        this.computeRedeemables();
+      }
+      // $('#globalRedeemBtn').addClass('enabled');
     }, msUntilCanRedeem);
 
     const dashboard = $(this.dashboardElement);
@@ -296,6 +310,9 @@ export class Dashboard {
       this.eventAggregator.publish("handleFailure", new EventConfigFailure(`not all of the required contracts were found`));
       this.networkConnectionWizards.run(true); // no-op if already running
     } else {
+      if (this.canRedeem) {
+        await this.computeRedeemables();
+      }
       this.eventAggregator.publish("DAO.loaded", this.org);
     }
     this.schemesLoading = this.loading = false;
@@ -303,14 +320,6 @@ export class Dashboard {
     this.polishDom();
 
     return Promise.resolve(this.schemesLoaded);
-  }
-
-  private loadingChanged(newValue: boolean) {
-    this.eventAggregator.publish("DAO.Loading", newValue);
-  }
-
-  private redeem() {
-    if (this.canRedeem) { alert('this will redeem for all contracts'); }
   }
 
   private async findNonDeployedArcScheme(scheme: SchemeInfo): Promise<SchemeInfo | null> {
@@ -388,11 +397,102 @@ export class Dashboard {
       scheme)
   }
 
-  getSchemeIndexFromAddress(address: string, collection: Array<SchemeInfo>): number {
-    let result = collection.filter((s) => s.address === address);
-    if (result.length > 1) {
-      throw new Error("getSchemeInfoWithAddress: More than one schemes found");
-    }
-    return result.length ? collection.indexOf(result[0]) : -1;
+  // getSchemeIndexFromAddress(address: string, collection: Array<SchemeInfo>): number {
+  //   let result = collection.filter((s) => s.address === address);
+  //   if (result.length > 1) {
+  //     throw new Error("getSchemeInfoWithAddress: More than one schemes found");
+  //   }
+  //   return result.length ? collection.indexOf(result[0]) : -1;
+  // }
+
+  getSchemeInfoFromName(name: string): SchemeInfo {
+    return this.dutchXSchemes.filter((s: SchemeInfo) => {
+      return s.name === name;
+    })[0];
   }
+
+  @computedFrom("redeemables")
+  get totalUserReputationEarned(): BigNumber {
+    return this.redeemables.map((r: Redeemable): BigNumber => r.amount)
+      .reduce((prev: BigNumber, curr: BigNumber): BigNumber => {
+        return prev.add(curr);
+      }, new BigNumber(0));
+  }
+
+  @computedFrom("totalUserReputationEarned", "totalReputationAvailable")
+  get percentUserReputationEarned(): string {
+    return this.totalUserReputationEarned.div(this.totalReputationAvailable).mul(100).toFixed(2).toString();
+  }
+
+  async computeRedeemables(): Promise<void> {
+
+    let totalReputationAvailable = new BigNumber(0);
+    const redeemables = new Array<Redeemable>();
+
+    try {
+      let schemeAddress = this.getSchemeInfoFromName("LockingEth4Reputation").address;
+      let wrapper: Locking4ReputationWrapper = await WrapperService.factories.LockingEth4Reputation.at(schemeAddress);
+      let earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
+      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+
+      if (earnedRep.gt(0)) {
+        redeemables.push({
+          what: "locked ETH",
+          amount: earnedRep
+        });
+      }
+
+      schemeAddress = this.getSchemeInfoFromName("ExternalLocking4Reputation").address;
+      wrapper = await WrapperService.factories.ExternalLocking4Reputation.at(schemeAddress);
+      earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
+      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+
+      if (earnedRep.gt(0)) {
+        redeemables.push({
+          what: "locked MGN tokens",
+          amount: earnedRep
+        });
+      }
+
+      schemeAddress = this.getSchemeInfoFromName("LockingToken4Reputation").address;
+      wrapper = await WrapperService.factories.LockingToken4Reputation.at(schemeAddress);
+      earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
+      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+
+      if (earnedRep.gt(0)) {
+        redeemables.push({
+          what: "other locked tokens",
+          amount: earnedRep
+        });
+      }
+
+      schemeAddress = this.getSchemeInfoFromName("Auction4Reputation").address;
+      const auctionWrapper = await WrapperService.factories.Auction4Reputation.at(schemeAddress);
+      const bids = await auctionWrapper.getBids(this.web3.defaultAccount);
+      earnedRep = new BigNumber(0);
+      for (const bid of bids) {
+        earnedRep = earnedRep.add(await auctionWrapper.getUserEarnedReputation(
+          { beneficiaryAddress: this.web3.defaultAccount, auctionId: bid.auctionId }));
+      }
+      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+
+      if (earnedRep.gt(0)) {
+        redeemables.push({
+          what: "auctions",
+          amount: earnedRep
+        });
+      }
+
+      this.totalReputationAvailable = totalReputationAvailable;
+      this.redeemables = redeemables;
+    } catch (ex) {
+      this.eventAggregator.publish("handleException",
+        new EventConfigException(`Unable to compute earned reputation `, ex));
+    }
+  }
+}
+
+interface Redeemable {
+  what: string;
+  amount: BigNumber;
 }

@@ -1,6 +1,8 @@
 import { SchemeInfo } from "../services/SchemeService";
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DaoEx } from 'services/DaoService';
+import { EventAggregator } from "aurelia-event-aggregator";
+import { IDisposable } from "services/IDisposable";
 
 export class DaoSchemeDashboard {
   /**

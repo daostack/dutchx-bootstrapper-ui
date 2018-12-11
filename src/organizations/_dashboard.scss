@@ -282,12 +282,19 @@ text-align: center;
 }
 
 .redeemSection .body {
+  text-align: center;
   margin-bottom: 1.5rem;
 }
 
-.redeemSection .redeem-controls {
+.redeemSection .redeemables {
   text-align:center;
   padding-bottom: 3rem;
+}
+
+.redeemSection .redeemables .body .breakdown {
+  text-align:left;
+  margin-bottom: 2rem;
+  display: inline-block;
 }
 
 #globalRedeemBtn:hover,

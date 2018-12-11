@@ -40,6 +40,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
   async activate(model: SchemeDashboardModel) {
     this.wrapper = await WrapperService.factories[model.name].at(model.address);
+    return super.activate(model);
   }
 
   private getAuctionNotBegun(blockDate: Date): boolean {

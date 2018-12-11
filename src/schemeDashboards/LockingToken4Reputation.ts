@@ -1,29 +1,32 @@
 import { autoinject } from 'aurelia-framework';
-import { Address, LockingToken4ReputationWrapper, StandardTokenFactory, StandardTokenWrapper, TokenLockingOptions, LockInfo } from "../services/ArcService";
+import { LockingToken4ReputationWrapper, StandardTokenFactory, StandardTokenWrapper, TokenLockingOptions, LockInfo } from "../services/ArcService";
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
-import { AureliaConfiguration } from "aurelia-configuration";
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Web3Service } from "services/Web3Service";
 import { EventConfigFailure, EventConfigException } from "entities/GeneralEvents";
+import { AureliaConfiguration } from "aurelia-configuration";
+import { TokenSpecification } from "services/lockServices";
+import { SchemeDashboardModel } from "schemeDashboards/schemeDashboardModel";
 
 @autoinject
 export class LockingToken4Reputation extends Locking4Reputation {
 
+  private lockableTokens: Array<TokenSpecification>;
+
   constructor(
-    private appConfig: AureliaConfiguration
+    appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
     , web3Service: Web3Service
   ) {
-    super(eventAggregator, web3Service);
+    super(appConfig, eventAggregator, web3Service);
   }
 
-  private lockableTokens: Array<TokenSpecification>;
   private selectedToken: TokenSpecification = null;
   protected wrapper: LockingToken4ReputationWrapper;
 
-  protected async refresh() {
-    this.lockableTokens = this.appConfig.get("lockableTokens");
-    await super.refresh();
+  async activate(model: SchemeDashboardModel) {
+    await super.activate(model);
+    this.lockableTokens = await this.lockService.lockableTokenSpecs;
   }
 
   protected async lock(): Promise<boolean> {
@@ -63,17 +66,8 @@ export class LockingToken4Reputation extends Locking4Reputation {
     this.selectedToken = tokenSpec;
   }
 
-  protected async getLockUnit(lockInfo: LockInfo): Promise<string> {
-
-    const token = await this.wrapper.getTokenForLock(lockInfo.lockId);
-    const found = this.lockableTokens.filter((tokenSpec: TokenSpecification) => {
-      return tokenSpec.address.toLowerCase() === token.address;
-    });
-    return found.length >= 1 ? found[0].symbol : "N/A";
+  protected getLockUnit(lockInfo: LockInfo): Promise<string> {
+    return this.lockService.getLockedTokenSymbol(lockInfo);
   }
-}
 
-interface TokenSpecification {
-  symbol: string;
-  address: Address;
 }

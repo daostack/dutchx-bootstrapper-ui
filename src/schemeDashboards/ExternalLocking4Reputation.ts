@@ -1,10 +1,9 @@
-import { autoinject, computedFrom } from 'aurelia-framework';
+import { autoinject } from 'aurelia-framework';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
-import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { ExternalLocking4ReputationWrapper, LockInfo } from '@daostack/arc.js';
-import { BindingSignaler } from "aurelia-templating-resources";
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Web3Service } from "services/Web3Service";
+import { AureliaConfiguration } from "aurelia-configuration";
 
 @autoinject
 export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
@@ -14,11 +13,11 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   intervalId: any;
 
   constructor(
-    private signaler: BindingSignaler
+    appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
     , web3Service: Web3Service
   ) {
-    super(eventAggregator, web3Service);
+    super(appConfig, eventAggregator, web3Service);
   }
 
   async accountChanged() {

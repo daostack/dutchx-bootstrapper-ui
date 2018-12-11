@@ -16,7 +16,7 @@
 
       <form if.bind="!auctionNotBegun && !auctionIsOver">
         <div class="row">
-          <div class="col-4">
+          <div class="col-5">
             <div class="form-group bmd-form-group">
               <label for="bidAmount">Tokens to bid</label>
               <input id="bidAmount" class="form-control" type="number" value.bind="bidAmount | ethwei & updateTrigger:'blur'" />

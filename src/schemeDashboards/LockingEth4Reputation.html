@@ -9,7 +9,7 @@
     <div class="scheme-dashboard-body">
       <div class="message" if.to-view="lockingPeriodHasNotStarted">The locking period has not yet begun, you can't
         lock.</div>
-      <div class="message" if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't lock</div>
+      <div class="message" if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't yet lock.</div>
       <form if.to-view="inLockingPeriod" with.bind="lockModel">
         <div class="row">
           <div class="col-5">
