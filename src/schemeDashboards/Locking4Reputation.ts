@@ -65,6 +65,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   async attached() {
     this.userAddress = this.web3Service.defaultAccount;
 
+    await this.refresh();
+
     this.subscriptions.push(this.eventAggregator.subscribe("secondPassed", async (blockDate: Date) => {
       if (this.org) {
         this.getLockingPeriodIsEnded(blockDate);
@@ -73,8 +75,6 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
         this.getMsRemainingInPeriodCountdown();
       }
     }));
-
-    return this.refresh();
   }
 
   detached() {

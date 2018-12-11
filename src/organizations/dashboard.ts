@@ -203,12 +203,12 @@ export class Dashboard {
 
     this.lockingPeriodEndDate = App.lockingPeriodEndDate;
 
-    const msUntilCanRedeem = Math.max(this.fakeRedeem ? 0 : this.lockingPeriodEndDate.getTime() - new Date().getTime(), 0);
+    // const msUntilCanRedeem = Math.max(this.fakeRedeem ? 0 : this.lockingPeriodEndDate.getTime() - new Date().getTime(), 0);
     if (this.fakeRedeem && this.web3Service.isConnected) {
       await UtilsInternal.increaseTime(100000000000, this.web3.web3);
     }
 
-    UtilsInternal.runTimerAtDate(msUntilCanRedeem, () => {
+    UtilsInternal.runTimerAtDate(this.fakeRedeem ? new Date() : this.lockingPeriodEndDate, () => {
       this.canRedeem = true;
       if (this.org) {
         this.computeRedeemables();
