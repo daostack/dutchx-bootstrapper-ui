@@ -58,7 +58,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   async activate(model: SchemeDashboardModel) {
     this.wrapper = await WrapperService.factories[model.name].at(model.address);
-    this.lockService = new LockService(this.appConfig, this.wrapper, this.userAddress);
+    this.lockService = new LockService(this.appConfig, this.wrapper, this.web3Service.defaultAccount);
     return super.activate(model);
   }
 
