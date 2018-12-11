@@ -30,7 +30,7 @@ export class Dashboard {
   private schemesLoading: boolean = false;
   private dashboardElement: any;
   private lockingPeriodEndDate: Date;
-  private fakeRedeem: boolean = true;
+  private fakeRedeem: boolean = false;
   private canRedeem: boolean = this.fakeRedeem;
   private networkName: string;
   private options: { address?: Address };
