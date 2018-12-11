@@ -212,7 +212,10 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
           extractComments: true,
           parallel: true,
           uglifyOptions: {
-            ecma: 6
+            ecma: 6,
+            mangle: {
+              reserved: ['BigNumber'],
+            }
           }
         }),
         new CompressionPlugin({
