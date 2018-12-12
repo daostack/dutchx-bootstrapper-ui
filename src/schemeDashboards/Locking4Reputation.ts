@@ -17,12 +17,6 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   protected wrapper: Locking4ReputationWrapper;
   protected lockService: LockService;
-  // totalLocked: BigNumber;
-  // totalLockedLeft: BigNumber;
-  // totalScore: BigNumber;
-  // totalReputationRewardable: BigNumber;
-  // totalReputationRewardableLeft: BigNumber;
-  // lockCount: number;
   lockingStartTime: Date;
   lockingEndTime: Date;
   lockingPeriodHasNotStarted: boolean;
@@ -31,15 +25,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   msRemainingInPeriodCountdown: number;
   refreshing: boolean = false;
   loaded: boolean = false;
-  // maxLockingPeriod: number;
   lockerInfo: LockerInfo;
   subscriptions = new DisposableCollection();
   locks: Array<LockInfoX>;
   intervalId: any;
   locking: boolean = false;
-
-  // @computedFrom("lockerInfo")
-  // get userScore(): number { return this.lockerInfo ? this.web3Service.fromWei(this.lockerInfo.score).toNumber() : 0; }
 
   lockModel: LockingOptions = {
     lockerAddress: undefined,
@@ -83,12 +73,10 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   }
 
   private getLockingPeriodHasNotStarted(blockDate: Date): boolean {
-    // return this.lockingPeriodHasNotStarted = false;
     return this.lockingPeriodHasNotStarted = (blockDate < this.lockingStartTime);
   }
 
   private getLockingPeriodIsEnded(blockDate: Date): boolean {
-    // return this.lockingPeriodIsEnded = true;
     return this.lockingPeriodIsEnded = (blockDate > this.lockingEndTime);
   }
 
@@ -108,13 +96,6 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected async refresh() {
     this.refreshing = true;
     this.loaded = false;
-    // this.totalLocked = await this.wrapper.getTotalLocked();
-    // this.totalLockedLeft = await this.wrapper.getTotalLockedLeft();
-    // this.totalScore = await this.wrapper.getTotalScore();
-    // this.totalReputationRewardable = await this.wrapper.getReputationReward();
-    // this.totalReputationRewardableLeft = await this.wrapper.getReputationRewardLeft();
-    // this.lockCount = await this.wrapper.getLockCount();
-    // this.maxLockingPeriod = await this.wrapper.getMaxLockingPeriod();
 
     this.lockingStartTime = await this.wrapper.getLockingStartTime();
     this.lockingEndTime = await this.wrapper.getLockingEndTime();

@@ -12,14 +12,8 @@ import { DisposableCollection } from "services/DisposableCollection";
 export class Auction4Reputation extends DaoSchemeDashboard {
 
   protected wrapper: Auction4ReputationWrapper;
-  auctionPeriod: number;
-  totalReputationRewardable: BigNumber;
-  totalReputationRewardableLeft: BigNumber;
   auctionsStartTime: Date;
   auctionsEndTime: Date;
-  numberOfAuctions: number;
-  auctionReputationReward: BigNumber;
-  walletAddress: Address;
   token: StandardTokenWrapper;
   auctionId: number = -1;
   auctionIsOver: boolean;
@@ -67,13 +61,8 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   protected async refresh() {
     this.refreshing = true;
     this.token = await this.wrapper.getToken();
-    this.walletAddress = await this.wrapper.getWallet();
-    this.auctionPeriod = await this.wrapper.getAuctionPeriod();
-    this.totalReputationRewardable = await this.wrapper.getReputationReward();
-    this.totalReputationRewardableLeft = await this.wrapper.getReputationRewardLeft();
     this.auctionsStartTime = await this.wrapper.getAuctionsStartTime();
     this.auctionsEndTime = await this.wrapper.getAuctionsEndTime();
-    // this.numberOfAuctions = await this.wrapper.getNumberOfAuctions();
     this.refreshing = false;
   }
 
