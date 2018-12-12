@@ -256,14 +256,18 @@ form {
 }
 
 .instructions {
-  padding: 1rem;
+  padding-left: .75rem;
+  padding-right: .75rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   color: $color-ds-white;
   background-color: $color-ds-darkblue;
 }
 
 .instructions-body {
-  font-size: 1.1rem;
+  font-size: 1rem;
   padding-left: 1rem;
+  line-height: 1.35rem;
 }
 
 .instructions-icon {
@@ -377,4 +381,8 @@ etherscanlink {
 
 .table thead th {
   font-weight: 400;
+}
+
+[class^='bmd-label'], [class*=' bmd-label'] {
+    color: rgba(0, 0, 0, 0.75);
 }

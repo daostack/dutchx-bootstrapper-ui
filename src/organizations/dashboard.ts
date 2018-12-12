@@ -58,7 +58,7 @@ export class Dashboard {
     ["Auction4Reputation", { description: "BID GEN", icon: './gen_icon_color.svg', icon_hover: './gen_icon_white.svg', position: 4 }],
     ["ExternalLocking4Reputation", { description: "LOCK MGN", icon: './mgn_icon_color.svg', icon_hover: './mgn_icon_white.svg', position: 3 }],
     ["LockingEth4Reputation", { description: "LOCK ETH", icon: './eth_icon_color.svg', icon_hover: './eth_icon_white.svg', position: 1 }],
-    ["LockingToken4Reputation", { description: "LOCK TOKENS", icon: './gno_icon_color.svg', icon_hover: './gno_icon_white.svg', position: 2 }],
+    ["LockingToken4Reputation", { description: "LOCK TOKENS", icon: './generic_icon_color.svg', icon_hover: './generic_icon_white.svg', position: 2 }],
   ]);
 
   public org: DaoEx;
@@ -478,7 +478,7 @@ export class Dashboard {
 
       if (earnedRep.gt(0)) {
         redeemables.push({
-          what: "auctions",
+          what: "GEN auctions",
           amount: earnedRep
         });
       }

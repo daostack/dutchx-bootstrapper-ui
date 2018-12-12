@@ -3,8 +3,11 @@
     <pageloading></pageloading>
   </div>
   <div else>
-    <instructions>Your MGN tokens are locked by default in the DutchX smart contract. Reputation will be distributed to
-      all MGN holders who opt in on receiving DutchX DAO reputation. All you need to do is activate this option here.</instructions>
+    <instructions><p>Your MGN tokens are locked by default in the DutchX smart contract.
+    Reputation will be distributed to all MGN holders who opt in on receiving DutchX DAO reputation.
+    All you need to do is activate this option here.</p>
+
+<p>&bull;&nbsp;Please make sure you are connected in MetaMask with the same ETH address that holds your MGN tokens.</p></instructions>
 
     <div class="scheme-dashboard-body">
       <div class="message" if.to-view="lockingPeriodHasNotStarted">
@@ -23,7 +26,7 @@
 
       <form>
 
-        <div if.to-view="inLockingPeriod && !alreadyLocked" class="form-group bmd-form-group">
+        <div if.to-view="inLockingPeriod && !alreadyLocked" class="form-group">
           <spinbutton onclick.call="lock()" css="btn-submit btn-sm" as-button="true" text="Activate" spin.to-view="locking"
             title.to-view="locking ? 'Activating lock...' : 'Activate Lock'"></spinbutton>
         </div>
