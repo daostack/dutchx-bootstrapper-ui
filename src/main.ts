@@ -6,7 +6,6 @@ import * as Bluebird from 'bluebird';
 import 'arrive'; // do bmd does it's thing whenever views are attached
 import "popper.js";
 import 'bootstrap-material-design';
-import { ConfigService, LogLevel } from "./services/ArcService";
 import { DateService } from "./services/DateService";
 import { SnackbarService } from "services/SnackbarService";
 import { ConsoleLogService } from "services/ConsoleLogService";
@@ -29,10 +28,9 @@ export async function configure(aurelia: Aurelia) {
       configuration.settings.keyboard = false;
     });
 
-  // for now, always on for trouble-shooting:  if (process.env.env == "development") {
-  aurelia.use.developmentLogging();
-  ConfigService.set("logLevel", LogLevel.all);
-  // }
+  if (process.env.env == "development") {
+    aurelia.use.developmentLogging();
+  }
 
   aurelia.use.globalResources([
     PLATFORM.moduleName("resources/bindingBehaviors/async"),

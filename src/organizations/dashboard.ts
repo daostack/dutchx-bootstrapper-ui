@@ -1,6 +1,6 @@
 import { autoinject, computedFrom, singleton } from "aurelia-framework";
 import { DaoService, DaoEx } from "../services/DaoService";
-import { ArcService, Address, WrapperService, AccountService, InitializeArcJs, ConfigService, Web3, Utils, Locking4ReputationWrapper } from "../services/ArcService";
+import { ArcService, Address, WrapperService, AccountService, InitializeArcJs, ConfigService, Web3, Utils, Locking4ReputationWrapper, LogLevel } from "../services/ArcService";
 import { SchemeService, SchemeInfo } from "../services/SchemeService";
 import { Web3Service, BigNumber } from '../services/Web3Service';
 import { EventAggregator } from 'aurelia-event-aggregator';
@@ -86,6 +86,9 @@ export class Dashboard {
 
       const networkName = await Utils.getNetworkName();
       this.appConfig.setEnvironment(networkName);
+
+      ConfigService.set("logLevel",
+        (networkName === "Live") ? LogLevel.info | LogLevel.warn | LogLevel.error : LogLevel.all);
 
       web3 = await InitializeArcJs({
         useMetamaskEthereumWeb3Provider: true,
