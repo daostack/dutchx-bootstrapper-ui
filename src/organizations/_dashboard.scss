@@ -167,7 +167,6 @@ text-align: center;
 .dashboard-schemes li.list-group-item .scheme-icon {
   width: 1.5rem;
   display: inline-block;
-  margin-right: .75rem !important;
 }
 
 .dashboard-schemes li.list-group-item .scheme-icon img {
@@ -192,6 +191,20 @@ text-align: center;
 
 .dashboard-schemes li.list-group-item:not(.selected) .scheme-arrow-up {
   display: none;
+}
+
+.dashboard-schemes  .scheme-name.activeLocks {
+  font-weight: 300 !important;
+  padding-right: 1rem;
+}
+
+.dashboard-schemes li.list-group-item.selected .scheme-name.activeLocks {
+    color: $color-ds-white;
+}
+
+.dashboard-schemes li.list-group-item:not(.selected) .scheme-name.activeLocks,
+.dashboard-schemes li.list-group-item:not(.selected):hover .scheme-name.activeLocks {
+  color: $color-ds-orange;
 }
 
 .scheme-dashboard {

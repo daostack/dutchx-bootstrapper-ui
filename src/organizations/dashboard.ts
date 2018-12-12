@@ -1,6 +1,18 @@
 import { autoinject, computedFrom, singleton } from "aurelia-framework";
 import { DaoService, DaoEx } from "../services/DaoService";
-import { ArcService, Address, WrapperService, AccountService, InitializeArcJs, ConfigService, Web3, Utils, Locking4ReputationWrapper, LogLevel } from "../services/ArcService";
+import {
+  ArcService,
+  Address,
+  WrapperService,
+  AccountService,
+  InitializeArcJs,
+  ConfigService,
+  Web3,
+  Utils,
+  Locking4ReputationWrapper,
+  LogLevel,
+  LockInfo
+} from "../services/ArcService";
 import { SchemeService, SchemeInfo } from "../services/SchemeService";
 import { Web3Service, BigNumber } from '../services/Web3Service';
 import { EventAggregator } from 'aurelia-event-aggregator';
@@ -13,31 +25,30 @@ import { App } from 'app';
 import { Utils as UtilsInternal } from 'services/utils';
 import axios from "axios";
 import { LockService } from "services/lockServices";
-import { Locking4Reputation } from "schemeDashboards/Locking4Reputation";
 
 @singleton(false)
 @autoinject
 export class Dashboard {
 
-  private address: string;
-  private orgName: string;
-  private tokenSymbol: string;
-  private dutchXSchemes: Array<SchemeInfo>;
-  private subscriptions = new DisposableCollection();
-  private avatarLoading: boolean = true;
-  private avatarLoaded: boolean = false;
-  private schemesLoaded: boolean = false;
-  private schemesLoading: boolean = false;
-  private dashboardElement: any;
-  private lockingPeriodEndDate: Date;
-  private fakeRedeem: boolean = false;
-  private canRedeem: boolean = this.fakeRedeem;
-  private networkName: string;
-  private options: { address?: Address };
-  private redeemables: Array<Redeemable> = new Array<Redeemable>();
-  private totalReputationAvailable: BigNumber;
-  private _loading: boolean = false;
-  private initialized: boolean = false;
+  address: string;
+  orgName: string;
+  tokenSymbol: string;
+  dutchXSchemes: Array<SchemeInfoX>;
+  subscriptions = new DisposableCollection();
+  avatarLoading: boolean = true;
+  avatarLoaded: boolean = false;
+  schemesLoaded: boolean = false;
+  schemesLoading: boolean = false;
+  dashboardElement: any;
+  lockingPeriodEndDate: Date;
+  fakeRedeem: boolean = false;
+  canRedeem: boolean = this.fakeRedeem;
+  networkName: string;
+  options: { address?: Address };
+  redeemables: Array<Redeemable> = new Array<Redeemable>();
+  totalReputationAvailable: BigNumber;
+  _loading: boolean = false;
+  initialized: boolean = false;
 
   /**
    * true if loading the avatar or its schemes
@@ -54,12 +65,37 @@ export class Dashboard {
     }
   }
 
-  private dutchXSchemeConfigs = new Map<string, { description: string, icon?: string, icon_hover?: string, position: number }>([
-    ["Auction4Reputation", { description: "BID GEN", icon: './gen_icon_color.svg', icon_hover: './gen_icon_white.svg', position: 4 }],
-    ["ExternalLocking4Reputation", { description: "LOCK MGN", icon: './mgn_icon_color.svg', icon_hover: './mgn_icon_white.svg', position: 3 }],
-    ["LockingEth4Reputation", { description: "LOCK ETH", icon: './eth_icon_color.svg', icon_hover: './eth_icon_white.svg', position: 1 }],
-    ["LockingToken4Reputation", { description: "LOCK TOKENS", icon: './generic_icon_color.svg', icon_hover: './generic_icon_white.svg', position: 2 }],
-  ]);
+  private dutchXSchemeConfigs = new Map<string,
+    { description: string, icon?: string, icon_hover?: string, position: number, hasActiveLocks: boolean }>([
+      ["Auction4Reputation", {
+        description: "BID GEN",
+        icon: './gen_icon_color.svg',
+        icon_hover: './gen_icon_white.svg',
+        position: 4,
+        hasActiveLocks: false
+      }],
+      ["ExternalLocking4Reputation", {
+        description: "LOCK MGN",
+        icon: './mgn_icon_color.svg',
+        icon_hover: './mgn_icon_white.svg',
+        position: 3,
+        hasActiveLocks: false
+      }],
+      ["LockingEth4Reputation", {
+        description: "LOCK ETH",
+        icon: './eth_icon_color.svg',
+        icon_hover: './eth_icon_white.svg',
+        position: 1,
+        hasActiveLocks: true
+      }],
+      ["LockingToken4Reputation", {
+        description: "LOCK TOKENS",
+        icon: './generic_icon_color.svg',
+        icon_hover: './generic_icon_white.svg',
+        position: 2,
+        hasActiveLocks: true
+      }],
+    ]);
 
   public org: DaoEx;
 
@@ -313,6 +349,17 @@ export class Dashboard {
       this.eventAggregator.publish("handleFailure", new EventConfigFailure(`not all of the required contracts were found`));
       this.networkConnectionWizards.run(true); // no-op if already running
     } else {
+
+      let wrapper = await this.getSchemeWrapperFromName("LockingEth4Reputation");
+      let lockService = new LockService(this.appConfig, wrapper, this.web3Service.defaultAccount);
+      let schemeInfo = this.getSchemeInfoFromName("LockingEth4Reputation");
+      schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => (li.amount as BigNumber).gt(0)).length;
+
+      wrapper = await this.getSchemeWrapperFromName("LockingToken4Reputation");
+      lockService = new LockService(this.appConfig, wrapper, this.web3Service.defaultAccount);
+      schemeInfo = this.getSchemeInfoFromName("LockingToken4Reputation");
+      schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => (li.amount as BigNumber).gt(0)).length;
+
       if (this.canRedeem) {
         await this.computeRedeemables();
       }
@@ -326,30 +373,34 @@ export class Dashboard {
   }
 
   private async findNonDeployedArcScheme(scheme: SchemeInfo): Promise<SchemeInfo | null> {
-    const code = await (<any>Promise).promisify((callback: any): any =>
-      this.web3Service.web3.eth.getCode(scheme.address, callback))();
+    // see: https://solidity.readthedocs.io/en/latest/metadata.html
+    const end = "a165627a7a72305820";
+    let code = await (<any>Promise).promisify((callback: any): any =>
+      this.web3Service.web3.eth.getCode(scheme.address, callback))() as string;
+    code = code.substr(0, code.indexOf(end));
     for (const wrapperName in WrapperService.nonUniversalSchemeFactories) {
       const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
       if (factory && this.dutchXSchemeConfigs.has(wrapperName)) {
-        let bytecode = this.appConfig.get(`Contracts.${wrapperName}.bytecode`);
+        let found: boolean;
+        // let bytecode = this.appConfig.get(`Contracts.${wrapperName}.bytecode`);
 
-        if (bytecode) {
-          let found = code === bytecode;
-          if (!found) {
-            /**
-             * look in Arc contracts
-             */
-            let contract = null;
-            try { contract = await factory.ensureSolidityContract(); } catch { }
-            if (contract) {
-              found = code === contract.deployedBinary;
-            }
-          }
+        // if (bytecode) {
+        //   found = code === bytecode;
+        //   if (!found) {
+        /**
+         * look in Arc contracts
+         */
+        let contract = null;
+        try { contract = await factory.ensureSolidityContract(); } catch { }
+        if (contract) {
+          const deployedBinary = contract.deployedBinary.substr(0, contract.deployedBinary.indexOf(end));
+          found = code === deployedBinary;
+        }
+        //}
 
-          if (found) {
-            const wrapper = await factory.at(scheme.address);
-            return SchemeInfo.fromContractWrapper(wrapper, true);
-          }
+        if (found) {
+          const wrapper = await factory.at(scheme.address);
+          return SchemeInfo.fromContractWrapper(wrapper, true);
         }
       }
     }
@@ -408,10 +459,15 @@ export class Dashboard {
   //   return result.length ? collection.indexOf(result[0]) : -1;
   // }
 
-  getSchemeInfoFromName(name: string): SchemeInfo {
-    return this.dutchXSchemes.filter((s: SchemeInfo) => {
+  getSchemeInfoFromName(name: string): SchemeInfoX {
+    return this.dutchXSchemes.filter((s: SchemeInfoX) => {
       return s.name === name;
     })[0];
+  }
+
+  getSchemeWrapperFromName(name: string): Promise<Locking4ReputationWrapper> {
+    const schemeAddress = this.getSchemeInfoFromName(name).address;
+    return WrapperService.factories[name].at(schemeAddress)
   }
 
   @computedFrom("redeemables")
@@ -498,4 +554,8 @@ export class Dashboard {
 interface Redeemable {
   what: string;
   amount: BigNumber;
+}
+
+interface SchemeInfoX extends SchemeInfo {
+  numLocks?: number;
 }
