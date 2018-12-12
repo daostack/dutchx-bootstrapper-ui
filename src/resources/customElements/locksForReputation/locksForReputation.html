@@ -1,5 +1,10 @@
 <template>
-  <spinbutton onclick.call="refresh()" class="locksRefreshButton" spin.to-view="loading" title="Refresh Locks List"></spinbutton>
+  <div style="padding-left: .5rem; padding-right: .5rem">
+    <div class="inline" style="font-weight: 500;">Your Locks</div>
+    <div class="pull-right">
+      <spinbutton onclick.call="refresh()" class="locksRefreshButton" spin.to-view="loading" title="Refresh Locks List"></spinbutton>
+    </div>
+  </div>
   <table class="table locksForRep">
     <thead class="thead-light">
       <tr>
@@ -7,7 +12,7 @@
         <th style="text-align:left;width: 20%;">Amount</th>
         <th>Of</th>
         <th>Releasable</th>
-        <th style="text-align: center">Release</th>
+        <th>&nbsp;</th>
       </tr>
     </thead>
     <tbody>
@@ -22,9 +27,10 @@
         <td>${lock.units}</td>
         <td style="white-space:nowrap">
           ${lock.releaseTime | date:'table-date' }</td>
-        <td style="text-align:center;"><button style="padding-bottom: 0;padding-top: 0" if.to-view="lock.canRelease"
-            click.delegate="_release(lock)" class="btn btn-link">Release</button>
-          <div else>not yet</div>
+        <td style="text-align:center;"><button style="padding-bottom: 0;padding-top: 0" click.delegate="_release(lock)"
+            disabled.bind="!lock.canRelease" if.to-view="!lock.releasing && !lock.amount.eq(0)" class="btn btn-link">Release</button>
+          <div if.to-view="lock.releasing" title="Releasing" class="inline text-primary fa-refresh fa fa-spin" style="line-height: 21px"></div>
+          <button if.to-view="lock.amount.eq(0)" style="padding-bottom: 0;padding-top: 0" class="btn btn-link" disabled="disabled">Completed</button>
         </td>
       </tr>
     </tbody>

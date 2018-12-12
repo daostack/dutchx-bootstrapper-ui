@@ -29,6 +29,11 @@ export class LocksForReputation {
   }
 
   async locksChanged(newLocks: Array<LockInfo>) {
+    if (!this.wrapper) {
+      // then we haven't been attached yet, so wait
+      return;
+    }
+
     this.loading = true;
     const _tmpLocks = newLocks as Array<LockInfoInternal>;
 
@@ -43,10 +48,17 @@ export class LocksForReputation {
   }
 
   private async _release(lock: LockInfoInternal) {
-    const success = await this.release({ lock });
-    if (success) {
-      lock.canRelease = false; // await this.canRelease(lock);
-      lock.amount = (await this.wrapper.getLockInfo(lock.lockerAddress, lock.lockId)).amount;
+    if (!lock.canRelease) { return; }
+
+    lock.releasing = true;
+    try {
+      const success = await this.release({ lock });
+      if (success) {
+        lock.canRelease = false; // await this.canRelease(lock);
+        lock.amount = (await this.wrapper.getLockInfo(lock.lockerAddress, lock.lockId)).amount;
+      }
+    } finally {
+      lock.releasing = false;
     }
   }
 
@@ -83,4 +95,5 @@ export interface LockInfoX extends LockInfo {
 interface LockInfoInternal extends LockInfoX {
   //canRedeem: boolean;
   canRelease: boolean;
+  releasing: boolean;
 }

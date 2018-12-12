@@ -350,6 +350,10 @@ text-align: center;
 // Extra large devices (large desktops, 1200px and up)
 // @media (min-width: 1200px) { ... }
 
+table.locksForRep {
+  border-top: solid $color-ds-black 1px;
+}
+
 table.locksForRep td button {
   margin-bottom: 0;
 }

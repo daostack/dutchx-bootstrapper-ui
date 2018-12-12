@@ -26,7 +26,6 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   auctionNotBegun: boolean;
   userHasBid: boolean = false;
   refreshing: boolean = false;
-  refreshingLockers: boolean = false;
   loaded: boolean = false;
   subscriptions = new DisposableCollection();
   bidding: boolean = false;

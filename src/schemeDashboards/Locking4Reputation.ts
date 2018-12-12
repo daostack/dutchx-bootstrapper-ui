@@ -31,7 +31,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   msRemainingInPeriodCountdown: number;
   refreshing: boolean = false;
   loaded: boolean = false;
-  maxLockingPeriod: number;
+  // maxLockingPeriod: number;
   lockerInfo: LockerInfo;
   subscriptions = new DisposableCollection();
   locks: Array<LockInfoX>;
@@ -114,25 +114,19 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     // this.totalReputationRewardable = await this.wrapper.getReputationReward();
     // this.totalReputationRewardableLeft = await this.wrapper.getReputationRewardLeft();
     // this.lockCount = await this.wrapper.getLockCount();
+    // this.maxLockingPeriod = await this.wrapper.getMaxLockingPeriod();
 
     this.lockingStartTime = await this.wrapper.getLockingStartTime();
     this.lockingEndTime = await this.wrapper.getLockingEndTime();
-    // this.lockingStartTime = new Date(new Date().getTime() + 1200000000);
-    // this.lockingEndTime = new Date(this.lockingStartTime.getTime() + 1300000000);
 
-    // this.bootstrappingPeriodStartDate = App.lockingPeriodStartDate;
-    // this.bootstrappingPeriodEndDate = App.lockingPeriodEndDate;
-    this.maxLockingPeriod = await this.wrapper.getMaxLockingPeriod();
-    return this.accountChanged(this.web3Service.defaultAccount).then(() => {
-      this.refreshing = false;
-      this.loaded = true;
-    });
+    await this.accountChanged(this.web3Service.defaultAccount);
+    this.refreshing = false;
+    this.loaded = true;
   }
 
-  protected async accountChanged(account: Address) {
+  protected accountChanged(account: Address) {
     this.lockService = new LockService(this.appConfig, this.wrapper, account);
     this.lockModel.lockerAddress = account;
-    return this.getLocks();
   }
 
   protected async getLockBlocker(): Promise<boolean> {
@@ -180,9 +174,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
     try {
 
-      let result = await (<any>this.wrapper).release(lockInfo);
-
-      lockInfo.amount = new BigNumber(0);
+      let result = await (await (<any>this.wrapper).release(lockInfo)).watchForTxMined();
 
       this.eventAggregator.publish("handleTransaction", new EventConfigTransaction("The lock has been released", result.tx));
 
@@ -215,7 +207,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   protected abstract getLockUnit(lockInfo: LockInfo): Promise<string>;
 
-  private async getLocks(): Promise<void> {
+  protected async getLocks(): Promise<void> {
 
     const locks = await this.lockService.getUserLocks();
 

@@ -19,12 +19,11 @@
           <div class="col-12">
             <div class="form-group bmd-form-group">
               <div class="dropdown">
-                <a class="dropdown-toggle" id="lockableTokens" href="#" data-toggle="dropdown" aria-haspopup="true"
+                <a class="dropdown-toggle" id="lockableTokensDdl" href="#" data-toggle="dropdown" aria-haspopup="true"
                   aria-expanded="false">${selectedToken ? "Selected token: " + selectedToken.symbol : "Select a
                   Token to Lock"}</a>
-
-                <ul class="dropdown-menu" aria-labelledby="lockableTokens">
-                  <li class="dropdown-item" click.delegate="selectToken(tokenSpec)" repeat.for="tokenSpec of lockableTokens">${tokenSpec.symbol}</li>
+                <ul class="dropdown-menu" aria-labelledby="lockableTokensDdl">
+                  <li class="dropdown-item" click.delegate="selectToken(tokenSpec)" repeat.for="tokenSpec of $parent.lockableTokens">${tokenSpec.symbol}</li>
                 </ul>
               </div>
             </div>

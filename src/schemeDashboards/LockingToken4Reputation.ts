@@ -1,5 +1,5 @@
 import { autoinject } from 'aurelia-framework';
-import { LockingToken4ReputationWrapper, StandardTokenFactory, StandardTokenWrapper, TokenLockingOptions, LockInfo } from "../services/ArcService";
+import { LockingToken4ReputationWrapper, StandardTokenFactory, StandardTokenWrapper, TokenLockingOptions, LockInfo, Address } from "../services/ArcService";
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Web3Service } from "services/Web3Service";
@@ -26,7 +26,12 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
   protected async refresh() {
     await super.refresh();
-    this.lockableTokens = await this.lockService.lockableTokenSpecs;
+    this.lockableTokens = this.lockService.lockableTokenSpecs;
+  }
+
+  protected async accountChanged(account: Address) {
+    await super.accountChanged(account);
+    return this.getLocks();
   }
 
   protected async lock(): Promise<boolean> {

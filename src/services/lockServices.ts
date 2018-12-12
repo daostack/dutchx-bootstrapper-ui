@@ -2,7 +2,6 @@ import { Locking4ReputationWrapper, Address, LockerInfo, LockInfo } from "servic
 import { LockingToken4ReputationWrapper, StandardTokenWrapper } from "@daostack/arc.js";
 import { AureliaConfiguration } from "aurelia-configuration";
 import { BigNumber } from "bignumber.js";
-import { EventAggregator } from "aurelia-event-aggregator";
 
 export class LockService {
 
@@ -10,11 +9,11 @@ export class LockService {
   private static lockableTokens: Map<Address, TokenSpecification> = new Map<Address, TokenSpecification>();
 
   constructor(
-    private appConfig: AureliaConfiguration
+    appConfig: AureliaConfiguration
     , private wrapper: Locking4ReputationWrapper
     , private userAddress: Address
   ) {
-    this.lockableTokenSpecs = this.appConfig.get("lockableTokens");
+    this.lockableTokenSpecs = appConfig.get("lockableTokens");
   }
 
   public async getUserLocks(): Promise<Array<LockInfo>> {
