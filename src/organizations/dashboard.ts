@@ -174,10 +174,6 @@ export class Dashboard {
 
     this.options = options;
 
-    if (!this.initialized) {
-      await this.initializeNetwork();
-    }
-
     $("body").css("overflow", "hidden");
 
     /*******************
@@ -230,17 +226,28 @@ export class Dashboard {
       this.computeNumLocks();
     }));
 
-    this.networkName = this.web3.networkName;
+    if (!this.initialized) {
+      await this.initializeNetwork();
+    }
 
-    /*******************
-     * Start wizard if there is no DAO, otherwise we're good
-     */
-    if (!this.org) {
+    if (this.initialized) {
+      this.networkName = this.web3.networkName;
+
+      /*******************
+       * Start wizard if there is no DAO, otherwise we're good
+       */
+      if (!this.org) {
+        /**
+         * we'll handle events from here to load a DAO
+         */
+        this.networkConnectionWizards.run(false);
+        this.loadAvatar();
+      }
+    } else { // an error occurred initializing
       /**
-       * we'll handle events from here to load a DAO
+       * let the subscriptions above deal with everything
        */
       this.networkConnectionWizards.run(false);
-      this.loadAvatar();
     }
   }
 

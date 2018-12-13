@@ -6,8 +6,15 @@
       <span class="navbar-toggler-icon"></span>
     </button> -->
 
-    <a class="navbar-brand flex-sm-shrink-1 text-sm-left" href="#">
-      <img src="../static/dutchx-blue.svg" class="logo d-inline-block align-top" alt="DutchX">
+    <a
+      class="navbar-brand flex-sm-shrink-1 text-sm-left"
+      href="#"
+    >
+      <img
+        src="../static/dutchx-blue.svg"
+        class="logo d-inline-block align-top"
+        alt="DutchX"
+      >
       <div class="company-name">DutchX Initializer</div>
     </a>
 
@@ -16,14 +23,29 @@
         address.to-view="avatarAddress"></etherscanlink>
     </div> -->
 
-    <a href="#" target="_blank" class="anchor-secondary flex-sm-grow-1 text-sm-right nav-link nowrap">Report Bug</a>
+    <a
+      href="#"
+      target="_blank"
+      class="anchor-secondary flex-sm-grow-1 text-sm-right nav-link nowrap"
+    >Report Bug</a>
 
-    <a href="https://daotalk.org/" target="_blank" class="anchor-secondary text-sm-right nav-link">Forum</a>
+    <a
+      href="https://daotalk.org/"
+      target="_blank"
+      class="anchor-secondary text-sm-right nav-link"
+    >Forum</a>
 
-    <div if.bind="network !== 'Live'" class="text-sm-right navbar-text color-red nowrap">
-      Testing (${network})
+    <div if.to-view="connected">
+      <div
+        if.bind="network !== 'Live'"
+        class="text-sm-right navbar-text color-red nowrap"
+      >
+        Testing (${network})
+      </div>
+      <div
+        else
+        class="text-sm-right navbar-text color-green nowrap"
+      >Live (mainnet)</div>
     </div>
-    <div else class="text-sm-right navbar-text color-green nowrap">Live (mainnet)</div>
-
   </nav>
 </template>

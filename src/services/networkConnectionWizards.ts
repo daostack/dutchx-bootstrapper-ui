@@ -43,40 +43,43 @@ export class NetworkConnectionWizards {
 
       const connectionChanged = async () => {
         this.isConnected = this.web3.isConnected; // && !!this.arcService.arcContracts;
-        this.hasAccount = !!this.web3.defaultAccount;
-        const theWindow = (window as any);
-        /**
-         * ethereum._metamask:
-         * 
-         * isEnabled  - determines if this domain has been approved
-         *              (returns true if privacy mode is off or user has approved)
-         * isApproved - determines if this domain is currently enabled
-         *              (returns true only if domain has been approved in privacy mode)
-         * isUnlocked - determines if MetaMask is unlocked by the user
-         *              (returns true when user has simply logged on to MetaMask)
-         * 
-         * Note that on particular browsers, these may not be implemented, in which case we always return true and
-         * the UI will need to rely solely on hasAccount.
-         * 
-         * See: https://github.com/MetaMask/metamask-extension/pull/4703#issuecomment-430814765
-         */
-        const enabled = !theWindow.ethereum._metamask.isEnabled || (await theWindow.ethereum._metamask.isEnabled());
-        const approved = !theWindow.ethereum._metamask.isApproved || (await theWindow.ethereum._metamask.isApproved());
-        // const unlocked = !theWindow.ethereum._metamask.isUnlocked || (await theWindow.ethereum._metamask.isUnlocked());
 
-        // console.log(`enabled: ${enabled}`);
-        // console.log(`approved: ${approved}`);
-        // console.log(`unlocked: ${unlocked}`);
-        // console.log(`isConnected: ${this.isConnected}`);
-        // console.log(`hasAccount: ${this.hasAccount}`);
-
-        this.hasApprovedAccountAccess =
+        if (this.isConnected) {
+          this.hasAccount = !!this.web3.defaultAccount;
+          const theWindow = (window as any);
           /**
-           * !theWindow.ethereum happens when there is a local server or otherwise not using metamask.
-           * We return true in this case because MM is thus not present and we don't want to trigger
-           * any interaction with it.  If there is no connection we'll do the right thing.
+           * ethereum._metamask:
+           * 
+           * isEnabled  - determines if this domain has been approved
+           *              (returns true if privacy mode is off or user has approved)
+           * isApproved - determines if this domain is currently enabled
+           *              (returns true only if domain has been approved in privacy mode)
+           * isUnlocked - determines if MetaMask is unlocked by the user
+           *              (returns true when user has simply logged on to MetaMask)
+           * 
+           * Note that on particular browsers, these may not be implemented, in which case we always return true and
+           * the UI will need to rely solely on hasAccount.
+           * 
+           * See: https://github.com/MetaMask/metamask-extension/pull/4703#issuecomment-430814765
            */
-          !theWindow.ethereum || (enabled || approved);
+          const enabled = !theWindow.ethereum._metamask.isEnabled || (await theWindow.ethereum._metamask.isEnabled());
+          const approved = !theWindow.ethereum._metamask.isApproved || (await theWindow.ethereum._metamask.isApproved());
+          // const unlocked = !theWindow.ethereum._metamask.isUnlocked || (await theWindow.ethereum._metamask.isUnlocked());
+
+          // console.log(`enabled: ${enabled}`);
+          // console.log(`approved: ${approved}`);
+          // console.log(`unlocked: ${unlocked}`);
+          // console.log(`isConnected: ${this.isConnected}`);
+          // console.log(`hasAccount: ${this.hasAccount}`);
+
+          this.hasApprovedAccountAccess =
+            /**
+             * !theWindow.ethereum happens when there is a local server or otherwise not using metamask.
+             * We return true in this case because MM is thus not present and we don't want to trigger
+             * any interaction with it.  If there is no connection we'll do the right thing.
+             */
+            !theWindow.ethereum || (enabled || approved);
+        }
       };
 
       this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => { this.hasDao = false; connectionChanged() }));
