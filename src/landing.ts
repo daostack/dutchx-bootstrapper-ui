@@ -1,7 +1,5 @@
 import { autoinject } from 'aurelia-framework';
 import { BindingSignaler } from 'aurelia-templating-resources';
-import { App } from 'app';
-import { TimespanResolution } from "./services/DateService";
 import { Router } from 'aurelia-router';
 
 @autoinject
@@ -17,15 +15,15 @@ export class Landing {
   intervalId: any;
 
   constructor(
-    private signaler: BindingSignaler,
-    private router: Router
+    private signaler: BindingSignaler
+    , private router: Router
   ) {
+    this.lockingPeriodStartDate = new Date("2019-02-20T00:00:00.000Z");
+    this.lockingPeriodEndDate = new Date("2019-03-20T00:00:00.000Z");
+    this.governanceStartDate = new Date("2019-04-04T00:00:00.000Z");
   }
 
   activate() {
-    this.lockingPeriodStartDate = App.lockingPeriodStartDate;
-    this.lockingPeriodEndDate = App.lockingPeriodEndDate;
-    this.governanceStartDate = App.governanceStartDate;
     $("body").css("overflow", "auto");
   }
 }
