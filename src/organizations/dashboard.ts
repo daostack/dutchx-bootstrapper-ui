@@ -188,7 +188,9 @@ export class Dashboard {
       await this.initializeNetwork();
       this.eventAggregator.publish("Network.Changed.Account", account);
       if (!this.org) {
-        await this.loadAvatar();
+        this.loadAvatar();
+      } else {
+        this.loadSchemes();
       }
     });
 
@@ -212,7 +214,21 @@ export class Dashboard {
     /*******************
      * Handle avatar loaded.  Load schemes.
      */
-    this.subscriptions.push(this.eventAggregator.subscribe("Avatar.loaded", () => { this.loadSchemes(); }));
+    this.subscriptions.push(this.eventAggregator.subscribe("Avatar.loaded", () => {
+      this.loadSchemes().then((schemesLoaded: boolean) => {
+        if (schemesLoaded) {
+          this.eventAggregator.publish("DAO.loaded", this.org);
+        }
+      });
+    }));
+
+    this.subscriptions.push(this.eventAggregator.subscribe("Lock.Released", () => {
+      this.computeNumLocks();
+    }));
+
+    this.subscriptions.push(this.eventAggregator.subscribe("Lock.Submitted", () => {
+      this.computeNumLocks();
+    }));
 
     this.networkName = this.web3.networkName;
 
@@ -350,20 +366,11 @@ export class Dashboard {
       this.networkConnectionWizards.run(true); // no-op if already running
     } else {
 
-      let wrapper = await this.getSchemeWrapperFromName("LockingEth4Reputation");
-      let lockService = new LockService(this.appConfig, wrapper, this.web3Service.defaultAccount);
-      let schemeInfo = this.getSchemeInfoFromName("LockingEth4Reputation");
-      schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => (li.amount as BigNumber).gt(0)).length;
-
-      wrapper = await this.getSchemeWrapperFromName("LockingToken4Reputation");
-      lockService = new LockService(this.appConfig, wrapper, this.web3Service.defaultAccount);
-      schemeInfo = this.getSchemeInfoFromName("LockingToken4Reputation");
-      schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => (li.amount as BigNumber).gt(0)).length;
+      await this.computeNumLocks();
 
       if (this.canRedeem) {
         await this.computeRedeemables();
       }
-      this.eventAggregator.publish("DAO.loaded", this.org);
     }
     this.schemesLoading = this.loading = false;
 
@@ -548,6 +555,18 @@ export class Dashboard {
       this.eventAggregator.publish("handleException",
         new EventConfigException(`Unable to compute earned reputation `, ex));
     }
+  }
+
+  async computeNumLocks(): Promise<void> {
+    let wrapper = await this.getSchemeWrapperFromName("LockingEth4Reputation");
+    let lockService = new LockService(this.appConfig, wrapper, this.web3Service.defaultAccount);
+    let schemeInfo = this.getSchemeInfoFromName("LockingEth4Reputation");
+    schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => (li.amount as BigNumber).gt(0)).length;
+
+    wrapper = await this.getSchemeWrapperFromName("LockingToken4Reputation");
+    lockService = new LockService(this.appConfig, wrapper, this.web3Service.defaultAccount);
+    schemeInfo = this.getSchemeInfoFromName("LockingToken4Reputation");
+    schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => (li.amount as BigNumber).gt(0)).length;
   }
 }
 

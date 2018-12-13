@@ -137,6 +137,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
         this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
           `The lock has been recorded`, result.transactionHash));
 
+        this.eventAggregator.publish("Lock.Submitted");
+
         this.locking = false;
 
         return true;
@@ -158,6 +160,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       let result = await (await (<any>this.wrapper).release(lockInfo)).watchForTxMined();
 
       this.eventAggregator.publish("handleTransaction", new EventConfigTransaction("The lock has been released", result.tx));
+
+      this.eventAggregator.publish("Lock.Released");
 
       return true;
 
