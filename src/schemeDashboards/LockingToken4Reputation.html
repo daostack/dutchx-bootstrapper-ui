@@ -1,28 +1,53 @@
 <template>
-  <div class="pageloader" if.bind="!loaded">
+  <div
+    class="pageloader"
+    if.bind="!loaded"
+  >
     <pageloading></pageloading>
   </div>
   <div else>
     <instructions>Select a token, the number of tokens you would like to lock and the length you wish to lock it for.
-    You can lock as many tokens as you like, for up to 3 months.
-    At the end of the initialization period, your reputation will be calculated pro rata according to the total locked tokens and the value of each token at the time of locking.</instructions>
+      You can lock as many tokens as you like, for up to 3 months.
+      At the end of the initialization period, your reputation will be calculated pro rata according to the total locked tokens and the value of each token at the time of locking.</instructions>
 
     <div class="scheme-dashboard-body">
 
-      <div class="message" if.to-view="lockingPeriodHasNotStarted">The locking period has not yet begun, you can't
+      <div
+        class="message"
+        if.to-view="lockingPeriodHasNotStarted"
+      >The locking period has not yet begun, you can't
         lock.</div>
-      <div class="message" if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't yet lock.</div>
+      <div
+        class="message"
+        if.to-view="lockingPeriodIsEnded"
+      >The locking period has ended, you can't yet lock.</div>
 
-      <form if.to-view="inLockingPeriod" with.bind="lockModel">
+      <form
+        if.to-view="inLockingPeriod"
+        with.bind="lockModel"
+      >
         <div class="row">
           <div class="col-12">
             <div class="form-group bmd-form-group">
               <div class="dropdown">
-                <a class="dropdown-toggle" id="lockableTokensDdl" href="#" data-toggle="dropdown" aria-haspopup="true"
-                  aria-expanded="false">${selectedToken ? "Selected token: " + selectedToken.symbol : "Select a
+                <a
+                  class="dropdown-toggle"
+                  id="lockableTokensDdl"
+                  href="#"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >${selectedToken ? "Selected token: " + selectedToken.symbol : "Select a
                   Token to Lock"}</a>
-                <ul class="dropdown-menu" aria-labelledby="lockableTokensDdl">
-                  <li class="dropdown-item" click.delegate="selectToken(tokenSpec)" repeat.for="tokenSpec of $parent.lockableTokens">${tokenSpec.symbol}</li>
+                <ul
+                  class="dropdown-menu"
+                  aria-labelledby="lockableTokensDdl"
+                >
+                  <li
+                    class="dropdown-item"
+                    click.delegate="selectToken(tokenSpec)"
+                    repeat.for="tokenSpec of $parent.lockableTokens"
+                  >${tokenSpec.symbol}</li>
                 </ul>
               </div>
             </div>
@@ -34,21 +59,37 @@
             <div class="col-5">
               <div class="form-group bmd-form-group">
                 <label for="lockAmount">Tokens to lock</label>
-                <input class="form-control" type='number' id="lockAmount" value.bind="amount | ethwei & updateTrigger:'blur'" />
+                <input
+                  class="form-control"
+                  type='number'
+                  id="lockAmount"
+                  value.bind="amount | ethwei & updateTrigger:'blur'"
+                />
               </div>
             </div>
             <div class="col-6">
               <div class="form-group bmd-form-group">
                 <label for="lockingPeriod">Number of days</label>
-                <input class="form-control" type='number' id="lockingPeriod" value.bind="period  | secondsDays & updateTrigger:'blur'" />
+                <input
+                  class="form-control"
+                  type='number'
+                  id="lockingPeriod"
+                  value.bind="period  | secondsDays & updateTrigger:'blur'"
+                />
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-12">
               <div class="form-group">
-                <spinbutton onclick.call="lock()" css="btn-submit btn-sm" as-button="true" text="Submit" spin.to-view="locking"
-                  title.to-view="locking ? 'Locking...' : 'Submit Lock'"></spinbutton>
+                <spinbutton
+                  onclick.call="lock()"
+                  css="btn-submit btn-sm"
+                  as-button="true"
+                  text="Submit"
+                  spin.to-view="locking"
+                  title.to-view="locking ? 'Locking...' : 'Submit Lock'"
+                ></spinbutton>
               </div>
             </div>
           </div>
@@ -62,7 +103,12 @@
       </form>
 
       <div if.to-view="locks.length">
-        <locks-for-reputation locks.to-view="locks" release.call="release({lock})" wrapper.one-time="wrapper"></locks-for-reputation>
+        <locks-for-reputation
+          locks.to-view="locks"
+          release.call="release({lock})"
+          wrapper.one-time="wrapper"
+          refresh.call="getLocks()"
+        ></locks-for-reputation>
       </div>
     </div>
   </div>

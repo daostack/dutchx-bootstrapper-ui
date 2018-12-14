@@ -567,12 +567,12 @@ export class Dashboard {
     let wrapper = await this.getSchemeWrapperFromName("LockingEth4Reputation");
     let lockService = new LockService(this.appConfig, wrapper, this.web3Service.defaultAccount);
     let schemeInfo = this.getSchemeInfoFromName("LockingEth4Reputation");
-    schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => (li.amount as BigNumber).gt(0)).length;
+    schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => !li.released).length;
 
     wrapper = await this.getSchemeWrapperFromName("LockingToken4Reputation");
     lockService = new LockService(this.appConfig, wrapper, this.web3Service.defaultAccount);
     schemeInfo = this.getSchemeInfoFromName("LockingToken4Reputation");
-    schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => (li.amount as BigNumber).gt(0)).length;
+    schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => !li.released).length;
   }
 }
 

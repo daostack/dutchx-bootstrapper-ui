@@ -18,13 +18,9 @@ export class LocksForReputation {
   @bindable({ defaultBindingMode: bindingMode.oneTime }) release: ({ lock: LockInfo }) => Promise<boolean>;
   // @bindable({ defaultBindingMode: bindingMode.oneTime }) redeem: ({ lock: LockInfo }) => Promise<boolean>;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) wrapper: Locking4ReputationWrapper;
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) noReleaseFunction?: boolean = false;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) refresh: Promise<void>;
 
   attached() {
-    this.refresh();
-  }
-
-  refresh() {
     this.locksChanged(this.locks);
   }
 
