@@ -1,9 +1,10 @@
 import { autoinject } from 'aurelia-framework';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
-import { ExternalLocking4ReputationWrapper, LockInfo, Address } from '@daostack/arc.js';
+import { ExternalLocking4ReputationWrapper, LockInfo, Address, Utils } from 'services/ArcService';
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Web3Service } from "services/Web3Service";
 import { AureliaConfiguration } from "aurelia-configuration";
+import { EventConfigFailure } from "entities/GeneralEvents";
 
 @autoinject
 export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
@@ -26,10 +27,17 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   }
 
   protected async lock(): Promise<boolean> {
+
+    if (!(await this.wrapper.hasMgnToActivate(this.lockModel.lockerAddress, this.appConfig.get("mgnTokenAddress")))) {
+      this.eventAggregator.publish("handleFailure", new EventConfigFailure(`Can't activate: No MGN tokens reserved to claim`));
+      return false;
+    }
+
     const success = await super.lock();
     this.alreadyLocked = success;
     return success;
   }
+
 
   // not used
   protected getLockUnit(lockInfo: LockInfo): Promise<string> { return Promise.resolve(""); }
