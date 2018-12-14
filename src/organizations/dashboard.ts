@@ -265,7 +265,6 @@ export class Dashboard {
 
     this.lockingPeriodEndDate = App.lockingPeriodEndDate;
 
-    // const msUntilCanRedeem = Math.max(this.fakeRedeem ? 0 : this.lockingPeriodEndDate.getTime() - new Date().getTime(), 0);
     if (this.fakeRedeem && this.web3Service.isConnected && (this.networkName === "Ganache")) {
       await UtilsInternal.increaseTime(100000000000, this.web3.web3);
     }

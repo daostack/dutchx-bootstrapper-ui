@@ -22,7 +22,17 @@ export class EthBalance {
 
   initialize(): Promise<void> {
     this.stop();
-    return this.readBalance();
+    return this.readBalance().then(() => {
+      (<any>$(this.textElement)).tooltip("dispose");
+      (<any>$(this.textElement)).tooltip(
+        {
+          toggle: "tooltip",
+          placement: "left",
+          title: this.rawBalance,
+          trigger: "hover"
+        }
+      )
+    });
   }
 
   stop() {
@@ -33,16 +43,7 @@ export class EthBalance {
   }
 
   attached() {
-    this.initialize().then(() => {
-      (<any>$(this.textElement)).tooltip(
-        {
-          toggle: "tooltip",
-          placement: "left",
-          title: this.rawBalance,
-          trigger: "hover"
-        }
-      )
-    })
+    this.initialize();
   }
 
   detached() {
@@ -63,8 +64,13 @@ export class EthBalance {
     try {
       const ethAddress = this.web3.defaultAccount;
       const balance = this.web3.fromWei(await this.web3.getBalance(ethAddress));
-      this.rawBalance = balance.toString(10);
-      this.ethBalance = balance.toExponential(2);
+      this.rawBalance = `${balance.toString(10)} ETH`;
+      if (balance.eq(0) || (balance.lt(999)) && (balance.gt("0.001"))) {
+        this.ethBalance = balance.toFixed(3);
+      } else {
+        this.ethBalance = balance.toExponential(2);
+      }
+
       this.text = `${this.ethBalance} ETH`;
     } catch (ex) {
     }
