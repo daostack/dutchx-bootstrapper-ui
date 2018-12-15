@@ -28,7 +28,9 @@ export class NetworkConnectionWizards {
   dialogViewModel: ConnectToNet;
   hasApprovedAccountAccess: boolean;
 
-  public async run(skipLanding: boolean): Promise<DialogCloseResult> {
+  public async run(
+    hasDao: boolean,
+    skipLanding: boolean): Promise<DialogCloseResult> {
 
     if (this.promise) {
       return this.promise;
@@ -39,7 +41,7 @@ export class NetworkConnectionWizards {
       this.skipLanding = skipLanding;
 
       /** but assume we're going to look for another DAO */
-      this.hasDao = false;
+      this.hasDao = hasDao;
 
       const connectionChanged = async () => {
         this.isConnected = this.web3.isConnected; // && !!this.arcService.arcContracts;

@@ -126,19 +126,27 @@ export class Dashboard {
       ConfigService.set("logLevel",
         (networkName === "Live") ? LogLevel.info | LogLevel.warn | LogLevel.error : LogLevel.all);
 
-      web3 = await InitializeArcJs({
-        useMetamaskEthereumWeb3Provider: true,
-        watchForAccountChanges: true,
-        watchForNetworkChanges: true,
-        filter: {},
-        deployedContractAddresses: {
-          rinkeby: {
-            base: {
-              DAOToken: "0x543Ff227F64Aa17eA132Bf9886cAb5DB55DCAddf"
+      try {
+        web3 = await InitializeArcJs({
+          useMetamaskEthereumWeb3Provider: true,
+          watchForAccountChanges: true,
+          watchForNetworkChanges: true,
+          filter: {},
+          deployedContractAddresses: {
+            rinkeby: {
+              base: {
+                DAOToken: "0x543Ff227F64Aa17eA132Bf9886cAb5DB55DCAddf"
+              }
             }
           }
-        }
-      });
+        });
+      } catch (ex) {
+        this.eventAggregator.publish("handleFailure", new EventConfigFailure(ex.message));
+        try {
+          // so we will at least be able to find out if we're connected and have a default account
+          web3 = await Utils.getWeb3();
+        } catch { }
+      }
 
       if (networkName === 'Live') {
         ConfigService.set("gasPriceAdjustment", async (defaultGasPrice: BigNumber) => {
@@ -178,7 +186,7 @@ export class Dashboard {
 
     /*******************
      * Handle account change.  Load a DAO if we don't already have one.
-     * This shiould only happen when there was already a network and an account.
+     * This should only happen when there was already a network and an account.
      */
     const subscription1 = AccountService.subscribeToAccountChanges(async (account: Address) => {
       await this.initializeNetwork();
@@ -186,6 +194,7 @@ export class Dashboard {
       if (!this.org) {
         this.loadAvatar();
       } else {
+        this.networkConnectionWizards.run(true, false);
         this.loadSchemes();
       }
     });
@@ -194,6 +203,9 @@ export class Dashboard {
 
     /*******************
      * Handle network change.  Must load a new DAO.
+     * MM has always refreshed the entire page on network change, but it is anticipated that this will (rightly)
+     * change.  Thus the following code is maintained for that eventuality, but isn't well tested.
+     * See: https://github.com/MetaMask/metamask-extension/issues/3599
      */
     const subscription2 = AccountService.subscribeToNetworkChanges(async (networkId: number) => {
       await this.initializeNetwork();
@@ -240,14 +252,14 @@ export class Dashboard {
         /**
          * we'll handle events from here to load a DAO
          */
-        this.networkConnectionWizards.run(false);
+        this.networkConnectionWizards.run(false, false);
         this.loadAvatar();
       }
     } else { // an error occurred initializing
       /**
        * let the subscriptions above deal with everything
        */
-      this.networkConnectionWizards.run(false);
+      this.networkConnectionWizards.run(!!this.org, false);
     }
   }
 
@@ -330,7 +342,7 @@ export class Dashboard {
         this.eventAggregator.publish("Avatar.loaded", this.org);
       } else {
         this.loading = false;
-        this.networkConnectionWizards.run(true); // noop if already running
+        this.networkConnectionWizards.run(false, true); // noop if already running
       }
     }
 
@@ -368,8 +380,9 @@ export class Dashboard {
 
     this.schemesLoaded = this.dutchXSchemes.length !== this.dutchXSchemeConfigs.keys.length;
     if (!this.schemesLoaded) {
+      this.org = undefined;
       this.eventAggregator.publish("handleFailure", new EventConfigFailure(`not all of the required contracts were found`));
-      this.networkConnectionWizards.run(true); // no-op if already running
+      this.networkConnectionWizards.run(false, true); // no-op if already running
     } else {
 
       await this.computeNumLocks();
