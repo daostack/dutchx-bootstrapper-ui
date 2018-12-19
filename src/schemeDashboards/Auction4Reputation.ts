@@ -1,12 +1,13 @@
 import { autoinject } from 'aurelia-framework';
 import { DaoSchemeDashboard } from "./schemeDashboard"
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { WrapperService, Address, Auction4ReputationWrapper, StandardTokenWrapper } from "../services/ArcService";
+import { WrapperService, Address, Auction4ReputationWrapper, StandardTokenWrapper, Auction4ReputationBidEventResult } from "../services/ArcService";
 import { BigNumber, Web3Service } from '../services/Web3Service';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { EventConfigTransaction, EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Utils } from 'services/utils';
 import { DisposableCollection } from "services/DisposableCollection";
+import { DecodedLogEntry } from "web3";
 
 @autoinject
 export class Auction4Reputation extends DaoSchemeDashboard {
@@ -18,11 +19,16 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   auctionId: number = -1;
   auctionIsOver: boolean;
   auctionNotBegun: boolean;
-  userHasBid: boolean = false;
   refreshing: boolean = false;
   loaded: boolean = false;
   subscriptions = new DisposableCollection();
   bidding: boolean = false;
+  currentAuctionNumber: number;
+  auctionCount: number;
+  auctionEndTime: Date;
+  amountBid: BigNumber;
+  totalAmountBid: BigNumber;
+  msRemainingInAuctionCountdown: number;
 
   constructor(
     protected eventAggregator: EventAggregator
@@ -37,20 +43,80 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   }
 
   private getAuctionNotBegun(blockDate: Date): boolean {
-    // return this.auctionNotBegun = false;
     return this.auctionNotBegun = (blockDate < this.auctionsStartTime);
   }
 
   private getAuctionIsOver(blockDate: Date): boolean {
-    // return this.auctionIsOver = true;
     return this.auctionIsOver = (blockDate > this.auctionsEndTime);
   }
 
-  attached() {
-    this.subscriptions.push(this.eventAggregator.subscribe("secondPassed", async (blockDate: Date) => {
+  private getMsRemainingInAuctionCountdown(): number {
+    return this.msRemainingInAuctionCountdown = Math.max(0, this.auctionEndTime.getTime() - Date.now());
+  }
+
+  private async updateAuctionStatus(): Promise<void> {
+    this.getMsRemainingInAuctionCountdown();
+    if (this.msRemainingInAuctionCountdown === 0) {
+      const currentAuctionNumber = this.currentAuctionNumber;
+      await this.getCurrentAuctionNumber();
+      if (this.currentAuctionNumber !== currentAuctionNumber) {
+        this.getCurrentAuctionEndTime();
+        this.getAmountBid(this.currentAuctionNumber - 1);
+        this.getTotalAmountBid(this.currentAuctionNumber - 1);
+      }
+    }
+  }
+
+  private async getAmountBid(auctionId: number): Promise<BigNumber> {
+    return this.amountBid = await this.wrapper.getBid(this.web3Service.defaultAccount, auctionId);
+  }
+
+  private async getTotalAmountBid(auctionId: number): Promise<BigNumber> {
+    // or getBid for the current user
+    return this.totalAmountBid = await this.wrapper.getAuctionTotalBid(auctionId);
+  }
+
+  private async getCurrentAuctionNumber(): Promise<number> {
+    return this.currentAuctionNumber = (await this.wrapper.getCurrentAuctionId()) + 1;
+  }
+
+  private async getCurrentAuctionEndTime(): Promise<Date> {
+    const auctionDuration = (await this.wrapper.getAuctionPeriod()) * 1000;
+    const ms = this.auctionsStartTime.getTime() + (this.currentAuctionNumber * auctionDuration);
+    return this.auctionEndTime = new Date(ms);
+  }
+
+  async attached() {
+    this.refreshing = true;
+    this.auctionCount = await this.wrapper.getNumberOfAuctions();
+    this.auctionsStartTime = await this.wrapper.getAuctionsStartTime();
+    this.auctionsEndTime = await this.wrapper.getAuctionsEndTime();
+    await this.getCurrentAuctionNumber();
+    await this.getCurrentAuctionEndTime();
+
+    this.token = await this.wrapper.getToken();
+
+    const sub = this.eventAggregator.subscribe("secondPassed", async (blockDate: Date) => {
       this.getAuctionNotBegun(blockDate);
       this.getAuctionIsOver(blockDate);
-    }));
+      if (!this.auctionIsOver) {
+        this.updateAuctionStatus();
+      } else {
+        this.subscriptions.dispose(sub);
+      }
+    });
+
+    this.subscriptions.push(sub);
+
+    const watcher = this.wrapper.Bid({ _bidder: this.web3Service.defaultAccount }, { fromBlock: 0 });
+
+    watcher.watch((error: Error, event: DecodedLogEntry<Auction4ReputationBidEventResult>) => {
+      this.getAmountBid(event.args._auctionId.toNumber());
+      this.getTotalAmountBid(event.args._auctionId.toNumber());
+    });
+
+    this.subscriptions.push({ dispose: () => watcher.stopWatchingAsync() });
+
     return this.refresh().then(() => { this.loaded = true; });
   }
 
@@ -60,9 +126,8 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
   protected async refresh() {
     this.refreshing = true;
-    this.token = await this.wrapper.getToken();
-    this.auctionsStartTime = await this.wrapper.getAuctionsStartTime();
-    this.auctionsEndTime = await this.wrapper.getAuctionsEndTime();
+    await this.getAmountBid(this.currentAuctionNumber - 1);
+    await this.getTotalAmountBid(this.currentAuctionNumber - 1);
     this.refreshing = false;
   }
 
@@ -99,31 +164,6 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     this.bidding = false;
   }
 
-  // protected async redeem(auctionId: number, beneficiaryAddress: Address) {
-
-  //   /**
-  //    * TODO!!!:  will there be a problem with timezones here???
-  //    * Should get this id from Arc, see: https://github.com/daostack/arc/issues/548
-  //    * In any case, it can't be replired-upon that the current auction will not have changed between now and when
-  //    * execution actually reached the contract.
-  //    */
-  //   // const currentAuctionId = Math.floor((Date.now() - this.auctionsStartTime.getTime()) / 1000 / this.auctionPeriod);
-  //   // const amountMayRedeem = await this.wrapper.getBid(beneficiaryAddress, currentAuctionId);
-
-  //   try {
-
-  //     let result = await this.wrapper.redeem({ auctionId, beneficiaryAddress });
-
-  //     this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
-  //       `The reputation has beem redeemed`, result.tx));
-
-  //     this.auctionId = -1;
-
-  //   } catch (ex) {
-  //     this.eventAggregator.publish("handleException", new EventConfigException(`The reputation could not be redeemed`, ex));
-  //   }
-  // }
-
   // async _userHasBid(auctionId: number): Promise<void> {
   //   this.userHasBid = (await this.wrapper.getBid(this.web3Service.defaultAccount, auctionId)).gt(0);
   // }
@@ -135,10 +175,5 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   //     totalBids.add(await this.wrapper.getAuctionTotalBid(auctionId));
   //   }
   //   return totalBids;
-  // }
-
-  // private setAuctionId(auctionId: number): void {
-  //   this.auctionId = auctionId;
-  //   this._userHasBid(auctionId);
   // }
 }

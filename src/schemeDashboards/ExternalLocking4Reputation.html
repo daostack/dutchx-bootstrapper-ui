@@ -1,5 +1,8 @@
 <template>
-  <div class="pageloader" if.bind="!loaded">
+  <div
+    class="pageloader"
+    if.bind="!loaded"
+  >
     <pageloading></pageloading>
   </div>
   <div else>
@@ -13,25 +16,44 @@
     </instructions>
 
     <div class="scheme-dashboard-body">
-      <div class="message" if.to-view="lockingPeriodHasNotStarted">
-        <span>${msUntilCanLockCountdown | timespan:"seconds"}</span>
-        until the 24-hour MGN locking period begins.
+      <div
+        class="message"
+        if.to-view="lockingPeriodHasNotStarted"
+      >
+        ${msUntilCanLockCountdown | timespan:"seconds"} until the 24-hour MGN locking period begins.
       </div>
 
-      <div class="message" if.to-view="inLockingPeriod && !alreadyLocked">
-        <span>${msRemainingInPeriodCountdown | timespan:"seconds"}</span>
-        remaining to lock MGN Tokens.
+      <div
+        class="message"
+        if.to-view="inLockingPeriod && !alreadyLocked"
+      >
+        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining to lock MGN Tokens.
       </div>
 
-      <div class="message" if.to-view="lockingPeriodIsEnded">The locking period has ended, you can't yet activate lock.</div>
+      <div
+        class="message"
+        if.to-view="lockingPeriodIsEnded"
+      >The locking period has ended, you can't yet activate lock.</div>
 
-      <div class="message" if.to-view="inLockingPeriod && alreadyLocked">You have activated your lock.</div>
+      <div
+        class="message"
+        if.to-view="inLockingPeriod && alreadyLocked"
+      >You have activated your lock.</div>
 
       <form>
 
-        <div if.to-view="inLockingPeriod && !alreadyLocked" class="form-group">
-          <spinbutton onclick.call="lock()" css="btn-submit btn-sm" as-button="true" text="Activate" spin.to-view="locking"
-            title.to-view="locking ? 'Activating lock...' : 'Activate Lock'"></spinbutton>
+        <div
+          if.to-view="inLockingPeriod && !alreadyLocked"
+          class="form-group"
+        >
+          <spinbutton
+            onclick.call="lock()"
+            css="btn-submit btn-sm"
+            as-button="true"
+            text="Activate"
+            spin.to-view="locking"
+            title.to-view="locking ? 'Activating lock...' : 'Activate Lock'"
+          ></spinbutton>
         </div>
 
         <!-- <div if.bind="lockingPeriodIsEnded">

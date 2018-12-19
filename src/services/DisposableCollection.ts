@@ -11,21 +11,22 @@ export class DisposableCollection implements IDisposable {
     this._disposables = new Array<IDisposable>();
   }
 
-  public emptyAndDispose(): void {
-    this.dispose();
-    // gotta make sure there are no more references to items (setting length = 0 still shows items in the debugger)
-    while (this._disposables.length) {
-      this._disposables.pop();
-    }
-  }
-
   public push(disposable: IDisposable): number {
     return this._disposables.push(disposable);
   }
 
-  public dispose(): void {
-    for (let disposable of this._disposables) {
-      disposable.dispose();
+  public dispose(disposable?: IDisposable): void {
+    if (disposable) {
+      this._dispose(disposable);
+    } else {
+      for (let disposable of this._disposables) {
+        this._dispose(disposable);
+      }
     }
+  }
+
+  private _dispose(disposable: IDisposable): void {
+    disposable.dispose();
+    this._disposables.splice(this._disposables.indexOf(disposable), 1);
   }
 }
