@@ -178,9 +178,10 @@ export class Dashboard {
     return web3;
   }
 
-  async activate(options: { address?: Address } = {}) {
+  async activate(options: { address?: Address, fakeRedeem?: string } = {}) {
 
     this.options = options;
+    this.fakeRedeem = !!options.fakeRedeem || false;
 
     $("body").css("overflow", "hidden");
 
