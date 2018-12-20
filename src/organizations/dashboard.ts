@@ -403,7 +403,9 @@ export class Dashboard {
     const end = "a165627a7a72305820";
     let code = await (<any>Promise).promisify((callback: any): any =>
       this.web3Service.web3.eth.getCode(scheme.address, callback))() as string;
+
     code = code.substr(0, code.indexOf(end));
+
     for (const wrapperName in WrapperService.nonUniversalSchemeFactories) {
       const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
       if (factory && this.dutchXSchemeConfigs.has(wrapperName)) {

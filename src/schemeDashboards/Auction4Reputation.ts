@@ -29,6 +29,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   amountBid: BigNumber;
   totalAmountBid: BigNumber;
   msRemainingInAuctionCountdown: number;
+  auctionPeriod: number;
 
   constructor(
     protected eventAggregator: EventAggregator
@@ -68,29 +69,46 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   }
 
   private async getAmountBid(auctionId: number): Promise<BigNumber> {
+    if (this.auctionNotBegun || this.auctionIsOver) {
+      return new BigNumber(0);
+    }
     return this.amountBid = await this.wrapper.getBid(this.web3Service.defaultAccount, auctionId);
   }
 
   private async getTotalAmountBid(auctionId: number): Promise<BigNumber> {
+    if (this.auctionNotBegun || this.auctionIsOver) {
+      return new BigNumber(0);
+    }
     // or getBid for the current user
     return this.totalAmountBid = await this.wrapper.getAuctionTotalBid(auctionId);
   }
 
   private async getCurrentAuctionNumber(): Promise<number> {
+    if (this.auctionNotBegun || this.auctionIsOver) {
+      return -1;
+    }
     return this.currentAuctionNumber = (await this.wrapper.getCurrentAuctionId()) + 1;
   }
 
-  private async getCurrentAuctionEndTime(): Promise<Date> {
-    const auctionDuration = (await this.wrapper.getAuctionPeriod()) * 1000;
+  private getCurrentAuctionEndTime(): Date {
+    const auctionDuration = this.auctionPeriod;
     const ms = this.auctionsStartTime.getTime() + (this.currentAuctionNumber * auctionDuration);
     return this.auctionEndTime = new Date(ms);
   }
 
   async attached() {
     this.refreshing = true;
-    this.auctionCount = await this.wrapper.getNumberOfAuctions();
+    /**
+     * gotta do these first
+     */
     this.auctionsStartTime = await this.wrapper.getAuctionsStartTime();
     this.auctionsEndTime = await this.wrapper.getAuctionsEndTime();
+    const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
+    this.getAuctionNotBegun(blockDate);
+    this.getAuctionIsOver(blockDate);
+
+    this.auctionPeriod = (await this.wrapper.getAuctionPeriod()) * 1000;
+    this.auctionCount = await this.wrapper.getNumberOfAuctions();
     await this.getCurrentAuctionNumber();
     await this.getCurrentAuctionEndTime();
 
@@ -99,10 +117,10 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     const sub = this.eventAggregator.subscribe("secondPassed", async (blockDate: Date) => {
       this.getAuctionNotBegun(blockDate);
       this.getAuctionIsOver(blockDate);
-      if (!this.auctionIsOver) {
+      if (!this.auctionNotBegun && !this.auctionIsOver) {
         this.updateAuctionStatus();
-      } else {
-        this.subscriptions.dispose(sub);
+      } else if (this.auctionIsOver) {
+        this.subscriptions.dispose();
       }
     });
 
