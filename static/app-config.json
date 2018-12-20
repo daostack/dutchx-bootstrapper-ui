@@ -1,5 +1,5 @@
 {
-  "lockingPeriodStartDate": "2019-02-20T00:00:00.000Z",
+  "lockingPeriodStartDate": "2019-02-18T00:00:00.000Z",
   "lockingPeriodEndDate": "2019-03-20T00:00:00.000Z",
   "governanceStartDate": "2019-04-04T00:00:00.000Z",
   "Ganache": {
@@ -50,12 +50,20 @@
     "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb",
     "lockableTokens": [
       {
-        "address": "0x4edc383adea781762b74e7082c03f423523e61bb",
-        "symbol": "MGN"
+        "address": "0xc778417e063141139fce010982780140aa0cd5ab",
+        "symbol": "WETH"
       },
       {
-        "address": "0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c",
-        "symbol": "GNO"
+        "address": "0x3615757011112560521536258c1e7325ae3b48ae",
+        "symbol": "RDN"
+      },
+      {
+        "address": "0x00df91984582e6e96288307e9c2f20b38c8fece9",
+        "symbol": "OMG"
+      },
+      {
+        "address": "0xa1f34744c80e7a9019a5cd2bf697f13df00f9773",
+        "symbol": "testGEN"
       },
       {
         "address": "0x543Ff227F64Aa17eA132Bf9886cAb5DB55DCAddf",
