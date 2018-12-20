@@ -56,6 +56,10 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   }
 
   private async updateAuctionStatus(): Promise<void> {
+    if (typeof this.currentAuctionNumber === "undefined") {
+      await this.getCurrentAuctionNumber();
+      await this.getCurrentAuctionEndTime();
+    }
     this.getMsRemainingInAuctionCountdown();
     if (this.msRemainingInAuctionCountdown === 0) {
       const currentAuctionNumber = this.currentAuctionNumber;
