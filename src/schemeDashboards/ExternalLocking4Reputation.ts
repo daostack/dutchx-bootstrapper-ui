@@ -2,7 +2,7 @@ import { autoinject } from 'aurelia-framework';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { ExternalLocking4ReputationWrapper, LockInfo, Address, Utils } from 'services/ArcService';
 import { EventAggregator } from "aurelia-event-aggregator";
-import { Web3Service } from "services/Web3Service";
+import { Web3Service, BigNumber } from "services/Web3Service";
 import { AureliaConfiguration } from "aurelia-configuration";
 import { EventConfigFailure } from "entities/GeneralEvents";
 
@@ -19,6 +19,8 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
     , web3Service: Web3Service
   ) {
     super(appConfig, eventAggregator, web3Service);
+    this.lockModel.amount = new BigNumber(0); // to avoid validation
+    this.lockModel.period = 0; // to avoid validation
   }
 
   protected async accountChanged(account: Address) {

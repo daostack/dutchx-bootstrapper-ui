@@ -6,7 +6,7 @@
     <pageloading></pageloading>
   </div>
   <div else>
-    <instructions>
+    <instructions if.to-view="!lockingPeriodIsEnded">
       <p>Your MGN tokens are locked by default in the DutchX smart contract.
         Reputation will be distributed to all MGN holders who opt in on receiving DutchX DAO reputation.
         All you need to do is activate this option here.</p>
@@ -20,20 +20,20 @@
         class="message"
         if.to-view="lockingPeriodHasNotStarted"
       >
-        ${msUntilCanLockCountdown | timespan:"seconds"} until the 24-hour MGN locking period begins.
+        ${msUntilCanLockCountdown | timespan:"seconds"} until the 24-hour MGN activation period begins.
       </div>
 
       <div
         class="message"
         if.to-view="inLockingPeriod && !alreadyLocked"
       >
-        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining to lock MGN Tokens.
+        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining to activate MGN Tokens.
       </div>
 
       <div
         class="message"
         if.to-view="lockingPeriodIsEnded"
-      >The locking period has ended, you can't yet activate lock.</div>
+      >The initialization period has ended.</div>
 
       <div
         class="message"

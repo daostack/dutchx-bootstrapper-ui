@@ -5,7 +5,7 @@
   "Ganache": {
     "daoAddress": "0xcb4e66eca663fdb61818d52a152601ca6afef74f",
     "gnoTokenAddress": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
-    "mgnTokenAddress": "0xd86c8f0327494034f60e25074420bccf560d5610",
+    "mgnTokenAddress": "0x4bf749ec68270027c5910220ceab30cc284c7ba2",
     "lockableTokens": [
       {
         "address": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",

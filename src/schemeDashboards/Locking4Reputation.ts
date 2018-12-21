@@ -111,7 +111,16 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   }
 
   protected async getLockBlocker(): Promise<boolean> {
-    const reason = await this.wrapper.getLockBlocker(this.lockModel);
+
+    let reason;
+
+    if (!Number.isInteger(this.lockModel.period)) {
+      reason = "The desired locking period is not expressed as a number of days";
+    }
+
+    if (!reason) {
+      reason = await this.wrapper.getLockBlocker(this.lockModel);
+    }
 
     if (reason) {
       this.eventAggregator.publish("handleFailure", new EventConfigFailure(`Can't lock: ${reason}`));

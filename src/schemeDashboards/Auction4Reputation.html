@@ -6,7 +6,7 @@
     <pageloading></pageloading>
   </div>
   <div else>
-    <instructions>You can receive reputation by bidding GEN tokens. There will be 10 auctions, each will run for 9 days
+    <instructions if.to-view="!auctionIsOver">You can receive reputation by bidding GEN tokens. There will be 10 auctions, each will run for 9 days
       and offer 10,000 REP. The DutchX DAO will receive all the GEN collected in the auctions. To participate all you
       need to do is enter the amount of GEN you wish to bid and click "Bid". The reputation will be distributed pro
       rata once the auction is complete.
@@ -17,11 +17,11 @@
       <div
         class="message"
         if.to-view="auctionNotBegun"
-      >The locking period has not yet begun, you can't bid</div>
+      >The initialization period has not yet begun, you can't bid</div>
       <div
         class="message"
         if.to-view="auctionIsOver"
-      >The locking period has ended, you can't bid</div>
+      >The initialization period has ended</div>
 
       <div
         class="message"
