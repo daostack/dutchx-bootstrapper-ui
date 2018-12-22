@@ -47,7 +47,7 @@
   "Rinkeby": {
     "daoAddress": "0x4Ceb1d7C144E06b8cD36225A7559897Cb0c6D64c",
     "gnoTokenAddress": "0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c",
-    "mgnTokenAddress": "0x4edc383adea781762b74e7082c03f423523e61bb",
+    "mgnTokenAddress": "0x152af9ad40ccef2060cd14356647ee1773a43437",
     "lockableTokens": [
       {
         "address": "0xc778417e063141139fce010982780140aa0cd5ab",
