@@ -410,22 +410,16 @@ export class Dashboard {
     for (const wrapperName in WrapperService.nonUniversalSchemeFactories) {
       const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
       if (factory && this.dutchXSchemeConfigs.has(wrapperName)) {
-        let found: boolean;
-        // let bytecode = this.appConfig.get(`Contracts.${wrapperName}.bytecode`);
-
-        // if (bytecode) {
-        //   found = code === bytecode;
-        //   if (!found) {
         /**
          * look in Arc contracts
          */
+        let found: boolean;
         let contract = null;
         try { contract = await factory.ensureSolidityContract(); } catch { }
         if (contract) {
           const deployedBinary = contract.deployedBinary.substr(0, contract.deployedBinary.indexOf(end));
           found = code === deployedBinary;
         }
-        //}
 
         if (found) {
           const wrapper = await factory.at(scheme.address);
