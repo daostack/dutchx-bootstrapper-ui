@@ -18,8 +18,8 @@ export class Landing {
     private signaler: BindingSignaler
     , private router: Router
   ) {
-    this.lockingPeriodStartDate = new Date("2019-02-20T00:00:00.000Z");
-    this.lockingPeriodEndDate = new Date("2019-03-20T00:00:00.000Z");
+    this.lockingPeriodStartDate = new Date("2019-02-18T00:00:00.000Z");
+    this.lockingPeriodEndDate = new Date("2019-03-21T00:00:00.000Z");
     this.governanceStartDate = new Date("2019-04-04T00:00:00.000Z");
   }
 
