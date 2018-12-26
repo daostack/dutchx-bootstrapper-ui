@@ -371,8 +371,19 @@ table.locksForRep {
   border-top: solid $color-ds-black 1px;
 }
 
+table.locksForRep td {
+  vertical-align: middle;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
 table.locksForRep td button {
   margin-bottom: 0;
+  font-size: 1rem;
+}
+
+table.locksForRep td button[disabled='disabled'] {
+  color: inherit;
 }
 
 .locksRefreshButton .spinbutton-icon {

@@ -38,8 +38,8 @@
         <td>${lock.units}</td>
         <td style="white-space:nowrap">
           ${lock.releaseTime | date:'table-date' }</td>
-        <td style="text-align:center;"><button
-            style="padding-bottom: 0;padding-top: 0"
+        <td style="text-align:center;">
+          <button
             click.delegate="_release(lock)"
             disabled.bind="!lock.canRelease"
             if.to-view="!lock.releasing && !lock.released"
@@ -53,7 +53,6 @@
           ></div>
           <button
             if.to-view="lock.released"
-            style="padding-bottom: 0;padding-top: 0"
             class="btn btn-link"
             disabled="disabled"
           >Completed</button>
