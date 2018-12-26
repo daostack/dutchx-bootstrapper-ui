@@ -25,6 +25,7 @@ import { App } from 'app';
 import { Utils as UtilsInternal } from 'services/utils';
 import axios from "axios";
 import { LockService } from "services/lockServices";
+import { DateService } from "services/DateService";
 
 @singleton(false)
 @autoinject
@@ -108,6 +109,7 @@ export class Dashboard {
     , private appConfig: AureliaConfiguration
     , private arcService: ArcService
     , private networkConnectionWizards: NetworkConnectionWizards
+    , private dateService: DateService
   ) {
 
     $(window).resize(this.fixScrollbar);
@@ -182,8 +184,6 @@ export class Dashboard {
 
     this.options = options;
     this.fakeRedeem = !!options.fakeRedeem || false;
-
-    $("body").css("overflow", "hidden");
 
     /*******************
      * Handle account change.  Load a DAO if we don't already have one.
@@ -271,12 +271,14 @@ export class Dashboard {
 
   async attached() {
 
+    $("body").css("overflow", "hidden");
+
     /** 
      * prevents some jitter
      */
     this.fixScrollbar();
 
-    this.lockingPeriodEndDate = App.lockingPeriodEndDate;
+    this.lockingPeriodEndDate = this.dateService.fromIsoString(this.appConfig.get("lockingPeriodEndDate"), App.timezone);
 
     if (this.fakeRedeem && this.web3Service.isConnected && (this.networkName === "Ganache")) {
       await UtilsInternal.increaseTime(100000000000, this.web3.web3);

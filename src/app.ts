@@ -9,27 +9,24 @@ import { BindingSignaler } from "aurelia-templating-resources";
 import { runInThisContext } from "vm";
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Utils } from "services/utils";
+import { DateService } from "services/DateService";
 
 @autoinject
 export class App {
-  public static lockingPeriodEndDate: Date;
-  public static lockingPeriodStartDate: Date;
-  public static governanceStartDate: Date;
-  private intervalId: any;
+  public static timezone: any;
 
   public router: Router;
+
+  private intervalId: any;
 
   constructor(
     private web3: Web3Service
     , private signaler: BindingSignaler
-    , private arcService: ArcService
     , private eventAggregator: EventAggregator
     , appConfig: AureliaConfiguration
     , private web3Service: Web3Service
   ) {
-    App.lockingPeriodStartDate = new Date(appConfig.get("lockingPeriodStartDate"));
-    App.lockingPeriodEndDate = new Date(appConfig.get("lockingPeriodEndDate"));
-    App.governanceStartDate = new Date(appConfig.get("governanceStartDate"));
+    App.timezone = appConfig.get("rootTimezone");
   }
 
   activate() {

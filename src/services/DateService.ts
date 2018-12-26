@@ -1,5 +1,5 @@
 ﻿import { autoinject } from "aurelia-framework";
-import * as moment from "moment";
+import * as moment from "moment-timezone";
 import Moment = moment.Moment;
 
 @autoinject
@@ -7,9 +7,11 @@ export class DateService {
 
   private formats: Map<string, string>;
   private localTimezoneOffset: number;
+  private localTimezone: any;
 
   constructor() {
     this.localTimezoneOffset = moment().utcOffset();
+    this.localTimezone = moment.tz.guess();
     this.configure();
     // include french: moment.locale("fr-ca");
   }
@@ -285,12 +287,21 @@ export class DateService {
     return this.createMoment(dt).toISOString();
   }
 
-  public fromISOString(str: string): Date | null {
+/**
+ * Parse date from ISO format.
+ * 
+ * ISO:  https://en.wikipedia.org/wiki/ISO_8601
+ * Timezone specifiers: https://github.com/moment/moment-timezone/blob/develop/data/packed/latest.json
+ * 
+ * @param str 
+ * @param timezone optional timezone specifier like "Asia/Tel_Aviv" 
+ */
+  public fromIsoString(str: string, timezone?: string): Date | null {
     if (!str) {
       return null;
     }
 
-    return this.createMomentFromString(str).toDate();
+    return (timezone ? moment.tz(str, timezone) : moment(str)).toDate();
   }
 
   public nameofDay(day: number): string {

@@ -1,26 +1,27 @@
 import { autoinject } from 'aurelia-framework';
-import { BindingSignaler } from 'aurelia-templating-resources';
-import { Router } from 'aurelia-router';
+import { AureliaConfiguration } from "aurelia-configuration";
+import { DateService } from "services/DateService";
+import { App } from "app";
 
 @autoinject
 export class Landing {
+
+  lockingPeriodEndDate: Date;
+  lockingPeriodStartDate: Date;
+  governanceStartDate: Date;
+  intervalId: any;
 
   msUntilCanLockCountdown(): number {
     return this.lockingPeriodStartDate.getTime() - Date.now();
   }
 
-  lockingPeriodStartDate: Date;
-  lockingPeriodEndDate: Date;
-  governanceStartDate: Date;
-  intervalId: any;
-
   constructor(
-    private signaler: BindingSignaler
-    , private router: Router
+    , private appConfig: AureliaConfiguration
+    , private dateService: DateService
   ) {
-    this.lockingPeriodStartDate = new Date("2019-02-18T00:00:00.000Z");
-    this.lockingPeriodEndDate = new Date("2019-03-21T00:00:00.000Z");
-    this.governanceStartDate = new Date("2019-04-04T00:00:00.000Z");
+     this.lockingPeriodEndDate = this.dateService.fromIsoString(this.appConfig.get("Landing.lockingPeriodEndDate"), App.timezone);
+     this.lockingPeriodStartDate = this.dateService.fromIsoString(this.appConfig.get("Landing.lockingPeriodStartDate"), App.timezone);
+     this.governanceStartDate = this.dateService.fromIsoString(this.appConfig.get("Landing.governanceStartDate"), App.timezone);
   }
 
   activate() {
