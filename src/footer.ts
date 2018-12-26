@@ -15,8 +15,8 @@ export class Footer {
     private eventAggregator: EventAggregator
   ) {
     this.initialize();
-    this.eventAggregator.subscribe("Network.Changed.Id", () => { this.initialize(); });
     this.eventAggregator.subscribe("Network.Changed.Account", () => { this.initialize(); });
+    this.eventAggregator.subscribe("DAO.loaded", () => { this.initialize(); });
   }
 
   async initialize() {

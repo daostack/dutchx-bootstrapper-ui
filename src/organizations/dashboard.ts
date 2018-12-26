@@ -11,7 +11,8 @@ import {
   Utils,
   Locking4ReputationWrapper,
   LogLevel,
-  LockInfo
+  LockInfo,
+  ExternalLocking4ReputationWrapper
 } from "../services/ArcService";
 import { SchemeService, SchemeInfo } from "../services/SchemeService";
 import { Web3Service, BigNumber } from '../services/Web3Service';
@@ -389,6 +390,10 @@ export class Dashboard {
     } else {
 
       await this.computeNumLocks();
+
+      const wrapper = (await this.getSchemeWrapperFromName("ExternalLocking4Reputation")) as ExternalLocking4ReputationWrapper;
+      const mgnTokenAddress = await wrapper.getExternalLockingContract();
+      this.appConfig.set("mgnTokenAddress", mgnTokenAddress);
 
       if (this.canRedeem) {
         await this.computeRedeemables();

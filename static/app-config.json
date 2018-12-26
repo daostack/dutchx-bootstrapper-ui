@@ -11,7 +11,6 @@
   "Ganache": {
     "daoAddress": "0xcb4e66eca663fdb61818d52a152601ca6afef74f",
     "gnoTokenAddress": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
-    "mgnTokenAddress": "0x4bf749ec68270027c5910220ceab30cc284c7ba2",
     "lockableTokens": [
       {
         "address": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
@@ -29,7 +28,6 @@
     "governanceStartDate": "2019-04-04T00:00:00.000",
     "daoAddress": "0x9b055567ae152cf14e19b285d4cdd35ff6b58260",
     "gnoTokenAddress": "0x6018bf616ec9db02f90c8c8529ddadc10a5c29dc",
-    "mgnTokenAddress": "0x98709b83af325a46edfac2f053a730a2980b3682",
     "lockableTokens": [
       {
         "address": "0x98709b83af325a46edfac2f053a730a2980b3682",
@@ -48,7 +46,6 @@
   "Rinkeby": {
     "daoAddress": "0x4Ceb1d7C144E06b8cD36225A7559897Cb0c6D64c",
     "gnoTokenAddress": "0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c",
-    "mgnTokenAddress": "0x152af9ad40ccef2060cd14356647ee1773a43437",
     "lockableTokens": [
       {
         "address": "0xc778417e063141139fce010982780140aa0cd5ab",
@@ -74,7 +71,6 @@
   },
   "Live": {
     "daoAddress": "",
-    "gnoTokenAddress": "0x6810e776880c02933d47db1b9fc05908e5386b96",
-    "mgnTokenAddress": "0xb9625381f086e7b8512e4825f6af1117e9c84d43"
+    "gnoTokenAddress": "0x6810e776880c02933d47db1b9fc05908e5386b96"
   }
 }
