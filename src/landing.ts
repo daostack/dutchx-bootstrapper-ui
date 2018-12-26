@@ -16,7 +16,7 @@ export class Landing {
   }
 
   constructor(
-    , private appConfig: AureliaConfiguration
+    private appConfig: AureliaConfiguration
     , private dateService: DateService
   ) {
      this.lockingPeriodEndDate = this.dateService.fromIsoString(this.appConfig.get("Landing.lockingPeriodEndDate"), App.timezone);
