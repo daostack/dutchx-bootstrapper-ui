@@ -198,12 +198,12 @@ text-align: center;
   padding-right: 1rem;
 }
 
-.dashboard-schemes li.list-group-item.selected .scheme-name.activeLocks {
+.dashboard-schemes li.list-group-item.selected .scheme-name.activeLocks,
+.dashboard-schemes li.list-group-item:not(.selected):hover .scheme-name.activeLocks {
     color: $color-ds-white;
 }
 
-.dashboard-schemes li.list-group-item:not(.selected) .scheme-name.activeLocks,
-.dashboard-schemes li.list-group-item:not(.selected):hover .scheme-name.activeLocks {
+.dashboard-schemes li.list-group-item:not(.selected) .scheme-name.activeLocks {
   color: $color-ds-orange;
 }
 
