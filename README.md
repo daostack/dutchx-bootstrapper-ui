@@ -51,3 +51,15 @@ To build and run the application for debugging (no uglfying nor minifying, and w
 2. Browse to: http://localhost:8090/
 
 With HRM, when you modify the source, changes will be automatically loaded into the running application, without requiring a manual full rebuild.  (Though certain TypeScript modifications do require refreshing the page, when the code is only executed when the page is loaded.)
+
+## Application Configuration
+
+Hard-coded application configuration is contained in static\app-config.json
+
+## Code and Top-Level Pages
+
+All of the application code is located under src except for index.ejs, which is the application starting point directing execution to main.ts.
+
+The landing page is in landing.html and landing.ts.
+
+The initialization UI is in dashboard.html and dashboard.ts.
