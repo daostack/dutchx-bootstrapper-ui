@@ -1,6 +1,6 @@
 import { autoinject } from "aurelia-framework";
 import { Web3Service, BigNumber } from "./Web3Service";
-import { ArcService, Address, StandardTokenWrapper, Utils, DaoTokenWrapper, WrapperService } from './ArcService';
+import { ArcService, Address, Erc20Wrapper, Utils, DaoTokenWrapper, WrapperService } from './ArcService';
 
 @autoinject
 export class TokenService {
@@ -22,12 +22,12 @@ export class TokenService {
    * in Wei by default
    * @param tokenAddress 
    */
-  public async getUserStandardTokenBalance(
-    token: StandardTokenWrapper,
+  public async getUserErc20TokenBalance(
+    token: Erc20Wrapper,
     inEth: boolean = false): Promise<BigNumber> {
 
     let userAddress = this.web3.defaultAccount;
-    return this.getStandardTokenBalance(token, userAddress, inEth);
+    return this.getErc20TokenBalance(token, userAddress, inEth);
   }
 
   public async getUserTokenBalance(
@@ -39,8 +39,8 @@ export class TokenService {
     return this.getTokenBalance(tokenAddress, userAddress, inEth);
   }
 
-  public async getStandardTokenBalance(
-    token: StandardTokenWrapper,
+  public async getErc20TokenBalance(
+    token: Erc20Wrapper,
     accountAddress: Address,
     inEth: boolean = false): Promise<BigNumber> {
 
@@ -56,13 +56,13 @@ export class TokenService {
     accountAddress: Address,
     inEth: boolean = false): Promise<BigNumber> {
 
-    const token = await this.getStandardToken(tokenAddress);
+    const token = await this.getErc20Token(tokenAddress);
 
     if (!token) {
       return new BigNumber(0);
     }
 
-    return this.getStandardTokenBalance(token, accountAddress, inEth);
+    return this.getErc20TokenBalance(token, accountAddress, inEth);
   }
 
   public getGenTokenBalance(): Promise<BigNumber | undefined> {
@@ -75,13 +75,13 @@ export class TokenService {
     }
   }
 
-  public async getGlobalGenToken(): Promise<StandardTokenWrapper | undefined> {
+  public async getGlobalGenToken(): Promise<Erc20Wrapper | undefined> {
     const address = await Utils.getGenTokenAddress();
-    return this.getStandardToken(address);
+    return this.getErc20Token(address);
   }
 
 
-  public getStandardToken(address: Address): Promise<StandardTokenWrapper> {
-    return WrapperService.factories.StandardToken.at(address);
+  public getErc20Token(address: Address): Promise<Erc20Wrapper> {
+    return WrapperService.factories.Erc20.at(address);
   }
 }

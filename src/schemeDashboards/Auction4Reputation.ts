@@ -1,7 +1,7 @@
 import { autoinject } from 'aurelia-framework';
 import { DaoSchemeDashboard } from "./schemeDashboard"
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { WrapperService, Address, Auction4ReputationWrapper, StandardTokenWrapper, Auction4ReputationBidEventResult } from "../services/ArcService";
+import { WrapperService, Address, Auction4ReputationWrapper, Erc20Wrapper, Auction4ReputationBidEventResult } from "../services/ArcService";
 import { BigNumber, Web3Service } from '../services/Web3Service';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { EventConfigTransaction, EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
@@ -15,7 +15,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   protected wrapper: Auction4ReputationWrapper;
   auctionsStartTime: Date;
   auctionsEndTime: Date;
-  token: StandardTokenWrapper;
+  token: Erc20Wrapper;
   auctionId: number = -1;
   auctionIsOver: boolean;
   auctionNotBegun: boolean;

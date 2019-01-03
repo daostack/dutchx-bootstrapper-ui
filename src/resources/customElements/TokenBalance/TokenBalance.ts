@@ -50,7 +50,7 @@ export class TokenBalance {
 
     if (this.token) {
 
-      const token = await this.tokenService.getStandardToken(this.token);
+      const token = await this.tokenService.getErc20Token(this.token);
 
       if (token) {
         this.getBalance(token);
@@ -69,7 +69,7 @@ export class TokenBalance {
   }
   async getBalance(token) {
     try {
-      this.balance = (await this.tokenService.getUserStandardTokenBalance(token, true)).toFixed(2);
+      this.balance = (await this.tokenService.getUserErc20TokenBalance(token, true)).toFixed(2);
       this.text = this.balance.toString();
     } catch {
     }
