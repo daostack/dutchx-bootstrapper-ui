@@ -2,14 +2,11 @@ import { autoinject } from 'aurelia-framework';
 import { Router, RouterConfiguration } from 'aurelia-router';
 import { PLATFORM } from 'aurelia-pal';
 import { Web3Service } from "./services/Web3Service";
-import { ArcService } from "./services/ArcService";
 import '../static/styles.scss';
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { BindingSignaler } from "aurelia-templating-resources";
-import { runInThisContext } from "vm";
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Utils } from "services/utils";
-import { DateService } from "services/DateService";
 
 @autoinject
 export class App {
@@ -20,11 +17,10 @@ export class App {
   private intervalId: any;
 
   constructor(
-    private web3: Web3Service
+    private web3Service: Web3Service
     , private signaler: BindingSignaler
     , private eventAggregator: EventAggregator
     , appConfig: AureliaConfiguration
-    , private web3Service: Web3Service
   ) {
     App.timezone = appConfig.get("rootTimezone");
   }
@@ -32,7 +28,7 @@ export class App {
   activate() {
     this.intervalId = setInterval(async () => {
       this.signaler.signal('secondPassed');
-      if (this.web3.isConnected) {
+      if (this.web3Service.isConnected) {
         const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
         this.eventAggregator.publish("secondPassed", blockDate);
       }
