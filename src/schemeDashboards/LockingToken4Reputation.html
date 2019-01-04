@@ -44,7 +44,7 @@
                 >
                   <li
                     class="dropdown-item"
-                    click.delegate="selectToken(tokenSpec)"
+                    click.delegate="selectToken.call($parent.$parent, tokenSpec)"
                     repeat.for="tokenSpec of $parent.lockableTokens"
                   >${tokenSpec.symbol}</li>
                 </ul>
@@ -53,42 +53,53 @@
           </div>
         </div>
 
-        <div if.bind="selectedToken">
-          <div class="row">
-            <div class="col-5">
-              <div class="form-group bmd-form-group">
-                <label for="lockAmount">Tokens to lock</label>
-                <input
-                  class="form-control"
-                  type='number'
-                  id="lockAmount"
-                  value.bind="amount | ethwei & updateTrigger:'blur'"
-                />
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group bmd-form-group">
-                <label for="lockingPeriod">Number of days</label>
-                <input
-                  class="form-control"
-                  type='number'
-                  id="lockingPeriod"
-                  value.bind="period  | secondsDays & updateTrigger:'blur'"
-                />
-              </div>
-            </div>
+        <div if.to-view="selectedToken">
+          <div
+            class="message"
+            if.to-view="!selectedTokenIsLiquid"
+          >
+            At this point in time, there isn't sufficient trading for ETH/${selectedToken.symbol} on the DutchX. Please choose another token or try again another time. You can read more about this here <a
+              href="https://dutchx.readthedocs.io"
+              target="_blank"
+            >https://dutchx.readthedocs.io</a>.
           </div>
-          <div class="row">
-            <div class="col-12">
-              <div class="form-group">
-                <spinbutton
-                  onclick.call="lock()"
-                  css="btn-submit btn-sm"
-                  as-button="true"
-                  text="Submit"
-                  spin.to-view="locking"
-                  title.to-view="locking ? 'Locking...' : 'Submit Lock'"
-                ></spinbutton>
+          <div else>
+            <div class="row">
+              <div class="col-5">
+                <div class="form-group bmd-form-group">
+                  <label for="lockAmount">Tokens to lock</label>
+                  <input
+                    class="form-control"
+                    type='number'
+                    id="lockAmount"
+                    value.bind="amount | ethwei & updateTrigger:'blur'"
+                  />
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group bmd-form-group">
+                  <label for="lockingPeriod">Number of days</label>
+                  <input
+                    class="form-control"
+                    type='number'
+                    id="lockingPeriod"
+                    value.bind="period  | secondsDays & updateTrigger:'blur'"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <spinbutton
+                    onclick.call="lock()"
+                    css="btn-submit btn-sm"
+                    as-button="true"
+                    text="Submit"
+                    spin.to-view="locking"
+                    title.to-view="locking ? 'Locking...' : 'Submit Lock'"
+                  ></spinbutton>
+                </div>
               </div>
             </div>
           </div>

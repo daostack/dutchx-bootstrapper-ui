@@ -116,7 +116,7 @@
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
-    "@daostack/arc.js": "0.0.0-alpha.106",
+    "@daostack/arc.js": "0.0.0-alpha.107",
     "arrive": "^2.4.1",
     "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.1.1",

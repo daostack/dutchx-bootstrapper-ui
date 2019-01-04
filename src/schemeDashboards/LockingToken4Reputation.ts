@@ -22,6 +22,7 @@ export class LockingToken4Reputation extends Locking4Reputation {
   }
 
   private selectedToken: TokenSpecification = null;
+  private selectedTokenIsLiquid: boolean = false;
   protected wrapper: LockingToken4ReputationWrapper;
 
   protected async refresh() {
@@ -67,7 +68,8 @@ export class LockingToken4Reputation extends Locking4Reputation {
     return false;
   }
 
-  selectToken(tokenSpec: TokenSpecification) {
+  async selectToken(tokenSpec: TokenSpecification) {
+    this.selectedTokenIsLiquid = await this.wrapper.getTokenIsLiquid(tokenSpec.address);
     this.selectedToken = tokenSpec;
   }
 
