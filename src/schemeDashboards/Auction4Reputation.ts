@@ -16,7 +16,6 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   auctionsStartTime: Date;
   auctionsEndTime: Date;
   token: Erc20Wrapper;
-  auctionId: number = -1;
   auctionIsOver: boolean;
   auctionNotBegun: boolean;
   refreshing: boolean = false;
@@ -185,17 +184,4 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
     this.bidding = false;
   }
-
-  // async _userHasBid(auctionId: number): Promise<void> {
-  //   this.userHasBid = (await this.wrapper.getBid(this.web3Service.defaultAccount, auctionId)).gt(0);
-  // }
-
-  // async _totalBids(auctionId: number): Promise<BigNumber> {
-  //   let totalBids = new BigNumber(0);
-  //   const numAuctions = await this.wrapper.getNumberOfAuctions();
-  //   for (let auctionId = 0; auctionId < numAuctions; ++auctionId) {
-  //     totalBids.add(await this.wrapper.getAuctionTotalBid(auctionId));
-  //   }
-  //   return totalBids;
-  // }
 }
