@@ -113,7 +113,7 @@
     "wait-on": "2.0.2",
     "webpack": "^3.10.0",
     "webpack-bundle-analyzer": "^2.9.0",
-    "webpack-dev-server": "^2.11.1"
+    "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
     "@daostack/arc.js": "0.0.0-alpha.106",
