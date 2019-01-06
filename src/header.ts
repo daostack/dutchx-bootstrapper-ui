@@ -13,7 +13,7 @@ export class Header {
   private connected: boolean;
 
   constructor(
-    private appConfig: AureliaConfiguration
+      private appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
     , private web3Service: Web3Service,
   ) {

@@ -22,7 +22,7 @@ export class EventConfig {
    */
   public exception: any;
   constructor(
-    public message: string
+      public message: string
     , type: EventMessageType = EventMessageType.Info
     , lifetime: SnackLifetime = SnackLifetime.transitory,
   ) {
@@ -68,7 +68,7 @@ export class EventConfigFailure extends EventConfig {
 
 export class EventConfigException extends EventConfig {
   constructor(
-    message: string = 'An error occurred'
+      message: string = 'An error occurred'
     , public exception: any,
   ) {
     super(message, EventMessageType.Exception, SnackLifetime.closeButton);
@@ -79,7 +79,7 @@ export class EventConfigException extends EventConfig {
 
 export class EventConfigAction extends EventConfig {
   constructor(
-    message: string
+      message: string
     /**
      * text for control
      */
@@ -98,7 +98,7 @@ export class EventConfigAction extends EventConfig {
 
 export class EventConfigAddress extends EventConfig {
   constructor(
-    message: string
+      message: string
     , public address: string
     /**
      * text to display instead of address
@@ -113,7 +113,7 @@ export class EventConfigAddress extends EventConfig {
 
 export class EventConfigTransaction extends EventConfigAddress {
   constructor(
-    message: string
+      message: string
     , public address: string
     /**
      * text to display instead of address

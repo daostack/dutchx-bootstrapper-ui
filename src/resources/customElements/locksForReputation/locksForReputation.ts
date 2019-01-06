@@ -31,19 +31,18 @@ export class LocksForReputation {
     }
 
     this.loading = true;
-    const _tmpLocks = newLocks as Array<LockInfoInternal>;
+    const tmpLocks = newLocks as Array<ILockInfoInternal>;
 
-    for (const lock of _tmpLocks) {
+    for (const lock of tmpLocks) {
       // lock.canRedeem = await this.canRedeem(lock);
       lock.canRelease = await this.canRelease(lock);
     }
-    this.anyCanRelease = _tmpLocks.filter((l: LockInfoInternal) => l.canRelease).length > 0;
-    // this.anyCanRedeem = _tmpLocks.filter((l: LockInfoInternal) => l.canRedeem).length > 0;
-    this._locks = _tmpLocks;
+    this.anyCanRelease = tmpLocks.filter((l: ILockInfoInternal) => l.canRelease).length > 0;
+    this._locks = tmpLocks;
     this.loading = false;
   }
 
-  private async _release(lock: LockInfoInternal) {
+  private async _release(lock: ILockInfoInternal) {
     if (!lock.canRelease) { return; }
 
     lock.releasing = true;
@@ -83,11 +82,11 @@ export class LocksForReputation {
   // }
 }
 
-export interface LockInfoX extends LockInfo {
+export interface ILockInfoX extends LockInfo {
   units: string;
 }
 
-interface LockInfoInternal extends LockInfoX {
+interface ILockInfoInternal extends ILockInfoX {
   // canRedeem: boolean;
   canRelease: boolean;
   releasing: boolean;

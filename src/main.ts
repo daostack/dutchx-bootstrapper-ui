@@ -28,7 +28,7 @@ export async function configure(aurelia: Aurelia) {
       configuration.settings.keyboard = false;
     });
 
-  if (process.env.env == 'development') {
+  if (process.env.env === 'development') {
     aurelia.use.developmentLogging();
   }
 

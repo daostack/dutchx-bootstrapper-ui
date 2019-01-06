@@ -1,7 +1,7 @@
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, computedFrom } from 'aurelia-framework';
-import { LockInfoX } from 'resources/customElements/locksForReputation/locksForReputation';
+import { ILockInfoX } from 'resources/customElements/locksForReputation/locksForReputation';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LockService } from 'services/lockServices';
@@ -36,7 +36,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   public loaded: boolean = false;
   public lockerInfo: LockerInfo;
   public subscriptions = new DisposableCollection();
-  public locks: Array<LockInfoX>;
+  public locks: Array<ILockInfoX >;
   public intervalId: any;
   public locking: boolean = false;
 
@@ -168,7 +168,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       return true;
 
     } catch (ex) {
-      this.eventAggregator.publish('handleException', \
+      this.eventAggregator.publish('handleException',
       new EventConfigException(`The lock could not be released`, ex));
     }
     return false;
@@ -184,10 +184,10 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
      * The symbol is for the LocksForReputation table
      */
     for (const lock of locks) {
-      (lock as LockInfoX).units = await this.getLockUnit(lock as LockInfo);
+      (lock as ILockInfoX ).units = await this.getLockUnit(lock as LockInfo);
     }
 
-    this.locks = locks as Array<LockInfoX>;
+    this.locks = locks as Array<ILockInfoX >;
   }
 
   private getLockingPeriodHasNotStarted(blockDate: Date): boolean {

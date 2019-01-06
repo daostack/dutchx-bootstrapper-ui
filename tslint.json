@@ -12,7 +12,8 @@
               "quotemark": [true, "single"],
               "prefer-for-of": false,
               "array-type": [true, "generic"],
-              "ban-types": false
+              "ban-types": false,
+              "max-classes-per-file": false
               },
     "rulesDirectory": []
 }

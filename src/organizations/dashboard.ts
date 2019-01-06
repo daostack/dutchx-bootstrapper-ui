@@ -115,7 +115,7 @@ export class Dashboard {
     ]);
 
   constructor(
-    private daoService: DaoService
+      private daoService: DaoService
     , private web3: Web3Service
     , private schemeService: SchemeService
     , private web3Service: Web3Service

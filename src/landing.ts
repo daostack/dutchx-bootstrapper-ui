@@ -12,12 +12,15 @@ export class Landing {
   public intervalId: any;
 
   constructor(
-    private appConfig: AureliaConfiguration
+      private appConfig: AureliaConfiguration
     , private dateService: DateService,
   ) {
-     this.lockingPeriodEndDate = this.dateService.fromIsoString(this.appConfig.get('Landing.lockingPeriodEndDate'), App.timezone);
-     this.lockingPeriodStartDate = this.dateService.fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'), App.timezone);
-     this.governanceStartDate = this.dateService.fromIsoString(this.appConfig.get('Landing.governanceStartDate'), App.timezone);
+     this.lockingPeriodEndDate = this.dateService
+          .fromIsoString(this.appConfig.get('Landing.lockingPeriodEndDate'), App.timezone);
+     this.lockingPeriodStartDate = this.dateService
+          .fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'), App.timezone);
+     this.governanceStartDate = this.dateService
+          .fromIsoString(this.appConfig.get('Landing.governanceStartDate'), App.timezone);
   }
 
   public msUntilCanLockCountdown(): number {

@@ -5,12 +5,12 @@ import { autoinject } from 'aurelia-framework';
 @autoinject
 export class Alert {
 
-  public model: AlertModel;
+  public model: IAlertModel;
   public okButton: HTMLElement;
 
   constructor(private controller: DialogController) { }
 
-  public activate(model: AlertModel) {
+  public activate(model: IAlertModel) {
     this.model = model;
   }
 
@@ -20,6 +20,6 @@ export class Alert {
   }
 }
 
-interface AlertModel {
+interface IAlertModel {
   message: string;
 }

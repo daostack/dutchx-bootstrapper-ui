@@ -30,8 +30,6 @@ export class App {
     return App.SchemeDashboards.indexOf(schemeName) !== -1;
   }
 
-  public static
-
   private intervalId: any;
 
   public router: Router;

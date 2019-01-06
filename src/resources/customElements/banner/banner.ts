@@ -18,7 +18,7 @@ export class Banner {
   public banner: HTMLElement;
   public elMessage: HTMLElement;
   public subscriptions: DisposableCollection = new DisposableCollection();
-  public queue: Subject<BannerConfig>;
+  public queue: Subject<IBannerConfig >;
   public etherScanTooltipConfig = {
     toggle: 'tooltip',
     placement: 'bottom',
@@ -35,13 +35,13 @@ export class Banner {
     this.subscriptions.push(eventAggregator.subscribe('handleException', (config: EventConfigException | any) => this.handleException(config)));
     this.subscriptions.push(eventAggregator.subscribe('handleFailure', (config: EventConfig | string) => this.handleFailure(config)));
 
-    this.queue = new Subject<BannerConfig>();
+    this.queue = new Subject<IBannerConfig >();
     /**
      * messages added to the queue will show up here, generating a new queue
      * of observables whose values don't resolve until they are observed
      */
     let that = this;
-    this.queue.concatMap((config: BannerConfig) => {
+    this.queue.concatMap((config: IBannerConfig ) => {
       return Observable.fromPromise(new Promise(function(resolve: fnVoid) {
         // with timeout, give a cleaner buffer in between consecutive snacks
         setTimeout(async () => {
@@ -104,12 +104,12 @@ export class Banner {
     this.queueEventConfig(bannerConfig);
   }
 
-  public queueEventConfig(config: BannerConfig) {
+  public queueEventConfig(config: IBannerConfig ) {
     this.queue.next(config);
   }
 }
 
-interface BannerConfig {
+interface IBannerConfig  {
   type: EventMessageType;
   message: string;
 }

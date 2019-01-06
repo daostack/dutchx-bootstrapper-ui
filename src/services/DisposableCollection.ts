@@ -26,6 +26,6 @@ export class DisposableCollection implements IDisposable {
 
   private _dispose(disposable: IDisposable): void {
     disposable.dispose();
-    this._disposables.splice(this._disposables.indexOf(disposable), 1);
+    this.disposables.splice(this.disposables.indexOf(disposable), 1);
   }
 }
