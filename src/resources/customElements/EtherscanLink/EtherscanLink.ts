@@ -1,67 +1,67 @@
-﻿import { bindable, customElement, autoinject, bindingMode } from 'aurelia-framework';
+﻿import { autoinject, bindable, bindingMode, customElement } from 'aurelia-framework';
 import { Web3Service } from '../../../services/Web3Service';
 
 @autoinject
-@customElement("etherscanlink")
+@customElement('etherscanlink')
 export class EtherscanLink {
 
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) address: string;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) public address: string;
 
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) text?: string;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) public text?: string;
 
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) type: string;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) public type: string;
 
   /**
    * set add classes on the text
    */
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) css: string;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) public css: string;
 
   /**
    * bootstrap config for a tooltip
    */
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) tooltip?: any;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) public tooltip?: any;
 
-  clipbutton: HTMLElement;
+  public clipbutton: HTMLElement;
 
-  networkExplorerUri: string;
+  public networkExplorerUri: string;
 
-  copyMessage: string;
+  public copyMessage: string;
 
-  internal: boolean = false;
+  public internal: boolean = false;
 
-  coldElement: HTMLElement;
-  hotElement: HTMLElement;
+  public coldElement: HTMLElement;
+  public hotElement: HTMLElement;
 
   constructor(private web3: Web3Service) {
   }
 
-  attached() {
+  public attached() {
     let targetedNetwork = this.web3.networkName;
-    if (targetedNetwork === "Live") {
-      targetedNetwork = "";
+    if (targetedNetwork === 'Live') {
+      targetedNetwork = '';
     }
-    const isGanache = targetedNetwork === "Ganache";
-    if (this.type == "tx") {
-      this.copyMessage = "Hash has been copied to the clipboard";
+    const isGanache = targetedNetwork === 'Ganache';
+    if (this.type == 'tx') {
+      this.copyMessage = 'Hash has been copied to the clipboard';
     } else {
-      this.copyMessage = "Address has been copied to the clipboard";
+      this.copyMessage = 'Address has been copied to the clipboard';
     }
 
     if (isGanache) {
-      if (this.type === "tx") {
+      if (this.type === 'tx') {
         this.internal = true;
         this.networkExplorerUri = `/#/txInfo/${this.address}`;
       }
     } else {
       // go with etherscan
-      this.networkExplorerUri = `http://${targetedNetwork}.etherscan.io/${this.type === "tx" ? "tx" : "address"}/${this.address}`;
+      this.networkExplorerUri = `http://${targetedNetwork}.etherscan.io/${this.type === 'tx' ? 'tx' : 'address'}/${this.address}`;
     }
 
     /** timeout so setting of this.networkExplorerUri takes effect in DOM */
     setTimeout(() => {
       if (this.tooltip) {
-        (<any>$(this.hotElement)).tooltip(this.tooltip);
-        (<any>$(this.coldElement)).tooltip(this.tooltip);
+        ($(this.hotElement) as any).tooltip(this.tooltip);
+        ($(this.coldElement) as any).tooltip(this.tooltip);
       }
     }, 0);
   }

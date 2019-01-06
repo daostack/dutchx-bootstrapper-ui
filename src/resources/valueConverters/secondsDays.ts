@@ -1,4 +1,4 @@
-﻿
+
 /**
  * show days from seconds.  For best results, use: `& updateTrigger:'blur'`
  */
@@ -6,11 +6,11 @@ export class SecondsDaysValueConverter {
 
   /**
    * convert days as string in view to seconds as integer
-   * @param days 
+   * @param days
    */
-  fromView(days: string): number | undefined | null {
+  public fromView(days: string): number | undefined | null {
     if ((days == undefined) || (days == null)) {
-      return <any>days;
+      return days as any;
     }
 
     if (days.length === 0) {
@@ -28,9 +28,9 @@ export class SecondsDaysValueConverter {
     return Math.floor(num * 86400);
   }
 
-  toView(seconds: number): string {
+  public toView(seconds: number): string {
     if ((seconds == undefined) || (seconds == null)) {
-      return <any>seconds;
+      return seconds as any;
     }
     /*
      * convert seconds to days

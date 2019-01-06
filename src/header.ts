@@ -1,13 +1,13 @@
-import { autoinject, bindingMode, bindable } from 'aurelia-framework';
 import { AureliaConfiguration } from 'aurelia-configuration';
-import { Address } from 'services/ArcService';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { Web3Service } from "services/Web3Service";
+import { autoinject, bindable, bindingMode } from 'aurelia-framework';
+import { Address } from 'services/ArcService';
+import { Web3Service } from 'services/Web3Service';
 
 @autoinject
 export class Header {
 
-  @bindable({ defaultBindingMode: bindingMode.toView }) network;
+  @bindable({ defaultBindingMode: bindingMode.toView }) public network;
 
   private avatarAddress: Address;
   private connected: boolean;
@@ -15,14 +15,14 @@ export class Header {
   constructor(
     private appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
-    , private web3Service: Web3Service
+    , private web3Service: Web3Service,
   ) {
     this.initialize();
-    eventAggregator.subscribe("Network.Changed.Id", () => { this.initialize(); });
+    eventAggregator.subscribe('Network.Changed.Id', () => { this.initialize(); });
   }
 
-  initialize() {
-    this.avatarAddress = this.appConfig.get("daoAddress");
+  public initialize() {
+    this.avatarAddress = this.appConfig.get('daoAddress');
     this.connected = this.web3Service.isConnected;
   }
 }

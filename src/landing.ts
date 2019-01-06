@@ -1,30 +1,30 @@
+import { App } from 'app';
+import { AureliaConfiguration } from 'aurelia-configuration';
 import { autoinject } from 'aurelia-framework';
-import { AureliaConfiguration } from "aurelia-configuration";
-import { DateService } from "services/DateService";
-import { App } from "app";
+import { DateService } from 'services/DateService';
 
 @autoinject
 export class Landing {
 
-  lockingPeriodEndDate: Date;
-  lockingPeriodStartDate: Date;
-  governanceStartDate: Date;
-  intervalId: any;
-
-  msUntilCanLockCountdown(): number {
-    return this.lockingPeriodStartDate.getTime() - Date.now();
-  }
+  public lockingPeriodEndDate: Date;
+  public lockingPeriodStartDate: Date;
+  public governanceStartDate: Date;
+  public intervalId: any;
 
   constructor(
     private appConfig: AureliaConfiguration
-    , private dateService: DateService
+    , private dateService: DateService,
   ) {
-     this.lockingPeriodEndDate = this.dateService.fromIsoString(this.appConfig.get("Landing.lockingPeriodEndDate"), App.timezone);
-     this.lockingPeriodStartDate = this.dateService.fromIsoString(this.appConfig.get("Landing.lockingPeriodStartDate"), App.timezone);
-     this.governanceStartDate = this.dateService.fromIsoString(this.appConfig.get("Landing.governanceStartDate"), App.timezone);
+     this.lockingPeriodEndDate = this.dateService.fromIsoString(this.appConfig.get('Landing.lockingPeriodEndDate'), App.timezone);
+     this.lockingPeriodStartDate = this.dateService.fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'), App.timezone);
+     this.governanceStartDate = this.dateService.fromIsoString(this.appConfig.get('Landing.governanceStartDate'), App.timezone);
   }
 
-  activate() {
-    $("body").css("overflow", "auto");
+  public msUntilCanLockCountdown(): number {
+    return this.lockingPeriodStartDate.getTime() - Date.now();
+  }
+
+  public activate() {
+    $('body').css('overflow', 'auto');
   }
 }

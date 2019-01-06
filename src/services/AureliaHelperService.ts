@@ -1,7 +1,7 @@
-﻿import { IDisposable } from "./IDisposable";
-import { BindingEngine, TemplatingEngine, autoinject, transient } from "aurelia-framework";
-import { Container } from 'aurelia-dependency-injection';
+﻿import { Container } from 'aurelia-dependency-injection';
+import { autoinject, BindingEngine, TemplatingEngine, transient } from 'aurelia-framework';
 import { Loader } from 'aurelia-loader';
+import { IDisposable } from './IDisposable';
 
 @autoinject
 export class AureliaHelperService {
@@ -10,7 +10,7 @@ export class AureliaHelperService {
     public container: Container,
     private bindingEngine: BindingEngine,
     private templatingEngine: TemplatingEngine,
-    private loader: Loader
+    private loader: Loader,
   ) {
 
   }
@@ -29,8 +29,8 @@ export class AureliaHelperService {
 
   /**
    * Create an observable of array membership changes.
-   * @param array 
-   * @param func 
+   * @param array
+   * @param func
    */
   public createArrayWatch<T>(array: Array<T>, func: (splices: Array<CollectionChangeSplice<T>>) => void): IDisposable {
     return this.bindingEngine.collectionObserver(array)
@@ -38,7 +38,6 @@ export class AureliaHelperService {
         func(splices);
       });
   }
-
 
   /**
    * Create a bindable property
@@ -93,7 +92,7 @@ export class AureliaHelperService {
    * this can be useful to scope otherwise-singleton objects within a view (without using @singleton(true)).
    */
   public createForCurrentScope(whateverClass: any, registerAs: any): any {
-    var instance = this.getInstanceOf(whateverClass);
+    let instance = this.getInstanceOf(whateverClass);
     this.container.registerInstance(registerAs ? registerAs : whateverClass, instance);
     return instance;
   }
@@ -112,9 +111,9 @@ export class AureliaHelperService {
   public enhanceElement(el: Element, bindingContext: any, reEnhance: boolean = false): void {
     if (el) {
       if (reEnhance) {
-        $(el).removeClass("au-target");
+        $(el).removeClass('au-target');
       }
-      this.templatingEngine.enhance({ element: el, bindingContext: bindingContext });
+      this.templatingEngine.enhance({ element: el, bindingContext });
     }
   }
 
@@ -123,8 +122,7 @@ export class AureliaHelperService {
 
     try {
       result = !!await this.loader.loadModule(moduleId);
-    }
-    catch (e) {
+    } catch (e) {
     }
     return result;
   }
@@ -133,5 +131,5 @@ export class AureliaHelperService {
 export interface CollectionChangeSplice<T> {
   addedCount: number;
   index: number;
-  removed?: Array<T>
+  removed?: Array<T>;
 }

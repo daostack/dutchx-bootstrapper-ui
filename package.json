@@ -16,7 +16,8 @@
     "start": "nps",
     "build": "nps build.production",
     "heroku-postbuild": "npm run build",
-    "test": "nps test"
+    "test": "nps test",
+    "lint": "tslint -c tslint.json 'src/**/*.ts' && tslint -c tslint.json 'test/**/*.ts' && tslint -c tslint.json 'custom_typings/**/*.ts'"
   },
   "bugs": {
     "url": "https://github.com/daostack/dutchx-bootstrapper-ui/issues"
@@ -136,6 +137,7 @@
     "numeral": "^2.0.6",
     "popper.js": "^1.14.3",
     "rxjs": "^5.5.6",
-    "snackbarjs": "^1.1.0"
+    "snackbarjs": "^1.1.0",
+    "tslint": "^5.12.0"
   }
 }

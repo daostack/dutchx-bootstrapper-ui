@@ -1,9 +1,9 @@
-import { autoinject } from "aurelia-framework";
-import { ArcService, ContractWrapperInfo, SchemePermissions } from './ArcService';
-import { DaoService } from '../services/DaoService';
-import { SchemeInfo } from "../entities/SchemeInfo";
 import { EventAggregator } from 'aurelia-event-aggregator';
+import { autoinject } from 'aurelia-framework';
 import { EventConfigException } from '../entities/GeneralEvents';
+import { SchemeInfo } from '../entities/SchemeInfo';
+import { DaoService } from '../services/DaoService';
+import { ArcService, ContractWrapperInfo, SchemePermissions } from './ArcService';
 
 @autoinject
 export class SchemeService {
@@ -16,29 +16,17 @@ export class SchemeService {
   constructor(
     private arcService: ArcService
     , private daoService: DaoService
-    , private eventAggregator: EventAggregator
+    , private eventAggregator: EventAggregator,
   ) {
     this.availableSchemes = this.arcService.arcSchemes;
   }
 
   /**
-   * Schemes in the given DAO, as SchemeInfos.
-   * If not from Arc, then name and friendlyName will be empty.
-   * 
-   * @param daoAddress
-   */
-  private async _getSchemesInDao(daoAddress: string): Promise<Array<SchemeInfo>> {
-    let dao = await this.daoService.daoAt(daoAddress);
-    let schemes = await dao.allSchemes()
-    return schemes;
-  }
-
-  /**
    * Return all Arc schemes, whether or not in the DAO, as SchemeInfos.
-   * 
+   *
    * SchemeInfo.isRegistered will indicate whether the scheme is in the DAO.
    * If not from Arc, then name and friendlyName will be empty.
-   * 
+   *
    * @param daoAddress
    * @param excludeNonArcSchemes Default is false
    */
@@ -66,6 +54,18 @@ export class SchemeService {
 
     return schemes;
   }
+
+  /**
+   * Schemes in the given DAO, as SchemeInfos.
+   * If not from Arc, then name and friendlyName will be empty.
+   *
+   * @param daoAddress
+   */
+  private async _getSchemesInDao(daoAddress: string): Promise<Array<SchemeInfo>> {
+    let dao = await this.daoService.daoAt(daoAddress);
+    let schemes = await dao.allSchemes();
+    return schemes;
+  }
 }
 
-export { SchemeInfo } from "../entities/SchemeInfo";
+export { SchemeInfo } from '../entities/SchemeInfo';

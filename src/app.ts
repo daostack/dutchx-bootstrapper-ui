@@ -1,18 +1,38 @@
-import { autoinject } from 'aurelia-framework';
-import { Router, RouterConfiguration } from 'aurelia-router';
-import { PLATFORM } from 'aurelia-pal';
-import { Web3Service } from "./services/Web3Service";
-import '../static/styles.scss';
 import { AureliaConfiguration } from 'aurelia-configuration';
-import { BindingSignaler } from "aurelia-templating-resources";
-import { EventAggregator } from "aurelia-event-aggregator";
-import { Utils } from "services/utils";
+import { EventAggregator } from 'aurelia-event-aggregator';
+import { autoinject } from 'aurelia-framework';
+import { PLATFORM } from 'aurelia-pal';
+import { Router, RouterConfiguration } from 'aurelia-router';
+import { BindingSignaler } from 'aurelia-templating-resources';
+import { Utils } from 'services/utils';
+import '../static/styles.scss';
+import { Web3Service } from './services/Web3Service';
 
 @autoinject
 export class App {
   public static timezone: any;
 
+  public static SchemeDashboards = [
+    'Auction4Reputation',
+    'ContributionReward',
+    'ExternalLocking4Reputation',
+    // "FixedReputationAllocation",
+    'GenesisProtocol',
+    'GlobalConstraintRegistrar',
+    'LockingEth4Reputation',
+    'LockingToken4Reputation',
+    'NonArc',
+    'SchemeRegistrar',
+    'UpgradeScheme',
+  ];
+
+  public static hasDashboard(schemeName: string): boolean {
+    return App.SchemeDashboards.indexOf(schemeName) !== -1;
+  }
+
   public router: Router;
+
+  public static
 
   private intervalId: any;
 
@@ -20,40 +40,40 @@ export class App {
     private web3Service: Web3Service
     , private signaler: BindingSignaler
     , private eventAggregator: EventAggregator
-    , appConfig: AureliaConfiguration
+    , appConfig: AureliaConfiguration,
   ) {
-    App.timezone = appConfig.get("rootTimezone");
+    App.timezone = appConfig.get('rootTimezone');
   }
 
-  activate() {
+  public activate() {
     this.intervalId = setInterval(async () => {
       this.signaler.signal('secondPassed');
       if (this.web3Service.isConnected) {
         const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
-        this.eventAggregator.publish("secondPassed", blockDate);
+        this.eventAggregator.publish('secondPassed', blockDate);
       }
     }, 1000);
   }
 
-  deactivate() {
+  public deactivate() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
     }
   }
 
-  attached() {
-    (<any>$('body'))
+  public attached() {
+    ($('body') as any)
       /* override the body style set in the splash screen */
       // .css({
       //   "color": "black",
       //   "background-color": "white"
       // })
-      .bootstrapMaterialDesign({ global: { label: { className: "bmd-label-floating" } } });
+      .bootstrapMaterialDesign({ global: { label: { className: 'bmd-label-floating' } } });
 
   }
 
-  configureRouter(config: RouterConfiguration, router: Router) {
+  public configureRouter(config: RouterConfiguration, router: Router) {
 
     config.title = 'DutchX Initializer';
 
@@ -67,7 +87,7 @@ export class App {
         name: 'landing',
         moduleId: PLATFORM.moduleName('./landing'),
         nav: false,
-        title: 'Home'
+        title: 'Home',
       },
       {
         // 'address' will be present in the object passed to the 'activate' method of the viewmodel
@@ -76,7 +96,7 @@ export class App {
         name: 'dashboard',
         moduleId: PLATFORM.moduleName('./organizations/dashboard'),
         nav: false,
-        title: 'Dashboard'
+        title: 'Dashboard',
       }
       , {
         // 'txHash' will be present in the object passed to the 'activate' method of the viewmodel
@@ -84,32 +104,12 @@ export class App {
         name: 'txInfo',
         moduleId: PLATFORM.moduleName('./txInfo/txInfo'),
         nav: false,
-        title: 'Transaction Information'
-      }
+        title: 'Transaction Information',
+      },
     ]);
 
     config.fallbackRoute('');
 
     this.router = router;
   }
-
-  static SchemeDashboards = [
-    "Auction4Reputation",
-    "ContributionReward",
-    "ExternalLocking4Reputation",
-    // "FixedReputationAllocation",
-    "GenesisProtocol",
-    "GlobalConstraintRegistrar",
-    "LockingEth4Reputation",
-    "LockingToken4Reputation",
-    "NonArc",
-    "SchemeRegistrar",
-    "UpgradeScheme",
-  ];
-
-  public static hasDashboard(schemeName: string): boolean {
-    return App.SchemeDashboards.indexOf(schemeName) !== -1;
-  }
-
-  public static
 }

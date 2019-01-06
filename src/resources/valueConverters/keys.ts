@@ -2,7 +2,7 @@
  * use `| keys` to repeatFor an object's property values
  */
 export class KeysValueConverter {
-  toView(obj) {
+  public toView(obj) {
     let temp = [];
     for (let prop in obj) {
       if (obj.hasOwnProperty(prop)) {

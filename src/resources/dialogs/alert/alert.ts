@@ -1,20 +1,20 @@
-import { autoinject } from 'aurelia-framework';
 import { DialogController } from 'aurelia-dialog';
+import { autoinject } from 'aurelia-framework';
 // import { AureliaConfiguration } from 'aurelia-configuration';
 
 @autoinject
 export class Alert {
 
-  model: AlertModel;
-  okButton: HTMLElement;
+  public model: AlertModel;
+  public okButton: HTMLElement;
 
   constructor(private controller: DialogController) { }
 
-  activate(model: AlertModel) {
+  public activate(model: AlertModel) {
     this.model = model;
   }
 
-  attached() {
+  public attached() {
     // attach-focus doesn't work
     $(this.okButton).focus();
   }

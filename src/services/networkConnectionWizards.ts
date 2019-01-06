@@ -1,32 +1,32 @@
-import { autoinject, computedFrom } from 'aurelia-framework';
-import { DialogService } from 'services/dialogService';
-import { ArcService, Utils } from 'services/ArcService';
-import { Web3Service } from 'services/Web3Service';
-import { ConnectToNet } from "../resources/dialogs/connectToNet/connectToNet";
-import { EventAggregator } from 'aurelia-event-aggregator';
-import { DialogOpenResult, DialogController } from 'aurelia-dialog';
-import { DisposableCollection } from 'services/DisposableCollection';
+import { DialogController, DialogOpenResult } from 'aurelia-dialog';
 import { DialogCloseResult } from 'aurelia-dialog';
+import { EventAggregator } from 'aurelia-event-aggregator';
+import { autoinject, computedFrom } from 'aurelia-framework';
+import { ArcService, Utils } from 'services/ArcService';
+import { DialogService } from 'services/dialogService';
+import { DisposableCollection } from 'services/DisposableCollection';
+import { Web3Service } from 'services/Web3Service';
+import { ConnectToNet } from '../resources/dialogs/connectToNet/connectToNet';
 
 @autoinject
 export class NetworkConnectionWizards {
+
+  public isConnected: boolean;
+  public hasAccount: boolean;
+  public loading: boolean = false;
+  public skipLanding: boolean = false;
+  public hasDao: boolean = false;
+  public subscriptions: DisposableCollection;
+  public promise: Promise<DialogCloseResult>;
+  public dialogViewModel: ConnectToNet;
+  public hasApprovedAccountAccess: boolean;
   constructor(
     private dialogService: DialogService
     , private web3: Web3Service
-    , private eventAggregator: EventAggregator
+    , private eventAggregator: EventAggregator,
   ) {
     this.subscriptions = new DisposableCollection();
   }
-
-  isConnected: boolean;
-  hasAccount: boolean;
-  loading: boolean = false;
-  skipLanding: boolean = false;
-  hasDao: boolean = false;
-  subscriptions: DisposableCollection;
-  promise: Promise<DialogCloseResult>;
-  dialogViewModel: ConnectToNet;
-  hasApprovedAccountAccess: boolean;
 
   public async run(
     hasDao: boolean,
@@ -51,17 +51,17 @@ export class NetworkConnectionWizards {
           const theWindow = (window as any);
           /**
            * ethereum._metamask:
-           * 
+           *
            * isEnabled  - determines if this domain has been approved
            *              (returns true if privacy mode is off or user has approved)
            * isApproved - determines if this domain is currently enabled
            *              (returns true only if domain has been approved in privacy mode)
            * isUnlocked - determines if MetaMask is unlocked by the user
            *              (returns true when user has simply logged on to MetaMask)
-           * 
+           *
            * Note that on particular browsers, these may not be implemented, in which case we always return true and
            * the UI will need to rely solely on hasAccount.
-           * 
+           *
            * See: https://github.com/MetaMask/metamask-extension/pull/4703#issuecomment-430814765
            */
           const enabled = !theWindow.ethereum._metamask.isEnabled || (await theWindow.ethereum._metamask.isEnabled());
@@ -84,10 +84,10 @@ export class NetworkConnectionWizards {
         }
       };
 
-      this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => { this.hasDao = false; connectionChanged() }));
-      this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Account", () => connectionChanged()));
-      this.subscriptions.push(this.eventAggregator.subscribe("DAO.loaded", () => { this.hasDao = true; }));
-      this.subscriptions.push(this.eventAggregator.subscribe("DAO.Loading", (onOff: boolean): void => {
+      this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id', () => { this.hasDao = false; connectionChanged(); }));
+      this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => connectionChanged()));
+      this.subscriptions.push(this.eventAggregator.subscribe('DAO.loaded', () => { this.hasDao = true; }));
+      this.subscriptions.push(this.eventAggregator.subscribe('DAO.Loading', (onOff: boolean): void => {
         this.loading = onOff;
       }));
 
@@ -111,14 +111,13 @@ export class NetworkConnectionWizards {
 
   /**
    * normal automated close is going to be !cancelled.  manual close should indiciate cancelled
-   * @param cancelled 
+   * @param cancelled
    */
   public close(cancelled: boolean) {
     if (this.dialogViewModel) {
       this.dialogViewModel.close(cancelled);
     }
   }
-
 
   public isRunning(): boolean {
     return !!this.promise;
@@ -129,11 +128,11 @@ export class NetworkConnectionWizards {
      * Note: calling `_metamask.enable()` will ask the user to approve access to the account
      * even if privacy mode is turned off.  This behavior anticipates that privacy mode is
      * intended to eventually go away.
-     * 
+     *
      * If the user is not logged-in, will ask them to log in first.
-     * 
+     *
      * Don't expect caching of the approval, it may not implemented by MM or the particular browser.
-     * 
+     *
      * A weird thing happens when privacy mode is off:  We are notified when the user logs in and at that point
      * detect that we are 'enabled' for account access, and will proceed to load the DAO accordingly,
      * yet MM will still be in the process of prompting the user for access.  The latter is fine (see comment above).

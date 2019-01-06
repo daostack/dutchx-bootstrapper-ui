@@ -1,13 +1,13 @@
-import { autoinject } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { DisposableCollection } from "./DisposableCollection";
-import { AureliaHelperService } from "./AureliaHelperService";
-import { EventConfig, EventConfigException, ActionType } from "../entities/GeneralEvents";
-import 'snackbarjs';
+import { autoinject } from 'aurelia-framework';
+import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/operator/concatMap';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/concatMap';
-import 'rxjs/add/observable/fromPromise';
+import 'snackbarjs';
+import { ActionType, EventConfig, EventConfigException } from '../entities/GeneralEvents';
+import { AureliaHelperService } from './AureliaHelperService';
+import { DisposableCollection } from './DisposableCollection';
 
 /**
  * TODO:  Ability to queue up simultaneous messages so they are shown sequentially (per Material Design spec)
@@ -16,18 +16,18 @@ import 'rxjs/add/observable/fromPromise';
 export class SnackbarService {
 
   // probably doesn't really need to be a disposable collection since this is a singleton service
-  subscriptions: DisposableCollection = new DisposableCollection();
-  snackQueue: Subject<EventConfig>;
+  public subscriptions: DisposableCollection = new DisposableCollection();
+  public snackQueue: Subject<EventConfig>;
 
   constructor(
     eventAggregator: EventAggregator
-    , private aureliaHelperService: AureliaHelperService
+    , private aureliaHelperService: AureliaHelperService,
   ) {
     // this.subscriptions.push(eventAggregator.subscribe("handleException", (config: EventConfigException | any) => this.handleException(config)));
-    this.subscriptions.push(eventAggregator.subscribe("handleSuccess", (config: EventConfig | string) => this.handleSuccess(config)));
-    this.subscriptions.push(eventAggregator.subscribe("handleWarning", (config: EventConfig | string) => this.handleWarning(config)));
+    this.subscriptions.push(eventAggregator.subscribe('handleSuccess', (config: EventConfig | string) => this.handleSuccess(config)));
+    this.subscriptions.push(eventAggregator.subscribe('handleWarning', (config: EventConfig | string) => this.handleWarning(config)));
     // this.subscriptions.push(eventAggregator.subscribe("handleFailure", (config: EventConfig | string) => this.handleFailure(config)));
-    this.subscriptions.push(eventAggregator.subscribe("showMessage", (config: EventConfig | string) => this.showMessage(config)));
+    this.subscriptions.push(eventAggregator.subscribe('showMessage', (config: EventConfig | string) => this.showMessage(config)));
 
     this.snackQueue = new Subject<EventConfig>();
     /**
@@ -36,13 +36,13 @@ export class SnackbarService {
      */
     let that = this;
     this.snackQueue.concatMap((config: EventConfig) => {
-      return Observable.fromPromise(new Promise(function (resolve, reject) {
+      return Observable.fromPromise(new Promise(function(resolve, reject) {
         // with timeout, give a cleaner buffer in between consecutive snacks
         setTimeout(() => {
           const snackbarConfig = that.getSnackbarConfig(config);
           snackbarConfig.onClose = resolve;
-          let $snackbar = (<any>$).snackbar(snackbarConfig);
-          // for actions, but this means you can put binding code in the message too, 
+          let $snackbar = ($ as any).snackbar(snackbarConfig);
+          // for actions, but this means you can put binding code in the message too,
           // where the config is the bindingContext
           that.aureliaHelperService.enhanceElement($snackbar[0], config);
         }, 200);
@@ -54,7 +54,7 @@ export class SnackbarService {
   }
 
   /* shouldn't actually ever happen */
-  dispose() {
+  public dispose() {
     this.subscriptions.dispose();
   }
 
@@ -87,37 +87,26 @@ export class SnackbarService {
     this.serveSnack(config);
   }
 
-  private serveSnack(config: EventConfig | string, defaults: any = {}) {
-    let completeConfig = this.completeConfig(config, defaults);
-
-    /**
-     * duration < 0 suppresses the snack
-     */
-    if (completeConfig.duration >= 0) {
-      this.snackQueue.next(completeConfig);
-    }
-  }
-
-  completeConfig(config: EventConfig | string, defaults: any = {}): EventConfig {
-    if (typeof config === "string") {
+  public completeConfig(config: EventConfig | string, defaults: any = {}): EventConfig {
+    if (typeof config === 'string') {
       config = { message: config as string } as EventConfig;
     }
 
-    return Object.assign({ style: "snack-info", duration: 3000, actionType: ActionType.none }, defaults, config);
+    return Object.assign({ style: 'snack-info', duration: 3000, actionType: ActionType.none }, defaults, config);
   }
 
-  getSnackbarConfig(config: EventConfig): SnackBarConfig {
+  public getSnackbarConfig(config: EventConfig): SnackBarConfig {
     return {
       content: this.formatContent(config),
       style: config.style,
       timeout: config.duration,
-      htmlAllowed: true
+      htmlAllowed: true,
     };
   }
 
-  formatContent(config: EventConfig) {
+  public formatContent(config: EventConfig) {
     let templateMessage = `<span class="snackbar-message-text">${config.message}</span>`;
-    let templateAction = "";
+    let templateAction = '';
     let text;
     switch (config.actionType) {
       case ActionType.address:
@@ -130,6 +119,17 @@ export class SnackbarService {
     }
     return `${templateMessage}${templateAction}`;
   }
+
+  private serveSnack(config: EventConfig | string, defaults: any = {}) {
+    let completeConfig = this.completeConfig(config, defaults);
+
+    /**
+     * duration < 0 suppresses the snack
+     */
+    if (completeConfig.duration >= 0) {
+      this.snackQueue.next(completeConfig);
+    }
+  }
 }
 
 interface SnackBarConfig {
@@ -137,5 +137,5 @@ interface SnackBarConfig {
   style: string;
   timeout: Number;
   htmlAllowed: boolean;
-  onClose?: () => void
+  onClose?: () => void;
 }

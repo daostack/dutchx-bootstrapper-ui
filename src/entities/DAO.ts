@@ -1,40 +1,20 @@
+import { includeEventsIn, Subscription } from 'aurelia-event-aggregator';
+import { LogManager } from 'aurelia-framework';
+import { SchemeInfo } from '../entities/SchemeInfo';
 import {
   ArcService,
   DAO,
+  DaoGlobalConstraintInfo,
   DaoSchemeInfo,
-  DaoGlobalConstraintInfo
 } from '../services/ArcService';
-import { LogManager } from 'aurelia-framework';
-import { includeEventsIn, Subscription } from 'aurelia-event-aggregator';
-import { SchemeInfo } from "../entities/SchemeInfo";
-import { Web3Service, BigNumber } from "../services/Web3Service";
+import { BigNumber, Web3Service } from '../services/Web3Service';
 
 export class DaoEx extends DAO {
-
-  public address: string;
-  public name: string;
-  private schemesCache: Map<string, SchemeInfo>;
-  private registerSchemeEvent;
-  private unRegisterSchemeEvent;
-  public arcService: ArcService;
-  private logger = LogManager.getLogger("DxBootStrapper");
-  public omega: BigNumber; // in wei
   /**
    * a Scheme has been added or removed from a DAO.
    */
-  public static daoSchemeSetChangedEvent: string = "daoSchemeSetChanged";
-  public static daoConstraintSetChangedEvent: string = "daoConstraintSetChanged";
-
-  /* this is not meant to be instantiated here, only in Arc */
-  private constructor() {
-    super();
-    includeEventsIn(this);
-  }
-
-  dispose() {
-    this.registerSchemeEvent.stopWatching();
-    this.unRegisterSchemeEvent.stopWatching();
-  }
+  public static daoSchemeSetChangedEvent: string = 'daoSchemeSetChanged';
+  public static daoConstraintSetChangedEvent: string = 'daoConstraintSetChanged';
 
   public static async fromArcJsDao(
     org: DAO
@@ -49,8 +29,24 @@ export class DaoEx extends DAO {
     return newDAO;
   }
 
-  private async _getCurrentSchemes(): Promise<Array<SchemeInfo>> {
-    return (await super.getSchemes()).map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
+  public address: string;
+  public name: string;
+  public arcService: ArcService;
+  public omega: BigNumber; // in wei
+  private schemesCache: Map<string, SchemeInfo>;
+  private registerSchemeEvent;
+  private unRegisterSchemeEvent;
+  private logger = LogManager.getLogger('DxBootStrapper');
+
+  /* this is not meant to be instantiated here, only in Arc */
+  private constructor() {
+    super();
+    includeEventsIn(this);
+  }
+
+  public dispose() {
+    this.registerSchemeEvent.stopWatching();
+    this.unRegisterSchemeEvent.stopWatching();
   }
 
   /**
@@ -69,52 +65,6 @@ export class DaoEx extends DAO {
     }
 
     return Array.from(this.schemesCache.values());
-  }
-
-  private watchSchemes(): void {
-    this.registerSchemeEvent = this.controller.RegisterScheme({ _avatar: this.address }, { fromBlock: "latest" });
-    this.registerSchemeEvent.watch((err, eventsArray) => this.handleSchemeEvent(err, eventsArray, true));
-
-    this.unRegisterSchemeEvent = this.controller.UnregisterScheme({ _avatar: this.address }, { fromBlock: "latest" });
-    this.unRegisterSchemeEvent.watch((err, eventsArray) => this.handleSchemeEvent(err, eventsArray, false));
-  }
-
-  private async handleSchemeEvent(err, eventsArray, adding: boolean): Promise<void> {
-    let newSchemesArray = [];
-    if (!(eventsArray instanceof Array)) {
-      eventsArray = [eventsArray];
-    }
-    let count = eventsArray.length;
-    for (let i = 0; i < count; i++) {
-      let schemeAddress = eventsArray[i].args._scheme;
-      let contractWrapper = this.arcService.contractWrapperFromAddress(schemeAddress) as any;
-
-      if (!contractWrapper) {
-        // then it is a non-arc scheme or TODO: is an Arc scheme that is older or newer than the one Arc is telling us about
-        contractWrapper = <any>{ address: schemeAddress };
-      }
-
-      let schemeInfo = SchemeInfo.fromContractWrapper(contractWrapper, adding);
-      let changed = false;
-      // TODO: get unknown name from Arc
-      if (adding && !this.schemesCache.has(schemeAddress)) {
-        changed = true;
-        this.logger.debug(`caching scheme: ${contractWrapper.name ? contractWrapper.name : "[unknown]"}: ${contractWrapper.address}`);
-        this.schemesCache.set(schemeAddress, schemeInfo);
-      } else if (!adding && this.schemesCache.has(schemeAddress)) {
-        changed = true;
-        this.logger.debug(`uncaching scheme: ${contractWrapper.name ? contractWrapper.name : "[unknown]"}: ${contractWrapper.address}`);
-        this.schemesCache.delete(schemeAddress);
-      }
-
-      if (changed) {
-        this.publish(DaoEx.daoSchemeSetChangedEvent,
-          {
-            dao: this,
-            scheme: schemeInfo
-          });
-      }
-    }
   }
 
   /**
@@ -137,4 +87,54 @@ export class DaoEx extends DAO {
     * @param callback The callback to be invoked when when the specified message is published.
     */
   public subscribeOnce(event: string | Function, callback: Function): Subscription { return null; }
+
+  private async _getCurrentSchemes(): Promise<Array<SchemeInfo>> {
+    return (await super.getSchemes()).map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
+  }
+
+  private watchSchemes(): void {
+    this.registerSchemeEvent = this.controller.RegisterScheme({ _avatar: this.address }, { fromBlock: 'latest' });
+    this.registerSchemeEvent.watch((err, eventsArray) => this.handleSchemeEvent(err, eventsArray, true));
+
+    this.unRegisterSchemeEvent = this.controller.UnregisterScheme({ _avatar: this.address }, { fromBlock: 'latest' });
+    this.unRegisterSchemeEvent.watch((err, eventsArray) => this.handleSchemeEvent(err, eventsArray, false));
+  }
+
+  private async handleSchemeEvent(err, eventsArray, adding: boolean): Promise<void> {
+    let newSchemesArray = [];
+    if (!(eventsArray instanceof Array)) {
+      eventsArray = [eventsArray];
+    }
+    let count = eventsArray.length;
+    for (let i = 0; i < count; i++) {
+      let schemeAddress = eventsArray[i].args._scheme;
+      let contractWrapper = this.arcService.contractWrapperFromAddress(schemeAddress) as any;
+
+      if (!contractWrapper) {
+        // then it is a non-arc scheme or TODO: is an Arc scheme that is older or newer than the one Arc is telling us about
+        contractWrapper = { address: schemeAddress } as any;
+      }
+
+      let schemeInfo = SchemeInfo.fromContractWrapper(contractWrapper, adding);
+      let changed = false;
+      // TODO: get unknown name from Arc
+      if (adding && !this.schemesCache.has(schemeAddress)) {
+        changed = true;
+        this.logger.debug(`caching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}: ${contractWrapper.address}`);
+        this.schemesCache.set(schemeAddress, schemeInfo);
+      } else if (!adding && this.schemesCache.has(schemeAddress)) {
+        changed = true;
+        this.logger.debug(`uncaching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}: ${contractWrapper.address}`);
+        this.schemesCache.delete(schemeAddress);
+      }
+
+      if (changed) {
+        this.publish(DaoEx.daoSchemeSetChangedEvent,
+          {
+            dao: this,
+            scheme: schemeInfo,
+          });
+      }
+    }
+  }
 }

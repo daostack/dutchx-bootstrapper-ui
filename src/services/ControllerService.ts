@@ -1,4 +1,4 @@
-import { autoinject } from "aurelia-framework";
+import { autoinject } from 'aurelia-framework';
 import { SchemePermissions } from './ArcService';
 
 @autoinject

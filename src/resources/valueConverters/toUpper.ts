@@ -1,8 +1,8 @@
 export class ToUpperValueConverter {
-  toView(value: string) {
+  public toView(value: string) {
     return (value || '').toUpperCase();
   }
-  fromView(value: string) {
+  public fromView(value: string) {
     return (value || '').toUpperCase();
   }
 }
