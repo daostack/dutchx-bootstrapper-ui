@@ -9,7 +9,7 @@ export class SecondsDaysValueConverter {
    * @param days
    */
   public fromView(days: string): number | undefined | null {
-    if ((days == undefined) || (days == null)) {
+    if ((days === undefined) || (days === null)) {
       return days as any;
     }
 
@@ -29,7 +29,7 @@ export class SecondsDaysValueConverter {
   }
 
   public toView(seconds: number): string {
-    if ((seconds == undefined) || (seconds == null)) {
+    if ((seconds === undefined) || (seconds === null)) {
       return seconds as any;
     }
     /*

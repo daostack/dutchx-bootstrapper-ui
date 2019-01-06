@@ -5,7 +5,11 @@ import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { Utils } from 'services/utils';
 import { DecodedLogEntry } from 'web3';
-import { Address, Auction4ReputationBidEventResult, Auction4ReputationWrapper, Erc20Wrapper, WrapperService } from '../services/ArcService';
+import { Address,
+         Auction4ReputationBidEventResult,
+         Auction4ReputationWrapper,
+         Erc20Wrapper,
+         WrapperService } from '../services/ArcService';
 import { BigNumber, Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';
 
@@ -31,7 +35,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   protected wrapper: Auction4ReputationWrapper;
 
   constructor(
-    protected eventAggregator: EventAggregator
+      protected eventAggregator: EventAggregator
     , protected web3Service: Web3Service,
   ) {
     super();
@@ -60,9 +64,9 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
     this.token = await this.wrapper.getToken();
 
-    const sub = this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
-      this.getAuctionNotBegun(blockDate);
-      this.getAuctionIsOver(blockDate);
+    const sub = this.eventAggregator.subscribe('secondPassed', async (blockDateParam: Date) => {
+      this.getAuctionNotBegun(blockDateParam);
+      this.getAuctionIsOver(blockDateParam);
       if (!this.auctionNotBegun && !this.auctionIsOver) {
         this.updateAuctionStatus();
       } else if (this.auctionIsOver) {

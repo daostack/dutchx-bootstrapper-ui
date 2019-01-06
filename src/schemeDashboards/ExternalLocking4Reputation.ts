@@ -14,7 +14,7 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   protected wrapper: ExternalLocking4ReputationWrapper;
 
   constructor(
-    appConfig: AureliaConfiguration
+      appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
     , web3Service: Web3Service,
   ) {
@@ -31,7 +31,8 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   protected async lock(): Promise<boolean> {
 
     if (!(await this.wrapper.hasMgnToActivate(this.lockModel.lockerAddress))) {
-      this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't activate: No MGN tokens reserved to claim`));
+      this.eventAggregator.publish('handleFailure',
+      new EventConfigFailure(`Can't activate: No MGN tokens reserved to claim`));
       return false;
     }
 

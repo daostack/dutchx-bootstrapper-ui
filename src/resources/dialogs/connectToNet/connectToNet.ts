@@ -9,7 +9,7 @@ import { Web3Service } from 'services/Web3Service';
 @autoinject
 export class ConnectToNet {
 
-  public model: ConnectToNetModel;
+  public model: IConnectToNetModel;
   public networkName: string;
   public subscriptions: DisposableCollection = new DisposableCollection();
   public userAccount: Address;
@@ -29,11 +29,11 @@ export class ConnectToNet {
   }
 
   constructor(
-    private controller: DialogController
+      private controller: DialogController
     , private eventAggregator: EventAggregator
     , private web3: Web3Service) { }
 
-  public async activate(model: ConnectToNetModel) {
+  public async activate(model: IConnectToNetModel) {
     this.networkName = this.web3.networkName;
     this.landed = model.skipLanding;
     this.model = model;
@@ -81,7 +81,7 @@ export class ConnectToNet {
   }
 }
 
-interface ConnectToNetModel {
+interface IConnectToNetModel {
   isConnected: boolean;
   hasAccount: boolean;
   loading: boolean;

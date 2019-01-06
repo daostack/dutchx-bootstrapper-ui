@@ -11,7 +11,7 @@ export class BooleanValueConverter {
                   as: { true: string, false: string, default: string } = { true: 'Yes', false: 'No', default: '?' })
     : boolean | undefined {
 
-    if ((val === undefined) || (val === null) || (val == as.default)) {
+    if ((val === undefined) || (val === null) || (val === as.default)) {
       return undefined;
     }
 

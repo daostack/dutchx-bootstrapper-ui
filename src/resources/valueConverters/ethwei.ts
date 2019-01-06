@@ -21,7 +21,7 @@ export class EthweiValueConverter {
    * @param ethValue
    */
   public fromView(ethValue: string): BigNumber {
-    if ((ethValue == undefined) || (ethValue == null)) {
+    if ((ethValue === undefined) || (ethValue === null)) {
       return ethValue as any;
     }
 
@@ -35,7 +35,7 @@ export class EthweiValueConverter {
    */
   public toView(weiValue: number | BigNumber, base: number = 10): string {
     try {
-      if ((weiValue == undefined) || (weiValue == null)) {
+      if ((weiValue === undefined) || (weiValue === null)) {
         return '';
       }
 

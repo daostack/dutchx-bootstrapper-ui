@@ -72,7 +72,7 @@ export class DaoEx extends DAO {
     * @param event The event or channel to publish to.
     * @param data The data to publish on the channel.
     */
-  public publish(event: string | any, data?: any): void { }
+  public publish(event: string | any, data?: any): void { return null; }
 
    /**
     * Subscribes to a message channel or message type.
@@ -82,7 +82,8 @@ export class DaoEx extends DAO {
   public subscribe(event: string | Function, callback: Function): Subscription { return null; }
 
    /**
-    * Subscribes to a message channel or message type, then disposes the subscription automatically after the first message is received.
+    * Subscribes to a message channel or message type,
+    * then disposes the subscription automatically after the first message is received.
     * @param event The event channel or event data type.
     * @param callback The callback to be invoked when when the specified message is published.
     */
@@ -111,7 +112,8 @@ export class DaoEx extends DAO {
       let contractWrapper = this.arcService.contractWrapperFromAddress(schemeAddress) as any;
 
       if (!contractWrapper) {
-        // then it is a non-arc scheme or TODO: is an Arc scheme that is older or newer than the one Arc is telling us about
+        // then it is a non-arc scheme or TODO:
+        // is an Arc scheme that is older or newer than the one Arc is telling us about
         contractWrapper = { address: schemeAddress } as any;
       }
 
@@ -120,11 +122,13 @@ export class DaoEx extends DAO {
       // TODO: get unknown name from Arc
       if (adding && !this.schemesCache.has(schemeAddress)) {
         changed = true;
-        this.logger.debug(`caching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}: ${contractWrapper.address}`);
+        this.logger.debug(`caching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}:
+         ${contractWrapper.address}`);
         this.schemesCache.set(schemeAddress, schemeInfo);
       } else if (!adding && this.schemesCache.has(schemeAddress)) {
         changed = true;
-        this.logger.debug(`uncaching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}: ${contractWrapper.address}`);
+        this.logger.debug(`uncaching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}:
+         ${contractWrapper.address}`);
         this.schemesCache.delete(schemeAddress);
       }
 
