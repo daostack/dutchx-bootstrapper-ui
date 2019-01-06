@@ -2,12 +2,19 @@ import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, computedFrom } from 'aurelia-framework';
 import { LockInfoX } from 'resources/customElements/locksForReputation/locksForReputation';
-import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LockService } from 'services/lockServices';
 import { Utils } from 'services/utils';
 import { EventConfigException, EventConfigFailure, EventConfigTransaction } from '../entities/GeneralEvents';
-import { Address, ArcTransactionResult, LockerInfo, LockInfo, Locking4ReputationWrapper, LockingOptions, TransactionReceiptTruffle, WrapperService } from '../services/ArcService';
+import { Address,
+         ArcTransactionResult,
+         LockerInfo,
+         LockInfo,
+         Locking4ReputationWrapper,
+         LockingOptions,
+         TransactionReceiptTruffle,
+         WrapperService } from '../services/ArcService';
 import { BigNumber, Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';
 // import { App } from 'app';
@@ -43,14 +50,14 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected lockService: LockService;
 
   constructor(
-    protected appConfig: AureliaConfiguration
+      protected appConfig: AureliaConfiguration
     , protected eventAggregator: EventAggregator
     , protected web3Service: Web3Service,
   ) {
     super();
   }
 
-  public async activate(model: SchemeDashboardModel) {
+  public async activate(model: ISchemeDashboardModel) {
     this.wrapper = await WrapperService.factories[model.name].at(model.address);
     return super.activate(model);
   }
@@ -121,7 +128,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       if (alreadyCheckedForBlock || !(await this.getLockBlocker())) {
 
-        let result = await ((await (this.wrapper as any).lock(this.lockModel)) as ArcTransactionResult).watchForTxMined()
+        let result = await ((await (this.wrapper as any).lock(this.lockModel)) as ArcTransactionResult)
+          .watchForTxMined()
           .then((tx: TransactionReceiptTruffle) => {
             this.getLocks();
             return tx;
@@ -152,35 +160,19 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       let result = await (await (this.wrapper as any).release(lockInfo)).watchForTxMined();
 
-      this.eventAggregator.publish('handleTransaction', new EventConfigTransaction('The lock has been released', result.tx));
+      this.eventAggregator.publish('handleTransaction',
+      new EventConfigTransaction('The lock has been released', result.tx));
 
       this.eventAggregator.publish('Lock.Released');
 
       return true;
 
     } catch (ex) {
-      this.eventAggregator.publish('handleException', new EventConfigException(`The lock could not be released`, ex));
+      this.eventAggregator.publish('handleException', \
+      new EventConfigException(`The lock could not be released`, ex));
     }
     return false;
   }
-
-  // protected async redeem(): Promise<boolean> {
-  //   const lockInfo = { lockerAddress: this.userAddress } as LockInfo;
-
-  //   try {
-
-  //     let result = await this.wrapper.redeem(lockInfo);
-
-  //     this.eventAggregator.publish("handleTransaction", new EventConfigTransaction(
-  //       `The reputation has been redeemed`, result.tx));
-
-  //     return true;
-
-  //   } catch (ex) {
-  //     this.eventAggregator.publish("handleException", new EventConfigException(`The reputation could not be redeemed`, ex));
-  //   }
-  //   return false;
-  // }
 
   protected abstract getLockUnit(lockInfo: LockInfo): Promise<string>;
 

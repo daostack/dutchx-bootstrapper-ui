@@ -1,7 +1,7 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure, EventConfigTransaction } from 'entities/GeneralEvents';
-import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { Utils } from 'services/utils';
 import { DecodedLogEntry } from 'web3';
@@ -37,7 +37,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     super();
   }
 
-  public async activate(model: SchemeDashboardModel) {
+  public async activate(model: ISchemeDashboardModel) {
     this.wrapper = await WrapperService.factories[model.name].at(model.address);
     return super.activate(model);
   }

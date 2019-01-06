@@ -1,5 +1,5 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DaoEx } from 'services/DaoService';
 import { IDisposable } from 'services/IDisposable';
 import { SchemeInfo } from '../services/SchemeService';
@@ -22,7 +22,7 @@ export class DaoSchemeDashboard {
   public org: DaoEx;
   public orgName: string;
 
-  public activate(model: SchemeDashboardModel) {
+  public activate(model: ISchemeDashboardModel) {
     this.friendlyName = model.friendlyName;
     this.name = model.name;
     this.address = model.address;

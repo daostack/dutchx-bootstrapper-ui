@@ -4,7 +4,7 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, computedFrom, singleton } from 'aurelia-framework';
 import axios from 'axios';
 import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
-import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DateService } from 'services/DateService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LockService } from 'services/lockServices';
@@ -437,7 +437,7 @@ export class Dashboard {
     return `../schemeDashboards/${name}`;
   }
 
-  public schemeDashboardViewModel(scheme: SchemeInfo): SchemeDashboardModel {
+  public schemeDashboardViewModel(scheme: SchemeInfo): ISchemeDashboardModel {
     return Object.assign({}, {
       org: this.org,
       orgName: this.orgName,

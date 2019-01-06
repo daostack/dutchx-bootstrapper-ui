@@ -20,7 +20,9 @@ export class AureliaHelperService {
    * @param propertyName
    * @param func
    */
-  public createPropertyWatch(object: any, propertyName: string, func: (newValue: any, oldValue: any) => void): IDisposable {
+  public createPropertyWatch(object: any,
+                             propertyName: string,
+                             func: (newValue: any, oldValue: any) => void): IDisposable {
     return this.bindingEngine.propertyObserver(object, propertyName)
       .subscribe((newValue, oldValue) => {
         func(newValue, oldValue);
@@ -32,9 +34,9 @@ export class AureliaHelperService {
    * @param array
    * @param func
    */
-  public createArrayWatch<T>(array: Array<T>, func: (splices: Array<CollectionChangeSplice<T>>) => void): IDisposable {
+  public createArrayWatch<T>(array: Array<T>, func: (splices: Array<ICollectionChangeSplice<T>>) => void): IDisposable {
     return this.bindingEngine.collectionObserver(array)
-      .subscribe((splices: Array<CollectionChangeSplice<T>>) => {
+      .subscribe((splices: Array<ICollectionChangeSplice<T>>) => {
         func(splices);
       });
   }
@@ -53,7 +55,10 @@ export class AureliaHelperService {
    * @param object
    * @param propertyName
    */
-  public createObservableComputedProperty<T>(object: any, propertyName: string, func: () => T, dependencies?: Array<string>): void {
+  public createObservableComputedProperty<T>(object: any,
+                                             propertyName: string,
+                                             func: () => T,
+                                             dependencies?: Array<string>): void {
 
     Object.defineProperty(object, propertyName, { get: func });
 
@@ -123,12 +128,13 @@ export class AureliaHelperService {
     try {
       result = !!await this.loader.loadModule(moduleId);
     } catch (e) {
+
     }
     return result;
   }
 }
 
-export interface CollectionChangeSplice<T> {
+export interface ICollectionChangeSplice<T> {
   addedCount: number;
   index: number;
   removed?: Array<T>;

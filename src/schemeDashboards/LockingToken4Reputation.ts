@@ -3,10 +3,15 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
-import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { ITokenSpecification } from 'services/lockServices';
 import { Web3Service } from 'services/Web3Service';
-import { Address, Erc20Factory, Erc20Wrapper, LockInfo, LockingToken4ReputationWrapper, TokenLockingOptions } from '../services/ArcService';
+import { Address,
+        Erc20Factory,
+        Erc20Wrapper,
+        LockInfo,
+        LockingToken4ReputationWrapper,
+        TokenLockingOptions } from '../services/ArcService';
 
 @autoinject
 export class LockingToken4Reputation extends Locking4Reputation {
@@ -17,7 +22,7 @@ export class LockingToken4Reputation extends Locking4Reputation {
   private selectedToken: ITokenSpecification = null;
 
   constructor(
-    appConfig: AureliaConfiguration
+      appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
     , web3Service: Web3Service,
   ) {
@@ -64,7 +69,8 @@ export class LockingToken4Reputation extends Locking4Reputation {
         return super.lock(true);
       }
     } catch (ex) {
-      this.eventAggregator.publish('handleException', new EventConfigException(`The token transfer could not be approved`, ex));
+      this.eventAggregator.publish('handleException',
+                                   new EventConfigException(`The token transfer could not be approved`, ex));
     }
     this.locking = false;
     return false;
