@@ -1,12 +1,12 @@
 {
   "rootTimezone": "Asia/Tel_Aviv",
-  "lockingPeriodStartDate": "2019-02-18T00:00:00.000",
-  "lockingPeriodEndDate": "2019-03-21T00:00:00.000",
-  "governanceStartDate": "2019-04-04T00:00:00.000",
+  "lockingPeriodStartDate": "2019-02-18T12:00:00.000",
+  "lockingPeriodEndDate": "2019-03-20T12:00:00.000",
+  "governanceStartDate": "2019-04-04T12:00:00.000",
   "Landing": {
-    "lockingPeriodStartDate": "2019-02-18T00:00:00.000",
-    "lockingPeriodEndDate": "2019-03-21T00:00:00.000",
-    "governanceStartDate": "2019-04-04T00:00:00.000"
+    "lockingPeriodStartDate": "2019-02-18T12:00:00.000",
+    "lockingPeriodEndDate": "2019-03-20T12:00:00.000",
+    "governanceStartDate": "2019-04-04T12:00:00.000"
   },
   "Ganache": {
     "daoAddress": "0xcb4e66eca663fdb61818d52a152601ca6afef74f",
@@ -23,10 +23,10 @@
     ]
   },
   "Kovan": {
-    "lockingPeriodStartDate": "2018-11-01T00:00:00.000",
-    "lockingPeriodEndDate": "2019-03-21T00:00:00.000",
-    "governanceStartDate": "2019-04-04T00:00:00.000",
-    "daoAddress": "0x9b055567ae152cf14e19b285d4cdd35ff6b58260",
+    "lockingPeriodStartDate": "2019-01-09T12:00:00.000",
+    "lockingPeriodEndDate": "2019-01-10T18:00:00.000",
+    "governanceStartDate": "2019-01-11T12:00:00.000",
+    "daoAddress": "0xc0e7580aba695453f3a18b7deb9b1e0d52da8265",
     "gnoTokenAddress": "0x6018bf616ec9db02f90c8c8529ddadc10a5c29dc",
     "lockableTokens": [
       {
@@ -44,7 +44,10 @@
     ]
   },
   "Rinkeby": {
-    "daoAddress": "0x4Ceb1d7C144E06b8cD36225A7559897Cb0c6D64c",
+    "lockingPeriodStartDate": "2019-01-09T12:00:00.000",
+    "lockingPeriodEndDate": "2019-01-10T18:00:00.000",
+    "governanceStartDate": "2019-01-11T12:00:00.000",
+    "daoAddress": "0xbb491d151ff2ae050a24357a3916bb04a3e07d44",
     "gnoTokenAddress": "0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c",
     "lockableTokens": [
       {

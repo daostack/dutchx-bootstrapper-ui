@@ -1,5 +1,5 @@
 import { autoinject } from 'aurelia-framework';
-import { LockingToken4ReputationWrapper, StandardTokenFactory, StandardTokenWrapper, TokenLockingOptions, LockInfo, Address } from "../services/ArcService";
+import { LockingToken4ReputationWrapper, Erc20Factory, Erc20Wrapper, TokenLockingOptions, LockInfo, Address } from "../services/ArcService";
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { EventAggregator } from "aurelia-event-aggregator";
 import { Web3Service } from "services/Web3Service";
@@ -49,7 +49,7 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
       if (!(await this.getLockBlocker())) {
 
-        const token = (await StandardTokenFactory.at(this.selectedToken.address)) as StandardTokenWrapper;
+        const token = (await Erc20Factory.at(this.selectedToken.address)) as Erc20Wrapper;
 
         await (await token.approve({
           owner: this.lockModel.lockerAddress,

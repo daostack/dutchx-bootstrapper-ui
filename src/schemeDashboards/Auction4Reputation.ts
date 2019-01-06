@@ -1,7 +1,7 @@
 import { autoinject } from 'aurelia-framework';
 import { DaoSchemeDashboard } from "./schemeDashboard"
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { WrapperService, Address, Auction4ReputationWrapper, StandardTokenWrapper, Auction4ReputationBidEventResult } from "../services/ArcService";
+import { WrapperService, Address, Auction4ReputationWrapper, Erc20Wrapper, Auction4ReputationBidEventResult } from "../services/ArcService";
 import { BigNumber, Web3Service } from '../services/Web3Service';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { EventConfigTransaction, EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
@@ -15,8 +15,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   protected wrapper: Auction4ReputationWrapper;
   auctionsStartTime: Date;
   auctionsEndTime: Date;
-  token: StandardTokenWrapper;
-  auctionId: number = -1;
+  token: Erc20Wrapper;
   auctionIsOver: boolean;
   auctionNotBegun: boolean;
   refreshing: boolean = false;
@@ -185,17 +184,4 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
     this.bidding = false;
   }
-
-  // async _userHasBid(auctionId: number): Promise<void> {
-  //   this.userHasBid = (await this.wrapper.getBid(this.web3Service.defaultAccount, auctionId)).gt(0);
-  // }
-
-  // async _totalBids(auctionId: number): Promise<BigNumber> {
-  //   let totalBids = new BigNumber(0);
-  //   const numAuctions = await this.wrapper.getNumberOfAuctions();
-  //   for (let auctionId = 0; auctionId < numAuctions; ++auctionId) {
-  //     totalBids.add(await this.wrapper.getAuctionTotalBid(auctionId));
-  //   }
-  //   return totalBids;
-  // }
 }

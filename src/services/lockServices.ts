@@ -1,5 +1,5 @@
 import { Locking4ReputationWrapper, Address, LockerInfo, LockInfo } from "services/ArcService";
-import { LockingToken4ReputationWrapper, StandardTokenWrapper } from "@daostack/arc.js";
+import { LockingToken4ReputationWrapper, Erc20Wrapper } from "@daostack/arc.js";
 import { AureliaConfiguration } from "aurelia-configuration";
 import { BigNumber } from "bignumber.js";
 
@@ -25,9 +25,9 @@ export class LockService {
     return fetcher.get();
   }
 
-  public async getUserLockedTokens(): Promise<Array<StandardTokenWrapper>> {
+  public async getUserLockedTokens(): Promise<Array<Erc20Wrapper>> {
     const locks = await this.getUserLocks();
-    const tokens = new Array<StandardTokenWrapper>();
+    const tokens = new Array<Erc20Wrapper>();
     const tokenWrapper = (this.wrapper as LockingToken4ReputationWrapper);
     for (const lock of locks) {
       const token = await tokenWrapper.getTokenForLock(lock.lockId);
