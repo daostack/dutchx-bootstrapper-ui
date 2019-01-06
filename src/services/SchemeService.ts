@@ -14,7 +14,7 @@ export class SchemeService {
   public availableSchemes: Array<ContractWrapperInfo>;
 
   constructor(
-    private arcService: ArcService
+      private arcService: ArcService
     , private daoService: DaoService
     , private eventAggregator: EventAggregator,
   ) {

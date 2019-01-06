@@ -4,22 +4,22 @@ import { IDisposable } from './IDisposable';
 @transient()
 export class DisposableCollection implements IDisposable {
 
-  private _disposables: Array<IDisposable>;
+  private disposables: Array<IDisposable>;
 
   constructor() {
-    this._disposables = new Array<IDisposable>();
+    this.disposables = new Array<IDisposable>();
   }
 
   public push(disposable: IDisposable): number {
-    return this._disposables.push(disposable);
+    return this.disposables.push(disposable);
   }
 
   public dispose(disposable?: IDisposable): void {
     if (disposable) {
       this._dispose(disposable);
     } else {
-      for (let disposable of this._disposables) {
-        this._dispose(disposable);
+      for (let disposableElement of this.disposables) {
+        this._dispose(disposableElement);
       }
     }
   }

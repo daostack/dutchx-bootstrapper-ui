@@ -20,14 +20,15 @@ export class SnackbarService {
   public snackQueue: Subject<EventConfig>;
 
   constructor(
-    eventAggregator: EventAggregator
+      eventAggregator: EventAggregator
     , private aureliaHelperService: AureliaHelperService,
   ) {
-    // this.subscriptions.push(eventAggregator.subscribe("handleException", (config: EventConfigException | any) => this.handleException(config)));
-    this.subscriptions.push(eventAggregator.subscribe('handleSuccess', (config: EventConfig | string) => this.handleSuccess(config)));
-    this.subscriptions.push(eventAggregator.subscribe('handleWarning', (config: EventConfig | string) => this.handleWarning(config)));
-    // this.subscriptions.push(eventAggregator.subscribe("handleFailure", (config: EventConfig | string) => this.handleFailure(config)));
-    this.subscriptions.push(eventAggregator.subscribe('showMessage', (config: EventConfig | string) => this.showMessage(config)));
+    this.subscriptions.push(eventAggregator
+                       .subscribe('handleSuccess', (config: EventConfig | string) => this.handleSuccess(config)));
+    this.subscriptions.push(eventAggregator
+                       .subscribe('handleWarning', (config: EventConfig | string) => this.handleWarning(config)));
+    this.subscriptions.push(eventAggregator
+                       .subscribe('showMessage', (config: EventConfig | string) => this.showMessage(config)));
 
     this.snackQueue = new Subject<EventConfig>();
     /**
@@ -39,9 +40,9 @@ export class SnackbarService {
       return Observable.fromPromise(new Promise(function(resolve, reject) {
         // with timeout, give a cleaner buffer in between consecutive snacks
         setTimeout(() => {
-          const ISnackBarConfig = that.getISnackBarConfig(config);
-          ISnackBarConfig.onClose = resolve;
-          let $snackbar = ($ as any).snackbar(ISnackBarConfig);
+          const SnackBarConfig = that.getISnackBarConfig(config);
+          SnackBarConfig.onClose = resolve;
+          let $snackbar = ($ as any).snackbar(SnackBarConfig);
           // for actions, but this means you can put binding code in the message too,
           // where the config is the bindingContext
           that.aureliaHelperService.enhanceElement($snackbar[0], config);
@@ -66,23 +67,6 @@ export class SnackbarService {
     this.serveSnack(config);
   }
 
-  /**
-   * @param config Can be EventConfig or just the thrown exception
-   */
-  // public handleException(config: EventConfigException | any) {
-  //   if (!(config instanceof EventConfigException)) {
-  //     // then config is the exception itself
-  //     let ex = config as any;
-  //     config = { message: `${ex.message ? ex.message : ex}`, style: "snack-failure", duration: 0 } as any;
-  //   }
-
-  //   this.serveSnack(config);
-  // }
-
-  // public handleFailure(config: EventConfig | string) {
-  //   this.serveSnack(config);
-  // }
-
   public handleWarning(config: EventConfig | string) {
     this.serveSnack(config);
   }
@@ -92,7 +76,8 @@ export class SnackbarService {
       config = { message: config as string } as EventConfig;
     }
 
-    return Object.assign({ style: 'snack-info', duration: 3000, actionType: ActionType.none }, defaults, config);
+    return Object.assign({ style: 'snack-info', duration: 3000, actionType: ActionType.none },
+                         defaults, config);
   }
 
   public getISnackBarConfig(config: EventConfig): ISnackBarConfig {
@@ -111,10 +96,14 @@ export class SnackbarService {
     switch (config.actionType) {
       case ActionType.address:
         text = config.actionText || config.address;
-        templateAction = `<span class="snackbar-action-wrapper"><etherscanlink address="${config.address}" text="${text}" type="${config.addressType || 'address'}"></etherscanlink></span>`;
+        templateAction =
+        `<span class="snackbar-action-wrapper"><etherscanlink address=
+        "${config.address}" text="${text}" type="${config.addressType || 'address'}"></etherscanlink></span>`;
         break;
       case ActionType.button:
-        templateAction = `<span class="snackbar-action-wrapper"><button type="button" class="btn" click.delegate='action()'>${config.actionText}</button></span>`;
+        templateAction =
+        `<span class="snackbar-action-wrapper"><button type="button" class="btn" click.delegate='action()'>
+        ${config.actionText}</button></span>`;
         break;
     }
     return `${templateMessage}${templateAction}`;

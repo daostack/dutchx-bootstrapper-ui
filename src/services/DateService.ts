@@ -105,7 +105,8 @@ export class DateService {
       return dateString;
     }
 
-    return this.createMomentFromString(dateString, this.getSafeParams(paramsFrom).format).format(this.getSafeParams(paramsTo).format);
+    return this.createMomentFromString(dateString, this.getSafeParams(paramsFrom).format)
+           .format(this.getSafeParams(paramsTo).format);
   }
 
   public ticksToString(ticks: number, params?: IFormatParameters | string): string | null {
@@ -329,9 +330,11 @@ export class DateService {
    * That will be deserialized server-side to a C# DateTime with .Kind as utc.  It is unaltered when sent to Sql Server.
    * When retrieving from Sql Server, it comes into C# as a DateTime with Kind as "unspecified".
    * When serialized as such to JSON, it is converted to the webserver's timezone.
-   * Since we want to be receiving these in Utc, we must, in automapper, make sure all viewmodel datetimes have Utc as their Kind.
+   * Since we want to be receiving these in Utc, we must, in automapper,
+   * make sure all viewmodel datetimes have Utc as their Kind.
    *
-   * Sometimes we do want to pass a real Date as an argument....for some reason it gets serialized using a different format, lacking the Z.
+   * Sometimes we do want to pass a real Date as an argument....
+   * for some reason it gets serialized using a different format, lacking the Z.
    * (at least with the fetch serialized this is true).
    */
   private createMoment(date?: Date | string, utc: boolean = false): Moment {
