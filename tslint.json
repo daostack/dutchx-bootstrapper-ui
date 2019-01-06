@@ -11,7 +11,8 @@
               "prefer-const": false,
               "quotemark": [true, "single"],
               "prefer-for-of": false,
-              "array-type": [true, "generic"]
+              "array-type": [true, "generic"],
+              "ban-types": false
               },
     "rulesDirectory": []
 }

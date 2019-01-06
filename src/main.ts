@@ -45,7 +45,6 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName('resources/customElements/instructions.html'),
     PLATFORM.moduleName('resources/customElements/pageLoading.html'),
     PLATFORM.moduleName('resources/customAttributes/click-to-route'),
-    PLATFORM.moduleName('resources/customAttributes/blur-image'),
     PLATFORM.moduleName('resources/valueConverters/toUpper'),
     PLATFORM.moduleName('resources/valueConverters/number'),
     PLATFORM.moduleName('resources/valueConverters/round'),

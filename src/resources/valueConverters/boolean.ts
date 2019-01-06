@@ -8,7 +8,7 @@ export class BooleanValueConverter {
    * @param val
    */
   public fromView(val: string,
-           as: { true: string, false: string, default: string } = { true: 'Yes', false: 'No', default: '?' })
+                  as: { true: string, false: string, default: string } = { true: 'Yes', false: 'No', default: '?' })
     : boolean | undefined {
 
     if ((val === undefined) || (val === null) || (val == as.default)) {
@@ -23,7 +23,7 @@ export class BooleanValueConverter {
    * @param val
    */
   public toView(val: boolean,
-         as: { true: string, false: string, default: string } = { true: 'Yes', false: 'No', default: '?' })
+                as: { true: string, false: string, default: string } = { true: 'Yes', false: 'No', default: '?' })
     : string {
 
     if ((val === undefined) || (val === null)) {

@@ -17,7 +17,7 @@ export class DaoEx extends DAO {
   public static daoConstraintSetChangedEvent: string = 'daoConstraintSetChanged';
 
   public static async fromArcJsDao(
-    org: DAO
+      org: DAO
     , arcService: ArcService
     , web3: Web3Service): Promise<DaoEx> {
 
@@ -67,21 +67,21 @@ export class DaoEx extends DAO {
     return Array.from(this.schemesCache.values());
   }
 
-  /**
+   /**
     * Publishes a message.
     * @param event The event or channel to publish to.
     * @param data The data to publish on the channel.
     */
   public publish(event: string | any, data?: any): void { }
 
-  /**
+   /**
     * Subscribes to a message channel or message type.
     * @param event The event channel or event data type.
     * @param callback The callback to be invoked when when the specified message is published.
     */
   public subscribe(event: string | Function, callback: Function): Subscription { return null; }
 
-  /**
+   /**
     * Subscribes to a message channel or message type, then disposes the subscription automatically after the first message is received.
     * @param event The event channel or event data type.
     * @param callback The callback to be invoked when when the specified message is published.

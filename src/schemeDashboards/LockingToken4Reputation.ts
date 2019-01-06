@@ -4,7 +4,7 @@ import { autoinject } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
-import { TokenSpecification } from 'services/lockServices';
+import { ITokenSpecification } from 'services/lockServices';
 import { Web3Service } from 'services/Web3Service';
 import { Address, Erc20Factory, Erc20Wrapper, LockInfo, LockingToken4ReputationWrapper, TokenLockingOptions } from '../services/ArcService';
 
@@ -12,9 +12,9 @@ import { Address, Erc20Factory, Erc20Wrapper, LockInfo, LockingToken4ReputationW
 export class LockingToken4Reputation extends Locking4Reputation {
   protected wrapper: LockingToken4ReputationWrapper;
 
-  private lockableTokens: Array<TokenSpecification>;
+  private lockableTokens: Array<ITokenSpecification>;
 
-  private selectedToken: TokenSpecification = null;
+  private selectedToken: ITokenSpecification = null;
 
   constructor(
     appConfig: AureliaConfiguration
@@ -24,7 +24,7 @@ export class LockingToken4Reputation extends Locking4Reputation {
     super(appConfig, eventAggregator, web3Service);
   }
 
-  public selectToken(tokenSpec: TokenSpecification) {
+  public selectToken(tokenSpec: ITokenSpecification) {
     this.selectedToken = tokenSpec;
   }
 

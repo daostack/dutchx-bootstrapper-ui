@@ -31,7 +31,8 @@ export class NumberService {
   }
 
   /**
-   * returns whether string represents a number.  can have commas and a decimal (note decimal is not allowed if decimalPlaces is 0)
+   * returns whether string represents a number.  can have commas and a decimal
+   * (note decimal is not allowed if decimalPlaces is 0)
    * default number of decimmals is basically unlimited
    * @param value
    */
@@ -65,7 +66,8 @@ export class NumberService {
 
   private getNumberRegexString(decimalPlaces: number = 0) {
     return (decimalPlaces !== 0) ?
-      `^[+|-]?(((\\d{1,3}\\,)((\\d{3}\\,)?)(\\d{3}(\\.\\d{0,${decimalPlaces}})?))|(\\d{1,})|(\\d{0,}(\\.\\d{0,${decimalPlaces}})))$` :
+      `^[+|-]?(((\\d{1,3}\\,)((\\d{3}\\,)?)(\\d{3}(\\.\\d{0,${decimalPlaces}})?))|
+      (\\d{1,})|(\\d{0,}(\\.\\d{0,${decimalPlaces}})))$` :
       `^[+|-]?(((\\d{1,3}\\,)((\\d{3}\\,)?)(\\d{3}))|(\\d{1,}))$`;
   }
 
@@ -73,8 +75,8 @@ export class NumberService {
     let d = decimals || 0;
     let m = Math.pow(10, d);
     let n = +(d ? num * m : num).toFixed(8); // Avoid rounding errors
-    let i = Math.floor(n),
-      f = n - i;
+    let i = Math.floor(n);
+    let f = n - i;
     let e = 1e-8; // Allow for rounding errors in f
     let r = (f > 0.5 - e && f < 0.5 + e) ? ((i % 2 === 0) ? i : i + 1) : Math.round(n);
     return d ? r / m : r;

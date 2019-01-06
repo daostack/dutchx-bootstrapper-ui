@@ -6,7 +6,7 @@ import { BigNumber, Web3Service } from './Web3Service';
 export class TokenService {
 
   constructor(
-    private web3: Web3Service
+      private web3: Web3Service
     , private arcService: ArcService,
   ) { }
 

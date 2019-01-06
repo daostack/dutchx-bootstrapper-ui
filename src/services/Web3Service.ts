@@ -17,8 +17,8 @@ import { Address, Hash, Utils } from './ArcService';
 @autoinject()
 export class Web3Service {
 
-  public get web3(): Web3 { return this._web3; }
-  public set web3(newVal: Web3) { this._web3 = newVal; }
+  public get web3(): Web3 { return this.web3Private; }
+  public set web3(newVal: Web3) { this.web3Private = newVal; }
 
   public get accounts(): Array<string> { return this.web3 ? this.web3.eth.accounts : []; }
 
@@ -33,37 +33,34 @@ export class Web3Service {
 
   public isConnected: boolean = false;
 
-  private _web3: Web3;
-
-  constructor(
-  ) {
-  }
+  private web3Private: Web3;
 
   public async getTxReceipt(txHash: Hash): Promise<Transaction & TransactionReceipt> {
     const receipt = await (Promise as any).promisify(this.web3.eth.getTransactionReceipt)(txHash)
-      .then((_tx) => _tx);
+      .then((transaction) => transaction);
     const tx = await (Promise as any).promisify(this.web3.eth.getTransaction)(txHash)
-      .then((_tx) => _tx);
+      .then((transaction) => transaction);
     return Object.assign(tx, receipt);
   }
 
-  public getBlock(blockHash: Hash, withTransactions: boolean = false): Promise<BlockWithoutTransactionData | BlockWithTransactionData> {
+  public getBlock(blockHash: Hash, withTransactions: boolean = false):
+    Promise<BlockWithoutTransactionData | BlockWithTransactionData> {
     return (Promise as any).promisify(this.web3.eth.getBlock)(blockHash, withTransactions)
-      .then((_block) => _block);
+      .then((block) => block);
   }
 
   public bytes32ToUtf8(bytes32: string): string {
     return this.web3.toUtf8(bytes32);
   }
-
+  // tslint:disable-next-line: ban-types
   public fromWei(value: Number | String | BigNumber, unit: Unit = 'ether'): BigNumber {
     return this.toBigNumber(this.web3.fromWei(value as any, unit));
   }
-
+  // tslint:disable-next-line: ban-types
   public toWei(value: Number | String | BigNumber, unit: Unit = 'ether'): BigNumber {
     return this.toBigNumber(this.web3.toWei(value as any, unit));
   }
-
+  // tslint:disable-next-line: ban-types
   public toBigNumber(value: Number | String | BigNumber): BigNumber {
     return this.web3.toBigNumber(value as any);
   }
@@ -95,8 +92,9 @@ export class Web3Service {
     BigNumber.config({ ERRORS: false });
 
     this.networkName = await Utils.getNetworkName();
+    // tslint:disable-next-line: no-console
     console.log(`Connected to Ethereum (${this.networkName})`);
-    this._web3 = web3;
+    this.web3Private = web3;
     this.isConnected = true;
     try {
       this.defaultAccount = await this.getDefaultAccount();

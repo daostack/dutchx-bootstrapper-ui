@@ -21,7 +21,7 @@ export class NetworkConnectionWizards {
   public dialogViewModel: ConnectToNet;
   public hasApprovedAccountAccess: boolean;
   constructor(
-    private dialogService: DialogService
+      private dialogService: DialogService
     , private web3: Web3Service
     , private eventAggregator: EventAggregator,
   ) {
@@ -64,15 +64,10 @@ export class NetworkConnectionWizards {
            *
            * See: https://github.com/MetaMask/metamask-extension/pull/4703#issuecomment-430814765
            */
-          const enabled = !theWindow.ethereum._metamask.isEnabled || (await theWindow.ethereum._metamask.isEnabled());
-          const approved = !theWindow.ethereum._metamask.isApproved || (await theWindow.ethereum._metamask.isApproved());
-          // const unlocked = !theWindow.ethereum._metamask.isUnlocked || (await theWindow.ethereum._metamask.isUnlocked());
-
-          // console.log(`enabled: ${enabled}`);
-          // console.log(`approved: ${approved}`);
-          // console.log(`unlocked: ${unlocked}`);
-          // console.log(`isConnected: ${this.isConnected}`);
-          // console.log(`hasAccount: ${this.hasAccount}`);
+          const enabled = !theWindow.ethereum._metamask.isEnabled ||
+                          (await theWindow.ethereum._metamask.isEnabled());
+          const approved = !theWindow.ethereum._metamask.isApproved ||
+                          (await theWindow.ethereum._metamask.isApproved());
 
           this.hasApprovedAccountAccess =
             /**
@@ -84,10 +79,14 @@ export class NetworkConnectionWizards {
         }
       };
 
-      this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id', () => { this.hasDao = false; connectionChanged(); }));
-      this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => connectionChanged()));
-      this.subscriptions.push(this.eventAggregator.subscribe('DAO.loaded', () => { this.hasDao = true; }));
-      this.subscriptions.push(this.eventAggregator.subscribe('DAO.Loading', (onOff: boolean): void => {
+      this.subscriptions.push(this.eventAggregator
+                        .subscribe('Network.Changed.Id', () => { this.hasDao = false; connectionChanged(); }));
+      this.subscriptions.push(this.eventAggregator
+                              .subscribe('Network.Changed.Account', () => connectionChanged()));
+      this.subscriptions.push(this.eventAggregator
+                              .subscribe('DAO.loaded', () => { this.hasDao = true; }));
+      this.subscriptions.push(this.eventAggregator
+                              .subscribe('DAO.Loading', (onOff: boolean): void => {
         this.loading = onOff;
       }));
 

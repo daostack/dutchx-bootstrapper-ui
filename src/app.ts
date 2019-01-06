@@ -30,14 +30,14 @@ export class App {
     return App.SchemeDashboards.indexOf(schemeName) !== -1;
   }
 
-  public router: Router;
-
   public static
 
   private intervalId: any;
 
+  public router: Router;
+
   constructor(
-    private web3Service: Web3Service
+      private web3Service: Web3Service
     , private signaler: BindingSignaler
     , private eventAggregator: EventAggregator
     , appConfig: AureliaConfiguration,

@@ -4,12 +4,12 @@ import { BigNumber } from 'bignumber.js';
 import { Address, LockerInfo, LockInfo, Locking4ReputationWrapper } from 'services/ArcService';
 
 export class LockService {
-  private static lockableTokens: Map<Address, TokenSpecification> = new Map<Address, TokenSpecification>();
+  private static lockableTokens: Map<Address, ITokenSpecification> = new Map<Address, ITokenSpecification>();
 
-  public lockableTokenSpecs: Array<TokenSpecification>;
+  public lockableTokenSpecs: Array<ITokenSpecification>;
 
   constructor(
-    appConfig: AureliaConfiguration
+      appConfig: AureliaConfiguration
     , private wrapper: Locking4ReputationWrapper
     , private userAddress: Address,
   ) {
@@ -50,13 +50,13 @@ export class LockService {
     return spec.symbol;
   }
 
-  private async getLockedTokenSpec(lockInfo: LockInfo): Promise<TokenSpecification> {
+  private async getLockedTokenSpec(lockInfo: LockInfo): Promise<ITokenSpecification> {
     let spec = LockService.lockableTokens.get(lockInfo.lockId);
 
     if (!spec) {
       const tokenWrapper = (this.wrapper as LockingToken4ReputationWrapper);
       const token = await tokenWrapper.getTokenForLock(lockInfo.lockId);
-      const foundTokenSpecs = this.lockableTokenSpecs.filter((tokenSpec: TokenSpecification) => {
+      const foundTokenSpecs = this.lockableTokenSpecs.filter((tokenSpec: ITokenSpecification) => {
         return tokenSpec.address.toLowerCase() === token.address;
       });
       if (foundTokenSpecs.length >= 1) {
@@ -71,7 +71,7 @@ export class LockService {
   }
 }
 
-export interface TokenSpecification {
+export interface ITokenSpecification {
   symbol: string;
   address: Address;
 }
