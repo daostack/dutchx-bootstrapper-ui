@@ -5,10 +5,10 @@ export class BooleanValueConverter {
 
   /**
    * boolean to string
-   * @param val 
+   * @param val
    */
-  fromView(val: string,
-    as: { true: string, false: string, default: string } = { true: "Yes", false: "No", default: "?" })
+  public fromView(val: string,
+                  as: { true: string, false: string, default: string } = { true: 'Yes', false: 'No', default: '?' })
     : boolean | undefined {
 
     if ((val === undefined) || (val === null) || (val == as.default)) {
@@ -22,8 +22,8 @@ export class BooleanValueConverter {
    * string to boolean
    * @param val
    */
-  toView(val: boolean,
-    as: { true: string, false: string, default: string } = { true: "Yes", false: "No", default: "?" })
+  public toView(val: boolean,
+                as: { true: string, false: string, default: string } = { true: 'Yes', false: 'No', default: '?' })
     : string {
 
     if ((val === undefined) || (val === null)) {

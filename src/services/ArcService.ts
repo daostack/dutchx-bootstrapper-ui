@@ -1,23 +1,23 @@
-import { autoinject } from "aurelia-framework";
-import * as Arc from "@daostack/arc.js";
+import * as Arc from '@daostack/arc.js';
+import { autoinject } from 'aurelia-framework';
 
-import TruffleContract from 'truffle-contract';
-import { LogManager } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
+import { LogManager } from 'aurelia-framework';
+import TruffleContract from 'truffle-contract';
 import { EventConfigException, SnackLifetime } from '../entities/GeneralEvents';
 
 @autoinject
 export class ArcService {
 
-  public logger = LogManager.getLogger("DxBootStrapper");
+  public logger = LogManager.getLogger('DxBootStrapper');
 
   /**
    * The schemes managed by Arc
    */
   public arcContracts: Arc.ArcWrappers;
-  public arcSchemes: Array<Arc.IContractWrapper>;
-  public arcVotingMachines: Array<Arc.IContractWrapper>;
-  public arcGlobalConstraints: Array<Arc.IContractWrapper>;
+  public arcSchemes: Arc.IContractWrapper[];
+  public arcVotingMachines: Arc.IContractWrapper[];
+  public arcGlobalConstraints: Arc.IContractWrapper[];
   /**
    * maps address to ContractInfo
    */

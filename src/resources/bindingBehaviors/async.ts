@@ -1,31 +1,30 @@
 /**
  * from here: http://www.sobell.net/aurelia-async-bindings/
- * 
+ *
  * Usage:
- * 
+ *
  *  <p>${slowdata}</p>
  *  <p>${slowdata & async}</p>
  *  <p>${slowdata & async:'thinking...'}</p>
  */
 export class asyncBindingBehavior {
-  bind(binding, source) {
+  public bind(binding, source) {
     binding.originalUpdateTarget = binding.updateTarget;
 
-    binding.updateTarget = a => {
+    binding.updateTarget = (a) => {
       if (typeof a.then === 'function') {
         binding.originalUpdateTarget('...');
 
-        a.then(d => {
+        a.then((d) => {
           binding.originalUpdateTarget(d);
         });
-      }
-      else {
+      } else {
         binding.originalUpdateTarget(a);
       }
     };
   }
 
-  unbind(binding) {
+  public unbind(binding) {
     binding.updateTarget = binding.originalUpdateTarget;
     binding.originalUpdateTarget = null;
   }

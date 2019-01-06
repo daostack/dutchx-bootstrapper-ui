@@ -1,28 +1,28 @@
-import { autoinject } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { DisposableCollection } from "./DisposableCollection";
+import { autoinject } from 'aurelia-framework';
 import { LogManager } from 'aurelia-framework';
-import { EventConfig, EventConfigException } from "../entities/GeneralEvents";
+import { EventConfig, EventConfigException } from '../entities/GeneralEvents';
+import { DisposableCollection } from './DisposableCollection';
 
 @autoinject
 export class ConsoleLogService {
 
   // probably doesn't really need to be a disposable collection since this is a singleton service
-  subscriptions: DisposableCollection = new DisposableCollection();
-  logger = LogManager.getLogger("DxBootStrapper");
+  public subscriptions: DisposableCollection = new DisposableCollection();
+  public logger = LogManager.getLogger('DxBootStrapper');
 
   constructor(
-    eventAggregator: EventAggregator
+    eventAggregator: EventAggregator,
   ) {
-    this.subscriptions.push(eventAggregator.subscribe("handleException", (config: EventConfigException | any) => this.handleException(config)));
-    this.subscriptions.push(eventAggregator.subscribe("handleSuccess", (config: EventConfig | string) => this.handleSuccess(config)));
-    this.subscriptions.push(eventAggregator.subscribe("handleTransaction", (config: EventConfig | string) => this.handleSuccess(config)));
-    this.subscriptions.push(eventAggregator.subscribe("handleWarning", (config: EventConfig | string) => this.handleWarning(config)));
-    this.subscriptions.push(eventAggregator.subscribe("handleFailure", (config: EventConfig | string) => this.handleFailure(config)));
+    this.subscriptions.push(eventAggregator.subscribe('handleException', (config: EventConfigException | any) => this.handleException(config)));
+    this.subscriptions.push(eventAggregator.subscribe('handleSuccess', (config: EventConfig | string) => this.handleSuccess(config)));
+    this.subscriptions.push(eventAggregator.subscribe('handleTransaction', (config: EventConfig | string) => this.handleSuccess(config)));
+    this.subscriptions.push(eventAggregator.subscribe('handleWarning', (config: EventConfig | string) => this.handleWarning(config)));
+    this.subscriptions.push(eventAggregator.subscribe('handleFailure', (config: EventConfig | string) => this.handleFailure(config)));
   }
 
   /* shouldn't actually ever happen */
-  dispose() {
+  public dispose() {
     this.subscriptions.dispose();
   }
 
@@ -46,7 +46,7 @@ export class ConsoleLogService {
       message = config.message;
     }
 
-    this.logger.error(`${message}${ex.stack ? `\n${ex.stack}` : ""}`);
+    this.logger.error(`${message}${ex.stack ? `\n${ex.stack}` : ''}`);
   }
 
   public handleFailure(config: EventConfig | string) {
@@ -58,6 +58,6 @@ export class ConsoleLogService {
   }
 
   private getMessage(config: EventConfig | string): string {
-    return (typeof config == "string") ? config : config.message;
+    return (typeof config == 'string') ? config : config.message;
   }
 }

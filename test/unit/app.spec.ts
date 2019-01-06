@@ -1,18 +1,18 @@
-import { App } from '../../src/app';
 import { PLATFORM } from 'aurelia-pal';
+import { App } from '../../src/app';
 
 class RouterStub {
-  routes;
+  public routes;
 
-  configure(handler) {
+  public configure(handler) {
     handler(this);
   }
 
-  map(routes) {
+  public map(routes) {
     this.routes = routes;
   }
 
-  fallbackRoute(route: string) { }
+  public fallbackRoute(route: string) { }
 }
 
 describe('the App module', () => {
@@ -24,15 +24,15 @@ describe('the App module', () => {
 
     let fakeWeb3Service = {
       isConnected: true,
-      defaultAccount: {}
+      defaultAccount: {},
     };
 
     let fakeArcService = {
-      arcContracts: []
+      arcContracts: [],
     };
 
     let fakeAppConfigService = {
-      get: (name: string): string => { return ""; }
+      get: (name: string): string => '',
     };
 
     app = new App(fakeWeb3Service as any, fakeArcService as any, fakeAppConfigService as any);

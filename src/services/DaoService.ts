@@ -1,34 +1,34 @@
-import { autoinject } from "aurelia-framework";
+import { includeEventsIn, Subscription } from 'aurelia-event-aggregator';
+import { EventAggregator } from 'aurelia-event-aggregator';
+import { autoinject } from 'aurelia-framework';
+import { LogManager } from 'aurelia-framework';
+import { DaoEx } from '../entities/DAO';
+import { EventConfig, EventConfigException, SnackLifetime } from '../entities/GeneralEvents';
+import { Web3Service } from '../services/Web3Service';
 import {
+  Address,
   ArcService,
   DAO,
   NewDaoConfig,
   SchemesConfig,
-  Address
-} from "./ArcService";
-import { Web3Service } from "../services/Web3Service";
-import { includeEventsIn, Subscription } from "aurelia-event-aggregator";
-import { LogManager } from "aurelia-framework";
-import { DaoEx } from "../entities/DAO";
-import { EventAggregator } from "aurelia-event-aggregator";
-import { EventConfigException, SnackLifetime, EventConfig } from "../entities/GeneralEvents";
+} from './ArcService';
 
 @autoinject
 export class DaoService {
+
+  private daoCache = new Map<string, DaoEx>();
+  private logger = LogManager.getLogger('DxBootStrapper');
   constructor(
     private arcService: ArcService,
     private web3: Web3Service,
-    private eventAggregator: EventAggregator
+    private eventAggregator: EventAggregator,
   ) {
     includeEventsIn(this);
   }
 
-  private daoCache = new Map<string, DaoEx>();
-  private logger = LogManager.getLogger("DxBootStrapper");
-
   public async daoAt(
     avatarAddress: string,
-    takeFromCache: boolean = true
+    takeFromCache: boolean = true,
   ): Promise<DaoEx> {
     let dao: DaoEx;
     let cachedDao = this.daoCache.get(avatarAddress);
@@ -62,4 +62,4 @@ export class DaoService {
   }
 }
 
-export { DaoEx } from "../entities/DAO";
+export { DaoEx } from '../entities/DAO';

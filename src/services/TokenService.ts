@@ -1,13 +1,13 @@
-import { autoinject } from "aurelia-framework";
-import { Web3Service, BigNumber } from "./Web3Service";
-import { ArcService, Address, StandardTokenWrapper, Utils, DaoTokenWrapper, WrapperService } from './ArcService';
+import { autoinject } from 'aurelia-framework';
+import { Address, ArcService, DaoTokenWrapper, StandardTokenWrapper, Utils, WrapperService } from './ArcService';
+import { BigNumber, Web3Service } from './Web3Service';
 
 @autoinject
 export class TokenService {
 
   constructor(
     private web3: Web3Service
-    , private arcService: ArcService
+    , private arcService: ArcService,
   ) { }
 
   public async getDaoTokenSymbol(token: DaoTokenWrapper): Promise<string> {
@@ -20,7 +20,7 @@ export class TokenService {
 
   /**
    * in Wei by default
-   * @param tokenAddress 
+   * @param tokenAddress
    */
   public async getUserStandardTokenBalance(
     token: StandardTokenWrapper,
@@ -79,7 +79,6 @@ export class TokenService {
     const address = await Utils.getGenTokenAddress();
     return this.getStandardToken(address);
   }
-
 
   public getStandardToken(address: Address): Promise<StandardTokenWrapper> {
     return WrapperService.factories.StandardToken.at(address);

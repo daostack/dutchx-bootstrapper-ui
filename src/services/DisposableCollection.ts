@@ -1,11 +1,10 @@
-﻿import { transient } from "aurelia-framework";
-import { IDisposable } from "./IDisposable";
+﻿import { transient } from 'aurelia-framework';
+import { IDisposable } from './IDisposable';
 
 @transient()
 export class DisposableCollection implements IDisposable {
 
-
-  private _disposables: Array<IDisposable>;
+  private _disposables: IDisposable[];
 
   constructor() {
     this._disposables = new Array<IDisposable>();

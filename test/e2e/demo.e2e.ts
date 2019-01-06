@@ -1,8 +1,8 @@
-import { PageObject_Home } from './home.po';
-import { browser, element, by, By, $, $$, ExpectedConditions } from 'aurelia-protractor-plugin/protractor';
+import { $, $$, browser, by, By, element, ExpectedConditions } from 'aurelia-protractor-plugin/protractor';
 import { config } from '../protractor.conf';
+import { PageObject_Home } from './home.po';
 
-describe('DutchX Initializer app', function () {
+describe('DutchX Initializer app', function() {
   let poHome: PageObject_Home;
 
   beforeEach(async () => {

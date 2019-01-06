@@ -1,52 +1,52 @@
-import { bindable, containerless, customElement, autoinject, bindingMode } from 'aurelia-framework';
-import { TokenService } from "../../../services/TokenService";
-import { Address } from 'services/ArcService';
 import { EventAggregator } from 'aurelia-event-aggregator';
+import { autoinject, bindable, bindingMode, containerless, customElement } from 'aurelia-framework';
+import { Address } from 'services/ArcService';
+import { TokenService } from '../../../services/TokenService';
 
 @autoinject
 @containerless
-@customElement("tokenbalance")
+@customElement('tokenbalance')
 export class TokenBalance {
 
-  @bindable({ defaultBindingMode: bindingMode.toView }) token: Address;
+  @bindable({ defaultBindingMode: bindingMode.toView }) public token: Address;
 
   private balance: string;
   private text: string;
 
-  constructor(
-    private tokenService: TokenService,
-    eventAggregator: EventAggregator
-  ) {
-    eventAggregator.subscribe("Network.Changed.Account", () => { this.initialize(); });
-  }
-
   private events;
 
-  initialize() {
+  constructor(
+    private tokenService: TokenService,
+    eventAggregator: EventAggregator,
+  ) {
+    eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
+  }
+
+  public initialize() {
     this.stop();
     this.readBalance();
   }
 
-  attached() {
+  public attached() {
     this.initialize();
   }
 
-  detached() {
+  public detached() {
     this.stop();
   }
 
-  tokenChanged() {
+  public tokenChanged() {
     this.initialize();
   }
 
-  stop() {
+  public stop() {
     if (this.events) {
       this.events.stopWatching();
       this.events = null;
     }
   }
 
-  async readBalance() {
+  public async readBalance() {
 
     if (this.token) {
 
@@ -67,7 +67,7 @@ export class TokenBalance {
       this.text = `N/A`;
     }
   }
-  async getBalance(token) {
+  public async getBalance(token) {
     try {
       this.balance = (await this.tokenService.getUserStandardTokenBalance(token, true)).toFixed(2);
       this.text = this.balance.toString();

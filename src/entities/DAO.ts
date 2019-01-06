@@ -1,43 +1,23 @@
+import { includeEventsIn, Subscription } from 'aurelia-event-aggregator';
+import { LogManager } from 'aurelia-framework';
+import { SchemeInfo } from '../entities/SchemeInfo';
 import {
   ArcService,
   DAO,
+  DaoGlobalConstraintInfo,
   DaoSchemeInfo,
-  DaoGlobalConstraintInfo
 } from '../services/ArcService';
-import { LogManager } from 'aurelia-framework';
-import { includeEventsIn, Subscription } from 'aurelia-event-aggregator';
-import { SchemeInfo } from "../entities/SchemeInfo";
-import { Web3Service, BigNumber } from "../services/Web3Service";
+import { BigNumber, Web3Service } from '../services/Web3Service';
 
 export class DaoEx extends DAO {
-
-  public address: string;
-  public name: string;
-  private schemesCache: Map<string, SchemeInfo>;
-  private registerSchemeEvent;
-  private unRegisterSchemeEvent;
-  public arcService: ArcService;
-  private logger = LogManager.getLogger("DxBootStrapper");
-  public omega: BigNumber; // in wei
   /**
    * a Scheme has been added or removed from a DAO.
    */
-  public static daoSchemeSetChangedEvent: string = "daoSchemeSetChanged";
-  public static daoConstraintSetChangedEvent: string = "daoConstraintSetChanged";
-
-  /* this is not meant to be instantiated here, only in Arc */
-  private constructor() {
-    super();
-    includeEventsIn(this);
-  }
-
-  dispose() {
-    this.registerSchemeEvent.stopWatching();
-    this.unRegisterSchemeEvent.stopWatching();
-  }
+  public static daoSchemeSetChangedEvent: string = 'daoSchemeSetChanged';
+  public static daoConstraintSetChangedEvent: string = 'daoConstraintSetChanged';
 
   public static async fromArcJsDao(
-    org: DAO
+      org: DAO
     , arcService: ArcService
     , web3: Web3Service): Promise<DaoEx> {
 
@@ -49,15 +29,31 @@ export class DaoEx extends DAO {
     return newDAO;
   }
 
-  private async _getCurrentSchemes(): Promise<Array<SchemeInfo>> {
-    return (await super.getSchemes()).map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
+  public address: string;
+  public name: string;
+  public arcService: ArcService;
+  public omega: BigNumber; // in wei
+  private schemesCache: Map<string, SchemeInfo>;
+  private registerSchemeEvent;
+  private unRegisterSchemeEvent;
+  private logger = LogManager.getLogger('DxBootStrapper');
+
+  /* this is not meant to be instantiated here, only in Arc */
+  private constructor() {
+    super();
+    includeEventsIn(this);
+  }
+
+  public dispose() {
+    this.registerSchemeEvent.stopWatching();
+    this.unRegisterSchemeEvent.stopWatching();
   }
 
   /**
    * returns all the schemes in the Dao.
    * Keeps them cached and always up-to-date.  Do not confuse with super.schemes().
    */
-  public async allSchemes(): Promise<Array<SchemeInfo>> {
+  public async allSchemes(): Promise<SchemeInfo[]> {
     if (!this.schemesCache) {
       this.schemesCache = new Map<string, SchemeInfo>();
       let schemes = await this._getCurrentSchemes();
@@ -71,11 +67,37 @@ export class DaoEx extends DAO {
     return Array.from(this.schemesCache.values());
   }
 
+ /**
+  * Publishes a message.
+  * @param event The event or channel to publish to.
+  * @param data The data to publish on the channel.
+  */
+  public publish(event: string | any, data?: any): void { return null; }
+
+   /**
+    * Subscribes to a message channel or message type.
+    * @param event The event channel or event data type.
+    * @param callback The callback to be invoked when when the specified message is published.
+    */
+  public subscribe(event: string | () => void , callback: () => void): Subscription { return null; }
+
+   /**
+    * Subscribes to a message channel or message type, then disposes the subscription
+    * automatically after the first message is received.
+    * @param event The event channel or event data type.
+    * @param callback The callback to be invoked when when the specified message is published.
+    */
+  public subscribeOnce(event: string | () => void, callback: () => void): Subscription { return null; }
+
+  private async _getCurrentSchemes(): Promise<SchemeInfo[]> {
+    return (await super.getSchemes()).map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
+  }
+
   private watchSchemes(): void {
-    this.registerSchemeEvent = this.controller.RegisterScheme({ _avatar: this.address }, { fromBlock: "latest" });
+    this.registerSchemeEvent = this.controller.RegisterScheme({ _avatar: this.address }, { fromBlock: 'latest' });
     this.registerSchemeEvent.watch((err, eventsArray) => this.handleSchemeEvent(err, eventsArray, true));
 
-    this.unRegisterSchemeEvent = this.controller.UnregisterScheme({ _avatar: this.address }, { fromBlock: "latest" });
+    this.unRegisterSchemeEvent = this.controller.UnregisterScheme({ _avatar: this.address }, { fromBlock: 'latest' });
     this.unRegisterSchemeEvent.watch((err, eventsArray) => this.handleSchemeEvent(err, eventsArray, false));
   }
 
@@ -91,7 +113,7 @@ export class DaoEx extends DAO {
 
       if (!contractWrapper) {
         // then it is a non-arc scheme or TODO: is an Arc scheme that is older or newer than the one Arc is telling us about
-        contractWrapper = <any>{ address: schemeAddress };
+        contractWrapper = { address: schemeAddress } as any;
       }
 
       let schemeInfo = SchemeInfo.fromContractWrapper(contractWrapper, adding);
@@ -99,11 +121,11 @@ export class DaoEx extends DAO {
       // TODO: get unknown name from Arc
       if (adding && !this.schemesCache.has(schemeAddress)) {
         changed = true;
-        this.logger.debug(`caching scheme: ${contractWrapper.name ? contractWrapper.name : "[unknown]"}: ${contractWrapper.address}`);
+        this.logger.debug(`caching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}: ${contractWrapper.address}`);
         this.schemesCache.set(schemeAddress, schemeInfo);
       } else if (!adding && this.schemesCache.has(schemeAddress)) {
         changed = true;
-        this.logger.debug(`uncaching scheme: ${contractWrapper.name ? contractWrapper.name : "[unknown]"}: ${contractWrapper.address}`);
+        this.logger.debug(`uncaching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}: ${contractWrapper.address}`);
         this.schemesCache.delete(schemeAddress);
       }
 
@@ -111,30 +133,9 @@ export class DaoEx extends DAO {
         this.publish(DaoEx.daoSchemeSetChangedEvent,
           {
             dao: this,
-            scheme: schemeInfo
+            scheme: schemeInfo,
           });
       }
     }
   }
-
-  /**
-    * Publishes a message.
-    * @param event The event or channel to publish to.
-    * @param data The data to publish on the channel.
-    */
-  public publish(event: string | any, data?: any): void { }
-
-  /**
-    * Subscribes to a message channel or message type.
-    * @param event The event channel or event data type.
-    * @param callback The callback to be invoked when when the specified message is published.
-    */
-  public subscribe(event: string | Function, callback: Function): Subscription { return null; }
-
-  /**
-    * Subscribes to a message channel or message type, then disposes the subscription automatically after the first message is received.
-    * @param event The event channel or event data type.
-    * @param callback The callback to be invoked when when the specified message is published.
-    */
-  public subscribeOnce(event: string | Function, callback: Function): Subscription { return null; }
 }

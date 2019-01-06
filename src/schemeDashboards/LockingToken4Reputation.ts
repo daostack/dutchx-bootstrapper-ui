@@ -1,28 +1,32 @@
+import { AureliaConfiguration } from 'aurelia-configuration';
+import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
-import { LockingToken4ReputationWrapper, StandardTokenFactory, StandardTokenWrapper, TokenLockingOptions, LockInfo, Address } from "../services/ArcService";
+import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
-import { EventAggregator } from "aurelia-event-aggregator";
-import { Web3Service } from "services/Web3Service";
-import { EventConfigFailure, EventConfigException } from "entities/GeneralEvents";
-import { AureliaConfiguration } from "aurelia-configuration";
-import { TokenSpecification } from "services/lockServices";
-import { SchemeDashboardModel } from "schemeDashboards/schemeDashboardModel";
+import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { TokenSpecification } from 'services/lockServices';
+import { Web3Service } from 'services/Web3Service';
+import { Address, LockInfo, LockingToken4ReputationWrapper, StandardTokenFactory, StandardTokenWrapper, TokenLockingOptions } from '../services/ArcService';
 
 @autoinject
 export class LockingToken4Reputation extends Locking4Reputation {
+  protected wrapper: LockingToken4ReputationWrapper;
 
-  private lockableTokens: Array<TokenSpecification>;
+  private lockableTokens: TokenSpecification[];
+
+  private selectedToken: TokenSpecification = null;
 
   constructor(
     appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
-    , web3Service: Web3Service
+    , web3Service: Web3Service,
   ) {
     super(appConfig, eventAggregator, web3Service);
   }
 
-  private selectedToken: TokenSpecification = null;
-  protected wrapper: LockingToken4ReputationWrapper;
+  public selectToken(tokenSpec: TokenSpecification) {
+    this.selectedToken = tokenSpec;
+  }
 
   protected async refresh() {
     await super.refresh();
@@ -37,11 +41,11 @@ export class LockingToken4Reputation extends Locking4Reputation {
   protected async lock(): Promise<boolean> {
 
     if (!this.selectedToken) {
-      this.eventAggregator.publish("handleFailure", new EventConfigFailure(`Please select a token`));
+      this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Please select a token`));
       return;
     }
 
-    (<TokenLockingOptions>this.lockModel).tokenAddress = this.selectedToken.address;
+    (this.lockModel as TokenLockingOptions).tokenAddress = this.selectedToken.address;
 
     try {
 
@@ -54,21 +58,16 @@ export class LockingToken4Reputation extends Locking4Reputation {
         await (await token.approve({
           owner: this.lockModel.lockerAddress,
           amount: this.lockModel.amount,
-          spender: this.wrapper.address
+          spender: this.wrapper.address,
         })).watchForTxMined();
 
         return super.lock(true);
       }
-    }
-    catch (ex) {
-      this.eventAggregator.publish("handleException", new EventConfigException(`The token transfer could not be approved`, ex));
+    } catch (ex) {
+      this.eventAggregator.publish('handleException', new EventConfigException(`The token transfer could not be approved`, ex));
     }
     this.locking = false;
     return false;
-  }
-
-  selectToken(tokenSpec: TokenSpecification) {
-    this.selectedToken = tokenSpec;
   }
 
   protected getLockUnit(lockInfo: LockInfo): Promise<string> {

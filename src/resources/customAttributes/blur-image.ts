@@ -3,7 +3,7 @@ import {inject} from 'aurelia-framework';
 export class BlurImageCustomAttribute {
   constructor(@inject(Element) public element: Element) {}
 
-  valueChanged(newImage: HTMLImageElement) {
+  public valueChanged(newImage: HTMLImageElement) {
     if (newImage.complete) {
       drawBlur(this.element, newImage);
     } else {
@@ -59,26 +59,25 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var mul_table = [
-        512,512,456,512,328,456,335,512,405,328,271,456,388,335,292,512,
-        454,405,364,328,298,271,496,456,420,388,360,335,312,292,273,512,
-        482,454,428,405,383,364,345,328,312,298,284,271,259,496,475,456,
-        437,420,404,388,374,360,347,335,323,312,302,292,282,273,265,512,
-        497,482,468,454,441,428,417,405,394,383,373,364,354,345,337,328,
-        320,312,305,298,291,284,278,271,265,259,507,496,485,475,465,456,
-        446,437,428,420,412,404,396,388,381,374,367,360,354,347,341,335,
-        329,323,318,312,307,302,297,292,287,282,278,273,269,265,261,512,
-        505,497,489,482,475,468,461,454,447,441,435,428,422,417,411,405,
-        399,394,389,383,378,373,368,364,359,354,350,345,341,337,332,328,
-        324,320,316,312,309,305,301,298,294,291,287,284,281,278,274,271,
-        268,265,262,259,257,507,501,496,491,485,480,475,470,465,460,456,
-        451,446,442,437,433,428,424,420,416,412,408,404,400,396,392,388,
-        385,381,377,374,370,367,363,360,357,354,350,347,344,341,338,335,
-        332,329,326,323,320,318,315,312,310,307,304,302,299,297,294,292,
-        289,287,285,282,280,278,275,273,271,269,267,265,263,261,259];
+let mul_table = [
+        512, 512, 456, 512, 328, 456, 335, 512, 405, 328, 271, 456, 388, 335, 292, 512,
+        454, 405, 364, 328, 298, 271, 496, 456, 420, 388, 360, 335, 312, 292, 273, 512,
+        482, 454, 428, 405, 383, 364, 345, 328, 312, 298, 284, 271, 259, 496, 475, 456,
+        437, 420, 404, 388, 374, 360, 347, 335, 323, 312, 302, 292, 282, 273, 265, 512,
+        497, 482, 468, 454, 441, 428, 417, 405, 394, 383, 373, 364, 354, 345, 337, 328,
+        320, 312, 305, 298, 291, 284, 278, 271, 265, 259, 507, 496, 485, 475, 465, 456,
+        446, 437, 428, 420, 412, 404, 396, 388, 381, 374, 367, 360, 354, 347, 341, 335,
+        329, 323, 318, 312, 307, 302, 297, 292, 287, 282, 278, 273, 269, 265, 261, 512,
+        505, 497, 489, 482, 475, 468, 461, 454, 447, 441, 435, 428, 422, 417, 411, 405,
+        399, 394, 389, 383, 378, 373, 368, 364, 359, 354, 350, 345, 341, 337, 332, 328,
+        324, 320, 316, 312, 309, 305, 301, 298, 294, 291, 287, 284, 281, 278, 274, 271,
+        268, 265, 262, 259, 257, 507, 501, 496, 491, 485, 480, 475, 470, 465, 460, 456,
+        451, 446, 442, 437, 433, 428, 424, 420, 416, 412, 408, 404, 400, 396, 392, 388,
+        385, 381, 377, 374, 370, 367, 363, 360, 357, 354, 350, 347, 344, 341, 338, 335,
+        332, 329, 326, 323, 320, 318, 315, 312, 310, 307, 304, 302, 299, 297, 294, 292,
+        289, 287, 285, 282, 280, 278, 275, 273, 271, 269, 267, 265, 263, 261, 259];
 
-
-var shg_table = [
+let shg_table = [
 	     9, 11, 12, 13, 13, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17,
 		17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 18, 18, 18, 19,
 		19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 20, 20, 20,
@@ -96,59 +95,59 @@ var shg_table = [
 		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
 		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24 ];
 
-var BLUR_RADIUS = 40;
+let BLUR_RADIUS = 40;
 
 function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
-	if ( isNaN(radius) || radius < 1 ) return;
+	if ( isNaN(radius) || radius < 1 ) { return; }
 	radius |= 0;
 
-	var context = canvas.getContext('2d');
-	var imageData;
+	let context = canvas.getContext('2d');
+	let imageData;
 
 	try {
 	  imageData = context.getImageData( top_x, top_y, width, height );
-	} catch(e) {
+	} catch (e) {
 	  throw new Error('unable to access image data: ' + e);
 	}
 
-	var pixels = imageData.data;
+	let pixels = imageData.data;
 
-	var x, y, i, p, yp, yi, yw, r_sum, g_sum, b_sum, a_sum,
+	let x, y, i, p, yp, yi, yw, r_sum, g_sum, b_sum, a_sum,
 	r_out_sum, g_out_sum, b_out_sum, a_out_sum,
 	r_in_sum, g_in_sum, b_in_sum, a_in_sum,
 	pr, pg, pb, pa, rbs;
 
-	var div = radius + radius + 1;
-	var w4 = width << 2;
-	var widthMinus1  = width - 1;
-	var heightMinus1 = height - 1;
-	var radiusPlus1  = radius + 1;
-	var sumFactor = radiusPlus1 * ( radiusPlus1 + 1 ) / 2;
+	let div = radius + radius + 1;
+	let w4 = width << 2;
+	let widthMinus1  = width - 1;
+	let heightMinus1 = height - 1;
+	let radiusPlus1  = radius + 1;
+	let sumFactor = radiusPlus1 * ( radiusPlus1 + 1 ) / 2;
 
-	var stackStart = new BlurStack();
-	var stack = stackStart;
-	var stackEnd = stack;
+	let stackStart = new BlurStack();
+	let stack = stackStart;
+	let stackEnd = stack;
 	for ( i = 1; i < div; i++ ) {
 		stack = stack.next = new BlurStack();
-		if ( i == radiusPlus1 ) stackEnd = stack;
+		if ( i == radiusPlus1 ) { stackEnd = stack; }
 	}
 	stack.next = stackStart;
 
-	var stackIn: BlurStack;
-	var stackOut: BlurStack;
+	let stackIn: BlurStack;
+	let stackOut: BlurStack;
 
 	yw = yi = 0;
 
-	var mul_sum = mul_table[radius];
-	var shg_sum = shg_table[radius];
+	let mul_sum = mul_table[radius];
+	let shg_sum = shg_table[radius];
 
 	for ( y = 0; y < height; y++ ) {
 		r_in_sum = g_in_sum = b_in_sum = a_in_sum = r_sum = g_sum = b_sum = a_sum = 0;
 
 		r_out_sum = radiusPlus1 * ( pr = pixels[yi] );
-		g_out_sum = radiusPlus1 * ( pg = pixels[yi+1] );
-		b_out_sum = radiusPlus1 * ( pb = pixels[yi+2] );
-		a_out_sum = radiusPlus1 * ( pa = pixels[yi+3] );
+		g_out_sum = radiusPlus1 * ( pg = pixels[yi + 1] );
+		b_out_sum = radiusPlus1 * ( pb = pixels[yi + 2] );
+		a_out_sum = radiusPlus1 * ( pa = pixels[yi + 3] );
 
 		r_sum += sumFactor * pr;
 		g_sum += sumFactor * pg;
@@ -157,7 +156,7 @@ function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
 
 		stack = stackStart;
 
-		for( i = 0; i < radiusPlus1; i++ ) {
+		for ( i = 0; i < radiusPlus1; i++ ) {
 			stack.r = pr;
 			stack.g = pg;
 			stack.b = pb;
@@ -165,12 +164,12 @@ function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
 			stack = stack.next as BlurStack;
 		}
 
-		for( i = 1; i < radiusPlus1; i++ ) {
+		for ( i = 1; i < radiusPlus1; i++ ) {
 			p = yi + (( widthMinus1 < i ? widthMinus1 : i ) << 2 );
 			r_sum += ( stack.r = ( pr = pixels[p])) * ( rbs = radiusPlus1 - i );
-			g_sum += ( stack.g = ( pg = pixels[p+1])) * rbs;
-			b_sum += ( stack.b = ( pb = pixels[p+2])) * rbs;
-			a_sum += ( stack.a = ( pa = pixels[p+3])) * rbs;
+			g_sum += ( stack.g = ( pg = pixels[p + 1])) * rbs;
+			b_sum += ( stack.b = ( pb = pixels[p + 2])) * rbs;
+			a_sum += ( stack.a = ( pa = pixels[p + 3])) * rbs;
 
 			r_in_sum += pr;
 			g_in_sum += pg;
@@ -183,15 +182,14 @@ function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
 		stackIn = stackStart;
 		stackOut = stackEnd;
 		for ( x = 0; x < width; x++ ) {
-			pixels[yi+3] = pa = (a_sum * mul_sum) >> shg_sum;
-			if ( pa != 0 )
-			{
+			pixels[yi + 3] = pa = (a_sum * mul_sum) >> shg_sum;
+			if ( pa != 0 ) {
 				pa = 255 / pa;
 				pixels[yi]   = ((r_sum * mul_sum) >> shg_sum) * pa;
-				pixels[yi+1] = ((g_sum * mul_sum) >> shg_sum) * pa;
-				pixels[yi+2] = ((b_sum * mul_sum) >> shg_sum) * pa;
+				pixels[yi + 1] = ((g_sum * mul_sum) >> shg_sum) * pa;
+				pixels[yi + 2] = ((b_sum * mul_sum) >> shg_sum) * pa;
 			} else {
-				pixels[yi] = pixels[yi+1] = pixels[yi+2] = 0;
+				pixels[yi] = pixels[yi + 1] = pixels[yi + 2] = 0;
 			}
 
 			r_sum -= r_out_sum;
@@ -207,9 +205,9 @@ function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
 			p =  ( yw + ( ( p = x + radius + 1 ) < widthMinus1 ? p : widthMinus1 ) ) << 2;
 
 			r_in_sum += ( stackIn.r = pixels[p]);
-			g_in_sum += ( stackIn.g = pixels[p+1]);
-			b_in_sum += ( stackIn.b = pixels[p+2]);
-			a_in_sum += ( stackIn.a = pixels[p+3]);
+			g_in_sum += ( stackIn.g = pixels[p + 1]);
+			b_in_sum += ( stackIn.b = pixels[p + 2]);
+			a_in_sum += ( stackIn.a = pixels[p + 3]);
 
 			r_sum += r_in_sum;
 			g_sum += g_in_sum;
@@ -235,16 +233,14 @@ function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
 		yw += width;
 	}
 
-
-	for ( x = 0; x < width; x++ )
-	{
+	for ( x = 0; x < width; x++ ) {
 		g_in_sum = b_in_sum = a_in_sum = r_in_sum = g_sum = b_sum = a_sum = r_sum = 0;
 
 		yi = x << 2;
 		r_out_sum = radiusPlus1 * ( pr = pixels[yi]);
-		g_out_sum = radiusPlus1 * ( pg = pixels[yi+1]);
-		b_out_sum = radiusPlus1 * ( pb = pixels[yi+2]);
-		a_out_sum = radiusPlus1 * ( pa = pixels[yi+3]);
+		g_out_sum = radiusPlus1 * ( pg = pixels[yi + 1]);
+		b_out_sum = radiusPlus1 * ( pb = pixels[yi + 2]);
+		a_out_sum = radiusPlus1 * ( pa = pixels[yi + 3]);
 
 		r_sum += sumFactor * pr;
 		g_sum += sumFactor * pg;
@@ -253,7 +249,7 @@ function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
 
 		stack = stackStart;
 
-		for( i = 0; i < radiusPlus1; i++ ) {
+		for ( i = 0; i < radiusPlus1; i++ ) {
 			stack.r = pr;
 			stack.g = pg;
 			stack.b = pb;
@@ -263,14 +259,13 @@ function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
 
 		yp = width;
 
-		for( i = 1; i <= radius; i++ )
-		{
+		for ( i = 1; i <= radius; i++ ) {
 			yi = ( yp + x ) << 2;
 
 			r_sum += ( stack.r = ( pr = pixels[yi])) * ( rbs = radiusPlus1 - i );
-			g_sum += ( stack.g = ( pg = pixels[yi+1])) * rbs;
-			b_sum += ( stack.b = ( pb = pixels[yi+2])) * rbs;
-			a_sum += ( stack.a = ( pa = pixels[yi+3])) * rbs;
+			g_sum += ( stack.g = ( pg = pixels[yi + 1])) * rbs;
+			b_sum += ( stack.b = ( pb = pixels[yi + 2])) * rbs;
+			a_sum += ( stack.a = ( pa = pixels[yi + 3])) * rbs;
 
 			r_in_sum += pr;
 			g_in_sum += pg;
@@ -279,8 +274,7 @@ function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
 
 			stack = stack.next as BlurStack;
 
-			if( i < heightMinus1 )
-			{
+			if ( i < heightMinus1 ) {
 				yp += width;
 			}
 		}
@@ -290,15 +284,14 @@ function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
 		stackOut = stackEnd;
 		for ( y = 0; y < height; y++ ) {
 			p = yi << 2;
-			pixels[p+3] = pa = (a_sum * mul_sum) >> shg_sum;
-			if ( pa > 0 )
-			{
+			pixels[p + 3] = pa = (a_sum * mul_sum) >> shg_sum;
+			if ( pa > 0 ) {
 				pa = 255 / pa;
 				pixels[p]   = ((r_sum * mul_sum) >> shg_sum ) * pa;
-				pixels[p+1] = ((g_sum * mul_sum) >> shg_sum ) * pa;
-				pixels[p+2] = ((b_sum * mul_sum) >> shg_sum ) * pa;
+				pixels[p + 1] = ((g_sum * mul_sum) >> shg_sum ) * pa;
+				pixels[p + 2] = ((b_sum * mul_sum) >> shg_sum ) * pa;
 			} else {
-				pixels[p] = pixels[p+1] = pixels[p+2] = 0;
+				pixels[p] = pixels[p + 1] = pixels[p + 2] = 0;
 			}
 
 			r_sum -= r_out_sum;
@@ -314,9 +307,9 @@ function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
 			p = ( x + (( ( p = y + radiusPlus1) < heightMinus1 ? p : heightMinus1 ) * width )) << 2;
 
 			r_sum += ( r_in_sum += ( stackIn.r = pixels[p]));
-			g_sum += ( g_in_sum += ( stackIn.g = pixels[p+1]));
-			b_sum += ( b_in_sum += ( stackIn.b = pixels[p+2]));
-			a_sum += ( a_in_sum += ( stackIn.a = pixels[p+3]));
+			g_sum += ( g_in_sum += ( stackIn.g = pixels[p + 1]));
+			b_sum += ( b_in_sum += ( stackIn.b = pixels[p + 2]));
+			a_sum += ( a_in_sum += ( stackIn.a = pixels[p + 3]));
 
 			stackIn = stackIn.next as BlurStack;
 
@@ -341,17 +334,17 @@ function stackBlurCanvasRGBA( canvas, top_x, top_y, width, height, radius ) {
 }
 
 class BlurStack {
-	r = 0;
-	g = 0;
-	b = 0;
-	a = 0;
-	next: BlurStack | null = null;
+	public r = 0;
+	public g = 0;
+	public b = 0;
+	public a = 0;
+	public next: BlurStack | null = null;
 }
 
 function drawBlur(canvas, image) {
-  var w = canvas.width;
-  var h = canvas.height;
-  var canvasContext = canvas.getContext('2d');
+  let w = canvas.width;
+  let h = canvas.height;
+  let canvasContext = canvas.getContext('2d');
   canvasContext.drawImage(image, 0, 0, w, h);
   stackBlurCanvasRGBA(canvas, 0, 0, w, h, BLUR_RADIUS);
-};
+}

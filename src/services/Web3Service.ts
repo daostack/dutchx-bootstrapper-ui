@@ -1,21 +1,37 @@
-import { autoinject } from "aurelia-framework";
-import {
-  providers as Web3Providers,
-  Web3,
-  EthApi,
-  VersionApi,
-  Unit,
-  TransactionReceipt,
-  Transaction,
-  BlockWithoutTransactionData,
-  BlockWithTransactionData
-} from "web3";
-import { BigNumber } from 'bignumber.js';
-import { Hash, Address, Utils } from './ArcService';
 import { Web3EventService } from '@daostack/arc.js';
+import { autoinject } from 'aurelia-framework';
+import { BigNumber } from 'bignumber.js';
+import {
+  BlockWithoutTransactionData,
+  BlockWithTransactionData,
+  EthApi,
+  providers as Web3Providers,
+  Transaction,
+  TransactionReceipt,
+  Unit,
+  VersionApi,
+  Web3,
+} from 'web3';
+import { Address, Hash, Utils } from './ArcService';
 
 @autoinject()
 export class Web3Service {
+
+  public get web3(): Web3 { return this._web3; }
+  public set web3(newVal: Web3) { this._web3 = newVal; }
+
+  public get accounts(): string[] { return this.web3 ? this.web3.eth.accounts : []; }
+
+  public get currentProvider(): Web3Providers.HttpProvider { return this.web3 ? this.web3.currentProvider : null; }
+
+  public get eth(): EthApi { return this.web3 ? this.web3.eth : null; }
+
+  public get version(): VersionApi { return this.web3 ? this.web3.version : null; }
+
+  public defaultAccount: Address;
+  public networkName: string;
+
+  public isConnected: boolean = false;
 
   private _web3: Web3;
 
@@ -23,32 +39,16 @@ export class Web3Service {
   ) {
   }
 
-  public get web3(): Web3 { return this._web3; }
-  public set web3(newVal: Web3) { this._web3 = newVal; }
-
-  public get accounts(): Array<string> { return this.web3 ? this.web3.eth.accounts : []; }
-
-  public defaultAccount: Address;
-  public networkName: string;
-
-  public get currentProvider(): Web3Providers.HttpProvider { return this.web3 ? this.web3.currentProvider : null; }
-
-  public isConnected: boolean = false;
-
-  public get eth(): EthApi { return this.web3 ? this.web3.eth : null; }
-
-  public get version(): VersionApi { return this.web3 ? this.web3.version : null; }
-
   public async getTxReceipt(txHash: Hash): Promise<Transaction & TransactionReceipt> {
-    const receipt = await (<any>Promise).promisify(this.web3.eth.getTransactionReceipt)(txHash)
+    const receipt = await (Promise as any).promisify(this.web3.eth.getTransactionReceipt)(txHash)
       .then((_tx) => _tx);
-    const tx = await (<any>Promise).promisify(this.web3.eth.getTransaction)(txHash)
+    const tx = await (Promise as any).promisify(this.web3.eth.getTransaction)(txHash)
       .then((_tx) => _tx);
     return Object.assign(tx, receipt);
   }
 
   public getBlock(blockHash: Hash, withTransactions: boolean = false): Promise<BlockWithoutTransactionData | BlockWithTransactionData> {
-    return (<any>Promise).promisify(this.web3.eth.getBlock)(blockHash, withTransactions)
+    return (Promise as any).promisify(this.web3.eth.getBlock)(blockHash, withTransactions)
       .then((_block) => _block);
   }
 
@@ -56,22 +56,22 @@ export class Web3Service {
     return this.web3.toUtf8(bytes32);
   }
 
-  public fromWei(value: Number | String | BigNumber, unit: Unit = "ether"): BigNumber {
-    return this.toBigNumber(this.web3.fromWei(<any>value, unit));
+  public fromWei(value: Number | String | BigNumber, unit: Unit = 'ether'): BigNumber {
+    return this.toBigNumber(this.web3.fromWei(value as any, unit));
   }
 
-  public toWei(value: Number | String | BigNumber, unit: Unit = "ether"): BigNumber {
-    return this.toBigNumber(this.web3.toWei(<any>value, unit));
+  public toWei(value: Number | String | BigNumber, unit: Unit = 'ether'): BigNumber {
+    return this.toBigNumber(this.web3.toWei(value as any, unit));
   }
 
   public toBigNumber(value: Number | String | BigNumber): BigNumber {
-    return this.web3.toBigNumber(<any>value);
+    return this.web3.toBigNumber(value as any);
   }
 
   /**
-   * 
+   *
    * @param ethAddress in Wei by default
-   * @param inEth 
+   * @param inEth
    */
   public getBalance(ethAddress: string, inEth: boolean = false): Promise<BigNumber> {
     return new Promise((resolve, reject) => {
@@ -80,7 +80,7 @@ export class Web3Service {
           reject(error);
         }
         if (inEth) {
-          balance = this.web3.fromWei(balance)
+          balance = this.web3.fromWei(balance);
         }
         resolve(balance);
       });
@@ -100,9 +100,7 @@ export class Web3Service {
     this.isConnected = true;
     try {
       this.defaultAccount = await this.getDefaultAccount();
-    }
-    catch
-    {
+    } catch {
       this.defaultAccount = undefined;
     }
     return web3;

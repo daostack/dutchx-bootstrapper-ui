@@ -6,7 +6,7 @@ export class Utils {
     return new Promise((resolve: fnVoid): any => setTimeout(resolve, milliseconds));
   }
 
-  public static getObjectKeys(obj: any): Array<string> {
+  public static getObjectKeys(obj: any): string[] {
     let temp = [];
     for (let prop in obj) {
       if (obj.hasOwnProperty(prop)) {
@@ -22,8 +22,8 @@ export class Utils {
   public static async lastBlockDate(web3: Web3): Promise<Date> {
     let block;
     do {
-      block = await (<any>Promise).promisify((callback: any): any =>
-        web3.eth.getBlock("latest", callback))() as BlockWithoutTransactionData;
+      block = await (Promise as any).promisify((callback: any): any =>
+        web3.eth.getBlock('latest', callback))() as BlockWithoutTransactionData;
     }
     while (!block);
 
@@ -37,16 +37,16 @@ export class Utils {
     return new Promise((resolve: (res: any) => any, reject: (err: any) => any): void => {
       web3.currentProvider.sendAsync({
         id,
-        jsonrpc: "2.0",
-        method: "evm_increaseTime",
+        jsonrpc: '2.0',
+        method: 'evm_increaseTime',
         params: [duration],
       }, (err1: any) => {
         if (err1) { return reject(err1); }
 
         web3.currentProvider.sendAsync({
           id: id + 1,
-          jsonrpc: "2.0",
-          method: "evm_mine",
+          jsonrpc: '2.0',
+          method: 'evm_mine',
         }, (err2: any, res: any): void => {
           return err2 ? reject(err2) : resolve(res);
         });
@@ -56,16 +56,17 @@ export class Utils {
 
   /**
    * run a timer after a count of milliseconds greater than the 32-bit max that chrome can handle
-   * @param date 
-   * @param func 
+   * @param date
+   * @param func
    */
   public static runTimerAtDate(date, func) {
-    var now = (new Date()).getTime();
-    var then = date.getTime();
-    var diff = Math.max((then - now), 0);
-    if (diff > 0x7FFFFFFF) //setTimeout limit is MAX_INT32=(2^31-1)
+    let now = (new Date()).getTime();
+    let then = date.getTime();
+    let diff = Math.max((then - now), 0);
+    if (diff > 0x7FFFFFFF) { // setTimeout limit is MAX_INT32=(2^31-1)
       setTimeout(() => { Utils.runTimerAtDate(date, func); }, 0x7FFFFFFF);
-    else
+    } else {
       setTimeout(func, diff);
+    }
   }
 }

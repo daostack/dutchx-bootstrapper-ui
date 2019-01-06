@@ -1,54 +1,54 @@
-import { DialogController } from 'aurelia-dialog';
-import { autoinject, computedFrom } from 'aurelia-framework';
-import { EventAggregator } from 'aurelia-event-aggregator';
-import { Web3Service } from 'services/Web3Service';
-import { DisposableCollection } from 'services/DisposableCollection';
 import { Address } from '@daostack/arc.js';
+import { DialogController } from 'aurelia-dialog';
+import { EventAggregator } from 'aurelia-event-aggregator';
+import { autoinject, computedFrom } from 'aurelia-framework';
+import { DisposableCollection } from 'services/DisposableCollection';
 import { LocalStorageService } from 'services/localStorageService';
+import { Web3Service } from 'services/Web3Service';
 
 @autoinject
 export class ConnectToNet {
 
-  model: ConnectToNetModel;
-  networkName: string;
-  subscriptions: DisposableCollection = new DisposableCollection();
-  userAccount: Address;
-  isDone: boolean;
-  landed: boolean;
-  _hasAccepted = false;
+  public model: ConnectToNetModel;
+  public networkName: string;
+  public subscriptions: DisposableCollection = new DisposableCollection();
+  public userAccount: Address;
+  public isDone: boolean;
+  public landed: boolean;
+  public _hasAccepted = false;
 
-  @computedFrom("userAccount, _hasAccepted")
+  @computedFrom('userAccount, _hasAccepted')
   get hasAccepted(): boolean {
-    return LocalStorageService.getItem(this.disclaimerAcceptanceKey(), false) === "yes";
-  };
+    return LocalStorageService.getItem(this.disclaimerAcceptanceKey(), false) === 'yes';
+  }
   set hasAccepted(val: boolean) {
     this._hasAccepted = val;
     if (this.userAccount) {
-      LocalStorageService.setItem(this.disclaimerAcceptanceKey(), val ? "yes" : "no", false);
+      LocalStorageService.setItem(this.disclaimerAcceptanceKey(), val ? 'yes' : 'no', false);
     }
-  };
+  }
 
   constructor(
     private controller: DialogController
     , private eventAggregator: EventAggregator
     , private web3: Web3Service) { }
 
-  async activate(model: ConnectToNetModel) {
+  public async activate(model: ConnectToNetModel) {
     this.networkName = this.web3.networkName;
     this.landed = model.skipLanding;
     this.model = model;
     this.userAccount = this.web3.defaultAccount;
 
-    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Id", () => {
+    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id', () => {
       this.networkName = this.web3.networkName;
       this.userAccount = this.web3.defaultAccount;
     }));
-    this.subscriptions.push(this.eventAggregator.subscribe("Network.Changed.Account", () => {
+    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => {
       this.userAccount = this.web3.defaultAccount;
     }));
   }
 
-  land() {
+  public land() {
     if (this.hasAccepted) {
       // disclaimer has  already been accepted
       this.close(false);
@@ -57,7 +57,7 @@ export class ConnectToNet {
     }
   }
 
-  accept() {
+  public accept() {
     this.close(false);
     // timeout to keep GUI transition clean
     setTimeout(() => { this.hasAccepted = true; }, 10);
@@ -66,7 +66,7 @@ export class ConnectToNet {
   /**
    * confirms access to MM accounts
    */
-  confirm() {
+  public confirm() {
     this.model.confirm();
   }
 

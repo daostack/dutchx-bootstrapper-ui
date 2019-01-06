@@ -1,5 +1,5 @@
-﻿import { autoinject, bindable } from "aurelia-framework";
-import { DateService, TimespanResolution } from "../../services/DateService"
+﻿import { autoinject, bindable } from 'aurelia-framework';
+import { DateService, TimespanResolution } from '../../services/DateService';
 
 @autoinject
 export class TimespanValueConverter {
@@ -9,8 +9,8 @@ export class TimespanValueConverter {
   /**
    * convert between milliseconds in the viewmodel and a string.
    */
-  toView(value: number, resolution?: TimespanResolution): string | null {
-    if (typeof resolution === "string") {
+  public toView(value: number, resolution?: TimespanResolution): string | null {
+    if (typeof resolution === 'string') {
       resolution = TimespanResolution[resolution as string];
     }
     return this.dateService.ticksToTimeSpanString(value, resolution);
