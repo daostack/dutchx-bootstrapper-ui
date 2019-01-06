@@ -1,15 +1,11 @@
-import { Observable} from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/fromPromise';
-
+import 'rxjs/add/operator/concatMap';
+import 'rxjs/add/operator/map';
+import { Observable} from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+/* tslint:disable:no-console */
 describe('Observables', () => {
-
-  beforeEach(async () => {
-  });
-
 
   it('can create an observable', () => {
     const observable = Observable.create();
@@ -17,7 +13,7 @@ describe('Observables', () => {
   });
 
   it('can map an observable', () => {
-    const observable = Observable.from([2]).map((o) => { return 1; });
+    const observable = Observable.from([2]).map((o) => 1);
     expect(observable).not.toBeFalsy();
   });
 
@@ -26,16 +22,16 @@ describe('Observables', () => {
     expect(observable).not.toBeFalsy();
     observable.subscribe(
     {
-      next: x => {
+      next: (x) => {
         console.log('Observer got a value: ' + x);
         expect(x).toBe(2);
       },
-      error: err => {
+      error: (err) => {
         console.log('Observer got an error: ' + err);
         expect(true).toBeFalsy();
       },
       complete: () => {
-        console.log('Observer got a complete notification')
+        console.log('Observer got a complete notification');
         },
     });
   });
@@ -46,25 +42,25 @@ describe('Observables', () => {
 
     subject.subscribe(
     {
-      next: x => {
+      next: (x) => {
         console.log('Observer got a value: ' + x.name);
-        expect(x.name).toBe("Gabrielle");
+        expect(x.name).toBe('Gabrielle');
       },
-      error: err => {
+      error: (err) => {
         console.log('Observer got an error: ' + err);
         expect(true).toBeFalsy();
       },
       complete: () => {
-        console.log('Observer got a complete notification')
+        console.log('Observer got a complete notification');
         },
     });
 
-    subject.next({ name: "Gabrielle"});
+    subject.next({ name: 'Gabrielle'});
 
   });
 
   it('can create a synchronous queue of promises', async () => {
-    
+
     const input = new Subject();
     expect(input).not.toBeFalsy();
     const throttledInput = input
@@ -92,7 +88,7 @@ describe('Observables', () => {
         expect(true).toBeFalsy();
       },
       complete: () => {
-        console.log('throttledInput sent a complete notification')
+        console.log('throttledInput sent a complete notification');
         },
     });
 
@@ -101,9 +97,6 @@ describe('Observables', () => {
     input.next(3);
 
     await new Promise((resolve) => setTimeout(resolve, 4000));
-    
-  });
 
-  afterEach(() => {
   });
 });

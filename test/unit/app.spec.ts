@@ -1,20 +1,20 @@
-import { App } from '../../src/app';
+import { EventAggregator } from 'aurelia-event-aggregator';
 import { PLATFORM } from 'aurelia-pal';
-import { BindingSignaler } from "aurelia-templating-resources";
-import { EventAggregator } from "aurelia-event-aggregator";
+import { BindingSignaler } from 'aurelia-templating-resources';
+import { App } from '../../src/app';
 
 class RouterStub {
-  routes;
+  public routes;
 
-  configure(handler) {
+  public configure(handler) {
     handler(this);
   }
 
-  map(routes) {
+  public map(routes) {
     this.routes = routes;
   }
 
-  fallbackRoute(route: string) { }
+  public fallbackRoute(route: string) { return null; }
 }
 
 describe('the App module', () => {
@@ -26,11 +26,11 @@ describe('the App module', () => {
 
     let fakeWeb3Service = {
       isConnected: true,
-      defaultAccount: {}
+      defaultAccount: {},
     };
 
     let fakeAppConfigService = {
-      get: (name: string): string => { return ""; }
+      get: (name: string): string => '',
     };
 
     app = new App(
@@ -50,6 +50,12 @@ describe('the App module', () => {
   });
 
   it('should have a dashboard route', () => {
-    expect(app.router.routes).toContainEqual({ route: ['dashboard/:address?'], name: 'dashboard', moduleId: PLATFORM.moduleName('./organizations/dashboard'), nav: false, title: 'Dashboard' });
+    expect(app.router.routes).toContainEqual(
+    { route: ['dashboard/:address?'],
+      name: 'dashboard',
+      moduleId: PLATFORM.moduleName('./organizations/dashboard'),
+      nav: false,
+      title: 'Dashboard',
+    });
   });
 });

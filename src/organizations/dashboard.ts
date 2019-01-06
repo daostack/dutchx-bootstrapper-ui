@@ -49,7 +49,7 @@ export class Dashboard {
 
   @computedFrom('redeemables')
   get totalUserReputationEarned(): BigNumber {
-    return this.redeemables.map((r: Redeemable): BigNumber => r.amount)
+    return this.redeemables.map((r: IRedeemable): BigNumber => r.amount)
       .reduce((prev: BigNumber, curr: BigNumber): BigNumber => {
         return prev.add(curr);
       }, new BigNumber(0));
@@ -63,7 +63,7 @@ export class Dashboard {
   public address: string;
   public orgName: string;
   public tokenSymbol: string;
-  public dutchXSchemes: Array<SchemeInfoX>;
+  public dutchXSchemes: Array<ISchemeInfoX>;
   public subscriptions = new DisposableCollection();
   public avatarLoading: boolean = true;
   public avatarLoaded: boolean = false;
@@ -75,7 +75,7 @@ export class Dashboard {
   public canRedeem: boolean = this.fakeRedeem;
   public networkName: string;
   public options: { address?: Address };
-  public redeemables: Array<Redeemable> = new Array<Redeemable>();
+  public redeemables: Array<IRedeemable> = new Array<IRedeemable>();
   public totalReputationAvailable: BigNumber;
   public _loading: boolean = false;
   public initialized: boolean = false;
@@ -161,7 +161,8 @@ export class Dashboard {
         try {
           // so we will at least be able to find out if we're connected and have a default account
           web3 = await Utils.getWeb3();
-        } catch { }
+          // tslint:disable-next-line:no-empty
+        } catch (ex) {  }
       }
 
       if (networkName === 'Live') {
@@ -171,9 +172,9 @@ export class Dashboard {
             // the api gives results if 10*Gwei
             const gasPrice = response.data.fast / 10;
             return web3.toWei(gasPrice, 'gwei');
-          } catch (e) {
-            return defaultGasPrice;
-          }
+            // tslint:disable-next-line:no-empty
+          } catch  {
+            }
         });
       }
 
@@ -186,6 +187,7 @@ export class Dashboard {
       this.initialized = true;
 
     } catch (ex) {
+      // tslint:disable-next-line:no-console
       console.log(`Error initializing network: ${ex}`);
       // const dialogService = aurelia.container.get(DialogService) as DialogService;
       // dialogService.alert(`Sorry, an error occurred initializing the application`)
@@ -292,7 +294,8 @@ export class Dashboard {
      */
     this.fixScrollbar();
 
-    this.lockingPeriodEndDate = this.dateService.fromIsoString(this.appConfig.get('lockingPeriodEndDate'), App.timezone);
+    this.lockingPeriodEndDate = this.dateService
+    .fromIsoString(this.appConfig.get('lockingPeriodEndDate'), App.timezone);
 
     if (this.fakeRedeem && this.web3Service.isConnected && (this.networkName === 'Ganache')) {
       await UtilsInternal.increaseTime(100000000000, this.web3.web3);
@@ -301,7 +304,7 @@ export class Dashboard {
     UtilsInternal.runTimerAtDate(this.fakeRedeem ? new Date() : this.lockingPeriodEndDate, () => {
       this.canRedeem = true;
       if (this.org) {
-        this.computeRedeemables();
+        this.computeIRedeemables();
       }
       // $('#globalRedeemBtn').addClass('enabled');
     });
@@ -398,18 +401,20 @@ export class Dashboard {
     this.schemesLoaded = this.dutchXSchemes.length !== this.dutchXSchemeConfigs.keys.length;
     if (!this.schemesLoaded) {
       this.org = undefined;
-      this.eventAggregator.publish('handleFailure', new EventConfigFailure(`not all of the required contracts were found`));
+      this.eventAggregator.publish('handleFailure',
+      new EventConfigFailure(`not all of the required contracts were found`));
       this.networkConnectionWizards.run(false, true); // no-op if already running
     } else {
 
       await this.computeNumLocks();
 
-      const wrapper = (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
+      const wrapper =
+      (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
       const mgnTokenAddress = await wrapper.getExternalLockingContract();
       this.appConfig.set('mgnTokenAddress', mgnTokenAddress);
 
       if (this.canRedeem) {
-        await this.computeRedeemables();
+        await this.computeIRedeemables();
       }
     }
     this.schemesLoading = this.loading = false;
@@ -455,8 +460,8 @@ export class Dashboard {
   //   return result.length ? collection.indexOf(result[0]) : -1;
   // }
 
-  public getSchemeInfoFromName(name: string): SchemeInfoX {
-    return this.dutchXSchemes.filter((s: SchemeInfoX) => {
+  public getSchemeInfoFromName(name: string): ISchemeInfoX {
+    return this.dutchXSchemes.filter((s: ISchemeInfoX) => {
       return s.name === name;
     })[0];
   }
@@ -466,10 +471,10 @@ export class Dashboard {
     return WrapperService.factories[name].at(schemeAddress);
   }
 
-  public async computeRedeemables(): Promise<void> {
+  public async computeIRedeemables(): Promise<void> {
 
     let totalReputationAvailable = new BigNumber(0);
-    const redeemables = new Array<Redeemable>();
+    const redeemables = new Array<IRedeemable>();
 
     try {
       let schemeAddress = this.getSchemeInfoFromName('LockingEth4Reputation').address;
@@ -554,6 +559,7 @@ export class Dashboard {
     code = code.substr(0, code.indexOf(end));
 
     for (const wrapperName in WrapperService.nonUniversalSchemeFactories) {
+      if (WrapperService.nonUniversalSchemeFactories.hasOwnProperty(wrapperName)) {
       const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
       if (factory && this.dutchXSchemeConfigs.has(wrapperName)) {
         /**
@@ -561,6 +567,7 @@ export class Dashboard {
          */
         let found: boolean;
         let contract = null;
+        // tslint:disable-next-line:no-empty
         try { contract = await factory.ensureSolidityContract(); } catch { }
         if (contract) {
           const deployedBinary = contract.deployedBinary.substr(0, contract.deployedBinary.indexOf(end));
@@ -572,6 +579,7 @@ export class Dashboard {
           return SchemeInfo.fromContractWrapper(wrapper, true);
         }
       }
+     }
     }
     return null;
   }
@@ -593,11 +601,11 @@ export class Dashboard {
   }
 }
 
-interface Redeemable {
+interface IRedeemable {
   what: string;
   amount: BigNumber;
 }
 
-interface SchemeInfoX extends SchemeInfo {
+interface ISchemeInfoX extends SchemeInfo {
   numLocks?: number;
 }

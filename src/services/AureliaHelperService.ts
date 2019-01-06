@@ -127,6 +127,7 @@ export class AureliaHelperService {
 
     try {
       result = !!await this.loader.loadModule(moduleId);
+      // tslint:disable-next-line:no-empty
     } catch (e) {
 
     }

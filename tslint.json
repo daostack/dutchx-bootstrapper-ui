@@ -12,8 +12,10 @@
               "quotemark": [true, "single"],
               "prefer-for-of": false,
               "array-type": [true, "generic"],
+              "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+              "max-classes-per-file": false,
               "ban-types": false,
-              "max-classes-per-file": false
+              "no-bitwise": false
               },
     "rulesDirectory": []
 }

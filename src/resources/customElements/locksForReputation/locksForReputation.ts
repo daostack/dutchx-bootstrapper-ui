@@ -12,8 +12,8 @@ export class LocksForReputation {
   // anyCanRedeem: boolean;
 
   @bindable({ defaultBindingMode: bindingMode.oneWay }) public locks: Array<LockInfo>;
+  // tslint:disable-next-line: variable-name
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public release: ({ lock: LockInfo }) => Promise<boolean>;
-  // @bindable({ defaultBindingMode: bindingMode.oneTime }) redeem: ({ lock: LockInfo }) => Promise<boolean>;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public wrapper: Locking4ReputationWrapper;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public refresh: Promise<void>;
 
@@ -72,14 +72,6 @@ export class LocksForReputation {
       return !errMsg;
     }
   }
-  // private async canRedeem(lock: LockInfo): Promise<boolean> {
-  //   if (lock.lockerAddress !== this.web3Service.defaultAccount) {
-  //     return false;
-  //   } else {
-  //     const errMsg = await this.wrapper.getRedeemBlocker(lock.lockerAddress);
-  //     return !errMsg;
-  //   }
-  // }
 }
 
 export interface ILockInfoX extends LockInfo {

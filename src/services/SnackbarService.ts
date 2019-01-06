@@ -40,9 +40,9 @@ export class SnackbarService {
       return Observable.fromPromise(new Promise(function(resolve, reject) {
         // with timeout, give a cleaner buffer in between consecutive snacks
         setTimeout(() => {
-          const SnackBarConfig = that.getISnackBarConfig(config);
-          SnackBarConfig.onClose = resolve;
-          let $snackbar = ($ as any).snackbar(SnackBarConfig);
+          const snackBarConfig = that.getISnackBarConfig(config);
+          snackBarConfig.onClose = resolve;
+          let $snackbar = ($ as any).snackbar(snackBarConfig);
           // for actions, but this means you can put binding code in the message too,
           // where the config is the bindingContext
           that.aureliaHelperService.enhanceElement($snackbar[0], config);

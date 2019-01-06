@@ -4,12 +4,12 @@ declare module 'system' {
   /*
    * List your dynamically imported modules to get typing support
    */
-  interface System {
+  interface ISystem {
     import(name: string): Promise<any>;
     import(name: 'aurelia-framework'): Promise<typeof Aurelia>;
   }
 
   global {
-    var System: System;
+    var system: ISystem;
   }
 }

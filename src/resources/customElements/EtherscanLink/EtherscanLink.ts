@@ -41,7 +41,7 @@ export class EtherscanLink {
       targetedNetwork = '';
     }
     const isGanache = targetedNetwork === 'Ganache';
-    if (this.type == 'tx') {
+    if (this.type === 'tx') {
       this.copyMessage = 'Hash has been copied to the clipboard';
     } else {
       this.copyMessage = 'Address has been copied to the clipboard';
@@ -54,7 +54,8 @@ export class EtherscanLink {
       }
     } else {
       // go with etherscan
-      this.networkExplorerUri = `http://${targetedNetwork}.etherscan.io/${this.type === 'tx' ? 'tx' : 'address'}/${this.address}`;
+      this.networkExplorerUri =
+      `http://${targetedNetwork}.etherscan.io/${this.type === 'tx' ? 'tx' : 'address'}/${this.address}`;
     }
 
     /** timeout so setting of this.networkExplorerUri takes effect in DOM */

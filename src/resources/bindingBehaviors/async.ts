@@ -7,7 +7,7 @@
  *  <p>${slowdata & async}</p>
  *  <p>${slowdata & async:'thinking...'}</p>
  */
-export class asyncBindingBehavior {
+export class AsyncBindingBehavior {
   public bind(binding, source) {
     binding.originalUpdateTarget = binding.updateTarget;
 

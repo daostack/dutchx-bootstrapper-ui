@@ -12,7 +12,7 @@ import { Web3Service } from './services/Web3Service';
 export class App {
   public static timezone: any;
 
-  public static SchemeDashboards = [
+  public static schemeDashboards = [
     'Auction4Reputation',
     'ContributionReward',
     'ExternalLocking4Reputation',
@@ -27,12 +27,12 @@ export class App {
   ];
 
   public static hasDashboard(schemeName: string): boolean {
-    return App.SchemeDashboards.indexOf(schemeName) !== -1;
+    return App.schemeDashboards.indexOf(schemeName) !== -1;
   }
 
-  private intervalId: any;
-
   public router: Router;
+
+  private intervalId: any;
 
   constructor(
       private web3Service: Web3Service

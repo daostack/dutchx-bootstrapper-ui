@@ -27,13 +27,16 @@ export class Banner {
   };
 
   constructor(
-    eventAggregator: EventAggregator
+      eventAggregator: EventAggregator
     , private animator: CssAnimator
     , private aureliaHelperService: AureliaHelperService,
   ) {
-    this.subscriptions.push(eventAggregator.subscribe('handleTransaction', (config: EventConfigException | any) => this.handleTransaction(config)));
-    this.subscriptions.push(eventAggregator.subscribe('handleException', (config: EventConfigException | any) => this.handleException(config)));
-    this.subscriptions.push(eventAggregator.subscribe('handleFailure', (config: EventConfig | string) => this.handleFailure(config)));
+    this.subscriptions.push(eventAggregator
+      .subscribe('handleTransaction', (config: EventConfigException | any) => this.handleTransaction(config)));
+    this.subscriptions.push(eventAggregator
+      .subscribe('handleException', (config: EventConfigException | any) => this.handleException(config)));
+    this.subscriptions.push(eventAggregator
+      .subscribe('handleFailure', (config: EventConfig | string) => this.handleFailure(config)));
 
     this.queue = new Subject<IBannerConfig >();
     /**
@@ -95,12 +98,14 @@ export class Banner {
   }
 
   public handleTransaction(config: EventConfigTransaction) {
+    // tslint:disable-next-line:max-line-length
     const message = `${config.message}<etherscanlink address="${config.address}" text="${config.actionText || config.address}" type="${config.addressType || 'address'}" tooltip.bind="etherScanTooltipConfig"></etherscanlink>`;
     this.queueEventConfig({ message, type: EventMessageType.Info });
   }
 
   public handleFailure(config: EventConfig | string) {
-    const bannerConfig = { message: (typeof config === 'string') ? config as string : config.message, type: EventMessageType.Failure };
+    const bannerConfig = { message: (typeof config === 'string')
+    ? config as string : config.message, type: EventMessageType.Failure };
     this.queueEventConfig(bannerConfig);
   }
 

@@ -71,6 +71,7 @@ export class TokenBalance {
     try {
       this.balance = (await this.tokenService.getUserErc20TokenBalance(token, true)).toFixed(2);
       this.text = this.balance.toString();
+      // tslint:disable-next-line:no-empty
     } catch {
     }
   }

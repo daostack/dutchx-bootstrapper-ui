@@ -72,6 +72,7 @@ export class EthBalance {
       }
 
       this.text = `${this.ethBalance} ETH`;
+      // tslint:disable-next-line:no-empty
     } catch (ex) {
     }
   }
