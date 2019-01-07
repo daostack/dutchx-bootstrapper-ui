@@ -8,7 +8,7 @@
  *  <p>${slowdata & async:'thinking...'}</p>
  */
 export class AsyncBindingBehavior {
-  public bind(binding, source) {
+  public bind(binding) {
     binding.originalUpdateTarget = binding.updateTarget;
 
     binding.updateTarget = (a) => {
