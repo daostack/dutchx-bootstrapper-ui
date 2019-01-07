@@ -12,24 +12,24 @@ import { DisposableCollection } from 'services/DisposableCollection';
 @autoinject
 export class Banner {
 
-  public resolveToClose: fnVoid;
-  public okButton: HTMLElement;
-  public showing: boolean = false;
-  public banner: HTMLElement;
-  public elMessage: HTMLElement;
-  public subscriptions: DisposableCollection = new DisposableCollection();
-  public queue: Subject<IBannerConfig >;
-  public etherScanTooltipConfig = {
-    toggle: 'tooltip',
+  private resolveToClose: fnVoid;
+  private okButton: HTMLElement;
+  private showing: boolean = false;
+  private banner: HTMLElement;
+  private elMessage: HTMLElement;
+  private subscriptions: DisposableCollection = new DisposableCollection();
+  private queue: Subject<IBannerConfig >;
+  private etherScanTooltipConfig = {
     placement: 'bottom',
     title: 'Click to go to etherscan.io transaction information page',
+    toggle: 'tooltip',
     trigger: 'hover',
   };
 
   constructor(
       eventAggregator: EventAggregator
     , private animator: CssAnimator
-    , private aureliaHelperService: AureliaHelperService,
+    , private aureliaHelperService: AureliaHelperService
   ) {
     this.subscriptions.push(eventAggregator
       .subscribe('handleTransaction', (config: EventConfigException | any) => this.handleTransaction(config)));
@@ -43,7 +43,7 @@ export class Banner {
      * messages added to the queue will show up here, generating a new queue
      * of observables whose values don't resolve until they are observed
      */
-    let that = this;
+    const that = this;
     this.queue.concatMap((config: IBannerConfig ) => {
       return Observable.fromPromise(new Promise(function(resolve: fnVoid) {
         // with timeout, give a cleaner buffer in between consecutive snacks
@@ -72,44 +72,44 @@ export class Banner {
       .subscribe();
   }
 
-  public dispose() {
-    this.subscriptions.dispose();
-  }
-
   public attached() {
     // attach-focus doesn't work
     $(this.okButton).focus();
   }
 
-  public async close() {
+  private dispose() {
+    this.subscriptions.dispose();
+  }
+
+  private async close() {
     await this.animator.leave(this.banner);
     this.showing = false;
     this.resolveToClose();
   }
 
-  public handleException(config: EventConfigException | any) {
+  private handleException(config: EventConfigException | any) {
     if (!(config instanceof EventConfigException)) {
       // then config is the exception itself
-      let ex = config as any;
+      const ex = config as any;
       config = { message: `${ex.message ? ex.message : ex}` } as any;
     }
 
     this.queueEventConfig({ message: config.message, type: EventMessageType.Exception });
   }
 
-  public handleTransaction(config: EventConfigTransaction) {
+  private handleTransaction(config: EventConfigTransaction) {
     // tslint:disable-next-line:max-line-length
     const message = `${config.message}<etherscanlink address="${config.address}" text="${config.actionText || config.address}" type="${config.addressType || 'address'}" tooltip.bind="etherScanTooltipConfig"></etherscanlink>`;
     this.queueEventConfig({ message, type: EventMessageType.Info });
   }
 
-  public handleFailure(config: EventConfig | string) {
+  private handleFailure(config: EventConfig | string) {
     const bannerConfig = { message: (typeof config === 'string')
     ? config as string : config.message, type: EventMessageType.Failure };
     this.queueEventConfig(bannerConfig);
   }
 
-  public queueEventConfig(config: IBannerConfig ) {
+  private queueEventConfig(config: IBannerConfig ) {
     this.queue.next(config);
   }
 }

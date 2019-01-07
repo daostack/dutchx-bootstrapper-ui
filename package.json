@@ -17,7 +17,8 @@
     "build": "nps build.production",
     "heroku-postbuild": "npm run build",
     "test": "nps test",
-    "lint": "tslint -c tslint.json 'src/**/*.ts' && tslint -c tslint.json 'test/**/*.ts' && tslint -c tslint.json 'custom_typings/**/*.ts'"
+    "lint": "nps lint",
+    "lint.andFix": "nps lint.andFix"
   },
   "bugs": {
     "url": "https://github.com/daostack/dutchx-bootstrapper-ui/issues"

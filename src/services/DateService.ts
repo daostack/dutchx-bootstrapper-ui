@@ -6,14 +6,14 @@ import Moment = moment.Moment;
 export class DateService {
 
   public get tomorrow(): Date {
-    let tomorrow = this.createMoment().add(1, 'days');
-    let dtTomorrow = new Date(tomorrow.year(), tomorrow.month(), tomorrow.date());
+    const tomorrow = this.createMoment().add(1, 'days');
+    const dtTomorrow = new Date(tomorrow.year(), tomorrow.month(), tomorrow.date());
     return dtTomorrow;
   }
 
   public get today(): Date {
-    let today = this.createMoment();
-    let dtToday = new Date(today.year(), today.month(), today.date());
+    const today = this.createMoment();
+    const dtToday = new Date(today.year(), today.month(), today.date());
     return dtToday;
   }
 
@@ -37,38 +37,38 @@ export class DateService {
 
     this.formats = new Map<string, string>();
 
-    let formatArray: Array<IFormat> = [
+    const formatArray: Array<IFormat> = [
       {
-        key: 'dayofmonth',
         format: 'MMM Do',
+        key: 'dayofmonth',
       },
       {
-        key: 'shortdate',
         format: 'MMMM Do, YYYY',
+        key: 'shortdate',
       },
       {
-        key: 'friendly',
         format: 'dddd MMMM Do, YYYY',
+        key: 'friendly',
       },
       {
-        key: 'table-date',
         format: 'YYYY-MM-DD',
+        key: 'table-date',
       },
       {
-        key: 'table-datetime',
         format: 'YYYY-MM-DD mm:ss.sss',
+        key: 'table-datetime',
       },
       {
-        key: 'friendlyDateTime',
         format: 'HH[:]mm dddd MMMM Do, YYYY',
+        key: 'friendlyDateTime',
       },
       {
-        key: 'json',
         format: 'YYYY-MM-DDTHH:mm:ss.sssZ',
+        key: 'json',
       },
     ];
 
-    for (let format of formatArray) {
+    for (const format of formatArray) {
       this.formats.set(format.key, format.format);
     }
 
@@ -114,7 +114,7 @@ export class DateService {
       return '';
     }
 
-    let d = this.createMomentFromTicks(ticks).toDate();
+    const d = this.createMomentFromTicks(ticks).toDate();
 
     // will account for optional utc here
     return this.toString(d, params);
@@ -134,7 +134,7 @@ export class DateService {
       return 0;
     }
 
-    let parms = this.getSafeParams(params);
+    const parms = this.getSafeParams(params);
 
     // ignore utc, is meaningless here
     return this.createMomentFromString(dtString, parms.format).valueOf();
@@ -215,7 +215,7 @@ export class DateService {
       return null;
     }
 
-    let parms = this.getSafeParams(params);
+    const parms = this.getSafeParams(params);
 
     return this.createMoment(dt, parms.utc).format(parms.format);
   }
@@ -259,7 +259,7 @@ export class DateService {
       return null;
     }
 
-    let parms = this.getSafeParams(params);
+    const parms = this.getSafeParams(params);
 
     // ignore utc, is meaningless here
     return this.createMomentFromString(str, parms.format).toDate();
@@ -270,16 +270,16 @@ export class DateService {
    * @param day
    */
   public nextInstanceOfDay(dayTarget: number, includeToday: boolean = false): Date {
-    let today = this.today;
-    let dayToday = today.getDay();
+    const today = this.today;
+    const dayToday = today.getDay();
 
     if ((dayToday === dayTarget) && includeToday) {
       return today;
     }
 
-    let weeklen = dayTarget > dayToday ? 0 : 7;
+    const weeklen = dayTarget > dayToday ? 0 : 7;
 
-    let nextInstance = this.createMoment(today).add(weeklen + dayTarget - dayToday, 'days');
+    const nextInstance = this.createMoment(today).add(weeklen + dayTarget - dayToday, 'days');
     return new Date(nextInstance.year(), nextInstance.month(), nextInstance.date());
   }
 
@@ -301,12 +301,12 @@ export class DateService {
     if (typeof params === 'string') {
       return { format: this.formats.get(params as string) || params as string };
     } else {
-      let parms = params as IFormatParameters;
+      const parms = params as IFormatParameters;
 
-      let format = parms.format ? this.formats.get(parms.format) || parms.format : undefined;
+      const format = parms.format ? this.formats.get(parms.format) || parms.format : undefined;
       return {
-        utc: parms.utc,
         format,
+        utc: parms.utc,
       };
     }
   }

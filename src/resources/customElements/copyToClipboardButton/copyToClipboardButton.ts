@@ -16,33 +16,33 @@ export class CopyToClipboardButton {
   @bindable
   public message: string = 'Copied to the clipboard';
 
-  public button: HTMLElement;
+  private button: HTMLElement;
 
   constructor(
-    private eventAggregator: EventAggregator,
+    private eventAggregator: EventAggregator
   ) { }
 
   public attached() {
     ($(this.button) as any).tooltip(
       {
-        toggle: 'tooltip',
         placement: 'right',
         title: 'Copy to clipboard',
+        toggle: 'tooltip',
         trigger: 'hover',
-      },
+      }
     )
       // .css("z-index", "100000")
       ;
   }
 
-  public listener(e) { e.clipboardData.setData('text/plain', this.textToCopy); e.preventDefault(); }
+  private listener(e) { e.clipboardData.setData('text/plain', this.textToCopy); e.preventDefault(); }
 
-  public copy(e: Event) {
+  private copy(e: Event) {
     if (this.element) {
       this.textToCopy = $(this.element).text();
     }
 
-    let handler = this.listener.bind(this);
+    const handler = this.listener.bind(this);
 
     document.addEventListener('copy', handler);
     document.execCommand('copy');

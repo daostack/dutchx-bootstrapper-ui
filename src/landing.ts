@@ -6,14 +6,14 @@ import { DateService } from 'services/DateService';
 @autoinject
 export class Landing {
 
-  public lockingPeriodEndDate: Date;
-  public lockingPeriodStartDate: Date;
-  public governanceStartDate: Date;
-  public intervalId: any;
+  private lockingPeriodEndDate: Date;
+  private lockingPeriodStartDate: Date;
+  private governanceStartDate: Date;
+  private intervalId: any;
 
   constructor(
       private appConfig: AureliaConfiguration
-    , private dateService: DateService,
+    , private dateService: DateService
   ) {
      this.lockingPeriodEndDate = this.dateService
           .fromIsoString(this.appConfig.get('Landing.lockingPeriodEndDate'), App.timezone);
@@ -23,11 +23,11 @@ export class Landing {
           .fromIsoString(this.appConfig.get('Landing.governanceStartDate'), App.timezone);
   }
 
-  public msUntilCanLockCountdown(): number {
-    return this.lockingPeriodStartDate.getTime() - Date.now();
-  }
-
   public activate() {
     $('body').css('overflow', 'auto');
+  }
+
+  private msUntilCanLockCountdown(): number {
+    return this.lockingPeriodStartDate.getTime() - Date.now();
   }
 }

@@ -8,15 +8,14 @@ import { BigNumber, Web3Service } from 'services/Web3Service';
 
 @autoinject
 export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
-
-  public alreadyLocked: boolean;
-  public intervalId: any;
   protected wrapper: ExternalLocking4ReputationWrapper;
+
+  private alreadyLocked: boolean;
 
   constructor(
       appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
-    , web3Service: Web3Service,
+    , web3Service: Web3Service
   ) {
     super(appConfig, eventAggregator, web3Service);
     this.lockModel.amount = new BigNumber(0); // to avoid validation
@@ -41,13 +40,6 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
     return success;
   }
 
-  // not used
+  // just a stub
   protected getLockUnit(lockInfo: LockInfo): Promise<string> { return Promise.resolve(''); }
-
-  // protected async redeem(): Promise<boolean> {
-  //   const success = await super.redeem();
-  //   this.alreadyLocked = !success;
-  //   return success;
-  // }
-
 }

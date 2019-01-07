@@ -21,16 +21,16 @@ export class EtherscanLink {
    */
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public tooltip?: any;
 
-  public clipbutton: HTMLElement;
+  private clipbutton: HTMLElement;
 
-  public networkExplorerUri: string;
+  private networkExplorerUri: string;
 
-  public copyMessage: string;
+  private copyMessage: string;
 
-  public internal: boolean = false;
+  private internal: boolean = false;
 
-  public coldElement: HTMLElement;
-  public hotElement: HTMLElement;
+  private coldElement: HTMLElement;
+  private hotElement: HTMLElement;
 
   constructor(private web3: Web3Service) {
   }

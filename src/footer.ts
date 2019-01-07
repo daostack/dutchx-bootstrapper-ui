@@ -12,14 +12,14 @@ export class Footer {
 
   constructor(
     private appConfig: AureliaConfiguration,
-    private eventAggregator: EventAggregator,
+    private eventAggregator: EventAggregator
   ) {
     this.initialize();
     this.eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
     this.eventAggregator.subscribe('DAO.loaded', () => { this.initialize(); });
   }
 
-  public async initialize() {
+  private async initialize() {
     this.genAddress = await Utils.getGenTokenAddress();
     this.gnoAddress = this.appConfig.get('gnoTokenAddress');
     this.mgnAddress = this.appConfig.get('mgnTokenAddress');

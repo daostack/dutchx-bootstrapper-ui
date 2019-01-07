@@ -5,7 +5,7 @@ import 'rxjs/add/operator/concatMap';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'snackbarjs';
-import { ActionType, EventConfig, EventConfigException } from '../entities/GeneralEvents';
+import { ActionType, EventConfig } from '../entities/GeneralEvents';
 import { AureliaHelperService } from './AureliaHelperService';
 import { DisposableCollection } from './DisposableCollection';
 
@@ -16,12 +16,12 @@ import { DisposableCollection } from './DisposableCollection';
 export class SnackbarService {
 
   // probably doesn't really need to be a disposable collection since this is a singleton service
-  public subscriptions: DisposableCollection = new DisposableCollection();
-  public snackQueue: Subject<EventConfig>;
+  private subscriptions: DisposableCollection = new DisposableCollection();
+  private snackQueue: Subject<EventConfig>;
 
   constructor(
       eventAggregator: EventAggregator
-    , private aureliaHelperService: AureliaHelperService,
+    , private aureliaHelperService: AureliaHelperService
   ) {
     this.subscriptions.push(eventAggregator
                        .subscribe('handleSuccess', (config: EventConfig | string) => this.handleSuccess(config)));
@@ -35,14 +35,14 @@ export class SnackbarService {
      * snack configs added to the snackQueue will show up here, generating a new queue
      * of observables whose values don't resolve until they are observed (hah! Schrodinger observables!)
      */
-    let that = this;
+    const that = this;
     this.snackQueue.concatMap((config: EventConfig) => {
       return Observable.fromPromise(new Promise(function(resolve, reject) {
         // with timeout, give a cleaner buffer in between consecutive snacks
         setTimeout(() => {
           const snackBarConfig = that.getISnackBarConfig(config);
           snackBarConfig.onClose = resolve;
-          let $snackbar = ($ as any).snackbar(snackBarConfig);
+          const $snackbar = ($ as any).snackbar(snackBarConfig);
           // for actions, but this means you can put binding code in the message too,
           // where the config is the bindingContext
           that.aureliaHelperService.enhanceElement($snackbar[0], config);
@@ -59,19 +59,19 @@ export class SnackbarService {
     this.subscriptions.dispose();
   }
 
-  public showMessage(config: EventConfig | string) {
+  private showMessage(config: EventConfig | string) {
     this.serveSnack(config);
   }
 
-  public handleSuccess(config: EventConfig | string) {
+  private handleSuccess(config: EventConfig | string) {
     this.serveSnack(config);
   }
 
-  public handleWarning(config: EventConfig | string) {
+  private handleWarning(config: EventConfig | string) {
     this.serveSnack(config);
   }
 
-  public completeConfig(config: EventConfig | string, defaults: any = {}): EventConfig {
+  private completeConfig(config: EventConfig | string, defaults: any = {}): EventConfig {
     if (typeof config === 'string') {
       config = { message: config as string } as EventConfig;
     }
@@ -80,17 +80,17 @@ export class SnackbarService {
                          defaults, config);
   }
 
-  public getISnackBarConfig(config: EventConfig): ISnackBarConfig {
+  private getISnackBarConfig(config: EventConfig): ISnackBarConfig {
     return {
       content: this.formatContent(config),
+      htmlAllowed: true,
       style: config.style,
       timeout: config.duration,
-      htmlAllowed: true,
     };
   }
 
-  public formatContent(config: EventConfig) {
-    let templateMessage = `<span class="snackbar-message-text">${config.message}</span>`;
+  private formatContent(config: EventConfig) {
+    const templateMessage = `<span class="snackbar-message-text">${config.message}</span>`;
     let templateAction = '';
     let text;
     switch (config.actionType) {
@@ -110,7 +110,7 @@ export class SnackbarService {
   }
 
   private serveSnack(config: EventConfig | string, defaults: any = {}) {
-    let completeConfig = this.completeConfig(config, defaults);
+    const completeConfig = this.completeConfig(config, defaults);
 
     /**
      * duration < 0 suppresses the snack
@@ -124,7 +124,7 @@ export class SnackbarService {
 interface ISnackBarConfig {
   content: string;
   style: string;
-  timeout: Number;
+  timeout: number;
   htmlAllowed: boolean;
   onClose?: () => void;
 }

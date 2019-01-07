@@ -18,7 +18,7 @@ export class DisposableCollection implements IDisposable {
     if (disposable) {
       this._dispose(disposable);
     } else {
-      for (let disposableElement of this.disposables) {
+      for (const disposableElement of this.disposables) {
         this._dispose(disposableElement);
       }
     }

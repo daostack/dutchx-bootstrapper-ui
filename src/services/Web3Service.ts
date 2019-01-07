@@ -1,4 +1,3 @@
-import { Web3EventService } from '@daostack/arc.js';
 import { autoinject } from 'aurelia-framework';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -18,7 +17,6 @@ import { Address, Hash, Utils } from './ArcService';
 export class Web3Service {
 
   public get web3(): Web3 { return this.web3Private; }
-  public set web3(newVal: Web3) { this.web3Private = newVal; }
 
   public get accounts(): Array<string> { return this.web3 ? this.web3.eth.accounts : []; }
 

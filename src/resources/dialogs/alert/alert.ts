@@ -1,12 +1,11 @@
 import { DialogController } from 'aurelia-dialog';
 import { autoinject } from 'aurelia-framework';
-// import { AureliaConfiguration } from 'aurelia-configuration';
 
 @autoinject
 export class Alert {
 
-  public model: IAlertModel;
-  public okButton: HTMLElement;
+  private model: IAlertModel;
+  private okButton: HTMLElement;
 
   constructor(private controller: DialogController) { }
 

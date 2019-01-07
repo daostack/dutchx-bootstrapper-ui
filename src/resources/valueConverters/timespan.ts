@@ -1,4 +1,4 @@
-﻿import { autoinject, bindable } from 'aurelia-framework';
+﻿import { autoinject } from 'aurelia-framework';
 import { DateService, TimespanResolution } from '../../services/DateService';
 
 @autoinject
@@ -15,9 +15,4 @@ export class TimespanValueConverter {
     }
     return this.dateService.ticksToTimeSpanString(value, resolution);
   }
-
-  // fromView(value: string): number | null {
-  //   return this.dateService.fromString(value, format);
-
-  // }
 }

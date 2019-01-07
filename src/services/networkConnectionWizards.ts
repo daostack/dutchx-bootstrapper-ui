@@ -1,8 +1,8 @@
-import { DialogController, DialogOpenResult } from 'aurelia-dialog';
+import { DialogOpenResult } from 'aurelia-dialog';
 import { DialogCloseResult } from 'aurelia-dialog';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject, computedFrom } from 'aurelia-framework';
-import { ArcService, Utils } from 'services/ArcService';
+import { autoinject } from 'aurelia-framework';
+import { Utils } from 'services/ArcService';
 import { DialogService } from 'services/dialogService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { Web3Service } from 'services/Web3Service';
@@ -11,19 +11,24 @@ import { ConnectToNet } from '../resources/dialogs/connectToNet/connectToNet';
 @autoinject
 export class NetworkConnectionWizards {
 
+  /**
+   * shared with ConnectToNet
+   */
   public isConnected: boolean;
   public hasAccount: boolean;
   public loading: boolean = false;
   public skipLanding: boolean = false;
   public hasDao: boolean = false;
-  public subscriptions: DisposableCollection;
-  public promise: Promise<DialogCloseResult>;
-  public dialogViewModel: ConnectToNet;
   public hasApprovedAccountAccess: boolean;
+
+  private subscriptions: DisposableCollection;
+  private promise: Promise<DialogCloseResult>;
+  private dialogViewModel: ConnectToNet;
+
   constructor(
       private dialogService: DialogService
     , private web3: Web3Service
-    , private eventAggregator: EventAggregator,
+    , private eventAggregator: EventAggregator
   ) {
     this.subscriptions = new DisposableCollection();
   }
@@ -122,7 +127,7 @@ export class NetworkConnectionWizards {
     return !!this.promise;
   }
 
-  private confirm() {
+  public confirm() {
     /**
      * Note: calling `_metamask.enable()` will ask the user to approve access to the account
      * even if privacy mode is turned off.  This behavior anticipates that privacy mode is

@@ -4,7 +4,7 @@ export class EventConfig {
   /**
    * in milliseconds, default 3000, 0 for never
    */
-  public duration: Number = 3000;
+  public duration: number = 3000;
   public actionType: ActionType = ActionType.none;
 
   public action: () => void;
@@ -24,7 +24,7 @@ export class EventConfig {
   constructor(
       public message: string
     , type: EventMessageType = EventMessageType.Info
-    , lifetime: SnackLifetime = SnackLifetime.transitory,
+    , lifetime: SnackLifetime = SnackLifetime.transitory
   ) {
 
     switch (lifetime) {
@@ -59,7 +59,7 @@ export class EventConfig {
 
 export class EventConfigFailure extends EventConfig {
   constructor(
-    message: string = 'An error occurred',
+    message: string = 'An error occurred'
   ) {
     super(message, EventMessageType.Failure, SnackLifetime.closeButton);
     this.message = `${this.message}`;
@@ -69,7 +69,7 @@ export class EventConfigFailure extends EventConfig {
 export class EventConfigException extends EventConfig {
   constructor(
       message: string = 'An error occurred'
-    , public exception: any,
+    , public exception: any
   ) {
     super(message, EventMessageType.Exception, SnackLifetime.closeButton);
     // the stack trace, etc, will be logged by ConsoleLogService
@@ -89,7 +89,7 @@ export class EventConfigAction extends EventConfig {
      */
     , public action: () => void
     , type: EventMessageType = EventMessageType.Info
-    , lifetime: SnackLifetime = SnackLifetime.clickToDismiss,
+    , lifetime: SnackLifetime = SnackLifetime.clickToDismiss
   ) {
     super(message, type, lifetime);
     this.actionType = ActionType.button;
@@ -103,7 +103,7 @@ export class EventConfigAddress extends EventConfig {
     /**
      * text to display instead of address
      */
-    , public actionText: string,
+    , public actionText: string
   ) {
     super(message, EventMessageType.Info, SnackLifetime.clickToDismiss);
     this.actionType = ActionType.address;
@@ -118,7 +118,7 @@ export class EventConfigTransaction extends EventConfigAddress {
     /**
      * text to display instead of address
      */
-    , public actionText: string = 'See Transaction',
+    , public actionText: string = 'See Transaction'
   ) {
     super(message, address, actionText);
     this.actionType = ActionType.address;

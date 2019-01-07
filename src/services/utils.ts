@@ -7,8 +7,8 @@ export class Utils {
   }
 
   public static getObjectKeys(obj: any): Array<string> {
-    let temp = [];
-    for (let prop in obj) {
+    const temp = [];
+    for (const prop in obj) {
       if (obj.hasOwnProperty(prop)) {
         temp.push(prop);
       }
@@ -60,9 +60,9 @@ export class Utils {
    * @param func
    */
   public static runTimerAtDate(date, func) {
-    let now = (new Date()).getTime();
-    let then = date.getTime();
-    let diff = Math.max((then - now), 0);
+    const now = (new Date()).getTime();
+    const then = date.getTime();
+    const diff = Math.max((then - now), 0);
     if (diff > 0x7FFFFFFF) { // setTimeout limit is MAX_INT32=(2^31-1)
       setTimeout(() => { Utils.runTimerAtDate(date, func); }, 0x7FFFFFFF);
     } else {

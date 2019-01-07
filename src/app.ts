@@ -10,13 +10,17 @@ import { Web3Service } from './services/Web3Service';
 
 @autoinject
 export class App {
+
   public static timezone: any;
 
-  public static schemeDashboards = [
+  public static hasDashboard(schemeName: string): boolean {
+    return App.schemeDashboards.indexOf(schemeName) !== -1;
+  }
+
+  private static schemeDashboards = [
     'Auction4Reputation',
     'ContributionReward',
     'ExternalLocking4Reputation',
-    // "FixedReputationAllocation",
     'GenesisProtocol',
     'GlobalConstraintRegistrar',
     'LockingEth4Reputation',
@@ -26,10 +30,9 @@ export class App {
     'UpgradeScheme',
   ];
 
-  public static hasDashboard(schemeName: string): boolean {
-    return App.schemeDashboards.indexOf(schemeName) !== -1;
-  }
-
+  /**
+   * public for tests
+   */
   public router: Router;
 
   private intervalId: any;
@@ -38,7 +41,7 @@ export class App {
       private web3Service: Web3Service
     , private signaler: BindingSignaler
     , private eventAggregator: EventAggregator
-    , appConfig: AureliaConfiguration,
+    , appConfig: AureliaConfiguration
   ) {
     App.timezone = appConfig.get('rootTimezone');
   }
@@ -53,13 +56,6 @@ export class App {
     }, 1000);
   }
 
-  public deactivate() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-    }
-  }
-
   public attached() {
     ($('body') as any)
       /* override the body style set in the splash screen */
@@ -71,7 +67,14 @@ export class App {
 
   }
 
-  public configureRouter(config: RouterConfiguration, router: Router) {
+  public deactivate() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  private configureRouter(config: RouterConfiguration, router: Router) {
 
     config.title = 'DutchX Initializer';
 
@@ -81,27 +84,27 @@ export class App {
      */
     config.map([
       {
-        route: ['', 'landing'],
-        name: 'landing',
         moduleId: PLATFORM.moduleName('./landing'),
+        name: 'landing',
         nav: false,
+        route: ['', 'landing'],
         title: 'Home',
       },
       {
+        moduleId: PLATFORM.moduleName('./organizations/dashboard'),
+        name: 'dashboard',
+        nav: false,
         // 'address' will be present in the object passed to the 'activate' method of the viewmodel
         // DutchX: set address to be optional, and this page as the default (instead of Home)
         route: ['dashboard/:address?'],
-        name: 'dashboard',
-        moduleId: PLATFORM.moduleName('./organizations/dashboard'),
-        nav: false,
         title: 'Dashboard',
       }
       , {
-        // 'txHash' will be present in the object passed to the 'activate' method of the viewmodel
-        route: ['txInfo/:txHash'],
-        name: 'txInfo',
         moduleId: PLATFORM.moduleName('./txInfo/txInfo'),
+        // 'txHash' will be present in the object passed to the 'activate' method of the viewmodel
+        name: 'txInfo',
         nav: false,
+        route: ['txInfo/:txHash'],
         title: 'Transaction Information',
       },
     ]);

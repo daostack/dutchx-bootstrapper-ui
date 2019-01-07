@@ -17,36 +17,36 @@ export class TokenBalance {
 
   constructor(
     private tokenService: TokenService,
-    eventAggregator: EventAggregator,
+    eventAggregator: EventAggregator
   ) {
     eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
-  }
-
-  public initialize() {
-    this.stop();
-    this.readBalance();
   }
 
   public attached() {
     this.initialize();
   }
 
-  public detached() {
+  private initialize() {
+    this.stop();
+    this.readBalance();
+  }
+
+  private detached() {
     this.stop();
   }
 
-  public tokenChanged() {
+  private tokenChanged() {
     this.initialize();
   }
 
-  public stop() {
+  private stop() {
     if (this.events) {
       this.events.stopWatching();
       this.events = null;
     }
   }
 
-  public async readBalance() {
+  private async readBalance() {
 
     if (this.token) {
 
@@ -67,7 +67,7 @@ export class TokenBalance {
       this.text = `N/A`;
     }
   }
-  public async getBalance(token) {
+  private async getBalance(token) {
     try {
       this.balance = (await this.tokenService.getUserErc20TokenBalance(token, true)).toFixed(2);
       this.text = this.balance.toString();

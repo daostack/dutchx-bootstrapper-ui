@@ -5,7 +5,6 @@ import { ILockInfoX } from 'resources/customElements/locksForReputation/locksFor
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LockService } from 'services/lockServices';
-import { Utils } from 'services/utils';
 import { EventConfigException, EventConfigFailure, EventConfigTransaction } from '../entities/GeneralEvents';
 import { Address,
          ArcTransactionResult,
@@ -15,7 +14,7 @@ import { Address,
          LockingOptions,
          TransactionReceiptTruffle,
          WrapperService } from '../services/ArcService';
-import { BigNumber, Web3Service } from '../services/Web3Service';
+import { Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';
 // import { App } from 'app';
 
@@ -23,26 +22,25 @@ import { DaoSchemeDashboard } from './schemeDashboard';
 export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   @computedFrom('lockingPeriodHasNotStarted', 'lockingPeriodIsEnded')
-  get inLockingPeriod(): boolean {
+  protected get inLockingPeriod(): boolean {
     return !this.lockingPeriodHasNotStarted && !this.lockingPeriodIsEnded;
   }
-  public lockingStartTime: Date;
-  public lockingEndTime: Date;
-  public lockingPeriodHasNotStarted: boolean;
-  public lockingPeriodIsEnded: boolean;
-  public msUntilCanLockCountdown: number;
-  public msRemainingInPeriodCountdown: number;
-  public refreshing: boolean = false;
-  public loaded: boolean = false;
-  public lockerInfo: LockerInfo;
-  public subscriptions = new DisposableCollection();
-  public locks: Array<ILockInfoX >;
-  public intervalId: any;
-  public locking: boolean = false;
+  protected lockingStartTime: Date;
+  protected lockingEndTime: Date;
+  protected lockingPeriodHasNotStarted: boolean;
+  protected lockingPeriodIsEnded: boolean;
+  protected msUntilCanLockCountdown: number;
+  protected msRemainingInPeriodCountdown: number;
+  protected refreshing: boolean = false;
+  protected loaded: boolean = false;
+  protected lockerInfo: LockerInfo;
+  protected subscriptions = new DisposableCollection();
+  protected locks: Array<ILockInfoX >;
+  protected locking: boolean = false;
 
-  public lockModel: LockingOptions = {
-    lockerAddress: undefined,
+  protected lockModel: LockingOptions = {
     amount: undefined,
+    lockerAddress: undefined,
     period: undefined,
   };
 
@@ -52,7 +50,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   constructor(
       protected appConfig: AureliaConfiguration
     , protected eventAggregator: EventAggregator
-    , protected web3Service: Web3Service,
+    , protected web3Service: Web3Service
   ) {
     super();
   }
@@ -128,7 +126,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       if (alreadyCheckedForBlock || !(await this.getLockBlocker())) {
 
-        let result = await ((await (this.wrapper as any).lock(this.lockModel)) as ArcTransactionResult)
+        const result = await ((await (this.wrapper as any).lock(this.lockModel)) as ArcTransactionResult)
           .watchForTxMined()
           .then((tx: TransactionReceiptTruffle) => {
             this.getLocks();
@@ -158,7 +156,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
     try {
 
-      let result = await (await (this.wrapper as any).release(lockInfo)).watchForTxMined();
+      const result = await (await (this.wrapper as any).release(lockInfo)).watchForTxMined();
 
       this.eventAggregator.publish('handleTransaction',
       new EventConfigTransaction('The lock has been released', result.tx));

@@ -48,7 +48,7 @@ export class Dashboard {
   }
 
   @computedFrom('redeemables')
-  get totalUserReputationEarned(): BigNumber {
+  private get totalUserReputationEarned(): BigNumber {
     return this.redeemables.map((r: IRedeemable): BigNumber => r.amount)
       .reduce((prev: BigNumber, curr: BigNumber): BigNumber => {
         return prev.add(curr);
@@ -56,61 +56,61 @@ export class Dashboard {
   }
 
   @computedFrom('totalUserReputationEarned', 'totalReputationAvailable')
-  get percentUserReputationEarned(): string {
+  private get percentUserReputationEarned(): string {
     return this.totalUserReputationEarned.div(this.totalReputationAvailable).mul(100).toFixed(2).toString();
   }
 
-  public address: string;
-  public orgName: string;
-  public tokenSymbol: string;
-  public dutchXSchemes: Array<ISchemeInfoX>;
-  public subscriptions = new DisposableCollection();
-  public avatarLoading: boolean = true;
-  public avatarLoaded: boolean = false;
-  public schemesLoaded: boolean = false;
-  public schemesLoading: boolean = false;
-  public dashboardElement: any;
-  public lockingPeriodEndDate: Date;
-  public fakeRedeem: boolean = false;
-  public canRedeem: boolean = this.fakeRedeem;
-  public networkName: string;
-  public options: { address?: Address };
-  public redeemables: Array<IRedeemable> = new Array<IRedeemable>();
-  public totalReputationAvailable: BigNumber;
-  public _loading: boolean = false;
-  public initialized: boolean = false;
+  private address: string;
+  private orgName: string;
+  private tokenSymbol: string;
+  private dutchXSchemes: Array<ISchemeInfoX>;
+  private subscriptions = new DisposableCollection();
+  private avatarLoading: boolean = true;
+  private avatarLoaded: boolean = false;
+  private schemesLoaded: boolean = false;
+  private schemesLoading: boolean = false;
+  private dashboardElement: any;
+  private lockingPeriodEndDate: Date;
+  private fakeRedeem: boolean = false;
+  private canRedeem: boolean = this.fakeRedeem;
+  private networkName: string;
+  private options: { address?: Address };
+  private redeemables: Array<IRedeemable> = new Array<IRedeemable>();
+  private totalReputationAvailable: BigNumber;
+  private _loading: boolean = false;
+  private initialized: boolean = false;
 
-  public org: DaoEx;
+  private org: DaoEx;
 
   private dutchXSchemeConfigs = new Map<string,
     { description: string, icon?: string, icon_hover?: string, position: number, hasActiveLocks: boolean }>([
       ['Auction4Reputation', {
         description: 'BID GEN',
+        hasActiveLocks: false,
         icon: './gen_icon_color.svg',
         icon_hover: './gen_icon_white.svg',
         position: 4,
-        hasActiveLocks: false,
       }],
       ['ExternalLocking4Reputation', {
         description: 'LOCK MGN',
+        hasActiveLocks: false,
         icon: './mgn_icon_color.svg',
         icon_hover: './mgn_icon_white.svg',
         position: 3,
-        hasActiveLocks: false,
       }],
       ['LockingEth4Reputation', {
         description: 'LOCK ETH',
+        hasActiveLocks: true,
         icon: './eth_icon_color.svg',
         icon_hover: './eth_icon_white.svg',
         position: 1,
-        hasActiveLocks: true,
       }],
       ['LockingToken4Reputation', {
         description: 'LOCK TOKENS',
+        hasActiveLocks: true,
         icon: './generic_icon_color.svg',
         icon_hover: './generic_icon_white.svg',
         position: 2,
-        hasActiveLocks: true,
       }],
     ]);
 
@@ -123,77 +123,10 @@ export class Dashboard {
     , private appConfig: AureliaConfiguration
     , private arcService: ArcService
     , private networkConnectionWizards: NetworkConnectionWizards
-    , private dateService: DateService,
+    , private dateService: DateService
   ) {
 
     $(window).resize(this.fixScrollbar);
-  }
-
-  public async initializeNetwork(): Promise<Web3 | undefined> {
-
-    let web3: Web3;
-    this.initialized = false;
-
-    try {
-
-      const networkName = await Utils.getNetworkName();
-      this.appConfig.setEnvironment(networkName);
-
-      ConfigService.set('logLevel',
-        (networkName === 'Live') ? LogLevel.info | LogLevel.warn | LogLevel.error : LogLevel.all);
-
-      try {
-        web3 = await InitializeArcJs({
-          useMetamaskEthereumWeb3Provider: true,
-          watchForAccountChanges: true,
-          watchForNetworkChanges: true,
-          filter: {},
-          deployedContractAddresses: {
-            rinkeby: {
-              base: {
-                DAOToken: '0x543Ff227F64Aa17eA132Bf9886cAb5DB55DCAddf',
-              },
-            },
-          },
-        });
-      } catch (ex) {
-        this.eventAggregator.publish('handleFailure', new EventConfigFailure(ex.message));
-        try {
-          // so we will at least be able to find out if we're connected and have a default account
-          web3 = await Utils.getWeb3();
-          // tslint:disable-next-line:no-empty
-        } catch (ex) {  }
-      }
-
-      if (networkName === 'Live') {
-        ConfigService.set('gasPriceAdjustment', async (defaultGasPrice: BigNumber) => {
-          try {
-            const response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json');
-            // the api gives results if 10*Gwei
-            const gasPrice = response.data.fast / 10;
-            return web3.toWei(gasPrice, 'gwei');
-            // tslint:disable-next-line:no-empty
-          } catch  {
-            }
-        });
-      }
-
-      ConfigService.set('estimateGas', true);
-
-      await this.web3Service.initialize(web3);
-
-      await this.arcService.initialize();
-
-      this.initialized = true;
-
-    } catch (ex) {
-      // tslint:disable-next-line:no-console
-      console.log(`Error initializing network: ${ex}`);
-      // const dialogService = aurelia.container.get(DialogService) as DialogService;
-      // dialogService.alert(`Sorry, an error occurred initializing the application`)
-    }
-
-    return web3;
   }
 
   public async activate(options: { address?: Address, fakeRedeem?: string } = {}) {
@@ -280,11 +213,6 @@ export class Dashboard {
     }
   }
 
-  public deactivate() {
-    this.subscriptions.dispose();
-    this.networkConnectionWizards.close(true);
-  }
-
   public async attached() {
 
     $('body').css('overflow', 'hidden');
@@ -304,7 +232,7 @@ export class Dashboard {
     UtilsInternal.runTimerAtDate(this.fakeRedeem ? new Date() : this.lockingPeriodEndDate, () => {
       this.canRedeem = true;
       if (this.org) {
-        this.computeIRedeemables();
+        this.computeRedeemables();
       }
       // $('#globalRedeemBtn').addClass('enabled');
     });
@@ -335,7 +263,80 @@ export class Dashboard {
     this.polishDom();
   }
 
-  public async loadAvatar(): Promise<DaoEx | undefined> {
+  public deactivate() {
+    this.subscriptions.dispose();
+    this.networkConnectionWizards.close(true);
+  }
+
+  private async initializeNetwork(): Promise<Web3 | undefined> {
+
+    let web3: Web3;
+    this.initialized = false;
+
+    try {
+
+      const networkName = await Utils.getNetworkName();
+      this.appConfig.setEnvironment(networkName);
+
+      ConfigService.set('logLevel',
+        // tslint:disable-next-line: no-bitwise
+        (networkName === 'Live') ? LogLevel.info | LogLevel.warn | LogLevel.error : LogLevel.all);
+
+      try {
+        web3 = await InitializeArcJs({
+          deployedContractAddresses: {
+            rinkeby: {
+              base: {
+                DAOToken: '0x543Ff227F64Aa17eA132Bf9886cAb5DB55DCAddf',
+              },
+            },
+          },
+          filter: {},
+          useMetamaskEthereumWeb3Provider: true,
+          watchForAccountChanges: true,
+          watchForNetworkChanges: true,
+        });
+      } catch (ex) {
+        this.eventAggregator.publish('handleFailure', new EventConfigFailure(ex.message));
+        try {
+          // so we will at least be able to find out if we're connected and have a default account
+          web3 = await Utils.getWeb3();
+          // tslint:disable-next-line:no-empty
+        } catch (ex) {  }
+      }
+
+      if (networkName === 'Live') {
+        ConfigService.set('gasPriceAdjustment', async (defaultGasPrice: BigNumber) => {
+          try {
+            const response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json');
+            // the api gives results if 10*Gwei
+            const gasPrice = response.data.fast / 10;
+            return web3.toWei(gasPrice, 'gwei');
+            // tslint:disable-next-line:no-empty
+          } catch  {
+            }
+        });
+      }
+
+      ConfigService.set('estimateGas', true);
+
+      await this.web3Service.initialize(web3);
+
+      await this.arcService.initialize();
+
+      this.initialized = true;
+
+    } catch (ex) {
+      // tslint:disable-next-line:no-console
+      console.log(`Error initializing network: ${ex}`);
+      // const dialogService = aurelia.container.get(DialogService) as DialogService;
+      // dialogService.alert(`Sorry, an error occurred initializing the application`)
+    }
+
+    return web3;
+  }
+
+  private async loadAvatar(): Promise<DaoEx | undefined> {
     const address = this.options.address || this.appConfig.get('daoAddress');
 
     if (!this.org || (address !== this.org.address)) {
@@ -369,20 +370,16 @@ export class Dashboard {
     return this.org;
   }
 
-  public async loadSchemes(): Promise<boolean> {
+  private async loadSchemes(): Promise<boolean> {
     this.schemesLoading = this.loading = true;
     /**
      * Get all schemes associated with the DAO.  These can include non-Arc schemes.
      */
-    let schemes = (await this.schemeService.getSchemesForDao(this.address));
-
-    // add a fake non-Arc scheme
-    // schemes.push(<SchemeInfo>{ address: "0x9ac0d209653719c86420bfca5d31d3e695f0b530" });
+    const schemes = (await this.schemeService.getSchemesForDao(this.address));
 
     const nonArcSchemes = schemes.filter((s: SchemeInfo) => !s.inArc);
 
-    for (let i = 0; i < nonArcSchemes.length; ++i) {
-      const scheme = nonArcSchemes[i];
+    for (const scheme of nonArcSchemes) {
       const foundScheme = await this.findNonDeployedArcScheme(scheme);
       if (foundScheme) {
         schemes[schemes.indexOf(scheme)] = foundScheme;
@@ -393,7 +390,7 @@ export class Dashboard {
       // DutchX: hack to remove all but the DutchX contracts
       .filter((s: SchemeInfo) => this.dutchXSchemeConfigs.has(s.name))
       .sort((a: SchemeInfo, b: SchemeInfo) =>
-        this.dutchXSchemeConfigs.get(a.name).position - this.dutchXSchemeConfigs.get(b.name).position,
+        this.dutchXSchemeConfigs.get(a.name).position - this.dutchXSchemeConfigs.get(b.name).position
       );
 
     this.dutchXSchemes.map((s) => { s.friendlyName = this.dutchXSchemeConfigs.get(s.name).description; });
@@ -414,7 +411,7 @@ export class Dashboard {
       this.appConfig.set('mgnTokenAddress', mgnTokenAddress);
 
       if (this.canRedeem) {
-        await this.computeIRedeemables();
+        await this.computeRedeemables();
       }
     }
     this.schemesLoading = this.loading = false;
@@ -424,7 +421,7 @@ export class Dashboard {
     return Promise.resolve(this.schemesLoaded);
   }
 
-  public getDashboardView(scheme: SchemeInfo): string {
+  private getDashboardView(scheme: SchemeInfo): string {
     let name: string;
     let isArcScheme = false;
     if (!scheme.inArc) {
@@ -442,11 +439,11 @@ export class Dashboard {
     return `../schemeDashboards/${name}`;
   }
 
-  public schemeDashboardViewModel(scheme: SchemeInfo): ISchemeDashboardModel {
+  private schemeDashboardViewModel(scheme: SchemeInfo): ISchemeDashboardModel {
     return Object.assign({}, {
       org: this.org,
-      orgName: this.orgName,
       orgAddress: this.address,
+      orgName: this.orgName,
       tokenSymbol: this.tokenSymbol,
     },
       scheme);
@@ -460,18 +457,18 @@ export class Dashboard {
   //   return result.length ? collection.indexOf(result[0]) : -1;
   // }
 
-  public getSchemeInfoFromName(name: string): ISchemeInfoX {
+  private getSchemeInfoFromName(name: string): ISchemeInfoX {
     return this.dutchXSchemes.filter((s: ISchemeInfoX) => {
       return s.name === name;
     })[0];
   }
 
-  public getSchemeWrapperFromName(name: string): Promise<Locking4ReputationWrapper> {
+  private getSchemeWrapperFromName(name: string): Promise<Locking4ReputationWrapper> {
     const schemeAddress = this.getSchemeInfoFromName(name).address;
     return WrapperService.factories[name].at(schemeAddress);
   }
 
-  public async computeIRedeemables(): Promise<void> {
+  private async computeRedeemables(): Promise<void> {
 
     let totalReputationAvailable = new BigNumber(0);
     const redeemables = new Array<IRedeemable>();
@@ -484,8 +481,8 @@ export class Dashboard {
 
       if (earnedRep.gt(0)) {
         redeemables.push({
-          what: 'locked ETH',
           amount: earnedRep,
+          what: 'locked ETH',
         });
       }
 
@@ -496,8 +493,8 @@ export class Dashboard {
 
       if (earnedRep.gt(0)) {
         redeemables.push({
-          what: 'locked MGN tokens',
           amount: earnedRep,
+          what: 'locked MGN tokens',
         });
       }
 
@@ -508,8 +505,8 @@ export class Dashboard {
 
       if (earnedRep.gt(0)) {
         redeemables.push({
-          what: 'other locked tokens',
           amount: earnedRep,
+          what: 'other locked tokens',
         });
       }
 
@@ -525,8 +522,8 @@ export class Dashboard {
 
       if (earnedRep.gt(0)) {
         redeemables.push({
-          what: 'GEN auctions',
           amount: earnedRep,
+          what: 'GEN auctions',
         });
       }
 
@@ -538,7 +535,7 @@ export class Dashboard {
     }
   }
 
-  public async computeNumLocks(): Promise<void> {
+  private async computeNumLocks(): Promise<void> {
     let wrapper = await this.getSchemeWrapperFromName('LockingEth4Reputation');
     let lockService = new LockService(this.appConfig, wrapper, this.web3Service.defaultAccount);
     let schemeInfo = this.getSchemeInfoFromName('LockingEth4Reputation');
@@ -602,8 +599,8 @@ export class Dashboard {
 }
 
 interface IRedeemable {
-  what: string;
   amount: BigNumber;
+  what: string;
 }
 
 interface ISchemeInfoX extends SchemeInfo {

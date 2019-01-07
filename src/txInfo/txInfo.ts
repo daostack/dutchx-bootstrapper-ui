@@ -6,10 +6,10 @@ import { Web3Service } from '../services/Web3Service';
 @autoinject
 export class TxInfo {
 
-  public txHash: Hash;
-  public txReceipt: TransactionReceipt;
-  public block: BlockWithoutTransactionData;
-  public timestamp: string;
+  private txHash: Hash;
+  private txReceipt: TransactionReceipt;
+  private block: BlockWithoutTransactionData;
+  private timestamp: string;
 
   constructor(private web3Service: Web3Service) { }
 

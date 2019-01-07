@@ -15,13 +15,13 @@ export class Header {
   constructor(
       private appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
-    , private web3Service: Web3Service,
+    , private web3Service: Web3Service
   ) {
     this.initialize();
     eventAggregator.subscribe('Network.Changed.Id', () => { this.initialize(); });
   }
 
-  public initialize() {
+  private initialize() {
     this.avatarAddress = this.appConfig.get('daoAddress');
     this.connected = this.web3Service.isConnected;
   }

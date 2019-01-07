@@ -8,11 +8,11 @@ import { DisposableCollection } from './DisposableCollection';
 export class ConsoleLogService {
 
   // probably doesn't really need to be a disposable collection since this is a singleton service
-  public subscriptions: DisposableCollection = new DisposableCollection();
-  public logger = LogManager.getLogger('DxBootStrapper');
+  private subscriptions: DisposableCollection = new DisposableCollection();
+  private logger = LogManager.getLogger('DxBootStrapper');
 
   constructor(
-    eventAggregator: EventAggregator,
+    eventAggregator: EventAggregator
   ) {
     this.subscriptions.push(eventAggregator
                            .subscribe('handleException',
@@ -33,15 +33,15 @@ export class ConsoleLogService {
     this.subscriptions.dispose();
   }
 
-  public showMessage(config: EventConfig | string) {
+  private showMessage(config: EventConfig | string) {
     this.logger.info(this.getMessage(config));
   }
 
-  public handleSuccess(config: EventConfig | string) {
+  private handleSuccess(config: EventConfig | string) {
     this.logger.debug(this.getMessage(config));
   }
 
-  public handleException(config: EventConfigException | any) {
+  private handleException(config: EventConfigException | any) {
     let message;
     let ex;
     if (!(config instanceof EventConfigException)) {
@@ -56,11 +56,11 @@ export class ConsoleLogService {
     this.logger.error(`${message}${ex.stack ? `\n${ex.stack}` : ''}`);
   }
 
-  public handleFailure(config: EventConfig | string) {
+  private handleFailure(config: EventConfig | string) {
     this.logger.error(this.getMessage(config));
   }
 
-  public handleWarning(config: EventConfig | string) {
+  private handleWarning(config: EventConfig | string) {
     this.logger.debug(this.getMessage(config));
   }
 

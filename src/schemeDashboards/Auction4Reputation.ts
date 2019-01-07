@@ -5,8 +5,7 @@ import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { Utils } from 'services/utils';
 import { DecodedLogEntry } from 'web3';
-import { Address,
-         Auction4ReputationBidEventResult,
+import { Auction4ReputationBidEventResult,
          Auction4ReputationWrapper,
          Erc20Wrapper,
          WrapperService } from '../services/ArcService';
@@ -15,28 +14,28 @@ import { DaoSchemeDashboard } from './schemeDashboard';
 
 @autoinject
 export class Auction4Reputation extends DaoSchemeDashboard {
-  public auctionsStartTime: Date;
-  public auctionsEndTime: Date;
-  public token: Erc20Wrapper;
-  public auctionIsOver: boolean;
-  public auctionNotBegun: boolean;
-  public refreshing: boolean = false;
-  public loaded: boolean = false;
-  public subscriptions = new DisposableCollection();
-  public bidding: boolean = false;
-  public currentAuctionNumber: number;
-  public auctionCount: number;
-  public auctionEndTime: Date;
-  public amountBid: BigNumber;
-  public totalAmountBid: BigNumber;
-  public msRemainingInAuctionCountdown: number;
-  public auctionPeriod: number;
 
   protected wrapper: Auction4ReputationWrapper;
+  private auctionsStartTime: Date;
+  private auctionsEndTime: Date;
+  private token: Erc20Wrapper;
+  private auctionIsOver: boolean;
+  private auctionNotBegun: boolean;
+  private refreshing: boolean = false;
+  private loaded: boolean = false;
+  private subscriptions = new DisposableCollection();
+  private bidding: boolean = false;
+  private currentAuctionNumber: number;
+  private auctionCount: number;
+  private auctionEndTime: Date;
+  private amountBid: BigNumber;
+  private totalAmountBid: BigNumber;
+  private msRemainingInAuctionCountdown: number;
+  private auctionPeriod: number;
 
   constructor(
       protected eventAggregator: EventAggregator
-    , protected web3Service: Web3Service,
+    , protected web3Service: Web3Service
   ) {
     super();
   }
@@ -114,12 +113,12 @@ export class Auction4Reputation extends DaoSchemeDashboard {
       } else {
 
         await (await this.token.approve({
-          owner: currentAccount,
           amount,
+          owner: currentAccount,
           spender: this.wrapper.address,
         })).watchForTxMined();
 
-        let result = await (await this.wrapper.bid({ amount })).watchForTxMined();
+        const result = await (await this.wrapper.bid({ amount })).watchForTxMined();
 
         this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
           `The bid has been recorded`, result.transactionHash));

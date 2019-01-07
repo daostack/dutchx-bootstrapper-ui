@@ -20,7 +20,7 @@ export class UsersAddress {
     this.initialize();
   }
 
-  public initialize() {
+  private initialize() {
     this.usersAddress = this.web3.defaultAccount;
   }
 }

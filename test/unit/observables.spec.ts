@@ -22,17 +22,17 @@ describe('Observables', () => {
     expect(observable).not.toBeFalsy();
     observable.subscribe(
     {
-      next: (x) => {
-        console.log('Observer got a value: ' + x);
-        expect(x).toBe(2);
-      },
+      complete: () => {
+        console.log('Observer got a complete notification');
+        },
       error: (err) => {
         console.log('Observer got an error: ' + err);
         expect(true).toBeFalsy();
       },
-      complete: () => {
-        console.log('Observer got a complete notification');
-        },
+      next: (x) => {
+        console.log('Observer got a value: ' + x);
+        expect(x).toBe(2);
+      },
     });
   });
 
@@ -42,17 +42,17 @@ describe('Observables', () => {
 
     subject.subscribe(
     {
-      next: (x) => {
-        console.log('Observer got a value: ' + x.name);
-        expect(x.name).toBe('Gabrielle');
-      },
+      complete: () => {
+        console.log('Observer got a complete notification');
+        },
       error: (err) => {
         console.log('Observer got an error: ' + err);
         expect(true).toBeFalsy();
       },
-      complete: () => {
-        console.log('Observer got a complete notification');
-        },
+      next: (x: { name: string }) => {
+        console.log('Observer got a value: ' + x.name);
+        expect(x.name).toBe('Gabrielle');
+      },
     });
 
     subject.next({ name: 'Gabrielle'});
@@ -79,17 +79,17 @@ describe('Observables', () => {
 
     throttledInput.subscribe(
     {
-      next: (x) => {
-        console.log(`throttledInput emitted: ${x} at ${new Date().getSeconds()} seconds after the minute`);
-        expect(x).toBe(count++);
-      },
+      complete: () => {
+        console.log('throttledInput sent a complete notification');
+        },
       error: (err) => {
         console.log('throttledInput generated an error: ' + err);
         expect(true).toBeFalsy();
       },
-      complete: () => {
-        console.log('throttledInput sent a complete notification');
-        },
+      next: (x) => {
+        console.log(`throttledInput emitted: ${x} at ${new Date().getSeconds()} seconds after the minute`);
+        expect(x).toBe(count++);
+      },
     });
 
     input.next(1);

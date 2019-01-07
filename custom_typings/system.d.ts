@@ -10,6 +10,6 @@ declare module 'system' {
   }
 
   global {
-    var system: ISystem;
+    const system: ISystem;
   }
 }

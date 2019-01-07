@@ -3,7 +3,9 @@ const {
   concurrent,
   rimraf
 } = require("nps-utils");
+
 const { config: { port: E2E_PORT } } = require("./test/protractor.conf");
+const lintCommand = "tslint {args} -c tslint.json 'src/**/*.ts' && tslint -c tslint.json 'test/**/*.ts' && tslint -c tslint.json 'custom_typings/**/*.ts'";
 
 module.exports = {
   scripts: {
@@ -20,6 +22,10 @@ module.exports = {
         restoreFromZip: "npm explore @daostack/arc.js -- npm start ganacheDb.restoreFromZip"
       },
       migrateContracts: "npm explore @daostack/arc.js -- npm start migrateContracts"
+    },
+    lint: {
+      default: lintCommand.replace('{args}',''),
+      andFix: lintCommand.replace('{args}','--fix')
     },
     test: {
       default: "nps test.jest",

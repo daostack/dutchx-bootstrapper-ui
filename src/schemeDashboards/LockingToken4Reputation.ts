@@ -3,7 +3,6 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
-import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { ITokenSpecification } from 'services/lockServices';
 import { Web3Service } from 'services/Web3Service';
 import { Address,
@@ -18,19 +17,14 @@ export class LockingToken4Reputation extends Locking4Reputation {
   protected wrapper: LockingToken4ReputationWrapper;
 
   private lockableTokens: Array<ITokenSpecification>;
-
   private selectedToken: ITokenSpecification = null;
 
   constructor(
       appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
-    , web3Service: Web3Service,
+    , web3Service: Web3Service
   ) {
     super(appConfig, eventAggregator, web3Service);
-  }
-
-  public selectToken(tokenSpec: ITokenSpecification) {
-    this.selectedToken = tokenSpec;
   }
 
   protected async refresh() {
@@ -61,8 +55,8 @@ export class LockingToken4Reputation extends Locking4Reputation {
         const token = (await Erc20Factory.at(this.selectedToken.address)) as Erc20Wrapper;
 
         await (await token.approve({
-          owner: this.lockModel.lockerAddress,
           amount: this.lockModel.amount,
+          owner: this.lockModel.lockerAddress,
           spender: this.wrapper.address,
         })).watchForTxMined();
 
@@ -80,4 +74,7 @@ export class LockingToken4Reputation extends Locking4Reputation {
     return this.lockService.getLockedTokenSymbol(lockInfo);
   }
 
+  private selectToken(tokenSpec: ITokenSpecification) {
+    this.selectedToken = tokenSpec;
+  }
 }

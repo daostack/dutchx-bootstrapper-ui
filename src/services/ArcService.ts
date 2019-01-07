@@ -24,8 +24,8 @@ export class ArcService {
   private arcContractMap: Map<string, Arc.ContractWrapperBase | TruffleContract>;
 
   public async initialize() {
-    let wrappersByType = await Arc.WrapperService.wrappersByType;
-    let wrappers = Arc.WrapperService.wrappers;
+    const wrappersByType = await Arc.WrapperService.wrappersByType;
+    const wrappers = Arc.WrapperService.wrappers;
 
     this.arcContracts = wrappers;
     this.arcSchemes = wrappersByType.universalSchemes;

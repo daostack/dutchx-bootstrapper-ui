@@ -8,11 +8,11 @@ import { DisposableCollection } from './DisposableCollection';
 export class AlertService {
 
   // probably doesn't really need to be a disposable collection since this is a singleton service
-  public subscriptions: DisposableCollection = new DisposableCollection();
+  private subscriptions: DisposableCollection = new DisposableCollection();
 
   constructor(
     eventAggregator: EventAggregator,
-    private dialogService: DialogService,
+    private dialogService: DialogService
   ) {
     this.subscriptions.push(eventAggregator
                            .subscribe('handleException',
@@ -26,12 +26,8 @@ export class AlertService {
     this.subscriptions.dispose();
   }
 
-  public showMessage(config: EventConfig | string) {
-    this.dialogService.alert(this.getMessage(config));
-  }
-
-  public handleException(config: EventConfigException | any) {
-    let message;
+  private handleException(config: EventConfigException | any) {
+    let message: string;
     if (!(config instanceof EventConfigException)) {
       const ex = config as any;
       message = `${ex.message ? ex.message : ex}`;
@@ -43,7 +39,7 @@ export class AlertService {
     this.dialogService.alert(message);
   }
 
-  public handleFailure(config: EventConfig | string) {
+  private handleFailure(config: EventConfig | string) {
     this.dialogService.alert(this.getMessage(config));
   }
 

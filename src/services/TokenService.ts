@@ -7,7 +7,7 @@ export class TokenService {
 
   constructor(
       private web3: Web3Service
-    , private arcService: ArcService,
+    , private arcService: ArcService
   ) { }
 
   public async getDaoTokenSymbol(token: DaoTokenWrapper): Promise<string> {
@@ -26,7 +26,7 @@ export class TokenService {
     token: Erc20Wrapper,
     inEth: boolean = false): Promise<BigNumber> {
 
-    let userAddress = this.web3.defaultAccount;
+    const userAddress = this.web3.defaultAccount;
     return this.getErc20TokenBalance(token, userAddress, inEth);
   }
 
@@ -34,7 +34,7 @@ export class TokenService {
     tokenAddress: Address,
     inEth: boolean = false): Promise<BigNumber> {
 
-    let userAddress = this.web3.defaultAccount;
+    const userAddress = this.web3.defaultAccount;
 
     return this.getTokenBalance(tokenAddress, userAddress, inEth);
   }
@@ -67,7 +67,7 @@ export class TokenService {
 
   public getGenTokenBalance(): Promise<BigNumber | undefined> {
     try {
-      let userAddress = this.web3.defaultAccount;
+      const userAddress = this.web3.defaultAccount;
       return DaoTokenWrapper.getGenTokenBalance(userAddress);
     } catch {
       // then we don't know the address of the GEN token

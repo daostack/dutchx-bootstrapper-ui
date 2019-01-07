@@ -31,8 +31,8 @@ export class SortService {
 
   public static evaluateDateTime(valueA: string, valueB: string, sortOrder: SortOrder = SortOrder.ASC) {
 
-    let a = new Date(valueA).valueOf();
-    let b = new Date(valueB).valueOf();
+    const a = new Date(valueA).valueOf();
+    const b = new Date(valueB).valueOf();
 
     if (!a && !b) { return 0; }
 

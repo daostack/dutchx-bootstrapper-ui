@@ -10,18 +10,12 @@ import {
 import { BigNumber, Web3Service } from '../services/Web3Service';
 
 export class DaoEx extends DAO {
-  /**
-   * a Scheme has been added or removed from a DAO.
-   */
-  public static daoSchemeSetChangedEvent: string = 'daoSchemeSetChanged';
-  public static daoConstraintSetChangedEvent: string = 'daoConstraintSetChanged';
-
   public static async fromArcJsDao(
       org: DAO
     , arcService: ArcService
     , web3: Web3Service): Promise<DaoEx> {
 
-    let newDAO = Object.assign(new DaoEx(), org);
+    const newDAO = Object.assign(new DaoEx(), org);
     newDAO.arcService = arcService;
     newDAO.address = org.avatar.address;
     newDAO.name = org.name;
@@ -29,24 +23,25 @@ export class DaoEx extends DAO {
     return newDAO;
   }
 
+  /**
+   * a Scheme has been added or removed from a DAO.
+   */
+  private static daoSchemeSetChangedEvent: string = 'daoSchemeSetChanged';
+
   public address: string;
   public name: string;
   public arcService: ArcService;
   public omega: BigNumber; // in wei
+
   private schemesCache: Map<string, SchemeInfo>;
   private registerSchemeEvent;
   private unRegisterSchemeEvent;
   private logger = LogManager.getLogger('DxBootStrapper');
 
   /* this is not meant to be instantiated here, only in Arc */
-  private constructor() {
+  constructor() {
     super();
     includeEventsIn(this);
-  }
-
-  public dispose() {
-    this.registerSchemeEvent.stopWatching();
-    this.unRegisterSchemeEvent.stopWatching();
   }
 
   /**
@@ -56,8 +51,8 @@ export class DaoEx extends DAO {
   public async allSchemes(): Promise<Array<SchemeInfo>> {
     if (!this.schemesCache) {
       this.schemesCache = new Map<string, SchemeInfo>();
-      let schemes = await this._getCurrentSchemes();
-      for (let scheme of schemes) {
+      const schemes = await this.getCurrentSchemes();
+      for (const scheme of schemes) {
         this.schemesCache.set(scheme.address, scheme);
       }
       this.watchSchemes();
@@ -79,6 +74,7 @@ export class DaoEx extends DAO {
     * @param event The event channel or event data type.
     * @param callback The callback to be invoked when when the specified message is published.
     */
+  // tslint:disable-next-line: ban-types
   public subscribe(event: string | Function, callback: Function): Subscription { return null; }
 
    /**
@@ -87,9 +83,15 @@ export class DaoEx extends DAO {
     * @param event The event channel or event data type.
     * @param callback The callback to be invoked when when the specified message is published.
     */
+  // tslint:disable-next-line: ban-types
   public subscribeOnce(event: string | Function, callback: Function): Subscription { return null; }
 
-  private async _getCurrentSchemes(): Promise<Array<SchemeInfo>> {
+  private dispose() {
+    this.registerSchemeEvent.stopWatching();
+    this.unRegisterSchemeEvent.stopWatching();
+  }
+
+  private async getCurrentSchemes(): Promise<Array<SchemeInfo>> {
     return (await super.getSchemes()).map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
   }
 
@@ -102,13 +104,13 @@ export class DaoEx extends DAO {
   }
 
   private async handleSchemeEvent(err, eventsArray, adding: boolean): Promise<void> {
-    let newSchemesArray = [];
+    const newSchemesArray = [];
     if (!(eventsArray instanceof Array)) {
       eventsArray = [eventsArray];
     }
-    let count = eventsArray.length;
+    const count = eventsArray.length;
     for (let i = 0; i < count; i++) {
-      let schemeAddress = eventsArray[i].args._scheme;
+      const schemeAddress = eventsArray[i].args._scheme;
       let contractWrapper = this.arcService.contractWrapperFromAddress(schemeAddress) as any;
 
       if (!contractWrapper) {
@@ -117,7 +119,7 @@ export class DaoEx extends DAO {
         contractWrapper = { address: schemeAddress } as any;
       }
 
-      let schemeInfo = SchemeInfo.fromContractWrapper(contractWrapper, adding);
+      const schemeInfo = SchemeInfo.fromContractWrapper(contractWrapper, adding);
       let changed = false;
       // TODO: get unknown name from Arc
       if (adding && !this.schemesCache.has(schemeAddress)) {

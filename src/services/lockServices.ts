@@ -11,7 +11,7 @@ export class LockService {
   constructor(
       appConfig: AureliaConfiguration
     , private wrapper: Locking4ReputationWrapper
-    , private userAddress: Address,
+    , private userAddress: Address
   ) {
     this.lockableTokenSpecs = appConfig.get('lockableTokens');
   }

@@ -24,12 +24,12 @@ describe('the App module', () => {
   beforeEach(() => {
     mockedRouter = new RouterStub();
 
-    let fakeWeb3Service = {
-      isConnected: true,
+    const fakeWeb3Service = {
       defaultAccount: {},
+      isConnected: true,
     };
 
-    let fakeAppConfigService = {
+    const fakeAppConfigService = {
       get: (name: string): string => '',
     };
 
@@ -50,11 +50,11 @@ describe('the App module', () => {
   });
 
   it('should have a dashboard route', () => {
-    expect(app.router.routes).toContainEqual(
-    { route: ['dashboard/:address?'],
-      name: 'dashboard',
+    expect(app.router.routes).toContainEqual({
       moduleId: PLATFORM.moduleName('./organizations/dashboard'),
+      name: 'dashboard',
       nav: false,
+      route: ['dashboard/:address?'],
       title: 'Dashboard',
     });
   });

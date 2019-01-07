@@ -7,7 +7,6 @@ import 'bootstrap-material-design';
 import 'popper.js';
 import { ConsoleLogService } from 'services/ConsoleLogService';
 import { SnackbarService } from 'services/SnackbarService';
-import { ArcService } from './services/ArcService';
 import { DateService } from './services/DateService';
 
 // remove out if you don't want a Promise polyfill (remove also from webpack.config.js)
@@ -33,7 +32,6 @@ export async function configure(aurelia: Aurelia) {
   }
 
   aurelia.use.globalResources([
-    PLATFORM.moduleName('resources/bindingBehaviors/async'),
     PLATFORM.moduleName('resources/customElements/EtherscanLink/EtherscanLink'),
     PLATFORM.moduleName('resources/customElements/EthBalance/EthBalance'),
     PLATFORM.moduleName('resources/customElements/UsersAddress/UsersAddress'),
@@ -44,12 +42,8 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName('resources/customElements/spinButton.html'),
     PLATFORM.moduleName('resources/customElements/instructions.html'),
     PLATFORM.moduleName('resources/customElements/pageLoading.html'),
-    PLATFORM.moduleName('resources/customAttributes/click-to-route'),
-    PLATFORM.moduleName('resources/valueConverters/toUpper'),
     PLATFORM.moduleName('resources/valueConverters/number'),
-    PLATFORM.moduleName('resources/valueConverters/round'),
     PLATFORM.moduleName('resources/valueConverters/ethwei'),
-    PLATFORM.moduleName('resources/valueConverters/keys'),
     PLATFORM.moduleName('resources/valueConverters/date'),
     PLATFORM.moduleName('resources/valueConverters/timespan'),
     PLATFORM.moduleName('resources/valueConverters/boolean'),

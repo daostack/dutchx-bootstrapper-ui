@@ -1,6 +1,4 @@
-import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
-import { EventConfigException } from '../entities/GeneralEvents';
 import { SchemeInfo } from '../entities/SchemeInfo';
 import { DaoService } from '../services/DaoService';
 import { ArcService, ContractWrapperInfo, SchemePermissions } from './ArcService';
@@ -16,7 +14,6 @@ export class SchemeService {
   constructor(
       private arcService: ArcService
     , private daoService: DaoService
-    , private eventAggregator: EventAggregator,
   ) {
     this.availableSchemes = this.arcService.arcSchemes;
   }
@@ -32,11 +29,11 @@ export class SchemeService {
    */
   public async getSchemesForDao(daoAddress: string, excludeNonArcSchemes: boolean = false): Promise<Array<SchemeInfo>> {
 
-    let schemes = (await this._getSchemesInDao(daoAddress)).filter((s) => !excludeNonArcSchemes || s.inArc);
+    const schemes = (await this._getSchemesInDao(daoAddress)).filter((s) => !excludeNonArcSchemes || s.inArc);
 
-    let schemesMap = new Map<string, SchemeInfo>();
+    const schemesMap = new Map<string, SchemeInfo>();
 
-    for (let scheme of schemes) {
+    for (const scheme of schemes) {
       schemesMap.set(scheme.address, scheme);
     }
 
@@ -62,8 +59,8 @@ export class SchemeService {
    * @param daoAddress
    */
   private async _getSchemesInDao(daoAddress: string): Promise<Array<SchemeInfo>> {
-    let dao = await this.daoService.daoAt(daoAddress);
-    let schemes = await dao.allSchemes();
+    const dao = await this.daoService.daoAt(daoAddress);
+    const schemes = await dao.allSchemes();
     return schemes;
   }
 }

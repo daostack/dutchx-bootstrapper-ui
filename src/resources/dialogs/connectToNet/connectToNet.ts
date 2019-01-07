@@ -9,19 +9,19 @@ import { Web3Service } from 'services/Web3Service';
 @autoinject
 export class ConnectToNet {
 
-  public model: IConnectToNetModel;
-  public networkName: string;
-  public subscriptions: DisposableCollection = new DisposableCollection();
-  public userAccount: Address;
-  public isDone: boolean;
-  public landed: boolean;
-  public _hasAccepted = false;
+  private model: IConnectToNetModel;
+  private networkName: string;
+  private subscriptions: DisposableCollection = new DisposableCollection();
+  private userAccount: Address;
+  private isDone: boolean;
+  private landed: boolean;
+  private _hasAccepted = false;
 
   @computedFrom('userAccount, _hasAccepted')
-  get hasAccepted(): boolean {
+  private get hasAccepted(): boolean {
     return LocalStorageService.getItem(this.disclaimerAcceptanceKey(), false) === 'yes';
   }
-  set hasAccepted(val: boolean) {
+  private set hasAccepted(val: boolean) {
     this._hasAccepted = val;
     if (this.userAccount) {
       LocalStorageService.setItem(this.disclaimerAcceptanceKey(), val ? 'yes' : 'no', false);
@@ -48,7 +48,12 @@ export class ConnectToNet {
     }));
   }
 
-  public land() {
+  public close(cancelled: boolean = false) {
+    this.subscriptions.dispose();
+    this.controller.close(!cancelled);
+  }
+
+  private land() {
     if (this.hasAccepted) {
       // disclaimer has  already been accepted
       this.close(false);
@@ -57,7 +62,7 @@ export class ConnectToNet {
     }
   }
 
-  public accept() {
+  private accept() {
     this.close(false);
     // timeout to keep GUI transition clean
     setTimeout(() => { this.hasAccepted = true; }, 10);
@@ -66,13 +71,8 @@ export class ConnectToNet {
   /**
    * confirms access to MM accounts
    */
-  public confirm() {
+  private confirm() {
     this.model.confirm();
-  }
-
-  public close(cancelled: boolean = false) {
-    this.subscriptions.dispose();
-    this.controller.close(!cancelled);
   }
 
   private disclaimerAcceptanceKey() {
