@@ -4,13 +4,14 @@ import { autoinject } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { ITokenSpecification } from 'services/lockServices';
-import { Web3Service } from 'services/Web3Service';
+import { BigNumber, Web3Service } from 'services/Web3Service';
 import { Address,
         Erc20Factory,
         Erc20Wrapper,
         LockInfo,
         LockingToken4ReputationWrapper,
-        TokenLockingOptions } from '../services/ArcService';
+        TokenLockingOptions,
+        Utils} from '../services/ArcService';
 
 @autoinject
 export class LockingToken4Reputation extends Locking4Reputation {
@@ -18,6 +19,7 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
   private lockableTokens: Array<ITokenSpecification>;
   private selectedToken: ITokenSpecification = null;
+  private selectedTokenIsLiquid: boolean = false;
 
   constructor(
       appConfig: AureliaConfiguration
@@ -74,7 +76,18 @@ export class LockingToken4Reputation extends Locking4Reputation {
     return this.lockService.getLockedTokenSymbol(lockInfo);
   }
 
-  private selectToken(tokenSpec: ITokenSpecification) {
+  private async getTokenIsLiquid(token: Address): Promise<boolean> {
+    const oracleAddress = await this.wrapper.getPriceOracleAddress();
+
+    const oracle = (await Utils.requireContract('PriceOracleInterface')).at(oracleAddress);
+
+    const price = (await oracle.getPrice(token)) as Array<BigNumber>;
+
+    return price && (price.length === 2) && price[0].gt(0) && price[1].gt(0);
+  }
+
+  private async selectToken(tokenSpec: ITokenSpecification) {
+    this.selectedTokenIsLiquid = await this.getTokenIsLiquid(tokenSpec.address);
     this.selectedToken = tokenSpec;
   }
 }

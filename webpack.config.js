@@ -191,7 +191,7 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
       // filter ABI contract files
       new webpack.ContextReplacementPlugin(
         /@daostack[/\\]arc.js[/\\]migrated_contracts$/,
-        /Controller.json|Avatar.json|DAOToken.json|Reputation.json|ERC20.json|Auction4Reputation.json|ExternalLocking4Reputation.json|Locking4Reputation.json|LockingEth4Reputation.json|LockingToken4Reputation.json/),
+        /Controller.json|Avatar.json|DAOToken.json|Reputation.json|ERC20.json|Auction4Reputation.json|ExternalLocking4Reputation.json|Locking4Reputation.json|LockingEth4Reputation.json|LockingToken4Reputation.json|PriceOracleInterface.json/),
       ...when(extractCss, new ExtractTextPlugin({
         filename: production ? '[contenthash].css' : '[id].css',
         allChunks: true,
