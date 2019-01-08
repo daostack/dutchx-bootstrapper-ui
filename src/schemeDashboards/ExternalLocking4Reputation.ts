@@ -13,9 +13,8 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
   protected wrapper: ExternalLocking4ReputationWrapper;
 
-  private alreadyLocked: boolean;
-  private alreadyRegistered: boolean;
-  private intervalId: any;
+  private alreadyLocked: boolean = false;
+  private alreadyRegistered: boolean = false;
   private globalPeriodStartDate: Date;
   private registering: boolean = false;
   private globalPeriodHasStarted: boolean = false;

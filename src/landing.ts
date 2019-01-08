@@ -9,7 +9,6 @@ export class Landing {
   private lockingPeriodEndDate: Date;
   private lockingPeriodStartDate: Date;
   private governanceStartDate: Date;
-  private intervalId: any;
 
   constructor(
       private appConfig: AureliaConfiguration
