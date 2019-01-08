@@ -22,14 +22,15 @@ export class DateService {
     return this.createMoment(undefined, true).toDate();
   }
 
+  public localTimezoneOffset: number;
+  public localTimezone: string;
+
   private formats: Map<string, string>;
-  private localTimezoneOffset: number;
 
   constructor() {
     this.localTimezoneOffset = moment().utcOffset();
     this.localTimezone = moment.tz.guess();
     this.configure();
-    // include french: moment.locale("fr-ca");
   }
 
   public configure(): void {
