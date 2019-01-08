@@ -2,7 +2,6 @@ import { includeEventsIn } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { LogManager } from 'aurelia-framework';
 import { DaoEx } from '../entities/DAO';
-import { Web3Service } from '../services/Web3Service';
 import {
   ArcService,
   DAO
@@ -14,8 +13,7 @@ export class DaoService {
   private daoCache = new Map<string, DaoEx>();
   private logger = LogManager.getLogger('DxBootStrapper');
   constructor(
-    private arcService: ArcService,
-    private web3: Web3Service
+    private arcService: ArcService
   ) {
     includeEventsIn(this);
   }

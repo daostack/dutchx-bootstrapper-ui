@@ -24,7 +24,6 @@ export class DateService {
 
   private formats: Map<string, string>;
   private localTimezoneOffset: number;
-  private localTimezone: any;
 
   constructor() {
     this.localTimezoneOffset = moment().utcOffset();

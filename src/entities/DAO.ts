@@ -6,7 +6,7 @@ import {
   DAO,
   DaoSchemeInfo,
 } from '../services/ArcService';
-import { BigNumber, Web3Service } from '../services/Web3Service';
+import { BigNumber} from '../services/Web3Service';
 
 export class DaoEx extends DAO {
   public static async fromArcJsDao(

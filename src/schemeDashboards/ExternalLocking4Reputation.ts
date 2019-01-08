@@ -3,7 +3,7 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { EventConfigFailure } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
-import { Address, ExternalLocking4ReputationWrapper, LockInfo, Utils } from 'services/ArcService';
+import { Address, ExternalLocking4ReputationWrapper, LockInfo } from 'services/ArcService';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 
 @autoinject

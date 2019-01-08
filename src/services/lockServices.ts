@@ -1,7 +1,7 @@
 import { Erc20Wrapper, LockingToken4ReputationWrapper } from '@daostack/arc.js';
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { BigNumber } from 'bignumber.js';
-import { Address, LockerInfo, LockInfo, Locking4ReputationWrapper } from 'services/ArcService';
+import { Address, LockInfo, Locking4ReputationWrapper } from 'services/ArcService';
 
 export class LockService {
   private static lockableTokens: Map<Address, ITokenSpecification> = new Map<Address, ITokenSpecification>();

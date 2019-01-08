@@ -1,7 +1,7 @@
 import { autoinject } from 'aurelia-framework';
 import { SchemeInfo } from '../entities/SchemeInfo';
 import { DaoService } from '../services/DaoService';
-import { ArcService, ContractWrapperInfo, SchemePermissions } from './ArcService';
+import { ArcService, ContractWrapperInfo } from './ArcService';
 
 @autoinject
 export class SchemeService {

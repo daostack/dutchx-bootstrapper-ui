@@ -1,5 +1,5 @@
 import { autoinject } from 'aurelia-framework';
-import { Address, ArcService, DaoTokenWrapper, Erc20Wrapper, Utils, WrapperService } from './ArcService';
+import { Address, DaoTokenWrapper, Erc20Wrapper, Utils, WrapperService } from './ArcService';
 import { BigNumber, Web3Service } from './Web3Service';
 
 @autoinject
@@ -7,7 +7,6 @@ export class TokenService {
 
   constructor(
       private web3: Web3Service
-    , private arcService: ArcService
   ) { }
 
   public async getDaoTokenSymbol(token: DaoTokenWrapper): Promise<string> {

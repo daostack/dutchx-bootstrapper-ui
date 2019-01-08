@@ -1,5 +1,5 @@
 ﻿import { Container } from 'aurelia-dependency-injection';
-import { autoinject, BindingEngine, TemplatingEngine, transient } from 'aurelia-framework';
+import { autoinject, TemplatingEngine } from 'aurelia-framework';
 
 @autoinject
 export class AureliaHelperService {

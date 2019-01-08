@@ -33,10 +33,6 @@ export class ConsoleLogService {
     this.subscriptions.dispose();
   }
 
-  private showMessage(config: EventConfig | string) {
-    this.logger.info(this.getMessage(config));
-  }
-
   private handleSuccess(config: EventConfig | string) {
     this.logger.debug(this.getMessage(config));
   }
