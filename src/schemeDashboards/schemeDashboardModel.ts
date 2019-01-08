@@ -1,8 +1,7 @@
 import { Address } from 'services/ArcService';
-import { SchemeInfo } from 'services/SchemeService';
 import { DaoEx } from 'services/DaoService';
 
-export interface SchemeDashboardModel {
+export interface ISchemeDashboardModel {
   friendlyName: string;
   name: string;
   address: Address;

@@ -1,16 +1,15 @@
-import {browser, element, by, By, $, $$, ExpectedConditions} from 'aurelia-protractor-plugin/protractor';
+import {$, $$, browser, by, By, element, ExpectedConditions} from 'aurelia-protractor-plugin/protractor';
 
-export class PageObject_Home {
-  getGreeting() {
+export class PageObjectHome {
+  public getGreeting() {
     return element(by.tagName('h2')).getText();
   }
 
-
-  getCurrentPageTitle() {
+  public getCurrentPageTitle() {
     return browser.getTitle();
   }
 
-  async openAlertDialog() {
+  public async openAlertDialog() {
     // await this.pressSubmitButton();
 
     // await browser.wait(ExpectedConditions.alertIsPresent(), 5000);

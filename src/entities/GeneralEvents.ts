@@ -1,6 +1,28 @@
 export class EventConfig {
+
+  public style: string = 'snack-info';
+  /**
+   * in milliseconds, default 3000, 0 for never
+   */
+  public duration: number = 3000;
+  public actionType: ActionType = ActionType.none;
+
+  public action: () => void;
+  public actionText: string;
+  /**
+   * for when ActionType is address.
+   */
+  public address: string;
+  /**
+   * "tx" or "address", when actionType is address.  Default is "address"
+   */
+  public addressType: string;
+  /**
+   * for when action is Exception
+   */
+  public exception: any;
   constructor(
-    public message: string
+      public message: string
     , type: EventMessageType = EventMessageType.Info
     , lifetime: SnackLifetime = SnackLifetime.transitory
   ) {
@@ -22,44 +44,22 @@ export class EventConfig {
       case EventMessageType.Info:
       case EventMessageType.Debug:
       default:
-        this.style = "snack-info";
+        this.style = 'snack-info';
         break;
       case EventMessageType.Warning:
-        this.style = "snack-warning";
+        this.style = 'snack-warning';
         break;
       case EventMessageType.Failure:
       case EventMessageType.Exception:
-        this.style = "snack-failure";
+        this.style = 'snack-failure';
         break;
     }
   }
-
-  public style: string = "snack-info";
-  /**
-   * in milliseconds, default 3000, 0 for never
-   */
-  public duration: Number = 3000;
-  public actionType: ActionType = ActionType.none;
-
-  public action: () => void;
-  public actionText: string;
-  /**
-   * for when ActionType is address.
-   */
-  public address: string;
-  /**
-   * "tx" or "address", when actionType is address.  Default is "address"
-   */
-  public addressType: string;
-  /**
-   * for when action is Exception
-   */
-  public exception: any;
 }
 
 export class EventConfigFailure extends EventConfig {
   constructor(
-    message: string = "An error occurred"
+    message: string = 'An error occurred'
   ) {
     super(message, EventMessageType.Failure, SnackLifetime.closeButton);
     this.message = `${this.message}`;
@@ -68,7 +68,7 @@ export class EventConfigFailure extends EventConfig {
 
 export class EventConfigException extends EventConfig {
   constructor(
-    message: string = "An error occurred"
+      message: string = 'An error occurred'
     , public exception: any
   ) {
     super(message, EventMessageType.Exception, SnackLifetime.closeButton);
@@ -79,7 +79,7 @@ export class EventConfigException extends EventConfig {
 
 export class EventConfigAction extends EventConfig {
   constructor(
-    message: string
+      message: string
     /**
      * text for control
      */
@@ -98,7 +98,7 @@ export class EventConfigAction extends EventConfig {
 
 export class EventConfigAddress extends EventConfig {
   constructor(
-    message: string
+      message: string
     , public address: string
     /**
      * text to display instead of address
@@ -107,22 +107,22 @@ export class EventConfigAddress extends EventConfig {
   ) {
     super(message, EventMessageType.Info, SnackLifetime.clickToDismiss);
     this.actionType = ActionType.address;
-    this.addressType = "address";
+    this.addressType = 'address';
   }
 }
 
 export class EventConfigTransaction extends EventConfigAddress {
   constructor(
-    message: string
+      message: string
     , public address: string
     /**
      * text to display instead of address
      */
-    , public actionText: string = "See Transaction"
+    , public actionText: string = 'See Transaction'
   ) {
     super(message, address, actionText);
     this.actionType = ActionType.address;
-    this.addressType = "tx";
+    this.addressType = 'tx';
   }
 }
 
@@ -135,14 +135,14 @@ export enum ActionType {
   /**
    * actionText is an address, make it hot/copyable
    */
-  address = 2
+  address = 2,
 }
 
 export enum SnackLifetime {
   none = 0,
   transitory = 1,
   clickToDismiss = 2,
-  closeButton = 3
+  closeButton = 3,
 }
 
 export enum EventMessageType {
@@ -151,5 +151,5 @@ export enum EventMessageType {
   Exception = 1,
   Warning = 2,
   Info = 3,
-  Debug = 4
+  Debug = 4,
 }

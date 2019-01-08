@@ -8,7 +8,7 @@ import { ContractWrapperInfo, DaoSchemeInfo } from '../services/ArcService';
 export class SchemeInfo extends ContractWrapperInfo {
 
   public static fromOrganizationSchemeInfo(orgSchemeInfo: DaoSchemeInfo) {
-    let schemeInfo = new SchemeInfo();
+    const schemeInfo = new SchemeInfo();
     schemeInfo.address = orgSchemeInfo.address;
     if (orgSchemeInfo.wrapper) {
       schemeInfo.name = orgSchemeInfo.wrapper.name;
@@ -19,7 +19,7 @@ export class SchemeInfo extends ContractWrapperInfo {
   }
 
   public static fromContractWrapper(wrapper: ContractWrapperInfo, isRegistered: boolean): SchemeInfo {
-    let schemeInfo = new SchemeInfo();
+    const schemeInfo = new SchemeInfo();
     schemeInfo.address = wrapper.address;
     schemeInfo.name = wrapper.name;
     schemeInfo.friendlyName = wrapper.friendlyName;

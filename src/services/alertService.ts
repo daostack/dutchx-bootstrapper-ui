@@ -1,35 +1,33 @@
-import { autoinject } from "aurelia-framework";
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { DisposableCollection } from "./DisposableCollection";
+import { autoinject } from 'aurelia-framework';
+import { EventConfig, EventConfigException } from '../entities/GeneralEvents';
 import { DialogService } from './dialogService';
-import { EventConfig, EventConfigException } from "../entities/GeneralEvents";
+import { DisposableCollection } from './DisposableCollection';
 
 @autoinject
 export class AlertService {
 
   // probably doesn't really need to be a disposable collection since this is a singleton service
-  subscriptions: DisposableCollection = new DisposableCollection();
+  private subscriptions: DisposableCollection = new DisposableCollection();
 
   constructor(
     eventAggregator: EventAggregator,
     private dialogService: DialogService
   ) {
-    this.subscriptions.push(eventAggregator.subscribe("handleException", (config: EventConfigException | any) => this.handleException(config)));
-    this.subscriptions.push(eventAggregator.subscribe("handleFailure", (config: EventConfig | string) => this.handleFailure(config)));
+    this.subscriptions.push(eventAggregator
+                           .subscribe('handleException',
+                            (config: EventConfigException | any) => this.handleException(config)));
+    this.subscriptions.push(eventAggregator
+                           .subscribe('handleFailure', (config: EventConfig | string) => this.handleFailure(config)));
   }
 
   /* shouldn't actually ever happen */
-  dispose() {
+  public dispose() {
     this.subscriptions.dispose();
   }
 
-  public showMessage(config: EventConfig | string) {
-    this.dialogService.alert(this.getMessage(config));
-  }
-
-
-  public handleException(config: EventConfigException | any) {
-    let message;
+  private handleException(config: EventConfigException | any) {
+    let message: string;
     if (!(config instanceof EventConfigException)) {
       const ex = config as any;
       message = `${ex.message ? ex.message : ex}`;
@@ -41,11 +39,11 @@ export class AlertService {
     this.dialogService.alert(message);
   }
 
-  public handleFailure(config: EventConfig | string) {
+  private handleFailure(config: EventConfig | string) {
     this.dialogService.alert(this.getMessage(config));
   }
 
   private getMessage(config: EventConfig | string): string {
-    return (typeof config == "string") ? config : config.message;
+    return (typeof config === 'string') ? config : config.message;
   }
 }

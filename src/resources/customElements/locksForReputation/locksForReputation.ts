@@ -1,49 +1,46 @@
-import { autoinject, bindable, bindingMode } from "aurelia-framework";
-import { LockInfo, Address, LockerInfo, Locking4ReputationWrapper } from 'services/ArcService';
+import { autoinject, bindable, bindingMode } from 'aurelia-framework';
+import { LockInfo, Locking4ReputationWrapper } from 'services/ArcService';
 import { Web3Service } from 'services/Web3Service';
 
 @autoinject
 export class LocksForReputation {
 
+  @bindable({ defaultBindingMode: bindingMode.oneWay }) public locks: Array<LockInfo>;
+  // tslint:disable-next-line: variable-name
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) public release: ({ lock: LockInfo }) => Promise<boolean>;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) public wrapper: Locking4ReputationWrapper;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) public refresh: Promise<void>;
+
+  private _locks: Array<LockInfo>;
+  private anyCanRelease: boolean;
+  private loading: boolean = true;
+
   constructor(private web3Service: Web3Service) {
   }
 
-  _locks: Array<LockInfo>;
-
-  anyCanRelease: boolean;
-  loading: boolean = true;
-  // anyCanRedeem: boolean;
-
-  @bindable({ defaultBindingMode: bindingMode.oneWay }) locks: Array<LockInfo>;
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) release: ({ lock: LockInfo }) => Promise<boolean>;
-  // @bindable({ defaultBindingMode: bindingMode.oneTime }) redeem: ({ lock: LockInfo }) => Promise<boolean>;
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) wrapper: Locking4ReputationWrapper;
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) refresh: Promise<void>;
-
-  attached() {
+  public attached() {
     this.locksChanged(this.locks);
   }
 
-  async locksChanged(newLocks: Array<LockInfo>) {
+  private async locksChanged(newLocks: Array<LockInfo>) {
     if (!this.wrapper) {
       // then we haven't been attached yet, so wait
       return;
     }
 
     this.loading = true;
-    const _tmpLocks = newLocks as Array<LockInfoInternal>;
+    const tmpLocks = newLocks as Array<ILockInfoInternal>;
 
-    for (const lock of _tmpLocks) {
-      //lock.canRedeem = await this.canRedeem(lock);
+    for (const lock of tmpLocks) {
+      // lock.canRedeem = await this.canRedeem(lock);
       lock.canRelease = await this.canRelease(lock);
     }
-    this.anyCanRelease = _tmpLocks.filter((l: LockInfoInternal) => l.canRelease).length > 0;
-    // this.anyCanRedeem = _tmpLocks.filter((l: LockInfoInternal) => l.canRedeem).length > 0;
-    this._locks = _tmpLocks;
+    this.anyCanRelease = tmpLocks.filter((l: ILockInfoInternal) => l.canRelease).length > 0;
+    this._locks = tmpLocks;
     this.loading = false;
   }
 
-  private async _release(lock: LockInfoInternal) {
+  private async _release(lock: ILockInfoInternal) {
     if (!lock.canRelease) { return; }
 
     lock.releasing = true;
@@ -58,38 +55,21 @@ export class LocksForReputation {
     }
   }
 
-  // private async _redeem(lock: LockInfoInternal) {
-  //   const success = await this.redeem({ lock });
-  //   if (success) {
-  //     lock.canRedeem = false; // await this.canRedeem(lock);
-  //   }
-  // }
-
   private async canRelease(lock: LockInfo): Promise<boolean> {
     if (lock.lockerAddress !== this.web3Service.defaultAccount) {
       return false;
-    }
-    else {
+    } else {
       const errMsg = await this.wrapper.getReleaseBlocker(lock.lockerAddress, lock.lockId);
       return !errMsg;
     }
   }
-  // private async canRedeem(lock: LockInfo): Promise<boolean> {
-  //   if (lock.lockerAddress !== this.web3Service.defaultAccount) {
-  //     return false;
-  //   } else {
-  //     const errMsg = await this.wrapper.getRedeemBlocker(lock.lockerAddress);
-  //     return !errMsg;
-  //   }
-  // }
 }
 
-export interface LockInfoX extends LockInfo {
+export interface ILockInfoX extends LockInfo {
   units: string;
 }
 
-interface LockInfoInternal extends LockInfoX {
-  //canRedeem: boolean;
+interface ILockInfoInternal extends ILockInfoX {
   canRelease: boolean;
   releasing: boolean;
 }

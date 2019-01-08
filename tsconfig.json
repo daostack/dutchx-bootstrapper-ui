@@ -8,7 +8,8 @@
     "sourceRoot": "src",
     "baseUrl": "src",
     "importHelpers": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "noUnusedParameters": true
   },
   "lib": [
     "es2015",

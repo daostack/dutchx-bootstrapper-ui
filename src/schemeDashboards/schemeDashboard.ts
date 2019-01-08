@@ -1,28 +1,21 @@
-import { SchemeInfo } from "../services/SchemeService";
-import { SchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DaoEx } from 'services/DaoService';
-import { EventAggregator } from "aurelia-event-aggregator";
-import { IDisposable } from "services/IDisposable";
 
 export class DaoSchemeDashboard {
-  /**
-   * ready-to-use TruffleContract
-   */
-  // contract: TruffleContract;
-  address: string;
-  orgAddress: string;
+  protected address: string;
+  protected orgAddress: string;
   /**
    * Pretty name
    */
-  friendlyName: string;
+  protected friendlyName: string;
   /**
    * short name (used by ArcService.getContract())
    */
-  name: string;
-  org: DaoEx;
-  orgName: string;
+  protected name: string;
+  protected org: DaoEx;
+  protected orgName: string;
 
-  activate(model: SchemeDashboardModel) {
+  protected activate(model: ISchemeDashboardModel) {
     this.friendlyName = model.friendlyName;
     this.name = model.name;
     this.address = model.address;

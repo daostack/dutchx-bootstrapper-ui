@@ -1,5 +1,5 @@
-﻿import { NumberService } from "../../services/numberService";
-import {autoinject} from "aurelia-framework";
+﻿import {autoinject} from 'aurelia-framework';
+import { NumberService } from '../../services/numberService';
 
 /**
  * when a number is retrieved from the element to which it is bound, convert it from a string to a number.
@@ -15,7 +15,7 @@ export class NumberValueConverter {
      * incorrect value is not persisted.
      * @param value
      */
-    fromView(value: string) : number {
+    public fromView(value: string): number {
         return this.numberService.fromString(value);
     }
 }

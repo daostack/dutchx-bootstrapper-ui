@@ -1,5 +1,5 @@
-import { bindable, containerless, autoinject } from 'aurelia-framework';
 import { EventAggregator } from 'aurelia-event-aggregator';
+import { autoinject, bindable, containerless } from 'aurelia-framework';
 
 @containerless
 @autoinject
@@ -7,49 +7,48 @@ export class CopyToClipboardButton {
 
   /** supply either element or textToCopy */
   @bindable
-  element: HTMLElement;
+  public element: HTMLElement;
 
   /** supply either element or textToCopy */
   @bindable
-  textToCopy: string;
+  public textToCopy: string;
 
   @bindable
-  message: string = "Copied to the clipboard";
+  public message: string = 'Copied to the clipboard';
 
-  button: HTMLElement;
+  private button: HTMLElement;
 
   constructor(
     private eventAggregator: EventAggregator
   ) { }
 
-
-  attached() {
-    (<any>$(this.button)).tooltip(
+  public attached() {
+    ($(this.button) as any).tooltip(
       {
-        toggle: "tooltip",
-        placement: "right",
-        title: "Copy to clipboard",
-        trigger: "hover"
+        placement: 'right',
+        title: 'Copy to clipboard',
+        toggle: 'tooltip',
+        trigger: 'hover',
       }
     )
-      //.css("z-index", "100000")
+      // .css("z-index", "100000")
       ;
   }
 
-  listener(e) { e.clipboardData.setData("text/plain", this.textToCopy); e.preventDefault(); }
+  private listener(e) { e.clipboardData.setData('text/plain', this.textToCopy); e.preventDefault(); }
 
-  copy(e: Event) {
+  private copy(e: Event) {
     if (this.element) {
       this.textToCopy = $(this.element).text();
     }
 
-    let handler = this.listener.bind(this);
+    const handler = this.listener.bind(this);
 
-    document.addEventListener("copy", handler);
-    document.execCommand("copy");
-    document.removeEventListener("copy", handler);
+    document.addEventListener('copy', handler);
+    document.execCommand('copy');
+    document.removeEventListener('copy', handler);
 
-    this.eventAggregator.publish("showMessage", this.message);
+    this.eventAggregator.publish('showMessage', this.message);
 
     e.stopPropagation();
   }

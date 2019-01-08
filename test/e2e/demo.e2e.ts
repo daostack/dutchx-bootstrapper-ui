@@ -1,12 +1,12 @@
-import { PageObject_Home } from './home.po';
-import { browser, element, by, By, $, $$, ExpectedConditions } from 'aurelia-protractor-plugin/protractor';
+import { $, $$, browser, by, By, element, ExpectedConditions } from 'aurelia-protractor-plugin/protractor';
 import { config } from '../protractor.conf';
+import { PageObjectHome } from './home.po';
 
-describe('DutchX Initializer app', function () {
-  let poHome: PageObject_Home;
+describe('DutchX Initializer app', function() {
+  let poHome: PageObjectHome;
 
   beforeEach(async () => {
-    poHome = new PageObject_Home();
+    poHome = new PageObjectHome();
 
     await browser.loadAndWaitForAureliaPage(`http://localhost:${config.port}`);
   });

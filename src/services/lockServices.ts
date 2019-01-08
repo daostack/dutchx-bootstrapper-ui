@@ -1,19 +1,19 @@
-import { Locking4ReputationWrapper, Address, LockerInfo, LockInfo } from "services/ArcService";
-import { LockingToken4ReputationWrapper, Erc20Wrapper } from "@daostack/arc.js";
-import { AureliaConfiguration } from "aurelia-configuration";
-import { BigNumber } from "bignumber.js";
+import { Erc20Wrapper, LockingToken4ReputationWrapper } from '@daostack/arc.js';
+import { AureliaConfiguration } from 'aurelia-configuration';
+import { BigNumber } from 'bignumber.js';
+import { Address, LockInfo, Locking4ReputationWrapper } from 'services/ArcService';
 
 export class LockService {
+  private static lockableTokens: Map<Address, ITokenSpecification> = new Map<Address, ITokenSpecification>();
 
-  public lockableTokenSpecs: Array<TokenSpecification>;
-  private static lockableTokens: Map<Address, TokenSpecification> = new Map<Address, TokenSpecification>();
+  public lockableTokenSpecs: Array<ITokenSpecification>;
 
   constructor(
-    appConfig: AureliaConfiguration
+      appConfig: AureliaConfiguration
     , private wrapper: Locking4ReputationWrapper
     , private userAddress: Address
   ) {
-    this.lockableTokenSpecs = appConfig.get("lockableTokens");
+    this.lockableTokenSpecs = appConfig.get('lockableTokens');
   }
 
   public async getUserLocks(): Promise<Array<LockInfo>> {
@@ -50,19 +50,19 @@ export class LockService {
     return spec.symbol;
   }
 
-  private async getLockedTokenSpec(lockInfo: LockInfo): Promise<TokenSpecification> {
+  private async getLockedTokenSpec(lockInfo: LockInfo): Promise<ITokenSpecification> {
     let spec = LockService.lockableTokens.get(lockInfo.lockId);
 
     if (!spec) {
       const tokenWrapper = (this.wrapper as LockingToken4ReputationWrapper);
       const token = await tokenWrapper.getTokenForLock(lockInfo.lockId);
-      const foundTokenSpecs = this.lockableTokenSpecs.filter((tokenSpec: TokenSpecification) => {
+      const foundTokenSpecs = this.lockableTokenSpecs.filter((tokenSpec: ITokenSpecification) => {
         return tokenSpec.address.toLowerCase() === token.address;
       });
       if (foundTokenSpecs.length >= 1) {
         spec = foundTokenSpecs[0];
       } else {
-        spec = { address: null, symbol: "N/A" };
+        spec = { address: null, symbol: 'N/A' };
       }
 
       LockService.lockableTokens.set(lockInfo.lockId, spec);
@@ -71,7 +71,7 @@ export class LockService {
   }
 }
 
-export interface TokenSpecification {
+export interface ITokenSpecification {
   symbol: string;
   address: Address;
 }

@@ -1,56 +1,55 @@
-import { bindable, containerless, customElement, autoinject } from 'aurelia-framework';
-import { Web3Service } from "../../../services/Web3Service";
 import { EventAggregator } from 'aurelia-event-aggregator';
+import { autoinject, containerless, customElement } from 'aurelia-framework';
+import { Web3Service } from '../../../services/Web3Service';
 
 @autoinject
 @containerless
-@customElement("ethbalance")
+@customElement('ethbalance')
 export class EthBalance {
 
+  private text: string;
   private ethBalance: string = '';
   private rawBalance: string = '';
   private filter: any;
   private textElement: HTMLElement;
 
   constructor(private web3: Web3Service,
-    eventAggregator: EventAggregator) {
-    eventAggregator.subscribe("Network.Changed.Account", () => { this.initialize(); });
-    eventAggregator.subscribe("Network.Changed.Id", () => { this.initialize(); });
+              eventAggregator: EventAggregator) {
+    eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
+    eventAggregator.subscribe('Network.Changed.Id', () => { this.initialize(); });
   }
 
-  text: string;
+  public attached() {
+    this.initialize();
+  }
 
-  initialize(): Promise<void> {
+  private initialize(): Promise<void> {
     this.stop();
     return this.readBalance().then(() => {
-      (<any>$(this.textElement)).tooltip("dispose");
-      (<any>$(this.textElement)).tooltip(
+      ($(this.textElement) as any).tooltip('dispose');
+      ($(this.textElement) as any).tooltip(
         {
-          toggle: "tooltip",
-          placement: "left",
+          placement: 'left',
           title: this.rawBalance,
-          trigger: "hover"
+          toggle: 'tooltip',
+          trigger: 'hover',
         }
-      )
+      );
     });
   }
 
-  stop() {
+  private stop() {
     if (this.filter) {
       this.filter.stopWatching();
       this.filter = null;
     }
   }
 
-  attached() {
-    this.initialize();
-  }
-
-  detached() {
+  private detached() {
     this.stop();
   }
 
-  async readBalance() {
+  private async readBalance() {
     /**
      * this is supposed to fire whenever a new block is created
      */
@@ -60,18 +59,19 @@ export class EthBalance {
     return this.getBalance();
   }
 
-  async getBalance() {
+  private async getBalance() {
     try {
       const ethAddress = this.web3.defaultAccount;
       const balance = this.web3.fromWei(await this.web3.getBalance(ethAddress));
       this.rawBalance = `${balance.toString(10)} ETH`;
-      if (balance.eq(0) || (balance.lt(999)) && (balance.gt("0.001"))) {
+      if (balance.eq(0) || (balance.lt(999)) && (balance.gt('0.001'))) {
         this.ethBalance = balance.toFixed(3);
       } else {
         this.ethBalance = balance.toExponential(2);
       }
 
       this.text = `${this.ethBalance} ETH`;
+      // tslint:disable-next-line:no-empty
     } catch (ex) {
     }
   }

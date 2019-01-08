@@ -47,9 +47,8 @@ export class LocalStorageService {
   }
 
   private static ensure(): void {
-    if (typeof (Storage) !== "undefined") {
-    } else {
-      throw new Error("storage is not available");
+    if (typeof (Storage) === 'undefined') {
+      throw new Error('storage is not available');
     }
   }
 }

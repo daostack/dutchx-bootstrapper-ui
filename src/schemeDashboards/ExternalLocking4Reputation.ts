@@ -1,20 +1,19 @@
+import { AureliaConfiguration } from 'aurelia-configuration';
+import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
+import { EventConfigFailure } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
-import { ExternalLocking4ReputationWrapper, LockInfo, Address, Utils } from 'services/ArcService';
-import { EventAggregator } from "aurelia-event-aggregator";
-import { Web3Service, BigNumber } from "services/Web3Service";
-import { AureliaConfiguration } from "aurelia-configuration";
-import { EventConfigFailure } from "entities/GeneralEvents";
+import { Address, ExternalLocking4ReputationWrapper, LockInfo } from 'services/ArcService';
+import { BigNumber, Web3Service } from 'services/Web3Service';
 
 @autoinject
 export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
-
-  alreadyLocked: boolean;
   protected wrapper: ExternalLocking4ReputationWrapper;
-  intervalId: any;
+
+  private alreadyLocked: boolean;
 
   constructor(
-    appConfig: AureliaConfiguration
+      appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
     , web3Service: Web3Service
   ) {
@@ -31,7 +30,8 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   protected async lock(): Promise<boolean> {
 
     if (!(await this.wrapper.hasMgnToActivate(this.lockModel.lockerAddress))) {
-      this.eventAggregator.publish("handleFailure", new EventConfigFailure(`Can't activate: No MGN tokens reserved to claim`));
+      this.eventAggregator.publish('handleFailure',
+      new EventConfigFailure(`Can't activate: No MGN tokens reserved to claim`));
       return false;
     }
 
@@ -40,14 +40,6 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
     return success;
   }
 
-
-  // not used
-  protected getLockUnit(lockInfo: LockInfo): Promise<string> { return Promise.resolve(""); }
-
-  // protected async redeem(): Promise<boolean> {
-  //   const success = await super.redeem();
-  //   this.alreadyLocked = !success;
-  //   return success;
-  // }
-
+  // just a stub
+  protected getLockUnit(_lockInfo: LockInfo): Promise<string> { return Promise.resolve(''); }
 }

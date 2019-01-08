@@ -1,11 +1,11 @@
-import { autoinject } from "aurelia-framework";
 import {
+  DialogCancellableOpenResult,
+  DialogOpenPromise,
   DialogService as AureliaDialogService,
   DialogSettings,
-  DialogCancellableOpenResult,
-  DialogOpenPromise
-} from "aurelia-dialog";
-import { Alert } from "../resources/dialogs/alert/alert";
+} from 'aurelia-dialog';
+import { autoinject } from 'aurelia-framework';
+import { Alert } from '../resources/dialogs/alert/alert';
 
 @autoinject
 export class DialogService {
@@ -23,10 +23,10 @@ export class DialogService {
 
     return this.dialogService.open(
       Object.assign({
-        model: model,
-        viewModel: viewModule
+        model,
+        viewModel: viewModule,
       }, settings));
-  };
+  }
 
   public alert(message: string): DialogOpenPromise<DialogCancellableOpenResult> {
     return this.open(Alert, { message }, { keyboard: true });

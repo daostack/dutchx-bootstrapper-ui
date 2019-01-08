@@ -1,52 +1,52 @@
-import { bindable, containerless, customElement, autoinject, bindingMode } from 'aurelia-framework';
-import { TokenService } from "../../../services/TokenService";
-import { Address } from 'services/ArcService';
 import { EventAggregator } from 'aurelia-event-aggregator';
+import { autoinject, bindable, bindingMode, containerless, customElement } from 'aurelia-framework';
+import { Address } from 'services/ArcService';
+import { TokenService } from '../../../services/TokenService';
 
 @autoinject
 @containerless
-@customElement("tokenbalance")
+@customElement('tokenbalance')
 export class TokenBalance {
 
-  @bindable({ defaultBindingMode: bindingMode.toView }) token: Address;
+  @bindable({ defaultBindingMode: bindingMode.toView }) public token: Address;
 
   private balance: string;
   private text: string;
+
+  private events;
 
   constructor(
     private tokenService: TokenService,
     eventAggregator: EventAggregator
   ) {
-    eventAggregator.subscribe("Network.Changed.Account", () => { this.initialize(); });
+    eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
   }
 
-  private events;
+  public attached() {
+    this.initialize();
+  }
 
-  initialize() {
+  private initialize() {
     this.stop();
     this.readBalance();
   }
 
-  attached() {
-    this.initialize();
-  }
-
-  detached() {
+  private detached() {
     this.stop();
   }
 
-  tokenChanged() {
+  private tokenChanged() {
     this.initialize();
   }
 
-  stop() {
+  private stop() {
     if (this.events) {
       this.events.stopWatching();
       this.events = null;
     }
   }
 
-  async readBalance() {
+  private async readBalance() {
 
     if (this.token) {
 
@@ -67,10 +67,11 @@ export class TokenBalance {
       this.text = `N/A`;
     }
   }
-  async getBalance(token) {
+  private async getBalance(token) {
     try {
       this.balance = (await this.tokenService.getUserErc20TokenBalance(token, true)).toFixed(2);
       this.text = this.balance.toString();
+      // tslint:disable-next-line:no-empty
     } catch {
     }
   }

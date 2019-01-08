@@ -1,13 +1,12 @@
-import { autoinject } from "aurelia-framework";
-import { Web3Service, BigNumber } from "./Web3Service";
-import { ArcService, Address, Erc20Wrapper, Utils, DaoTokenWrapper, WrapperService } from './ArcService';
+import { autoinject } from 'aurelia-framework';
+import { Address, DaoTokenWrapper, Erc20Wrapper, Utils, WrapperService } from './ArcService';
+import { BigNumber, Web3Service } from './Web3Service';
 
 @autoinject
 export class TokenService {
 
   constructor(
-    private web3: Web3Service
-    , private arcService: ArcService
+      private web3: Web3Service
   ) { }
 
   public async getDaoTokenSymbol(token: DaoTokenWrapper): Promise<string> {
@@ -20,13 +19,13 @@ export class TokenService {
 
   /**
    * in Wei by default
-   * @param tokenAddress 
+   * @param tokenAddress
    */
   public async getUserErc20TokenBalance(
     token: Erc20Wrapper,
     inEth: boolean = false): Promise<BigNumber> {
 
-    let userAddress = this.web3.defaultAccount;
+    const userAddress = this.web3.defaultAccount;
     return this.getErc20TokenBalance(token, userAddress, inEth);
   }
 
@@ -34,7 +33,7 @@ export class TokenService {
     tokenAddress: Address,
     inEth: boolean = false): Promise<BigNumber> {
 
-    let userAddress = this.web3.defaultAccount;
+    const userAddress = this.web3.defaultAccount;
 
     return this.getTokenBalance(tokenAddress, userAddress, inEth);
   }
@@ -67,7 +66,7 @@ export class TokenService {
 
   public getGenTokenBalance(): Promise<BigNumber | undefined> {
     try {
-      let userAddress = this.web3.defaultAccount;
+      const userAddress = this.web3.defaultAccount;
       return DaoTokenWrapper.getGenTokenBalance(userAddress);
     } catch {
       // then we don't know the address of the GEN token
@@ -79,7 +78,6 @@ export class TokenService {
     const address = await Utils.getGenTokenAddress();
     return this.getErc20Token(address);
   }
-
 
   public getErc20Token(address: Address): Promise<Erc20Wrapper> {
     return WrapperService.factories.Erc20.at(address);
