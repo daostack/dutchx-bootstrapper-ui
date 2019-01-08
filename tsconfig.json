@@ -9,7 +9,7 @@
     "baseUrl": "src",
     "importHelpers": true,
     "noImplicitAny": false,
-    "noUnusedImports": true
+    "noUnusedParameters": true
   },
   "lib": [
     "es2015",

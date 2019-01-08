@@ -41,5 +41,5 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   }
 
   // just a stub
-  protected getLockUnit(lockInfo: LockInfo): Promise<string> { return Promise.resolve(''); }
+  protected getLockUnit(_lockInfo: LockInfo): Promise<string> { return Promise.resolve(''); }
 }

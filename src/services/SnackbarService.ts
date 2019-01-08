@@ -37,7 +37,7 @@ export class SnackbarService {
      */
     const that = this;
     this.snackQueue.concatMap((config: EventConfig) => {
-      return Observable.fromPromise(new Promise(function(resolve, reject) {
+      return Observable.fromPromise(new Promise(function(resolve) {
         // with timeout, give a cleaner buffer in between consecutive snacks
         setTimeout(() => {
           const snackBarConfig = that.getISnackBarConfig(config);

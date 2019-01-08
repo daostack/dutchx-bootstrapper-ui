@@ -77,7 +77,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
     const watcher = this.wrapper.Bid({ _bidder: this.web3Service.defaultAccount }, { fromBlock: 0 });
 
-    watcher.watch((error: Error, event: DecodedLogEntry<Auction4ReputationBidEventResult>) => {
+    watcher.watch((_error: Error, event: DecodedLogEntry<Auction4ReputationBidEventResult>) => {
       this.getAmountBid(event.args._auctionId.toNumber());
       this.getTotalAmountBid(event.args._auctionId.toNumber());
     });

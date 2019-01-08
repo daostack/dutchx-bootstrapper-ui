@@ -4,7 +4,6 @@ import { SchemeInfo } from '../entities/SchemeInfo';
 import {
   ArcService,
   DAO,
-  DaoGlobalConstraintInfo,
   DaoSchemeInfo,
 } from '../services/ArcService';
 import { BigNumber, Web3Service } from '../services/Web3Service';
@@ -13,7 +12,7 @@ export class DaoEx extends DAO {
   public static async fromArcJsDao(
       org: DAO
     , arcService: ArcService
-    , web3: Web3Service): Promise<DaoEx> {
+  ): Promise<DaoEx> {
 
     const newDAO = Object.assign(new DaoEx(), org);
     newDAO.arcService = arcService;
@@ -67,7 +66,7 @@ export class DaoEx extends DAO {
     * @param event The event or channel to publish to.
     * @param data The data to publish on the channel.
     */
-  public publish(event: string | any, data?: any): void { return null; }
+  public publish(_event: string | any, _data?: any): void { return null; }
 
    /**
     * Subscribes to a message channel or message type.
@@ -75,7 +74,7 @@ export class DaoEx extends DAO {
     * @param callback The callback to be invoked when when the specified message is published.
     */
   // tslint:disable-next-line: ban-types
-  public subscribe(event: string | Function, callback: Function): Subscription { return null; }
+  public subscribe(_event: string | Function, _callback: Function): Subscription { return null; }
 
    /**
     * Subscribes to a message channel or message type,
@@ -84,9 +83,9 @@ export class DaoEx extends DAO {
     * @param callback The callback to be invoked when when the specified message is published.
     */
   // tslint:disable-next-line: ban-types
-  public subscribeOnce(event: string | Function, callback: Function): Subscription { return null; }
+  public subscribeOnce(_event: string | Function, _callback: Function): Subscription { return null; }
 
-  private dispose() {
+  public dispose() {
     this.registerSchemeEvent.stopWatching();
     this.unRegisterSchemeEvent.stopWatching();
   }
@@ -103,7 +102,7 @@ export class DaoEx extends DAO {
     this.unRegisterSchemeEvent.watch((err, eventsArray) => this.handleSchemeEvent(err, eventsArray, false));
   }
 
-  private async handleSchemeEvent(err, eventsArray, adding: boolean): Promise<void> {
+  private async handleSchemeEvent(_err, eventsArray, adding: boolean): Promise<void> {
     const newSchemesArray = [];
     if (!(eventsArray instanceof Array)) {
       eventsArray = [eventsArray];

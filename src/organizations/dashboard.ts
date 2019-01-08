@@ -306,7 +306,7 @@ export class Dashboard {
       }
 
       if (networkName === 'Live') {
-        ConfigService.set('gasPriceAdjustment', async (defaultGasPrice: BigNumber) => {
+        ConfigService.set('gasPriceAdjustment', async () => {
           try {
             const response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json');
             // the api gives results if 10*Gwei

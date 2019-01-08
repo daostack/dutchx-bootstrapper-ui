@@ -77,7 +77,7 @@ export class Banner {
     $(this.okButton).focus();
   }
 
-  private dispose() {
+  public dispose() {
     this.subscriptions.dispose();
   }
 
