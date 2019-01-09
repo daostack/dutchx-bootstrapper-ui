@@ -8,7 +8,7 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const { AureliaPlugin } = require('aurelia-webpack-plugin');
 const { ProvidePlugin, DefinePlugin, IgnorePlugin, ContextReplacementPlugin, SourceMapDevToolPlugin }
   = require('webpack');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 // config helpers:
 const ensureArray = (config) => config && (Array.isArray(config) ? config : [config]) || []
@@ -205,7 +205,7 @@ module.exports = ({ production, server, coverage } = {}) => {
           test: /\.css$|\.js($|\?)/i
         })
       ])
-      , new BundleAnalyzerPlugin({ analyzerMode: 'static' })
+      // , new BundleAnalyzerPlugin({ analyzerMode: 'static' })
     ],
   }
 }
