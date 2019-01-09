@@ -18,7 +18,7 @@
     <div class="scheme-dashboard-body">
       <div
         class="message"
-        if.to-view="lockingPeriodHasNotStarted"
+        if.to-view="!alreadyRegistered && lockingPeriodHasNotStarted"
       >
         ${msUntilCanLockCountdown | timespan:"seconds"} until the 24-hour MGN activation period begins.
       </div>
@@ -38,34 +38,35 @@
       <div
         class="message"
         if.to-view="inLockingPeriod && alreadyLocked"
-      >You have activated your lock.</div>
+      >You have activated your claim.</div>
+
+      <div
+        class="message"
+        if.to-view="globalPeriodHasStarted && !inLockingPeriod && alreadyRegistered"
+      >You have registered for automatic claim activation.</div>
 
       <form>
 
-        <div
-          if.to-view="inLockingPeriod && !alreadyLocked"
-          class="form-group"
-        >
+        <div class="form-group">
           <spinbutton
+            if.to-view="globalPeriodHasStarted && !inLockingPeriod && !alreadyRegistered"
+            onclick.call="register()"
+            css="btn-submit btn-sm"
+            as-button="true"
+            text="Register"
+            spin.to-view="registering"
+            title.to-view="registering ? 'Registering...' : 'Register'"
+          ></spinbutton>
+          <spinbutton
+            if.to-view="inLockingPeriod && !alreadyLocked"
             onclick.call="lock()"
             css="btn-submit btn-sm"
             as-button="true"
-            text="Activate"
+            text="Claim"
             spin.to-view="locking"
-            title.to-view="locking ? 'Activating lock...' : 'Activate Lock'"
+            title.to-view="locking ? 'Claiming...' : 'Claim'"
           ></spinbutton>
         </div>
-
-        <!-- <div if.bind="lockingPeriodIsEnded">
-          <div class="row">
-            <div class="col-12">
-              <div if.to-view="!userScore" style="margin-top: 1rem; text-align: center;">You have nothing to redeem</div>
-              <div else class="form-group bmd-form-group" style="text-align:center">
-                <button class="btn-submit clearWidth" click.delegate="redeem()">Redeem Reputation</button>
-              </div>
-            </div>
-          </div>
-        </div> -->
       </form>
     </div>
   </div>
