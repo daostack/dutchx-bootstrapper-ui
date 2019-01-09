@@ -98,17 +98,13 @@ module.exports = {
           default: series(
             "nps webpack.build.beforeDev",
             "webpack --progress -d"),
-          extractCss: series(
-            "nps webpack.build.beforeDev",
-            "webpack --progress -d --env.extractCss"
-          ),
           // doesn't use the dist folder
           andServe: `webpack-dev-server -d --inline --hot --env.server --port 8090`
         },
         production: {
           default: series(
             "nps webpack.build.beforeProd",
-            "webpack --progress --env.production --env.extractCss"
+            "webpack --progress --env.production"
           ),
           inlineCss: series(
             "nps webpack.build.beforeProd",
