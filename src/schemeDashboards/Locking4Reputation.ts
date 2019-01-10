@@ -159,7 +159,9 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       const result = await (await (this.wrapper as any).release(lockInfo)).watchForTxMined();
 
       this.eventAggregator.publish('handleTransaction',
-      new EventConfigTransaction('The lock has been released', result.tx));
+        new EventConfigTransaction('The lock has been released', result.transactionHash));
+
+      lockInfo.released = true;
 
       this.eventAggregator.publish('Lock.Released');
 

@@ -49,7 +49,9 @@
 
         <div class="form-group">
           <spinbutton
-            if.to-view="globalPeriodHasStarted && !inLockingPeriod && !alreadyRegistered"
+            if.to-view="globalPeriodHasStarted
+              && lockingPeriodHasNotStarted
+              && !alreadyRegistered"
             onclick.call="register()"
             css="btn-submit btn-sm"
             as-button="true"
