@@ -2,14 +2,13 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const UglifyPlugin = require('uglifyjs-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const { AureliaPlugin } = require('aurelia-webpack-plugin');
-const { optimize: { CommonsChunkPlugin }, ProvidePlugin } = require('webpack');
-const { TsConfigPathsPlugin, CheckerPlugin } = require('awesome-typescript-loader');
-// see TODO.  const CompressionPlugin = require("compression-webpack-plugin")
-// var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const { ProvidePlugin, DefinePlugin, IgnorePlugin, ContextReplacementPlugin, SourceMapDevToolPlugin }
+  = require('webpack');
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 // config helpers:
 const ensureArray = (config) => config && (Array.isArray(config) ? config : [config]) || []
@@ -23,23 +22,10 @@ const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
 const baseUrl = '/';
 
-const cssRules = [
-  { loader: 'css-loader' },
-  {
-    loader: 'postcss-loader',
-    options: { plugins: () => [require('autoprefixer')({ browsers: ['last 2 versions'] })] }
-  }
-]
-
-const scssRules = [...cssRules,
-{
-  loader: "sass-loader" // compiles Sass to CSS
-}];
-
 /**
  * @return {webpack.Configuration}
  */
-module.exports = ({ production, server, extractCss, coverage } = {}) => {
+module.exports = ({ production, server, coverage } = {}) => {
 
   let env = production ? 'production' : 'development';
 
@@ -48,8 +34,8 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
   console.log(`env: ${env}`);
 
   return {
-
-    resolve: {
+      mode: env,
+      resolve: {
       extensions: ['.ts', '.js'],
       modules: [srcDir, 'node_modules'],
       alias: {
@@ -61,7 +47,6 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
         "static": path.resolve(__dirname, "static"),
       }
     },
-
     devtool: production ? 'source-map' : 'eval-source-map',
     entry: {
       app: ['aurelia-bootstrapper'],
@@ -82,43 +67,58 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
       // serve index.html for all 404 (required for push-state)
       historyApiFallback: true,
     },
+    optimization: {
+      runtimeChunk: "single", // enable "runtime" chunk
+      splitChunks: {
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: "vendor",
+            chunks: "all"
+          }
+        }
+      },
+    minimizer: [
+      new TerserPlugin({
+        test: /\.js($|\?)/i,
+        sourceMap: false,
+        extractComments: true,
+        parallel: true,
+        terserOptions: {
+          ecma: 6,
+          mangle: {
+            reserved: ['BigNumber'],
+          }
+        }
+      })
+    ]
+    },
     module: {
       rules: [
-        // CSS required in JS/TS files should use the style-loader that auto-injects it into the website
-        // only when the issuer is a .js/.ts file, so the loaders are not applied inside html templates
         {
-          test: /\.scss$/i,
-          issuer: [{ not: [{ test: /\.html$/i }] }],
-          use: extractCss ? ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: scssRules,
-          }) : ['style-loader', ...scssRules],
-        },
-        {
-          test: /\.scss$/i,
-          issuer: [{ test: /\.html$/i }],
+          test: /\.(sa|sc|c)ss$/,
           // CSS required in templates cannot be extracted safely
           // because Aurelia would try to require it again in runtime
-          use: scssRules,
-        },
-        {
-          test: /\.css$/i,
           issuer: [{ not: [{ test: /\.html$/i }] }],
-          use: extractCss ? ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: cssRules,
-          }) : ['style-loader', ...cssRules],
-        },
-        {
-          test: /\.css$/i,
-          issuer: [{ test: /\.html$/i }],
-          // CSS required in templates cannot be extracted safely
-          // because Aurelia would try to require it again in runtime
-          use: cssRules,
+          use: [
+            production ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              // avoid error: "No PostCSS Config found in"
+              options: {
+                plugins: (loader) => [
+                require('postcss-smart-import'),
+                require('autoprefixer'),
+                ]
+              }
+            },
+            'sass-loader',
+          ]
         },
         { test: /\.html$/i, loader: 'html-loader' },
         { test: /\.ts$/i, loader: 'awesome-typescript-loader', exclude: nodeModulesDir },
-        { test: /\.json$/i, loader: 'json-loader' },
+        // { test: /\.json$/i, loader: 'json-loader' },
         // use Bluebird as the global Promise implementation:
         { test: /[\/\\]node_modules[\/\\]bluebird[\/\\].+\.js$/, loader: 'expose-loader?Promise' },
         // exposes jQuery globally as $ and as jQuery:
@@ -137,7 +137,7 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
       ]
     },
     plugins: [
-      new webpack.DefinePlugin({
+      new DefinePlugin({
         'process.env': {
           env: JSON.stringify(env)
         },
@@ -151,8 +151,6 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
         Popper: ['popper.js', 'default'],
         Waves: 'node-waves'
       }),
-      new TsConfigPathsPlugin(),
-      new CheckerPlugin(),
       new HtmlWebpackPlugin({
         template: 'index.ejs',
         minify: production ? {
@@ -187,39 +185,24 @@ module.exports = ({ production, server, extractCss, coverage } = {}) => {
         { from: 'node_modules/bootstrap-material-design/dist/css/bootstrap-material-design.min.css' },
       ]),
       // remove all moment.js locale files
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new IgnorePlugin(/^\.\/locale$/, /moment$/),
       // filter ABI contract files
-      new webpack.ContextReplacementPlugin(
+      new ContextReplacementPlugin(
         /@daostack[/\\]arc.js[/\\]migrated_contracts$/,
         /Controller.json|Avatar.json|DAOToken.json|Reputation.json|ERC20.json|Auction4Reputation.json|ExternalLocking4Reputation.json|Locking4Reputation.json|LockingEth4Reputation.json|LockingToken4Reputation.json|PriceOracleInterface.json/),
-      ...when(extractCss, new ExtractTextPlugin({
-        filename: production ? '[contenthash].css' : '[id].css',
-        allChunks: true,
-      })),
+      new MiniCssExtractPlugin({
+        filename: production ? '[name].[hash].css' : '[name].css',
+        chunkFilename: production ? '[id].[hash].css' : '[id].css',
+      }),
       ...when(!production, [
-        new webpack.SourceMapDevToolPlugin({
+        new SourceMapDevToolPlugin({
           filename: '[file].map', // Remove this line if you prefer inline source maps
           moduleFilenameTemplate: path.relative(outDir, '[resourcePath]')  // Point sourcemap entries to the original file locations on disk
         }),
       ]),
       ...when(production, [
-        new CommonsChunkPlugin({
-          name: 'common'
-        })
-        , new UglifyPlugin({
-          test: /\.js($|\?)/i,
-          sourceMap: false,
-          extractComments: true,
-          parallel: true,
-          uglifyOptions: {
-            ecma: 6,
-            mangle: {
-              reserved: ['BigNumber'],
-            }
-          }
-        }),
         new CompressionPlugin({
-          test: /\.js($|\?)/i
+          test: /\.css$|\.js($|\?)/i
         })
       ])
       // , new BundleAnalyzerPlugin({ analyzerMode: 'static' })
