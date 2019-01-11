@@ -52,6 +52,7 @@
             if.to-view="globalPeriodHasStarted
               && lockingPeriodHasNotStarted
               && !alreadyRegistered"
+            disabled.bind="locking"
             onclick.call="register()"
             css="btn-submit btn-sm"
             as-button="true"
@@ -62,6 +63,7 @@
           <spinbutton
             if.to-view="inLockingPeriod && !alreadyLocked"
             onclick.call="lock()"
+            disabled.bind="locking"
             css="btn-submit btn-sm"
             as-button="true"
             text="Claim"
