@@ -59,7 +59,7 @@ export class DateService {
         key: 'table-datetime',
       },
       {
-        format: 'hh:mm:ss',
+        format: 'HH:mm:ss',
         key: 'table-time',
       },
       {
