@@ -59,6 +59,10 @@ export class DateService {
         key: 'table-datetime',
       },
       {
+        format: 'hh:mm:ss',
+        key: 'table-time',
+      },
+      {
         format: 'HH[:]mm dddd MMMM Do, YYYY',
         key: 'friendlyDateTime',
       },

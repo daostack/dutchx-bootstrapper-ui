@@ -37,7 +37,9 @@
         <td>${lock.amount | ethwei}</td>
         <td>${lock.units}</td>
         <td style="white-space:nowrap">
-          ${lock.releaseTime | date:'table-date' }</td>
+          ${lock.releaseTime | date:lock.releasableToday ? 'table-time' : 'table-date'}</span>
+          <span if.one-time="lock.releasableToday"> today</span>
+        </td>
         <td style="text-align:center;">
           <button
             click.delegate="_release(lock)"

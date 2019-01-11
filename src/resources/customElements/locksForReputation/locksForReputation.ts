@@ -34,6 +34,7 @@ export class LocksForReputation {
     for (const lock of tmpLocks) {
       // lock.canRedeem = await this.canRedeem(lock);
       lock.canRelease = await this.canRelease(lock);
+      lock.releasableToday = this.releasableToday(lock.releaseTime);
     }
     this.anyCanRelease = tmpLocks.filter((l: ILockInfoInternal) => l.canRelease).length > 0;
     this._locks = tmpLocks;
@@ -63,6 +64,13 @@ export class LocksForReputation {
       return !errMsg;
     }
   }
+
+  private releasableToday(releaseTime: Date): boolean {
+    const now = new Date();
+    return (releaseTime.getDate() === now.getDate()) &&
+      (releaseTime.getMonth() === now.getMonth()) &&
+      (releaseTime.getFullYear() === now.getFullYear());
+  }
 }
 
 export interface ILockInfoX extends LockInfo {
@@ -72,4 +80,5 @@ export interface ILockInfoX extends LockInfo {
 interface ILockInfoInternal extends ILockInfoX {
   canRelease: boolean;
   releasing: boolean;
+  releasableToday: boolean;
 }
