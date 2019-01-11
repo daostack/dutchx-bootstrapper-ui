@@ -1,3 +1,4 @@
+import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, bindingMode } from 'aurelia-framework';
 import { LockInfo, Locking4ReputationWrapper } from 'services/ArcService';
 import { Web3Service } from 'services/Web3Service';
@@ -9,13 +10,16 @@ export class LocksForReputation {
   // tslint:disable-next-line: variable-name
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public release: ({ lock: LockInfo }) => Promise<boolean>;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public wrapper: Locking4ReputationWrapper;
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) public refresh: Promise<void>;
+  @bindable({ defaultBindingMode: bindingMode.oneTime }) public refresh: () => Promise<void>;
 
   private _locks: Array<LockInfo>;
   private anyCanRelease: boolean;
   private loading: boolean = true;
 
-  constructor(private web3Service: Web3Service) {
+  constructor(
+      private web3Service: Web3Service
+    , private eventAggregator: EventAggregator
+    ) {
   }
 
   public attached() {
@@ -62,6 +66,11 @@ export class LocksForReputation {
       const errMsg = await this.wrapper.getReleaseBlocker(lock.lockerAddress, lock.lockId);
       return !errMsg;
     }
+  }
+
+  private async _refresh(): Promise<void> {
+    await this.refresh();
+    this.eventAggregator.publish('showMessage', 'Locks have been refreshed');
   }
 }
 
