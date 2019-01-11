@@ -10,4 +10,12 @@ export class LockingEth4ReputationDashboard extends Locking4Reputation {
     await super.accountChanged(account);
     return this.getLocks();
   }
+
+  protected async lock(): Promise<boolean> {
+    const success = await super.lock();
+    if (success) {
+      this.lockModel.amount = this.lockModel.period = undefined;
+    }
+    return success;
+  }
 }
