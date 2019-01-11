@@ -69,8 +69,13 @@ export class LocksForReputation {
   }
 
   private async _refresh(): Promise<void> {
-    await this.refresh();
-    this.eventAggregator.publish('showMessage', 'Locks have been refreshed');
+    this.loading = true;
+    try {
+      await this.refresh();
+      this.eventAggregator.publish('showMessage', 'Locks have been refreshed');
+    } finally {
+      this.loading = false;
+    }
   }
 }
 
