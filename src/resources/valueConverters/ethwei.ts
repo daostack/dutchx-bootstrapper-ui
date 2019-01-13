@@ -22,11 +22,10 @@ export class EthweiValueConverter {
    */
   public fromView(ethValue: string): BigNumber {
     if ((ethValue === undefined) || (ethValue === null)) {
-      return ethValue as any;
+      return null;
     }
 
-    // allow exceptions here so that corrupt data is less likely to make it into a model
-    return this.web3.toBigNumber(this.web3.toWei(ethValue, 'ether'));
+    return this.web3.toWei(ethValue.toString(), 'ether');
   }
 
   /**

@@ -69,23 +69,21 @@
               <div class="col-5">
                 <div class="form-group bmd-form-group">
                   <label for="lockAmount">Tokens to lock</label>
-                  <input
-                    class="form-control"
-                    type='number'
-                    id="lockAmount"
-                    value.bind="amount | ethwei & updateTrigger:'blur'"
-                  />
+                  <numeric-input
+                    css="form-control"
+                    id="locklockAmountbidAmountingPeriod"
+                    value.bind="amount | ethwei"
+                  ></numeric-input>
                 </div>
               </div>
               <div class="col-6">
                 <div class="form-group bmd-form-group">
                   <label for="lockingPeriod">Number of days</label>
-                  <input
-                    class="form-control"
-                    type='number'
+                  <numeric-input
+                    css="form-control"
                     id="lockingPeriod"
-                    value.bind="period | secondsDays & updateTrigger:'blur'"
-                  />
+                    value.bind="period | secondsDays"
+                  ></numeric-input>
                 </div>
               </div>
             </div>
