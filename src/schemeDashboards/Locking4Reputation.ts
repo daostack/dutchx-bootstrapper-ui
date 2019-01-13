@@ -37,6 +37,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected subscriptions = new DisposableCollection();
   protected locks: Array<ILockInfoX >;
   protected locking: boolean = false;
+  protected releasing: boolean = false;
 
   protected lockModel: LockingOptions = {
     amount: undefined,
@@ -121,6 +122,10 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   protected async lock(alreadyCheckedForBlock: boolean = false): Promise<boolean> {
 
+    if (this.locking || this.releasing) {
+      return false;
+    }
+
     try {
       this.locking = true;
 
@@ -138,23 +143,28 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
         this.eventAggregator.publish('Lock.Submitted');
 
-        this.locking = false;
-
         return true;
       }
 
     } catch (ex) {
       this.eventAggregator.publish('handleException', new EventConfigException(`The lock could not be recorded`, ex));
+    } finally {
+      this.locking = false;
     }
 
-    this.locking = false;
     return false;
   }
 
   protected async release(lock: { lock: LockInfo }): Promise<boolean> {
     const lockInfo = lock.lock;
 
+    if (this.locking || this.releasing) {
+      return false;
+    }
+
     try {
+
+      this.releasing = true;
 
       const result = await (await (this.wrapper as any).release(lockInfo)).watchForTxMined();
 
@@ -170,6 +180,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     } catch (ex) {
       this.eventAggregator.publish('handleException',
       new EventConfigException(`The lock could not be released`, ex));
+    } finally {
+      this.releasing = false;
     }
     return false;
   }

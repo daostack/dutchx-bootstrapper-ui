@@ -387,8 +387,14 @@ table.locksForRep td button {
   font-size: 1rem;
 }
 
-table.locksForRep td button[disabled='disabled'] {
+table.locksForRep td button:disabled,
+table.locksForRep td button:disabled:hover {
   color: inherit;
+}
+
+button.spinbutton.btn-submit:disabled, 
+button.spinbutton.btn-submit:disabled:hover {
+  @extend .btn-submit:hover;
 }
 
 .locksRefreshButton .spinbutton-icon {

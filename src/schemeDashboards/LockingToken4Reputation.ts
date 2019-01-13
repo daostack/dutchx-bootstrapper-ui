@@ -62,6 +62,8 @@ export class LockingToken4Reputation extends Locking4Reputation {
           spender: this.wrapper.address,
         })).watchForTxMined();
 
+        this.locking = false; // so will execute lock
+
         return super.lock(true);
       }
     } catch (ex) {
