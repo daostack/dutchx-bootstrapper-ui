@@ -147,7 +147,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       }
 
     } catch (ex) {
-      this.eventAggregator.publish('handleException', new EventConfigException(`The lock could not be recorded`, ex));
+      this.eventAggregator.publish('handleException', new EventConfigException(`The lock was not recorded`, ex));
     } finally {
       this.locking = false;
     }
@@ -179,7 +179,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
     } catch (ex) {
       this.eventAggregator.publish('handleException',
-      new EventConfigException(`The lock could not be released`, ex));
+      new EventConfigException(`The lock was not released`, ex));
     } finally {
       this.releasing = false;
     }
