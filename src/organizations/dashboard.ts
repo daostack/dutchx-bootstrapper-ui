@@ -512,13 +512,13 @@ export class Dashboard {
 
       schemeAddress = this.getSchemeInfoFromName('Auction4Reputation').address;
       const auctionWrapper = await WrapperService.factories.Auction4Reputation.at(schemeAddress);
-      const auctions = await auctionWrapper.getNumberOfAuctions();
+      const numAuctions = await auctionWrapper.getNumberOfAuctions();
       earnedRep = new BigNumber(0);
-      for (let auctionId = 0; auctionId < auctions;  ++auctionId) {
+      for (let auctionId = 0; auctionId < numAuctions;  ++auctionId) {
         earnedRep = earnedRep.add(await auctionWrapper.getUserEarnedReputation(
           { beneficiaryAddress: this.web3.defaultAccount, auctionId }));
       }
-      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+      totalReputationAvailable = totalReputationAvailable.add((await wrapper.getReputationReward()).mul(numAuctions));
 
       if (earnedRep.gt(0)) {
         redeemables.push({
