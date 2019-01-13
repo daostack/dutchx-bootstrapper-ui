@@ -32,6 +32,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private totalAmountBid: BigNumber;
   private msRemainingInAuctionCountdown: number;
   private auctionPeriod: number;
+  private bidAmount: BigNumber = undefined;
 
   constructor(
       protected eventAggregator: EventAggregator
@@ -98,7 +99,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     this.refreshing = false;
   }
 
-  protected async bid(amount: BigNumber): Promise<void> {
+  protected async bid(): Promise<void> {
 
     if (this.bidding) {
       return;
@@ -110,22 +111,24 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
       this.bidding = true;
 
-      const reason = await this.wrapper.getBidBlocker({ amount });
+      const reason = await this.wrapper.getBidBlocker({ amount: this.bidAmount });
 
       if (reason) {
         this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't bid: ${reason}`));
       } else {
 
         await (await this.token.approve({
-          amount,
+          amount: this.bidAmount,
           owner: currentAccount,
           spender: this.wrapper.address,
         })).watchForTxMined();
 
-        const result = await (await this.wrapper.bid({ amount })).watchForTxMined();
+        const result = await (await this.wrapper.bid({ amount: this.bidAmount })).watchForTxMined();
 
         this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
           `The bid has been recorded`, result.transactionHash));
+
+        this.bidAmount = undefined;
       }
 
     } catch (ex) {

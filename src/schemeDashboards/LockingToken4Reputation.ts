@@ -64,7 +64,12 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
         this.locking = false; // so will execute lock
 
-        return super.lock(true);
+        const success = await super.lock(true);
+        if (success) {
+          this.lockModel.amount = this.lockModel.period = undefined;
+          this.selectedToken = null;
+        }
+        return success;
       }
     } catch (ex) {
       this.eventAggregator.publish('handleException',
