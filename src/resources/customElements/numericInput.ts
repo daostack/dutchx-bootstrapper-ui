@@ -20,14 +20,14 @@ export class NumericInput {
 
   private _innerValue: string;
 
+  @computedFrom('_innerValue')
   private get innerValue() {
     return this._innerValue;
   }
 
-  @computedFrom('_innerValue')
   private set innerValue(newValue: string) {
     this._innerValue = newValue;
-    this.value = this.numberService.fromString(this.innerValue);
+    this.value = this.numberService.fromString(newValue);
   }
 
   constructor(private numberService: NumberService) {
