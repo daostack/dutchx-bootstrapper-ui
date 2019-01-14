@@ -522,7 +522,7 @@ export class Dashboard {
         earnedRep = earnedRep.add(await auctionWrapper.getUserEarnedReputation(
           { beneficiaryAddress: this.web3.defaultAccount, auctionId }));
       }
-      contractRepReward = await wrapper.getReputationReward();
+      contractRepReward = await auctionWrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       if (earnedRep.gt(0)) {
