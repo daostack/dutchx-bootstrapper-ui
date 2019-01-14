@@ -35,6 +35,8 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private msRemainingInAuctionCountdown: number;
   private auctionPeriod: number;
   private bidAmount: BigNumber = undefined;
+  private refreshingBids: boolean;
+    this.totalBids = new Array<IAuctionBidInfo>();
 
   constructor(
     protected eventAggregator: EventAggregator,
@@ -98,6 +100,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     this.refreshing = true;
     await this.getAmountBid(this.currentAuctionNumber - 1);
     await this.getTotalAmountBid(this.currentAuctionNumber - 1);
+    await this.getAccountBids();
     this.refreshing = false;
   }
 
@@ -196,4 +199,44 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     const ms = this.auctionsStartTime.getTime() + (this.currentAuctionNumber * auctionDuration);
     return this.auctionEndTime = new Date(ms);
   }
+
+  private async getAccountBids(): Promise<Array<IAuctionBidInfo>> {
+    this.refreshingBids = true;
+    this.totalBids = new Array<IAuctionBidInfo>();
+
+    try {
+      const numAuctions = await this.wrapper.getNumberOfAuctions();
+      const currentAuctionId = await this.wrapper.getCurrentAuctionId() + 1;
+      for (let auctionId = 0; auctionId < numAuctions; ++auctionId) {
+        const bidInfo = {
+          auctionNum: auctionId + 1,
+          auctionStatus:
+            (currentAuctionId > auctionId) ? AuctionBidStatus.Complete :
+            (currentAuctionId === auctionId) ? AuctionBidStatus.Current :
+            AuctionBidStatus.Waiting,
+          bidAmount: await this.wrapper.getBid(this.web3Service.defaultAccount, auctionId),
+          totalAuctionBidAmount: await this.wrapper.getAuctionTotalBid(auctionId),
+      };
+        totalBids.push(bidInfo);
+    }
+    } catch (ex) {
+      this.eventAggregator.publish('handleException', new EventConfigException(`Error fetching bids`, ex));
+    } finally {
+      this.refreshingBids = false;
+    }
+    return totalBids;
+  }
+}
+
+interface IAuctionBidInfo {
+  auctionNum: number;
+  bidAmount: BigNumber;
+  totalAuctionBidAmount: BigNumber;
+  auctionStatus: string;
+}
+
+enum AuctionBidStatus {
+  Complete = 'Complete',
+  Current = 'On Going',
+  Waiting = 'Waiting',
 }
