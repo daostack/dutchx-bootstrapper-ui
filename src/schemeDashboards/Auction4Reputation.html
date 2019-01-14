@@ -25,10 +25,11 @@
 
       <div
         class="message"
+        style="text-align: left"
         if.to-view="!auctionNotBegun && !auctionIsOver"
       >
-        ${msRemainingInAuctionCountdown | timespan:"seconds"} left in the current auction ${currentAuctionNumber} of ${auctionCount}.
-        You have already bid ${amountBid | ethwei} out of a total ${totalAmountBid | ethwei} GEN bid in this auction.
+        <div>Current auction: ${currentAuctionNumber} of ${auctionCount}</div>
+        <div>Time left: ${msRemainingInAuctionCountdown | timespan:"seconds"}</div>
       </div>
 
       <form if.bind="!auctionNotBegun && !auctionIsOver">
@@ -56,6 +57,71 @@
           </div>
         </div>
       </form>
+
+      <div style="padding-left: .5rem; padding-right: .5rem">
+        <div
+          class="inline"
+          style="font-weight: 500;"
+        >Your Bid</div>
+        <div class="pull-right">
+          <spinbutton
+            onclick.call="refresh()"
+            class="locksRefreshButton"
+            spin.to-view="refreshingBids"
+            title="Refresh Bids List"
+          ></spinbutton>
+        </div>
+      </div>
+      <table class="table locksForRep">
+        <thead class="thead-light">
+          <tr>
+            <!-- <th>Lock Id</th> -->
+            <th style="text-align:left;width: 20%;">Amount</th>
+            <th>Of</th>
+            <th>Releasable</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr if.to-view="_locks.length === 0">
+            <td
+              colspan="100"
+              style="text-align: center; padding-top: 1rem"
+            >
+              You have not yet submitted any locks
+            </td>
+          </tr>
+          <tr repeat.for="lock of _locks">
+            <!-- <td>${lock.lockId }</td> -->
+            <td>${lock.amount | ethwei}</td>
+            <td>${lock.units}</td>
+            <td style="white-space:nowrap">
+              ${lock.releaseTime | date:lock.releasableToday ? 'table-time' : 'table-date'}</span>
+              <span if.one-time="lock.releasableToday"> today</span>
+            </td>
+            <td style="text-align:center;">
+              <button
+                click.delegate="_release(lock)"
+                disabled.bind="!lock.canRelease"
+                if.to-view="!lock.releasing && !lock.released"
+                class="btn btn-link"
+              >Release</button>
+              <div
+                if.to-view="lock.releasing && !lock.released"
+                title="Releasing"
+                class="inline text-primary fa-refresh fa fa-spin"
+                style="line-height: 21px"
+              ></div>
+              <button
+                if.to-view="lock.released"
+                class="btn btn-link"
+                disabled
+              >Completed</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
     </div>
   </div>
 </template>
