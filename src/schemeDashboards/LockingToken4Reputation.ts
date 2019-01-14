@@ -4,6 +4,7 @@ import { autoinject } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { ITokenSpecification } from 'services/lockServices';
+import { Utils as UtilsInternal } from 'services/utils';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 import { Address,
         Erc20Factory,
@@ -64,8 +65,9 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
         const success = await super.lock(true);
         if (success) {
-          this.lockModel.amount = this.lockModel.period = undefined;
-          this.selectedToken = null;
+          this.lockModel.amount = this.lockModel.period = null;
+          UtilsInternal.resetInputField('lockAmount');
+          UtilsInternal.resetInputField('lockingPeriod');
         }
         return success;
       }
