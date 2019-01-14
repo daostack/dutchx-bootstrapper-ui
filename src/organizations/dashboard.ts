@@ -472,12 +472,14 @@ export class Dashboard {
 
     let totalReputationAvailable = new BigNumber(0);
     const redeemables = new Array<IRedeemable>();
+    let contractRepReward: BigNumber;
 
     try {
       let schemeAddress = this.getSchemeInfoFromName('LockingEth4Reputation').address;
       let wrapper: Locking4ReputationWrapper = await WrapperService.factories.LockingEth4Reputation.at(schemeAddress);
       let earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
-      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+      contractRepReward = await wrapper.getReputationReward();
+      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       if (earnedRep.gt(0)) {
         redeemables.push({
@@ -489,7 +491,8 @@ export class Dashboard {
       schemeAddress = this.getSchemeInfoFromName('ExternalLocking4Reputation').address;
       wrapper = await WrapperService.factories.ExternalLocking4Reputation.at(schemeAddress);
       earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
-      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+      contractRepReward = await wrapper.getReputationReward();
+      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       if (earnedRep.gt(0)) {
         redeemables.push({
@@ -501,7 +504,8 @@ export class Dashboard {
       schemeAddress = this.getSchemeInfoFromName('LockingToken4Reputation').address;
       wrapper = await WrapperService.factories.LockingToken4Reputation.at(schemeAddress);
       earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
-      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+      contractRepReward = await wrapper.getReputationReward();
+      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       if (earnedRep.gt(0)) {
         redeemables.push({
@@ -518,7 +522,8 @@ export class Dashboard {
         earnedRep = earnedRep.add(await auctionWrapper.getUserEarnedReputation(
           { beneficiaryAddress: this.web3.defaultAccount, auctionId }));
       }
-      totalReputationAvailable = totalReputationAvailable.add((await wrapper.getReputationReward()).mul(numAuctions));
+      contractRepReward = await wrapper.getReputationReward();
+      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       if (earnedRep.gt(0)) {
         redeemables.push({
