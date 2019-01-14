@@ -28,8 +28,8 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private currentAuctionNumber: number;
   private auctionCount: number;
   private auctionEndTime: Date;
-  private amountBid: BigNumber;
-  private totalAmountBid: BigNumber;
+  private amountBid: BigNumber = new BigNumber(0);
+  private totalAmountBid: BigNumber = new BigNumber(0);
   private msRemainingInAuctionCountdown: number;
   private auctionPeriod: number;
   private bidAmount: BigNumber = undefined;
