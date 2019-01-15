@@ -15,9 +15,8 @@ export class LockingEth4ReputationDashboard extends Locking4Reputation {
   protected async lock(): Promise<boolean> {
     const success = await super.lock();
     if (success) {
-      this.lockModel.amount = this.lockModel.period = null;
-      Utils.resetInputField('lockAmount');
-      Utils.resetInputField('lockingPeriod');
+      Utils.resetInputField('lockAmount', null);
+      Utils.resetInputField('lockingPeriod', null);
     }
     return success;
   }

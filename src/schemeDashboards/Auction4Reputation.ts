@@ -124,8 +124,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
         this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
           `The bid has been recorded`, result.transactionHash));
 
-        this.bidAmount = null;
-        Utils.resetInputField('bidAmount');
+        Utils.resetInputField('bidAmount', null);
       }
 
     } catch (ex) {

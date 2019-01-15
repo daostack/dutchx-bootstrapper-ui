@@ -65,9 +65,8 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
         const success = await super.lock(true);
         if (success) {
-          this.lockModel.amount = this.lockModel.period = null;
-          UtilsInternal.resetInputField('lockAmount');
-          UtilsInternal.resetInputField('lockingPeriod');
+          UtilsInternal.resetInputField('lockAmount', null);
+          UtilsInternal.resetInputField('lockingPeriod', null);
         }
         return success;
       }

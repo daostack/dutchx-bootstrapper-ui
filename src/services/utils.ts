@@ -74,9 +74,7 @@ export class Utils {
    * Resets the position of an input label after any dynamic (non-UI) change in its value
    * @param id
    */
-  public static resetInputField(id: string) {
-    setTimeout(() => {
-      $(`#${id}`).trigger('change');
-    }, 0);
+  public static resetInputField(id: string, val: any) {
+    $(`input#${id}`).val(val).trigger('change');
   }
 }
