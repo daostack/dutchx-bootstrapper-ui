@@ -125,7 +125,9 @@ export class Auction4Reputation extends DaoSchemeDashboard {
       }
 
     } catch (ex) {
-      this.eventAggregator.publish('handleException', new EventConfigException(`The bid could not be recorded`, ex));
+      this.eventAggregator.publish('handleException', new EventConfigException(`The bid was not recorded`, ex));
+    } finally {
+      this.bidding = false;
     }
 
     this.bidding = false;

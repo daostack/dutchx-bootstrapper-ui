@@ -77,7 +77,7 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
     } catch (ex) {
         this.eventAggregator.publish('handleException',
-          new EventConfigException(`The regisration could not be recorded`, ex));
+          new EventConfigException(`The regisration was not recorded`, ex));
         success = false;
     }
 

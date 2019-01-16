@@ -132,6 +132,16 @@
   border-top-color: $color-ds-lightblue;
 }
 
+.landing-page .participation-dates-section .shortdate .asterisk {
+  position: absolute;
+  top: 2.7rem;
+  left: 0rem;
+}
+
+.landing-page .participation-dates-section .footnote {
+  font-style: italic;
+}
+
 .landing-page .participation-dates-section .triangle img {
   width: .5rem;
   margin-left: .2rem;
