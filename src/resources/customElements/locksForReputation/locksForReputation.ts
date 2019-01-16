@@ -65,6 +65,10 @@ export class LocksForReputation {
     }
   }
 
+  /**
+   * returns whether the given lock release date/time occurs today
+   * @param releaseTime
+   */
   private releasableToday(releaseTime: Date): boolean {
     const now = new Date();
     return (releaseTime.getDate() === now.getDate()) &&
