@@ -9,7 +9,6 @@
     "governanceStartDate": "2019-04-04T12:00:00.000"
   },
   "Ganache": {
-    "daoAddress": "0xcb4e66eca663fdb61818d52a152601ca6afef74f",
     "gnoTokenAddress": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
     "lockableTokens": [
       {
@@ -23,9 +22,6 @@
     ]
   },
   "Kovan": {
-    "daoAddress": "0xe88df1105bfc7d1b1238e25ab9764b5f1f119d73",
-    "lockingPeriodStartDate": "2019-01-15T15:00:00.000",
-    "lockingPeriodEndDate": "2019-01-15T17:00:00.000",
     "gnoTokenAddress": "0x6018bf616ec9db02f90c8c8529ddadc10a5c29dc",
     "lockableTokens": [
       {
@@ -43,7 +39,6 @@
     ]
   },
   "Rinkeby": {
-    "daoAddress": "0xbb491d151ff2ae050a24357a3916bb04a3e07d44",
     "gnoTokenAddress": "0xd0dab4e640d95e9e8a47545598c33e31bdb53c7c",
     "lockableTokens": [
       {
@@ -69,7 +64,6 @@
     ]
   },
   "Live": {
-    "daoAddress": "",
     "gnoTokenAddress": "0x6810e776880c02933d47db1b9fc05908e5386b96"
   }
 }
