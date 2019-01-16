@@ -16,7 +16,6 @@
   <table class="table locksForRep">
     <thead class="thead-light">
       <tr>
-        <!-- <th>Lock Id</th> -->
         <th style="text-align:left;width: 20%;">Amount</th>
         <th>Of</th>
         <th>Releasable</th>
@@ -33,7 +32,6 @@
         </td>
       </tr>
       <tr repeat.for="lock of _locks">
-        <!-- <td>${lock.lockId }</td> -->
         <td>${lock.amount | ethwei}</td>
         <td>${lock.units}</td>
         <td style="white-space:nowrap">
