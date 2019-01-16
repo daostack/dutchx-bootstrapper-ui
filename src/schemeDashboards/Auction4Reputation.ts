@@ -86,7 +86,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
            * need these for getMsRemainingInAuctionCountdown
            */
           newAuction = true;
-          this.switchingAuctions(true);
+          this.switchingAuctions(true, true);
           await this.getCurrentAuctionNumber();
           await this.getCurrentAuctionEndTime();
         }
@@ -98,7 +98,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
            * then entering a new auction
            */
           newAuction = true;
-          this.switchingAuctions(true);
+          this.switchingAuctions(true, false);
           await this.getCurrentAuctionNumber();
           await this.getCurrentAuctionEndTime();
         }
@@ -250,9 +250,9 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     this.allBids = bids;
   }
 
-  private switchingAuctions(onOff: boolean) {
-    if (onOff) {
-      const dashboardHeight = $('#auctionDashboardBody').innerHeight();
+  private switchingAuctions(onOff: boolean, firstAuction?: boolean) {
+    if (onOff && !firstAuction) {
+      const dashboardHeight = $('#auctionDashboardBody').height();
       $('#auctionDashboardSwitchingSpinner').innerHeight(dashboardHeight);
     }
     this._switchingAuctions = onOff;
