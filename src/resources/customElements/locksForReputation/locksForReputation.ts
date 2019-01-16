@@ -66,7 +66,8 @@ export class LocksForReputation {
   }
 
   /**
-   * returns whether the given lock release date/time occurs today
+   * Returns whether the given lock release date/time occurs today.
+   * "Today" is defined in terms of the calendar day, local time.
    * @param releaseTime
    */
   private releasableToday(releaseTime: Date): boolean {
