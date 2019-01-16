@@ -37,7 +37,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private bidAmount: BigNumber = undefined;
   private refreshingBids: boolean;
   private allBids = new Array<IAuctionBidInfo>();
-  private switchingAuctions = false;
+  private _switchingAuctions = false;
 
   @computedFrom('auctionNotBegun', 'auctionIsOver')
   private get inAuction() {
@@ -88,7 +88,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
            * need these for getMsRemainingInAuctionCountdown
            */
           newAuction = true;
-          this.switchingAuctions = true;
+          this.switchingAuctions(true);
           await this.getCurrentAuctionNumber();
           await this.getCurrentAuctionEndTime();
         }
@@ -100,7 +100,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
            * then entering a new auction
            */
           newAuction = true;
-          this.switchingAuctions = true;
+          this.switchingAuctions(true);
           await this.getCurrentAuctionNumber();
           await this.getCurrentAuctionEndTime();
         }
@@ -109,7 +109,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
           await this.getAmountBid(this.currentAuctionNumber - 1);
           await this.getTotalAmountBid(this.currentAuctionNumber - 1);
           await this.getAccountBids();
-          this.switchingAuctions = false;
+          this.switchingAuctions(false);
         }
       } else if (this.auctionIsOver) {
         this.subscriptions.dispose();
@@ -249,6 +249,14 @@ export class Auction4Reputation extends DaoSchemeDashboard {
       this.refreshingBids = false;
     }
     this.allBids = bids;
+  }
+
+  private switchingAuctions(onOff: boolean) {
+    if (onOff) {
+      const dashboardHeight = $('#auctionDashboardBody').innerHeight();
+      $('#auctionDashboardSwitchingSpinner').innerHeight(dashboardHeight);
+    }
+    this._switchingAuctions = onOff;
   }
 }
 
