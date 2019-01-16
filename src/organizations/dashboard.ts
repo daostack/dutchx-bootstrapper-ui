@@ -57,7 +57,7 @@ export class Dashboard {
 
   @computedFrom('totalUserReputationEarned', 'totalReputationAvailable')
   private get percentUserReputationEarned(): string {
-    return this.totalUserReputationEarned.div(this.totalReputationAvailable).mul(100).toFixed(2).toString();
+    return this.totalUserReputationEarned.mul(100).div(this.totalReputationAvailable).toFixed(2).toString();
   }
 
   private address: string;
