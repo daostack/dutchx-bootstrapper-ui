@@ -1,7 +1,7 @@
 <template>
   <div
     class="pageloader"
-    if.bind="!loaded"
+    if.to-view="!loaded"
   >
     <pageloading></pageloading>
   </div>
@@ -12,12 +12,22 @@
       rata once the auction is complete.
     </instructions>
 
-    <div class="scheme-dashboard-body">
+    <div
+      class="pageloader"
+      if.to-view="switchingAuctions"
+    >
+      <pageloading>Thanks for waiting while we fetch data for the next auction...</pageloading>
+    </div>
+
+    <div
+      else
+      class="scheme-dashboard-body"
+    >
 
       <div
         class="message"
         if.to-view="auctionNotBegun"
-      >The initialization period has not yet begun, you can't bid</div>
+      >The initialization period has not yet begun, you can't yet bid</div>
       <div
         class="message"
         if.to-view="auctionIsOver"
@@ -58,70 +68,41 @@
         </div>
       </form>
 
-      <div style="padding-left: .5rem; padding-right: .5rem">
-        <div
-          class="inline"
-          style="font-weight: 500;"
-        >Your Bid</div>
-        <div class="pull-right">
-          <spinbutton
-            onclick.call="refresh()"
-            class="locksRefreshButton"
-            spin.to-view="refreshingBids"
-            title="Refresh Bids List"
-          ></spinbutton>
+      <div if.to-view="!auctionNotBegun">
+        <div style="padding-left: .5rem; padding-right: .5rem">
+          <div
+            class="inline"
+            style="font-weight: 500;"
+          >Your GEN Bids</div>
+          <div class="pull-right">
+            <spinbutton
+              onclick.call="getAccountBids()"
+              class="locksRefreshButton"
+              spin.to-view="refreshingBids"
+              title="Refresh Bids List"
+            ></spinbutton>
+          </div>
         </div>
-      </div>
-      <table class="table locksForRep">
-        <thead class="thead-light">
-          <tr>
-            <!-- <th>Lock Id</th> -->
-            <th style="text-align:left;width: 20%;">Amount</th>
-            <th>Of</th>
-            <th>Releasable</th>
-            <th>&nbsp;</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr if.to-view="_locks.length === 0">
-            <td
-              colspan="100"
-              style="text-align: center; padding-top: 1rem"
-            >
-              You have not yet submitted any locks
-            </td>
-          </tr>
-          <tr repeat.for="lock of _locks">
-            <!-- <td>${lock.lockId }</td> -->
-            <td>${lock.amount | ethwei}</td>
-            <td>${lock.units}</td>
-            <td style="white-space:nowrap">
-              ${lock.releaseTime | date:lock.releasableToday ? 'table-time' : 'table-date'}</span>
-              <span if.one-time="lock.releasableToday"> today</span>
-            </td>
-            <td style="text-align:center;">
-              <button
-                click.delegate="_release(lock)"
-                disabled.bind="!lock.canRelease"
-                if.to-view="!lock.releasing && !lock.released"
-                class="btn btn-link"
-              >Release</button>
-              <div
-                if.to-view="lock.releasing && !lock.released"
-                title="Releasing"
-                class="inline text-primary fa-refresh fa fa-spin"
-                style="line-height: 21px"
-              ></div>
-              <button
-                if.to-view="lock.released"
-                class="btn btn-link"
-                disabled
-              >Completed</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
 
+        <table class="table locksForRep">
+          <thead class="thead-light">
+            <tr>
+              <th>Auction #</th>
+              <th>You Have Bid</th>
+              <th>Total Bid</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr repeat.for="bid of allBids">
+              <td>${bid.auctionNum}</td>
+              <td>${bid.bidAmount | ethwei}</td>
+              <td>${bid.totalAuctionBidAmount| ethwei}</td>
+              <td>${bid.auctionStatus}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
