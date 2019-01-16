@@ -260,7 +260,7 @@ interface IAuctionBidInfo {
 }
 
 enum AuctionBidStatus {
-  Complete = 'Complete',
+  Complete = 'Ended',
   Current = 'Ongoing',
   Waiting = 'Waiting',
 }
