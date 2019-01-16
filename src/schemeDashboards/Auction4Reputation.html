@@ -13,14 +13,16 @@
     </instructions>
 
     <div
-      class="pageloader"
-      if.to-view="switchingAuctions"
+      class="pageloader scheme-dashboard-body"
+      id="auctionDashboardSwitchingSpinner"
+      show.to-view="_switchingAuctions"
     >
       <pageloading>Thanks for waiting while we fetch data for the next auction...</pageloading>
     </div>
 
     <div
-      else
+      show.to-view="!_switchingAuctions"
+      id="auctionDashboardBody"
       class="scheme-dashboard-body"
     >
 
