@@ -36,12 +36,11 @@
           <div class="col-5">
             <div class="form-group bmd-form-group">
               <label for="bidAmount">Tokens to bid</label>
-              <input
+              <numeric-input
+                css="form-control"
                 id="bidAmount"
-                class="form-control"
-                type="number"
-                value.bind="bidAmount | ethwei & updateTrigger:'blur'"
-              />
+                value.bind="bidAmount | ethwei"
+              ></numeric-input>
             </div>
             <div class="form-group">
               <spinbutton

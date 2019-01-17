@@ -7,10 +7,14 @@ export class NumberService {
    * @param value
    * @param format
    */
-  public toString(value: number, format?: string): string | null {
+  public toString(value: number, format?: string): string | null | undefined {
 
     // this helps to display the erroneus value in the GUI
     if (typeof value === 'string') {
+      return value as any;
+    }
+
+    if ((value === null) || (value === undefined)) {
       return value as any;
     }
 
