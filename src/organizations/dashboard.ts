@@ -57,7 +57,7 @@ export class Dashboard {
 
   @computedFrom('totalUserReputationEarned', 'totalReputationAvailable')
   private get percentUserReputationEarned(): string {
-    return this.totalUserReputationEarned.div(this.totalReputationAvailable).mul(100).toFixed(2).toString();
+    return this.totalUserReputationEarned.mul(100).div(this.totalReputationAvailable).toFixed(2).toString();
   }
 
   private address: string;
@@ -472,12 +472,14 @@ export class Dashboard {
 
     let totalReputationAvailable = new BigNumber(0);
     const redeemables = new Array<IRedeemable>();
+    let contractRepReward: BigNumber;
 
     try {
       let schemeAddress = this.getSchemeInfoFromName('LockingEth4Reputation').address;
       let wrapper: Locking4ReputationWrapper = await WrapperService.factories.LockingEth4Reputation.at(schemeAddress);
       let earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
-      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+      contractRepReward = await wrapper.getReputationReward();
+      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       if (earnedRep.gt(0)) {
         redeemables.push({
@@ -489,7 +491,8 @@ export class Dashboard {
       schemeAddress = this.getSchemeInfoFromName('ExternalLocking4Reputation').address;
       wrapper = await WrapperService.factories.ExternalLocking4Reputation.at(schemeAddress);
       earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
-      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+      contractRepReward = await wrapper.getReputationReward();
+      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       if (earnedRep.gt(0)) {
         redeemables.push({
@@ -501,7 +504,8 @@ export class Dashboard {
       schemeAddress = this.getSchemeInfoFromName('LockingToken4Reputation').address;
       wrapper = await WrapperService.factories.LockingToken4Reputation.at(schemeAddress);
       earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
-      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+      contractRepReward = await wrapper.getReputationReward();
+      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       if (earnedRep.gt(0)) {
         redeemables.push({
@@ -512,13 +516,14 @@ export class Dashboard {
 
       schemeAddress = this.getSchemeInfoFromName('Auction4Reputation').address;
       const auctionWrapper = await WrapperService.factories.Auction4Reputation.at(schemeAddress);
-      const auctions = await auctionWrapper.getNumberOfAuctions();
+      const numAuctions = await auctionWrapper.getNumberOfAuctions();
       earnedRep = new BigNumber(0);
-      for (let auctionId = 0; auctionId < auctions;  ++auctionId) {
+      for (let auctionId = 0; auctionId < numAuctions;  ++auctionId) {
         earnedRep = earnedRep.add(await auctionWrapper.getUserEarnedReputation(
           { beneficiaryAddress: this.web3.defaultAccount, auctionId }));
       }
-      totalReputationAvailable = totalReputationAvailable.add(await wrapper.getReputationReward());
+      contractRepReward = await auctionWrapper.getReputationReward();
+      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       if (earnedRep.gt(0)) {
         redeemables.push({
