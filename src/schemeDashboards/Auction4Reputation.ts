@@ -100,6 +100,10 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
   protected async bid(amount: BigNumber): Promise<void> {
 
+    if (this.bidding) {
+      return;
+    }
+
     const currentAccount = this.web3Service.defaultAccount;
 
     try {
@@ -126,9 +130,9 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
     } catch (ex) {
       this.eventAggregator.publish('handleException', new EventConfigException(`The bid could not be recorded`, ex));
+    } finally {
+      this.bidding = false;
     }
-
-    this.bidding = false;
   }
 
   private getAuctionNotBegun(blockDate: Date): boolean {
