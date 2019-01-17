@@ -4,14 +4,17 @@ import { autoinject } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { ITokenSpecification } from 'services/lockServices';
+import { Utils as UtilsInternal } from 'services/utils';
 import { BigNumber, Web3Service } from 'services/Web3Service';
-import { Address,
-        Erc20Factory,
-        Erc20Wrapper,
-        LockInfo,
-        LockingToken4ReputationWrapper,
-        TokenLockingOptions,
-        Utils} from '../services/ArcService';
+import {
+  Address,
+  Erc20Factory,
+  Erc20Wrapper,
+  LockInfo,
+  LockingToken4ReputationWrapper,
+  TokenLockingOptions,
+  Utils
+} from '../services/ArcService';
 
 @autoinject
 export class LockingToken4Reputation extends Locking4Reputation {
@@ -22,9 +25,9 @@ export class LockingToken4Reputation extends Locking4Reputation {
   private selectedTokenIsLiquid: boolean = false;
 
   constructor(
-      appConfig: AureliaConfiguration
-    , eventAggregator: EventAggregator
-    , web3Service: Web3Service
+    appConfig: AureliaConfiguration,
+    eventAggregator: EventAggregator,
+    web3Service: Web3Service
   ) {
     super(appConfig, eventAggregator, web3Service);
   }
@@ -64,11 +67,16 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
         this.locking = false; // so will execute lock
 
-        return super.lock(true);
+        const success = await super.lock(true);
+        if (success) {
+          UtilsInternal.resetInputField('lockAmount', null);
+          UtilsInternal.resetInputField('lockingPeriod', null);
+        }
+        return success;
       }
     } catch (ex) {
       this.eventAggregator.publish('handleException',
-                                   new EventConfigException(`The token transfer was not approved`, ex));
+        new EventConfigException(`The token transfer was not approved`, ex));
     }
     this.locking = false;
     return false;

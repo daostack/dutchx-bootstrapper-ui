@@ -17,8 +17,8 @@ export class LocksForReputation {
   private loading: boolean = true;
 
   constructor(
-    private web3Service: Web3Service
-    , private eventAggregator: EventAggregator
+    private web3Service: Web3Service,
+    private eventAggregator: EventAggregator
   ) {
   }
 

@@ -30,14 +30,15 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private currentAuctionNumber: number;
   private auctionCount: number;
   private auctionEndTime: Date;
-  private amountBid: BigNumber;
-  private totalAmountBid: BigNumber;
+  private amountBid: BigNumber = new BigNumber(0);
+  private totalAmountBid: BigNumber = new BigNumber(0);
   private msRemainingInAuctionCountdown: number;
   private auctionPeriod: number;
+  private bidAmount: BigNumber = undefined;
 
   constructor(
-    protected eventAggregator: EventAggregator
-    , protected web3Service: Web3Service
+    protected eventAggregator: EventAggregator,
+    protected web3Service: Web3Service
   ) {
     super();
   }
@@ -100,7 +101,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     this.refreshing = false;
   }
 
-  protected async bid(amount: BigNumber): Promise<void> {
+  protected async bid(): Promise<void> {
 
     if (this.bidding) {
       return;
@@ -112,22 +113,24 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
       this.bidding = true;
 
-      const reason = await this.wrapper.getBidBlocker({ amount });
+      const reason = await this.wrapper.getBidBlocker({ amount: this.bidAmount });
 
       if (reason) {
         this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't bid: ${reason}`));
       } else {
 
         await (await this.token.approve({
-          amount,
+          amount: this.bidAmount,
           owner: currentAccount,
           spender: this.wrapper.address,
         })).watchForTxMined();
 
-        const result = await (await this.wrapper.bid({ amount })).watchForTxMined();
+        const result = await (await this.wrapper.bid({ amount: this.bidAmount })).watchForTxMined();
 
         this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
           `The bid has been recorded`, result.transactionHash));
+
+        Utils.resetInputField('bidAmount', null);
       }
 
     } catch (ex) {

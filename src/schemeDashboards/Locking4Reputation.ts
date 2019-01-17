@@ -51,9 +51,9 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected lockService: LockService;
 
   constructor(
-    protected appConfig: AureliaConfiguration
-    , protected eventAggregator: EventAggregator
-    , protected web3Service: Web3Service
+    protected appConfig: AureliaConfiguration,
+    protected eventAggregator: EventAggregator,
+    protected web3Service: Web3Service
   ) {
     super();
   }
@@ -181,13 +181,9 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
     } catch (ex) {
       this.eventAggregator.publish('handleException',
-<<<<<<< HEAD
-        new EventConfigException(`The lock could not be released`, ex));
+        new EventConfigException(`The lock was not released`, ex));
     } finally {
       this.releasing = false;
-=======
-      new EventConfigException(`The lock was not released`, ex));
->>>>>>> requestedTextChangesRebranch
     }
     return false;
   }

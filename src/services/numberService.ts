@@ -54,8 +54,8 @@ export class NumberService {
 
   private getNumberRegexString(decimalPlaces: number = 0) {
     return (decimalPlaces !== 0) ?
-      `^[+|-]?(((\\d{1,3}\\,)((\\d{3}\\,)?)(\\d{3}(\\.\\d{0,${decimalPlaces}})?))|
-      (\\d{1,})|(\\d{0,}(\\.\\d{0,${decimalPlaces}})))$` :
+      // tslint:disable-next-line: max-line-length
+      `^[+|-]?(((\\d{1,3}\\,)((\\d{3}\\,)?)(\\d{3}?(\\.\\d{0,${decimalPlaces}})?))|(\\d{1,})|(\\d{0,}(\\.\\d{0,${decimalPlaces}})))$` :
       `^[+|-]?(((\\d{1,3}\\,)((\\d{3}\\,)?)(\\d{3}))|(\\d{1,}))$`;
   }
 }
