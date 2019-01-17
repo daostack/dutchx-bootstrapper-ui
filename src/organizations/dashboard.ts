@@ -114,8 +114,9 @@ export class Dashboard {
       }],
     ]);
 
+  // tslint:disable: align
   constructor(
-      private daoService: DaoService
+    private daoService: DaoService
     , private web3: Web3Service
     , private schemeService: SchemeService
     , private web3Service: Web3Service
@@ -125,6 +126,7 @@ export class Dashboard {
     , private networkConnectionWizards: NetworkConnectionWizards
     , private dateService: DateService
   ) {
+    // tslint:enable: align
 
     $(window).resize(this.fixScrollbar);
   }
@@ -223,7 +225,7 @@ export class Dashboard {
     this.fixScrollbar();
 
     this.lockingPeriodEndDate = this.dateService
-    .fromIsoString(this.appConfig.get('lockingPeriodEndDate'), App.timezone);
+      .fromIsoString(this.appConfig.get('lockingPeriodEndDate'), App.timezone);
 
     if (this.fakeRedeem && this.web3Service.isConnected && (this.networkName === 'Ganache')) {
       await UtilsInternal.increaseTime(100000000000, this.web3.web3);
@@ -302,7 +304,7 @@ export class Dashboard {
           // so we will at least be able to find out if we're connected and have a default account
           web3 = await Utils.getWeb3();
           // tslint:disable-next-line:no-empty
-        } catch (ex) {  }
+        } catch (ex) { }
       }
 
       if (networkName === 'Live') {
@@ -314,7 +316,7 @@ export class Dashboard {
             return web3.toWei(gasPrice, 'gwei');
             // tslint:disable-next-line:no-empty
           } catch  {
-            }
+          }
         });
       }
 
@@ -399,14 +401,14 @@ export class Dashboard {
     if (!this.schemesLoaded) {
       this.org = undefined;
       this.eventAggregator.publish('handleFailure',
-      new EventConfigFailure(`not all of the required contracts were found`));
+        new EventConfigFailure(`not all of the required contracts were found`));
       this.networkConnectionWizards.run(false, true); // no-op if already running
     } else {
 
       await this.computeNumLocks();
 
       const wrapper =
-      (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
+        (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
       const mgnTokenAddress = await wrapper.getExternalLockingContract();
       this.appConfig.set('mgnTokenAddress', mgnTokenAddress);
 
@@ -481,25 +483,10 @@ export class Dashboard {
       contractRepReward = await wrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
-      if (earnedRep.gt(0)) {
-        redeemables.push({
-          amount: earnedRep,
-          what: 'locked ETH',
-        });
-      }
-
-      schemeAddress = this.getSchemeInfoFromName('ExternalLocking4Reputation').address;
-      wrapper = await WrapperService.factories.ExternalLocking4Reputation.at(schemeAddress);
-      earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
-      contractRepReward = await wrapper.getReputationReward();
-      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
-
-      if (earnedRep.gt(0)) {
-        redeemables.push({
-          amount: earnedRep,
-          what: 'locked MGN tokens',
-        });
-      }
+      redeemables.push({
+        amount: earnedRep,
+        what: 'Locked ETH',
+      });
 
       schemeAddress = this.getSchemeInfoFromName('LockingToken4Reputation').address;
       wrapper = await WrapperService.factories.LockingToken4Reputation.at(schemeAddress);
@@ -507,30 +494,37 @@ export class Dashboard {
       contractRepReward = await wrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
-      if (earnedRep.gt(0)) {
-        redeemables.push({
-          amount: earnedRep,
-          what: 'other locked tokens',
-        });
-      }
+      redeemables.push({
+        amount: earnedRep,
+        what: 'Other locked tokens',
+      });
+
+      schemeAddress = this.getSchemeInfoFromName('ExternalLocking4Reputation').address;
+      wrapper = await WrapperService.factories.ExternalLocking4Reputation.at(schemeAddress);
+      earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
+      contractRepReward = await wrapper.getReputationReward();
+      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
+
+      redeemables.push({
+        amount: earnedRep,
+        what: 'Locked MGN tokens',
+      });
 
       schemeAddress = this.getSchemeInfoFromName('Auction4Reputation').address;
       const auctionWrapper = await WrapperService.factories.Auction4Reputation.at(schemeAddress);
       const numAuctions = await auctionWrapper.getNumberOfAuctions();
       earnedRep = new BigNumber(0);
-      for (let auctionId = 0; auctionId < numAuctions;  ++auctionId) {
+      for (let auctionId = 0; auctionId < numAuctions; ++auctionId) {
         earnedRep = earnedRep.add(await auctionWrapper.getUserEarnedReputation(
           { beneficiaryAddress: this.web3.defaultAccount, auctionId }));
       }
       contractRepReward = await auctionWrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
-      if (earnedRep.gt(0)) {
-        redeemables.push({
-          amount: earnedRep,
-          what: 'GEN auctions',
-        });
-      }
+      redeemables.push({
+        amount: earnedRep,
+        what: 'GEN auctions',
+      });
 
       this.totalReputationAvailable = totalReputationAvailable;
       this.redeemables = redeemables;
@@ -562,26 +556,26 @@ export class Dashboard {
 
     for (const wrapperName in WrapperService.nonUniversalSchemeFactories) {
       if (WrapperService.nonUniversalSchemeFactories.hasOwnProperty(wrapperName)) {
-      const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
-      if (factory && this.dutchXSchemeConfigs.has(wrapperName)) {
-        /**
-         * look in Arc contracts
-         */
-        let found: boolean;
-        let contract = null;
-        // tslint:disable-next-line:no-empty
-        try { contract = await factory.ensureSolidityContract(); } catch { }
-        if (contract) {
-          const deployedBinary = contract.deployedBinary.substr(0, contract.deployedBinary.indexOf(end));
-          found = code === deployedBinary;
-        }
+        const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
+        if (factory && this.dutchXSchemeConfigs.has(wrapperName)) {
+          /**
+           * look in Arc contracts
+           */
+          let found: boolean;
+          let contract = null;
+          // tslint:disable-next-line:no-empty
+          try { contract = await factory.ensureSolidityContract(); } catch { }
+          if (contract) {
+            const deployedBinary = contract.deployedBinary.substr(0, contract.deployedBinary.indexOf(end));
+            found = code === deployedBinary;
+          }
 
-        if (found) {
-          const wrapper = await factory.at(scheme.address);
-          return SchemeInfo.fromContractWrapper(wrapper, true);
+          if (found) {
+            const wrapper = await factory.at(scheme.address);
+            return SchemeInfo.fromContractWrapper(wrapper, true);
+          }
         }
       }
-     }
     }
     return null;
   }

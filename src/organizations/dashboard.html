@@ -199,20 +199,27 @@
                   click.delegate="redeem()">Redeem</button> -->
                 <div if.bind="canRedeem && totalUserReputationEarned.eq(0)">You have not earned any reputation</div>
                 <div if.bind="canRedeem && totalUserReputationEarned.gt(0)">
-                  <div class="title">Reputation You Have Earned</div>
+                  <div class="title">You Have Earned ${totalUserReputationEarned | ethwei} (${percentUserReputationEarned}%) Reputation:</div>
                   <div class="body">
                     <div class="breakdown">
-                      <div
-                        class="redeemable"
-                        repeat.for="redeemable of redeemables"
-                      >
-                        <span>${redeemable.amount | ethwei}</span> REP from ${redeemable.what}
-                      </div>
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Reputation</th>
+                            <th>Through</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr repeat.for="redeemable of redeemables">
+                            <td>${redeemable.amount | ethwei} Rep</td>
+                            <td>${redeemable.what}</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                     <div>
-                      This amounts to ${totalUserReputationEarned | ethwei}, or
-                      ${percentUserReputationEarned}%, of the ${totalReputationAvailable |
-                      ethwei} total REP that will be distributed in the initialization phase.
+                      All reputation earned by all participants, 1000000 Rep, will be distributed
+                      after the initialization phase.
                     </div>
                   </div>
                 </div>
