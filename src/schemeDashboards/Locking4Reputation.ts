@@ -6,14 +6,16 @@ import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LockService } from 'services/lockServices';
 import { EventConfigException, EventConfigFailure, EventConfigTransaction } from '../entities/GeneralEvents';
-import { Address,
-         ArcTransactionResult,
-         LockerInfo,
-         LockInfo,
-         Locking4ReputationWrapper,
-         LockingOptions,
-         TransactionReceiptTruffle,
-         WrapperService } from '../services/ArcService';
+import {
+  Address,
+  ArcTransactionResult,
+  LockerInfo,
+  LockInfo,
+  Locking4ReputationWrapper,
+  LockingOptions,
+  TransactionReceiptTruffle,
+  WrapperService
+} from '../services/ArcService';
 import { Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';
 // import { App } from 'app';
@@ -35,7 +37,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected loaded: boolean = false;
   protected lockerInfo: LockerInfo;
   protected subscriptions = new DisposableCollection();
-  protected locks: Array<ILockInfoX >;
+  protected locks: Array<ILockInfoX>;
   protected locking: boolean = false;
   protected releasing: boolean = false;
 
@@ -49,7 +51,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected lockService: LockService;
 
   constructor(
-      protected appConfig: AureliaConfiguration
+    protected appConfig: AureliaConfiguration
     , protected eventAggregator: EventAggregator
     , protected web3Service: Web3Service
   ) {
@@ -147,7 +149,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       }
 
     } catch (ex) {
-      this.eventAggregator.publish('handleException', new EventConfigException(`The lock could not be recorded`, ex));
+      this.eventAggregator.publish('handleException', new EventConfigException(`The lock was not recorded`, ex));
     } finally {
       this.locking = false;
     }
@@ -179,9 +181,13 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
     } catch (ex) {
       this.eventAggregator.publish('handleException',
-      new EventConfigException(`The lock could not be released`, ex));
+<<<<<<< HEAD
+        new EventConfigException(`The lock could not be released`, ex));
     } finally {
       this.releasing = false;
+=======
+      new EventConfigException(`The lock was not released`, ex));
+>>>>>>> requestedTextChangesRebranch
     }
     return false;
   }
@@ -196,10 +202,10 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
      * The symbol is for the LocksForReputation table
      */
     for (const lock of locks) {
-      (lock as ILockInfoX ).units = await this.getLockUnit(lock as LockInfo);
+      (lock as ILockInfoX).units = await this.getLockUnit(lock as LockInfo);
     }
 
-    this.locks = locks as Array<ILockInfoX >;
+    this.locks = locks as Array<ILockInfoX>;
   }
 
   private getLockingPeriodHasNotStarted(blockDate: Date): boolean {

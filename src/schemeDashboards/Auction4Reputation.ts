@@ -5,10 +5,12 @@ import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { Utils } from 'services/utils';
 import { DecodedLogEntry } from 'web3';
-import { Auction4ReputationBidEventResult,
-         Auction4ReputationWrapper,
-         Erc20Wrapper,
-         WrapperService } from '../services/ArcService';
+import {
+  Auction4ReputationBidEventResult,
+  Auction4ReputationWrapper,
+  Erc20Wrapper,
+  WrapperService
+} from '../services/ArcService';
 import { BigNumber, Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';
 
@@ -34,7 +36,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private auctionPeriod: number;
 
   constructor(
-      protected eventAggregator: EventAggregator
+    protected eventAggregator: EventAggregator
     , protected web3Service: Web3Service
   ) {
     super();
@@ -75,7 +77,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
     this.subscriptions.push(sub);
 
-    const watcher = this.wrapper.Bid({ }, { fromBlock: 'latest' });
+    const watcher = this.wrapper.Bid({}, { fromBlock: 'latest' });
 
     watcher.watch((_error: Error, event: DecodedLogEntry<Auction4ReputationBidEventResult>) => {
       this.getAmountBid(event.args._auctionId.toNumber());
@@ -129,7 +131,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
       }
 
     } catch (ex) {
-      this.eventAggregator.publish('handleException', new EventConfigException(`The bid could not be recorded`, ex));
+      this.eventAggregator.publish('handleException', new EventConfigException(`The bid was not recorded`, ex));
     } finally {
       this.bidding = false;
     }
