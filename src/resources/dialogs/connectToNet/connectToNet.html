@@ -1,14 +1,27 @@
 <template>
-  <ux-dialog class="dialog connections">
+  <ux-dialog
+    with.bind="model"
+    class="dialog connections"
+  >
     <ux-dialog-header>
-      <img
-        src="../../../../static/dutchx-blue.svg"
-        class="logo d-inline-block align-top"
-        alt="DutchX"
+      <div
+        if.to-view="!(hasDao && hasApprovedAccountAccess)"
+        class="d-inline-block"
       >
-      Welcome to the DutchX Initializer
+        <img
+          src="../../../../static/dutchx-blue.svg"
+          class="logo d-inline-block align-top"
+          alt="DutchX"
+        >
+        Welcome to the DutchX Initializer</div>
+      <div
+        else
+        class="d-inline"
+      >
+        <div class="d-inline-block warning-icon">⚠️</div>Important Notice: Reputation is Not Transferable
+      </div>
     </ux-dialog-header>
-    <ux-dialog-body with.bind="model">
+    <ux-dialog-body>
       <div class="body">
         <div if.to-view="loading">
           <pageloading><img
@@ -19,7 +32,7 @@
             Fetching the DutchX DAO...</pageloading>
         </div>
         <div else>
-          <p if.bind="!isConnected">
+          <p if.to-view="!isConnected">
             There seems to be no connection to the blockchain. Please install and/or enable the <a
               href="https://metamask.io/"
               target="_blank"
@@ -31,21 +44,25 @@
             Initializer.
           </p>
 
-          <div if.bind="isConnected && !hasAccount">
+          <div if.to-view="isConnected && !hasAccount">
             <p>To access the <a
                 href="https://daotalk.org/c/dutchx-dao"
                 target="_blank"
               >DutchX</a> Initializer, please log in to MetaMask, select your desired account and allow the DutchX Initializer to access your account.
           </div>
 
-          <div if.bind="((isConnected && !hasAccount) || (!landed && hasDao))">
-            <p>
-              <span class="important">Important</span>: Reputation earned by locking tokens cannot be transferred.
-              Please ensure you have selected the account (ETH Address) you intend to use in the future for voting within the DAO.
+          <div if.to-view="((isConnected && !hasAccount) || (!landed && hasDao))">
+            <p><span class="important">Important</span>: Reputation earned by locking tokens cannot be transferred.
+              <span if.to-view="!hasAccount">Please ensure you have selected the account (ETH Address) you intend to use in the future for voting within the DAO.</span>
+            </p>
+            <p if.to-view="hasAccount">
+              You are currently using the following account:
+              <usersaddress></usersaddress>.
+              Please be sure that you intend to use this account in the future for voting within the DutchX DAO.
             </p>
             <!-- "OK" (`land`) will take us off the info panel -->
             <p
-              if.bind="hasDao && hasApprovedAccountAccess"
+              if.to-view="hasDao && hasApprovedAccountAccess"
               class="buttonContainer"
             ><button
                 class="btn btn-submit"
@@ -53,22 +70,19 @@
               >OK</button></p>
           </div>
 
-          <div if.bind="isConnected && (!hasAccount || !hasApprovedAccountAccess)">
-            <!-- <p>Please log in to MetaMask, select your desired account and allow the DutchX Initializer to access your
-              account:</p> -->
-
+          <div if.to-view="isConnected && (!hasAccount || !hasApprovedAccountAccess)">
             <p class="buttonContainer"><button
                 class="btn btn-submit"
                 click.delegate="confirm()"
               >Allow the DutchX Initializer to Access Your Account on MetaMask</button></p>
           </div>
 
-          <div if.bind="isConnected && hasAccount">
-            <p if.bind="!hasDao">
+          <div if.to-view="isConnected && hasAccount">
+            <p if.to-view="!hasDao">
               Please check MetaMask and make sure you are connected to the Main Ethereum Network.
             </p>
 
-            <div if.bind="landed && hasDao">
+            <div if.to-view="landed && hasDao">
               <!-- we have a DAO -->
               <p style="text-align: center">[Disclaimer]</p>
               <p class="buttonContainer"><button
