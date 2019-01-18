@@ -1,4 +1,5 @@
-﻿import * as numeral from 'numeral';
+﻿import BigNumber from 'bignumber.js';
+import * as numeral from 'numeral';
 
 export class NumberService {
 
@@ -19,6 +20,53 @@ export class NumberService {
     }
 
     return numeral(value).format(format);
+  }
+
+  public toFixedNumberString(value: BigNumber | number, digits: number = 3): string | null | undefined {
+
+    // this helps to display the erroneus value in the GUI
+    if (typeof value === 'string') {
+      return value as any;
+    }
+
+    if ((value === null) || (value === undefined)) {
+      return value as any;
+    }
+
+    const isNum = typeof value === 'number';
+
+    if (isNum) {
+      if (Number.isNaN(value as number)) {
+        return null;
+      } else {
+        value = new BigNumber(value);
+      }
+    } else {
+      if ((value as BigNumber).isNaN()) {
+        return null;
+      }
+    }
+
+    return (value as BigNumber).toPrecision(digits);
+
+    // if (str.length > digits) {
+    //   /**
+    //    * place the decimal
+    //    */
+    //   const ndxDecimalDigit = str.indexOf('.');
+    //   let decimalDigits: number;
+    //   if (ndxDecimalDigit === -1) {
+    //     decimalDigits = Math.min(str.length, digits) - 1;
+    //   } else {
+    //     decimalDigits = Math.max(str.length - ndxDecimalDigit, ndxDecimalDigit);
+    //     return (value as number).toExponential(digits - 1);
+    //   } else {
+    //     return str;
+    //   }
+
+    //   const power = 10 ** (digits + 1);
+    //   const maxVal = power - 1; // default 999 (digits 3)
+    //   const minVal = 1 / power;       // default .001
   }
 
   public fromString(value: string, decimalPlaces: number = 1000): number {

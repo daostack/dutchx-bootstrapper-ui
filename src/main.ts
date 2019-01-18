@@ -40,6 +40,7 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName('resources/customElements/copyToClipboardButton/copyToClipboardButton'),
     PLATFORM.moduleName('resources/customElements/banner/banner'),
     PLATFORM.moduleName('resources/customElements/numericInput/numericInput'),
+    PLATFORM.moduleName('resources/customElements/floatingPointNumber/floatingPointNumber'),
     PLATFORM.moduleName('resources/customElements/spinButton.html'),
     PLATFORM.moduleName('resources/customElements/instructions.html'),
     PLATFORM.moduleName('resources/customElements/pageLoading.html'),

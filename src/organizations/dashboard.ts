@@ -56,8 +56,8 @@ export class Dashboard {
   }
 
   @computedFrom('totalUserReputationEarned', 'totalReputationAvailable')
-  private get percentUserReputationEarned(): string {
-    return this.totalUserReputationEarned.mul(100).div(this.totalReputationAvailable).toFixed(2).toString();
+  private get percentUserReputationEarned(): BigNumber {
+    return this.totalUserReputationEarned.mul(100).div(this.totalReputationAvailable);
   }
 
   private address: string;
@@ -451,14 +451,6 @@ export class Dashboard {
       scheme);
   }
 
-  // getSchemeIndexFromAddress(address: string, collection: Array<SchemeInfo>): number {
-  //   let result = collection.filter((s) => s.address === address);
-  //   if (result.length > 1) {
-  //     throw new Error("getSchemeInfoWithAddress: More than one schemes found");
-  //   }
-  //   return result.length ? collection.indexOf(result[0]) : -1;
-  // }
-
   private getSchemeInfoFromName(name: string): ISchemeInfoX {
     return this.dutchXSchemes.filter((s: ISchemeInfoX) => {
       return s.name === name;
@@ -484,7 +476,7 @@ export class Dashboard {
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       redeemables.push({
-        amount: earnedRep,
+        amount: this.web3Service.fromWei(earnedRep),
         what: 'Locked ETH',
       });
 
@@ -495,7 +487,7 @@ export class Dashboard {
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       redeemables.push({
-        amount: earnedRep,
+        amount: this.web3Service.fromWei(earnedRep),
         what: 'Other locked tokens',
       });
 
@@ -506,7 +498,7 @@ export class Dashboard {
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       redeemables.push({
-        amount: earnedRep,
+        amount: this.web3Service.fromWei(earnedRep),
         what: 'Locked MGN tokens',
       });
 
@@ -522,11 +514,11 @@ export class Dashboard {
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       redeemables.push({
-        amount: earnedRep,
+        amount: this.web3Service.fromWei(earnedRep),
         what: 'GEN auctions',
       });
 
-      this.totalReputationAvailable = totalReputationAvailable;
+      this.totalReputationAvailable = this.web3Service.fromWei(totalReputationAvailable);
       this.redeemables = redeemables;
     } catch (ex) {
       this.eventAggregator.publish('handleException',

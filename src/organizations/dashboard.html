@@ -199,7 +199,16 @@
                   click.delegate="redeem()">Redeem</button> -->
                 <div if.bind="canRedeem && totalUserReputationEarned.eq(0)">You have not earned any reputation</div>
                 <div if.bind="canRedeem && totalUserReputationEarned.gt(0)">
-                  <div class="title">You Have Earned ${totalUserReputationEarned | ethwei} (${percentUserReputationEarned}%) Reputation:</div>
+                  <div class="title">You Have Earned <floating-point-number
+                      value.to-view="totalUserReputationEarned"
+                      precision="8"
+                      trailing-zeroes="2"
+                    ></floating-point-number>
+                    (<floating-point-number
+                      value.to-view="percentUserReputationEarned"
+                      precision="4"
+                      trailing-zeroes="2"
+                    ></floating-point-number>%) Reputation:</div>
                   <div class="body">
                     <div class="breakdown">
                       <table class="table">
@@ -211,7 +220,14 @@
                         </thead>
                         <tbody>
                           <tr repeat.for="redeemable of redeemables">
-                            <td>${redeemable.amount | ethwei} Rep</td>
+                            <td>
+                              <floating-point-number
+                                value.to-view="redeemable.amount"
+                                precision="8"
+                                trailing-zeroes="2"
+                                placement="left"
+                              ></floating-point-number> Rep
+                            </td>
                             <td>${redeemable.what}</td>
                           </tr>
                         </tbody>
