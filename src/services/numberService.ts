@@ -22,7 +22,18 @@ export class NumberService {
     return numeral(value).format(format);
   }
 
-  public toFixedNumberString(value: BigNumber | number, digits: number = 3): string | null | undefined {
+  /**
+   * returns number with `digits` number of digits.
+   * @param value the value
+   * @param precision Round to the given precision
+   * @param exponentialAt Go exponential at the given magnitude, or low and high values
+   * @param roundUp 0 to round up, 1 to round down
+   */
+  public toFixedNumberString(
+    value: BigNumber | number,
+    precision: number = 5,
+    exponentialAt: number | [number, number] = [-7, 20],
+    roundUp: boolean = false): string | null | undefined {
 
     // this helps to display the erroneus value in the GUI
     if (typeof value === 'string') {
@@ -47,28 +58,15 @@ export class NumberService {
       }
     }
 
-    return (value as BigNumber).toPrecision(digits);
+    const saveConfig = BigNumber.config();
+    BigNumber.config({ EXPONENTIAL_AT: exponentialAt });
 
-    // if (str.length > digits) {
-    //   /**
-    //    * place the decimal
-    //    */
-    //   const ndxDecimalDigit = str.indexOf('.');
-    //   let decimalDigits: number;
-    //   if (ndxDecimalDigit === -1) {
-    //     decimalDigits = Math.min(str.length, digits) - 1;
-    //   } else {
-    //     decimalDigits = Math.max(str.length - ndxDecimalDigit, ndxDecimalDigit);
-    //     return (value as number).toExponential(digits - 1);
-    //   } else {
-    //     return str;
-    //   }
+    const result = (value as BigNumber).toPrecision(precision, roundUp ? 0 : 1);
 
-    //   const power = 10 ** (digits + 1);
-    //   const maxVal = power - 1; // default 999 (digits 3)
-    //   const minVal = 1 / power;       // default .001
+    BigNumber.config(saveConfig);
+
+    return result;
   }
-
   public fromString(value: string, decimalPlaces: number = 1000): number {
 
     // this helps to display the erroneus value in the GUI

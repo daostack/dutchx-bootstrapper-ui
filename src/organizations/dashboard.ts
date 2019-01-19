@@ -79,7 +79,7 @@ export class Dashboard {
   private totalReputationAvailable: BigNumber;
   private _loading: boolean = false;
   private initialized: boolean = false;
-
+  private exponentialAtForRep = [-4, 20];
   private org: DaoEx;
 
   private dutchXSchemeConfigs = new Map<string,
