@@ -216,6 +216,11 @@ text-align: center;
   padding-top: 1rem;
 }
 
+.scheme-dashboard-body.pageloader {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
 .scheme-dashboard .scheme-dashboard-body {
   border-bottom-color: $color-ds-lightblue;
   border-bottom-width: .2rem;
@@ -375,6 +380,7 @@ table.locksForRep td {
   vertical-align: middle;
   padding-bottom: 0;
   padding-top: 0;
+  height: 2.5rem;
 }
 
 table.locksForRep td .fa-spin {

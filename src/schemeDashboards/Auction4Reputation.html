@@ -1,7 +1,7 @@
 <template>
   <div
     class="pageloader"
-    if.bind="!loaded"
+    if.to-view="!loaded"
   >
     <pageloading></pageloading>
   </div>
@@ -12,12 +12,24 @@
       rata once the auction is complete.
     </instructions>
 
-    <div class="scheme-dashboard-body">
+    <div
+      class="pageloader scheme-dashboard-body"
+      id="auctionDashboardSwitchingSpinner"
+      show.to-view="_switchingAuctions"
+    >
+      <pageloading>Thanks for waiting while we fetch data for the next auction...</pageloading>
+    </div>
+
+    <div
+      show.to-view="!_switchingAuctions"
+      id="auctionDashboardBody"
+      class="scheme-dashboard-body"
+    >
 
       <div
         class="message"
         if.to-view="auctionNotBegun"
-      >The initialization period has not yet begun, you can't bid</div>
+      >The initialization period has not yet begun, you can't yet bid</div>
       <div
         class="message"
         if.to-view="auctionIsOver"
@@ -25,10 +37,11 @@
 
       <div
         class="message"
+        style="text-align: left"
         if.to-view="!auctionNotBegun && !auctionIsOver"
       >
-        ${msRemainingInAuctionCountdown | timespan:"seconds"} left in the current auction ${currentAuctionNumber} of ${auctionCount}.
-        You have already bid ${amountBid | ethwei} out of a total ${totalAmountBid | ethwei} GEN bid in this auction.
+        <div>Current auction: ${currentAuctionNumber} of ${auctionCount}</div>
+        <div>Time left: ${msRemainingInAuctionCountdown | timespan:"seconds"}</div>
       </div>
 
       <form if.bind="!auctionNotBegun && !auctionIsOver">
@@ -56,6 +69,42 @@
           </div>
         </div>
       </form>
+
+      <div if.to-view="!auctionNotBegun">
+        <div style="padding-left: .5rem; padding-right: .5rem">
+          <div
+            class="inline"
+            style="font-weight: 500;"
+          >Your GEN Bids</div>
+          <div class="pull-right">
+            <spinbutton
+              onclick.call="getAccountBids()"
+              class="locksRefreshButton"
+              spin.to-view="refreshingBids"
+              title="Refresh Bids List"
+            ></spinbutton>
+          </div>
+        </div>
+
+        <table class="table locksForRep">
+          <thead class="thead-light">
+            <tr>
+              <th>Auction #</th>
+              <th>You Have Bid</th>
+              <th>Total Bid</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr repeat.for="bid of allBids">
+              <td>${bid.auctionNum}</td>
+              <td>${bid.bidAmount | ethwei}</td>
+              <td>${bid.totalAuctionBidAmount| ethwei}</td>
+              <td>${bid.auctionStatus}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>

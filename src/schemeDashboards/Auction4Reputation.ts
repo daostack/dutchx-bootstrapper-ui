@@ -1,5 +1,5 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject } from 'aurelia-framework';
+import { autoinject, computedFrom } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure, EventConfigTransaction } from 'entities/GeneralEvents';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DisposableCollection } from 'services/DisposableCollection';
@@ -35,6 +35,14 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private msRemainingInAuctionCountdown: number;
   private auctionPeriod: number;
   private bidAmount: BigNumber = undefined;
+  private refreshingBids: boolean;
+  private allBids = new Array<IAuctionBidInfo>();
+  private _switchingAuctions = false;
+
+  @computedFrom('auctionNotBegun', 'auctionIsOver')
+  private get inAuction() {
+    return !this.auctionNotBegun && !this.auctionIsOver;
+  }
 
   constructor(
     protected eventAggregator: EventAggregator,
@@ -61,16 +69,48 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
     this.auctionPeriod = (await this.wrapper.getAuctionPeriod()) * 1000;
     this.auctionCount = await this.wrapper.getNumberOfAuctions();
-    await this.getCurrentAuctionNumber();
-    await this.getCurrentAuctionEndTime();
-
+    if (this.inAuction) {
+      await this.getCurrentAuctionNumber();
+      await this.getCurrentAuctionEndTime();
+    }
     this.token = await this.wrapper.getToken();
 
     const sub = this.eventAggregator.subscribe('secondPassed', async (blockDateParam: Date) => {
       this.getAuctionNotBegun(blockDateParam);
       this.getAuctionIsOver(blockDateParam);
-      if (!this.auctionNotBegun && !this.auctionIsOver) {
-        this.updateAuctionStatus();
+      if (this.inAuction) {
+        let newAuction = false;
+        /**
+         * when entering first time
+         */
+        if (this.currentAuctionNumber === undefined) {
+          /**
+           * need these for getMsRemainingInAuctionCountdown
+           */
+          newAuction = true;
+          this.switchingAuctions(true, true);
+          await this.getCurrentAuctionNumber();
+          await this.getCurrentAuctionEndTime();
+        }
+
+        this.getMsRemainingInAuctionCountdown();
+
+        if (this.msRemainingInAuctionCountdown <= 0) {
+          /**
+           * then entering a new auction
+           */
+          newAuction = true;
+          this.switchingAuctions(true, false);
+          await this.getCurrentAuctionNumber();
+          await this.getCurrentAuctionEndTime();
+        }
+
+        if (newAuction) {
+          await this.getAmountBid(this.currentAuctionNumber - 1);
+          await this.getTotalAmountBid(this.currentAuctionNumber - 1);
+          await this.getAccountBids();
+          this.switchingAuctions(false);
+        }
       } else if (this.auctionIsOver) {
         this.subscriptions.dispose();
       }
@@ -80,9 +120,10 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
     const watcher = this.wrapper.Bid({}, { fromBlock: 'latest' });
 
-    watcher.watch((_error: Error, event: DecodedLogEntry<Auction4ReputationBidEventResult>) => {
-      this.getAmountBid(event.args._auctionId.toNumber());
-      this.getTotalAmountBid(event.args._auctionId.toNumber());
+    watcher.watch(async (_error: Error, event: DecodedLogEntry<Auction4ReputationBidEventResult>) => {
+      await this.getAmountBid(event.args._auctionId.toNumber());
+      await this.getTotalAmountBid(event.args._auctionId.toNumber());
+      this.getAccountBids();
     });
 
     this.subscriptions.push({ dispose: () => watcher.stopWatchingAsync() });
@@ -94,10 +135,18 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     this.subscriptions.dispose();
   }
 
+  /**
+   * account-specific stuff
+   */
   protected async refresh() {
     this.refreshing = true;
-    await this.getAmountBid(this.currentAuctionNumber - 1);
-    await this.getTotalAmountBid(this.currentAuctionNumber - 1);
+    if (this.inAuction) {
+      await this.getAmountBid(this.currentAuctionNumber - 1);
+      await this.getTotalAmountBid(this.currentAuctionNumber - 1);
+    }
+    if (!this.auctionNotBegun) {
+      await this.getAccountBids();
+    }
     this.refreshing = false;
   }
 
@@ -145,49 +194,23 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   }
 
   private getAuctionIsOver(blockDate: Date): boolean {
-    return this.auctionIsOver = (blockDate > this.auctionsEndTime);
+    return this.auctionIsOver = (this.currentAuctionNumber > this.auctionCount) || (blockDate > this.auctionsEndTime);
   }
 
   private getMsRemainingInAuctionCountdown(): number {
     return this.msRemainingInAuctionCountdown = Math.max(0, this.auctionEndTime.getTime() - Date.now());
   }
 
-  private async updateAuctionStatus(): Promise<void> {
-    if (typeof this.currentAuctionNumber === 'undefined') {
-      await this.getCurrentAuctionNumber();
-      await this.getCurrentAuctionEndTime();
-    }
-    this.getMsRemainingInAuctionCountdown();
-    if (this.msRemainingInAuctionCountdown === 0) {
-      const currentAuctionNumber = this.currentAuctionNumber;
-      await this.getCurrentAuctionNumber();
-      if (this.currentAuctionNumber !== currentAuctionNumber) {
-        this.getCurrentAuctionEndTime();
-        this.getAmountBid(this.currentAuctionNumber - 1);
-        this.getTotalAmountBid(this.currentAuctionNumber - 1);
-      }
-    }
-  }
-
   private async getAmountBid(auctionId: number): Promise<BigNumber> {
-    if (this.auctionNotBegun || this.auctionIsOver) {
-      return new BigNumber(0);
-    }
     return this.amountBid = await this.wrapper.getBid(this.web3Service.defaultAccount, auctionId);
   }
 
   private async getTotalAmountBid(auctionId: number): Promise<BigNumber> {
-    if (this.auctionNotBegun || this.auctionIsOver) {
-      return new BigNumber(0);
-    }
     // or getBid for the current user
     return this.totalAmountBid = await this.wrapper.getAuctionTotalBid(auctionId);
   }
 
   private async getCurrentAuctionNumber(): Promise<number> {
-    if (this.auctionNotBegun || this.auctionIsOver) {
-      return -1;
-    }
     return this.currentAuctionNumber = (await this.wrapper.getCurrentAuctionId()) + 1;
   }
 
@@ -196,4 +219,56 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     const ms = this.auctionsStartTime.getTime() + (this.currentAuctionNumber * auctionDuration);
     return this.auctionEndTime = new Date(ms);
   }
+
+  private async getAccountBids(): Promise<void> {
+    this.refreshingBids = true;
+    const bids = new Array<IAuctionBidInfo>();
+
+    try {
+      const numAuctions = this.auctionCount;
+      for (let auctionNum = 1; auctionNum <= numAuctions; ++auctionNum) {
+
+        const bidAmount = await await this.wrapper.getBid(this.web3Service.defaultAccount, auctionNum - 1);
+        const totalAuctionBidAmount = await this.wrapper.getAuctionTotalBid(auctionNum - 1);
+
+        const bidInfo = {
+          auctionNum,
+          auctionStatus:
+            ((this.currentAuctionNumber === undefined) ||
+             (this.currentAuctionNumber > auctionNum)) ? AuctionBidStatus.Complete :
+            (this.currentAuctionNumber === auctionNum) ? AuctionBidStatus.Current :
+            AuctionBidStatus.Waiting,
+          bidAmount,
+          totalAuctionBidAmount,
+      };
+        bids.push(bidInfo);
+    }
+    } catch (ex) {
+      this.eventAggregator.publish('handleException', new EventConfigException(`Error fetching bids`, ex));
+    } finally {
+      this.refreshingBids = false;
+    }
+    this.allBids = bids;
+  }
+
+  private switchingAuctions(onOff: boolean, firstAuction?: boolean) {
+    if (onOff && !firstAuction) {
+      const dashboardHeight = $('#auctionDashboardBody').height();
+      $('#auctionDashboardSwitchingSpinner').innerHeight(dashboardHeight);
+    }
+    this._switchingAuctions = onOff;
+  }
+}
+
+interface IAuctionBidInfo {
+  auctionNum: number;
+  bidAmount: BigNumber;
+  totalAuctionBidAmount: BigNumber;
+  auctionStatus: string;
+}
+
+enum AuctionBidStatus {
+  Complete = 'Ended',
+  Current = 'Ongoing',
+  Waiting = 'Waiting',
 }

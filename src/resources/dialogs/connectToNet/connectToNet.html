@@ -24,12 +24,7 @@
     <ux-dialog-body>
       <div class="body">
         <div if.to-view="loading">
-          <pageloading><img
-              src="../../../../static/dutchx-blue.svg"
-              class="logo d-inline-block align-top"
-              alt="DutchX"
-            >
-            Fetching the DutchX DAO...</pageloading>
+          <pageloading></pageloading>
         </div>
         <div else>
           <p if.to-view="!isConnected">
