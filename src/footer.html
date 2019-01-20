@@ -1,14 +1,17 @@
 <template>
   <nav class="footer navbar fixed-bottom flex-column flex-lg-row">
-    <div class="flex-lg-shrink-1 text-lg-left">Powered by <a target="_blank" href="http://daostack.io">DAOstack</a>
-      <img class="logo" src="../static/daostack-icon-white.svg" /></div>
+    <div class="flex-lg-shrink-1 text-lg-left">Powered by <a
+        target="_blank"
+        href="http://daostack.io"
+      >DAOstack</a>
+      <img
+        class="logo"
+        src="../static/daostack-icon-white.svg"
+      /></div>
     <div class="userAddress flex-lg-grow-1 text-lg-center">Your address:
       <usersaddress></usersaddress>
     </div>
     <div class="text-lg-right">
-      <div class="userBalance">GNO:
-        <tokenbalance token.to-view="gnoAddress"></tokenbalance>
-      </div>
       <div class="userBalance">MGN:
         <tokenbalance token.to-view="mgnAddress"></tokenbalance>
       </div>

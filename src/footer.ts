@@ -6,7 +6,6 @@ import { Address, Utils } from 'services/ArcService';
 @autoinject
 export class Footer {
 
-  private gnoAddress: Address;
   private mgnAddress: Address;
   private genAddress: Address;
 
@@ -21,7 +20,6 @@ export class Footer {
 
   private async initialize() {
     this.genAddress = await Utils.getGenTokenAddress();
-    this.gnoAddress = this.appConfig.get('gnoTokenAddress');
     this.mgnAddress = this.appConfig.get('mgnTokenAddress');
   }
 }
