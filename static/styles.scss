@@ -386,3 +386,10 @@ etherscanlink {
 [class^='bmd-label'], [class*=' bmd-label'] {
     color: rgba(0, 0, 0, 0.75);
 }
+
+.warning-icon {
+  margin-right: .5rem;
+  position: relative;
+  bottom: .1rem;
+  font-size: 1.5rem;
+}

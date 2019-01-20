@@ -20,15 +20,17 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   private globalPeriodHasStarted: boolean = false;
 
   constructor(
-      appConfig: AureliaConfiguration
+    // tslint:disable: align
+    appConfig: AureliaConfiguration
     , eventAggregator: EventAggregator
     , web3Service: Web3Service
     , dateService: DateService
+    // tslint:enable: align
   ) {
     super(appConfig, eventAggregator, web3Service);
     this.lockModel.amount = new BigNumber(0); // to avoid validation
     this.lockModel.period = 0; // to avoid validation
-    this.globalPeriodStartDate = dateService.fromIsoString(this.appConfig.get('lockingPeriodStartDate', App.timezone));
+    this.globalPeriodStartDate = dateService.fromIsoString(this.appConfig.get('lockingPeriodStartDate'), App.timezone);
   }
 
   public async attached() {
@@ -48,7 +50,7 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
     if (!(await this.wrapper.hasTokenToActivate(this.lockModel.lockerAddress))) {
       this.eventAggregator.publish('handleFailure',
-      new EventConfigFailure(`Can't activate: No MGN tokens reserved to claim`));
+        new EventConfigFailure(`Can't activate: No MGN tokens reserved to claim`));
       return false;
     }
 
@@ -70,15 +72,15 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
       const result = await ((await (this.wrapper as any).register()) as ArcTransactionResult).watchForTxMined();
 
       this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
-            `Registration is complete`, result.transactionHash));
+        `Registration is complete`, result.transactionHash));
 
       success = true;
       this.alreadyRegistered = true;
 
     } catch (ex) {
-        this.eventAggregator.publish('handleException',
-          new EventConfigException(`The regisration was not recorded`, ex));
-        success = false;
+      this.eventAggregator.publish('handleException',
+        new EventConfigException(`The regisration was not recorded`, ex));
+      success = false;
     }
 
     this.registering = false;

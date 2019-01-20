@@ -11,14 +11,19 @@
         Reputation will be distributed to all MGN holders who opt in on receiving DutchX DAO reputation.
         All you need to do is activate this option here.</p>
 
-      <p>&vrtri;&nbsp;Please make sure you are connected in MetaMask with the same ETH address that holds your MGN
+      <p>️️️️<span class="warning-icon" style="font-size:1rem">⚠️</span>&nbsp;Please make sure you are connected in MetaMask with the same ETH address that holds your MGN
         tokens.</p>
     </instructions>
 
     <div class="scheme-dashboard-body">
       <div
         class="message"
-        if.to-view="!alreadyRegistered && lockingPeriodHasNotStarted"
+        if.to-view="!globalPeriodHasStarted"
+      >The initialization period has not yet begun, you can't yet register or claim.</div>
+
+      <div
+        class="message"
+        if.to-view="!alreadyRegistered && lockingPeriodHasNotStarted && globalPeriodHasStarted"
       >
         ${msUntilCanLockCountdown | timespan:"seconds"} until the 24-hour MGN activation period begins.
       </div>
