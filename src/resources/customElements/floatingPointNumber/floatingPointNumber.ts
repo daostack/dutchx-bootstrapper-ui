@@ -14,7 +14,7 @@ export class FloatingPointNumber {
   @bindable({ defaultBindingMode: bindingMode.toView }) public precision: number | string = 5;
   @bindable({ defaultBindingMode: bindingMode.toView }) public trailingZeroes?: number | string;
   @bindable({ defaultBindingMode: bindingMode.toView }) public exponentialAt: number | [number, number] = [-7, 20];
-  @bindable({ defaultBindingMode: bindingMode.toView }) public value: number | BigNumber;
+  @bindable({ defaultBindingMode: bindingMode.toView }) public value: number | string | BigNumber;
   @bindable({ defaultBindingMode: bindingMode.toView }) public placement: string = 'top';
 
   private text: string;
@@ -24,6 +24,13 @@ export class FloatingPointNumber {
   }
 
   public attached() {
+    if ((this.value === undefined) || (this.value === null)) {
+      this.text = '';
+      return;
+    }
+
+    const value = new BigNumber(this.value);
+
     if (this.trailingZeroes) {
       this.trailingZeroes = Number(this.trailingZeroes);
     }
@@ -33,7 +40,7 @@ export class FloatingPointNumber {
     }
 
     let text = this.numberService.toFixedNumberString(
-      this.value,
+      value,
       this.precision as number,
       this.exponentialAt);
 
@@ -49,17 +56,6 @@ export class FloatingPointNumber {
 
         text = text.replace(regex, `.${'0'.repeat(this.trailingZeroes as number)}`);
       }
-
-      // if ((text.indexOf('e+') === -1) &&
-      //   (text.indexOf('e-') === -1) &&
-      //   (text.length > (this.precision + 1))) // 1 is for the dot
-      // {
-      //   /**
-      //    * we round to the given  precision, but may also want to
-      //    */
-      //   // proposed = new BigNumber(proposed).toExponential(digits - 1, roundUp ? 0 : 1);
-      //   text = new BigNumber(text).round(this.precision, 1).toString();
-      // }
     }
 
     this.text = text;
@@ -69,7 +65,7 @@ export class FloatingPointNumber {
       ($(this.textElement) as any).tooltip(
         {
           placement: this.placement,
-          title: (typeof this.value === 'number') ? this.value : this.value.toNumber(),
+          title: value.toNumber(),
           toggle: 'tooltip',
           trigger: 'hover',
         }

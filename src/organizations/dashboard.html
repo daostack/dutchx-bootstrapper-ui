@@ -200,13 +200,13 @@
                 <div if.bind="canRedeem && totalUserReputationEarned.eq(0)">You have not earned any reputation</div>
                 <div if.bind="canRedeem && totalUserReputationEarned.gt(0)">
                   <div class="title">You Have Earned <floating-point-number
-                      value.to-view="totalUserReputationEarned"
+                      value.to-view="totalUserReputationEarned | ethwei"
                       precision="8"
                       exponentialal-at.to-view="exponentialAtForRep"
                       trailing-zeroes="2"
                     ></floating-point-number>
                     (<floating-point-number
-                      value.to-view="percentUserReputationEarned"
+                      value.to-view="percentUserReputationEarned | ethwei"
                       precision="4"
                       trailing-zeroes="2"
                     ></floating-point-number>%) Reputation:</div>
@@ -223,7 +223,7 @@
                           <tr repeat.for="redeemable of redeemables">
                             <td>
                               <floating-point-number
-                                value.to-view="redeemable.amount"
+                                value.to-view="redeemable.amount | ethwei"
                                 precision="8"
                                 trailing-zeroes="2"
                                 exponentialal-at.to-view="exponentialAtForRep"

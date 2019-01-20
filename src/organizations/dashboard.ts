@@ -480,7 +480,7 @@ export class Dashboard {
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       redeemables.push({
-        amount: this.web3Service.fromWei(earnedRep),
+        amount: earnedRep,
         what: 'Locked ETH',
       });
 
@@ -491,7 +491,7 @@ export class Dashboard {
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       redeemables.push({
-        amount: this.web3Service.fromWei(earnedRep),
+        amount: earnedRep,
         what: 'Other locked tokens',
       });
 
@@ -502,7 +502,7 @@ export class Dashboard {
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       redeemables.push({
-        amount: this.web3Service.fromWei(earnedRep),
+        amount: earnedRep,
         what: 'Locked MGN tokens',
       });
 
@@ -518,7 +518,7 @@ export class Dashboard {
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
       redeemables.push({
-        amount: this.web3Service.fromWei(earnedRep),
+        amount: earnedRep,
         what: 'GEN auctions',
       });
 
