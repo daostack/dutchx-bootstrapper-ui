@@ -79,6 +79,10 @@ export class Dashboard {
   private totalReputationAvailable: BigNumber;
   private _loading: boolean = false;
   private initialized: boolean = false;
+  /**
+   * Switch reputation numbers to exponential notation at 3 spaces below the decimal,
+   * and at the BigNumber default of 20 digits above (basically never goes exponential above).
+   */
   private exponentialAtForRep = [-4, 20];
   private org: DaoEx;
 
