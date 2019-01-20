@@ -38,6 +38,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private refreshingBids: boolean;
   private allBids = new Array<IAuctionBidInfo>();
   private _switchingAuctions = false;
+  private dashboard: HTMLElement;
 
   @computedFrom('auctionNotBegun', 'auctionIsOver')
   private get inAuction() {
@@ -179,7 +180,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
         this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
           `The bid has been recorded`, result.transactionHash));
 
-        Utils.resetInputField('bidAmount', null);
+        Utils.resetInputField(this.dashboard, 'bidAmount', null);
       }
 
     } catch (ex) {
@@ -235,14 +236,14 @@ export class Auction4Reputation extends DaoSchemeDashboard {
           auctionNum,
           auctionStatus:
             ((this.currentAuctionNumber === undefined) ||
-             (this.currentAuctionNumber > auctionNum)) ? AuctionBidStatus.Complete :
-            (this.currentAuctionNumber === auctionNum) ? AuctionBidStatus.Current :
-            AuctionBidStatus.Waiting,
+              (this.currentAuctionNumber > auctionNum)) ? AuctionBidStatus.Complete :
+              (this.currentAuctionNumber === auctionNum) ? AuctionBidStatus.Current :
+                AuctionBidStatus.Waiting,
           bidAmount,
           totalAuctionBidAmount,
-      };
+        };
         bids.push(bidInfo);
-    }
+      }
     } catch (ex) {
       this.eventAggregator.publish('handleException', new EventConfigException(`Error fetching bids`, ex));
     } finally {
@@ -253,7 +254,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
   private switchingAuctions(onOff: boolean, firstAuction?: boolean) {
     if (onOff && !firstAuction) {
-      const dashboardHeight = $('#auctionDashboardBody').height();
+      const dashboardHeight = $(this.dashboard).height();
       $('#auctionDashboardSwitchingSpinner').innerHeight(dashboardHeight);
     }
     this._switchingAuctions = onOff;

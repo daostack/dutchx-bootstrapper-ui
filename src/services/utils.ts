@@ -74,7 +74,14 @@ export class Utils {
    * Resets the position of an input label after any dynamic (non-UI) change in its value
    * @param id
    */
-  public static resetInputField(id: string, val: any) {
-    $(`input#${id}`).val(val).trigger('change');
+  public static resetInputField(container: HTMLElement, id: string, val: any) {
+    const element = $(container).find(`input#${id}`);
+    /**
+     * using jquery to do the following for some reason does not
+     * enable Aurelia to know that the change has happened.
+     *
+     */
+    (element[0] as HTMLInputElement).value = val;
+    element[0].dispatchEvent(new Event('change'));
   }
 }

@@ -5,6 +5,8 @@ import { Utils } from 'services/utils';
 
 @autoinject
 export class LockingEth4ReputationDashboard extends Locking4Reputation {
+  private dashboard: HTMLElement;
+
   protected getLockUnit(_lockInfo: LockInfo): Promise<string> { return Promise.resolve('ETH'); }
 
   protected async accountChanged(account: Address) {
@@ -15,8 +17,8 @@ export class LockingEth4ReputationDashboard extends Locking4Reputation {
   protected async lock(): Promise<boolean> {
     const success = await super.lock();
     if (success) {
-      Utils.resetInputField('lockAmount', null);
-      Utils.resetInputField('lockingPeriod', null);
+      Utils.resetInputField(this.dashboard, 'lockAmount', null);
+      Utils.resetInputField(this.dashboard, 'lockingPeriod', null);
     }
     return success;
   }
