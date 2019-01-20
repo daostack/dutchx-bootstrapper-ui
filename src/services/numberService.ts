@@ -7,20 +7,17 @@ export class NumberService {
    * @param value
    * @param format
    */
-  public toString(value: number, format?: string): string | null | undefined {
+  public toString(value: number | string, format?: string): string | null | undefined {
 
     // this helps to display the erroneus value in the GUI
-    if (typeof value === 'string') {
-      return value as any;
-    }
-
-    if ((value === null) || (value === undefined)) {
+    if ((typeof value === 'string') || (value === null) || (typeof value === 'undefined')) {
       return value as any;
     }
 
     if (Number.isNaN(value)) {
       return null;
     }
+
     return numeral(value).format(format);
   }
 
@@ -31,7 +28,14 @@ export class NumberService {
       return value as any;
     }
 
-    return numeral(value).value();
+    if (value && value.match(/^\.0{0,}$/)) {
+      /**
+       * numeral returns `null` for stuff like '.', '.0', '.000', etc
+       */
+      return 0;
+    } else {
+      return numeral(value).value();
+    }
   }
 
   /**
