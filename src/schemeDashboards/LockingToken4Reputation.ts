@@ -23,6 +23,7 @@ export class LockingToken4Reputation extends Locking4Reputation {
   private lockableTokens: Array<ITokenSpecification>;
   private selectedToken: ITokenSpecification = null;
   private selectedTokenIsLiquid: boolean = false;
+  private dashboard: HTMLElement;
 
   constructor(
     appConfig: AureliaConfiguration,
@@ -69,8 +70,8 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
         const success = await super.lock(true);
         if (success) {
-          UtilsInternal.resetInputField('lockAmount', null);
-          UtilsInternal.resetInputField('lockingPeriod', null);
+          UtilsInternal.resetInputField(this.dashboard, 'lockAmount', null);
+          UtilsInternal.resetInputField(this.dashboard, 'lockingPeriod', null);
         }
         return success;
       }
