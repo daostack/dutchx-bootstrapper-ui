@@ -56,8 +56,8 @@ export class Dashboard {
   }
 
   @computedFrom('totalUserReputationEarned', 'totalReputationAvailable')
-  private get percentUserReputationEarned(): string {
-    return this.totalUserReputationEarned.mul(100).div(this.totalReputationAvailable).toFixed(2).toString();
+  private get percentUserReputationEarned(): BigNumber {
+    return this.totalUserReputationEarned.mul(100).div(this.totalReputationAvailable);
   }
 
   private repSummaryCheck: IDisposable = null;
@@ -80,7 +80,11 @@ export class Dashboard {
   private totalReputationAvailable: BigNumber;
   private _loading: boolean = false;
   private initialized: boolean = false;
-
+  /**
+   * Switch reputation numbers to exponential notation at 3 spaces below the decimal,
+   * and at the BigNumber default of 20 digits above (basically never goes exponential above).
+   */
+  private exponentialAtForRep = [-4, 20];
   private org: DaoEx;
 
   private dutchXSchemeConfigs = new Map<string,
@@ -459,14 +463,6 @@ export class Dashboard {
       scheme);
   }
 
-  // getSchemeIndexFromAddress(address: string, collection: Array<SchemeInfo>): number {
-  //   let result = collection.filter((s) => s.address === address);
-  //   if (result.length > 1) {
-  //     throw new Error("getSchemeInfoWithAddress: More than one schemes found");
-  //   }
-  //   return result.length ? collection.indexOf(result[0]) : -1;
-  // }
-
   private getSchemeInfoFromName(name: string): ISchemeInfoX {
     return this.dutchXSchemes.filter((s: ISchemeInfoX) => {
       return s.name === name;
@@ -491,25 +487,10 @@ export class Dashboard {
       contractRepReward = await wrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
-      if (earnedRep.gt(0)) {
-        redeemables.push({
-          amount: earnedRep,
-          what: 'locked ETH',
-        });
-      }
-
-      schemeAddress = this.getSchemeInfoFromName('ExternalLocking4Reputation').address;
-      wrapper = await WrapperService.factories.ExternalLocking4Reputation.at(schemeAddress);
-      earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
-      contractRepReward = await wrapper.getReputationReward();
-      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
-
-      if (earnedRep.gt(0)) {
-        redeemables.push({
-          amount: earnedRep,
-          what: 'locked MGN tokens',
-        });
-      }
+      redeemables.push({
+        amount: earnedRep,
+        what: 'Locked ETH',
+      });
 
       schemeAddress = this.getSchemeInfoFromName('LockingToken4Reputation').address;
       wrapper = await WrapperService.factories.LockingToken4Reputation.at(schemeAddress);
@@ -517,12 +498,21 @@ export class Dashboard {
       contractRepReward = await wrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
-      if (earnedRep.gt(0)) {
-        redeemables.push({
-          amount: earnedRep,
-          what: 'other locked tokens',
-        });
-      }
+      redeemables.push({
+        amount: earnedRep,
+        what: 'Other locked tokens',
+      });
+
+      schemeAddress = this.getSchemeInfoFromName('ExternalLocking4Reputation').address;
+      wrapper = await WrapperService.factories.ExternalLocking4Reputation.at(schemeAddress);
+      earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
+      contractRepReward = await wrapper.getReputationReward();
+      totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
+
+      redeemables.push({
+        amount: earnedRep,
+        what: 'Locked MGN tokens',
+      });
 
       schemeAddress = this.getSchemeInfoFromName('Auction4Reputation').address;
       const auctionWrapper = await WrapperService.factories.Auction4Reputation.at(schemeAddress);
@@ -535,14 +525,12 @@ export class Dashboard {
       contractRepReward = await auctionWrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
-      if (earnedRep.gt(0)) {
-        redeemables.push({
-          amount: earnedRep,
-          what: 'GEN auctions',
-        });
-      }
+      redeemables.push({
+        amount: earnedRep,
+        what: 'GEN auctions',
+      });
 
-      this.totalReputationAvailable = totalReputationAvailable;
+      this.totalReputationAvailable = this.web3Service.fromWei(totalReputationAvailable);
       this.redeemables = redeemables;
     } catch (ex) {
       this.eventAggregator.publish('handleException',

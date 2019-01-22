@@ -1,6 +1,7 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, bindingMode, containerless, customElement } from 'aurelia-framework';
 import { Address } from 'services/ArcService';
+import { NumberService } from 'services/numberService';
 import { TokenService } from '../../../services/TokenService';
 
 @autoinject
@@ -11,13 +12,13 @@ export class TokenBalance {
   @bindable({ defaultBindingMode: bindingMode.toView }) public token: Address;
 
   private balance: string;
-  private text: string;
 
   private events;
 
   constructor(
     private tokenService: TokenService,
-    eventAggregator: EventAggregator
+    eventAggregator: EventAggregator,
+    private numberService: NumberService
   ) {
     eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
   }
@@ -64,13 +65,13 @@ export class TokenBalance {
     }
 
     if (!this.events) {
-      this.text = `N/A`;
+      this.balance = `N/A`;
     }
   }
   private async getBalance(token) {
     try {
-      this.balance = (await this.tokenService.getUserErc20TokenBalance(token, true)).toFixed(2);
-      this.text = this.balance.toString();
+      this.balance =
+        this.numberService.toFixedNumberString(await this.tokenService.getUserErc20TokenBalance(token, true), 5);
       // tslint:disable-next-line:no-empty
     } catch {
     }

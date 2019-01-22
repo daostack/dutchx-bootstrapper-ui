@@ -1,5 +1,6 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, containerless, customElement } from 'aurelia-framework';
+import { NumberService } from 'services/numberService';
 import { Web3Service } from '../../../services/Web3Service';
 
 @autoinject
@@ -13,8 +14,10 @@ export class EthBalance {
   private filter: any;
   private textElement: HTMLElement;
 
-  constructor(private web3: Web3Service,
-              eventAggregator: EventAggregator) {
+  constructor(
+    private web3: Web3Service,
+    eventAggregator: EventAggregator,
+    private numberService: NumberService) {
     eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
     eventAggregator.subscribe('Network.Changed.Id', () => { this.initialize(); });
   }
@@ -64,11 +67,7 @@ export class EthBalance {
       const ethAddress = this.web3.defaultAccount;
       const balance = this.web3.fromWei(await this.web3.getBalance(ethAddress));
       this.rawBalance = `${balance.toString(10)} ETH`;
-      if (balance.eq(0) || (balance.lt(999)) && (balance.gt('0.001'))) {
-        this.ethBalance = balance.toFixed(3);
-      } else {
-        this.ethBalance = balance.toExponential(2);
-      }
+      this.ethBalance = this.numberService.toFixedNumberString(balance, 5);
 
       this.text = `${this.ethBalance} ETH`;
       // tslint:disable-next-line:no-empty

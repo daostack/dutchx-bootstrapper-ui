@@ -309,10 +309,35 @@ text-align: center;
   padding-bottom: 3rem;
 }
 
+.redeemSection .redeemables .title {
+  font-weight: 400;
+  font-size: 1.3rem;
+  color: $color-ds-yellow;
+  margin-bottom: 1rem;
+  background-color: transparent;
+}
+
 .redeemSection .redeemables .body .breakdown {
   text-align:left;
-  margin-bottom: 2rem;
   display: inline-block;
+}
+
+.redeemSection .redeemables .body .breakdown table th {
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+.redeemSection .redeemables .body .breakdown table td {
+  padding-top: .1rem;
+  padding-bottom: .1rem;
+}
+
+.redeemSection .redeemables .body .breakdown table th {
+  text-decoration: underline;
+}
+
+.redeemSection .redeemables .body .breakdown table th {
+  color: $color-ds-white;
+  font-size: 1rem;
 }
 
 #globalRedeemBtn:hover,
