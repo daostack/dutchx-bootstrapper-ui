@@ -3,7 +3,7 @@ import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, computedFrom, singleton } from 'aurelia-framework';
 import axios from 'axios';
-import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
+import { EventConfig, EventConfigException, EventConfigFailure, EventMessageType } from 'entities/GeneralEvents';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DateService } from 'services/DateService';
 import { DisposableCollection } from 'services/DisposableCollection';
@@ -126,7 +126,6 @@ export class Dashboard {
     private networkConnectionWizards: NetworkConnectionWizards,
     private dateService: DateService
   ) {
-
     $(window).resize(this.fixScrollbar);
   }
 
@@ -311,7 +310,7 @@ export class Dashboard {
           watchForNetworkChanges: true,
         });
       } catch (ex) {
-        this.eventAggregator.publish('handleFailure', new EventConfigFailure(ex.message));
+        this.eventAggregator.publish('handleMessage', new EventConfig(ex.message, EventMessageType.Exception));
         try {
           // so we will at least be able to find out if we're connected and have a default account
           web3 = await Utils.getWeb3();
@@ -341,10 +340,8 @@ export class Dashboard {
       this.initialized = true;
 
     } catch (ex) {
-      // tslint:disable-next-line:no-console
-      console.log(`Error initializing network: ${ex}`);
-      // const dialogService = aurelia.container.get(DialogService) as DialogService;
-      // dialogService.alert(`Sorry, an error occurred initializing the application`)
+      this.eventAggregator.publish('handleMessage',
+        new EventConfig(`An error occurred starting the application: ${ex.message}`, EventMessageType.Exception));
     }
 
     return web3;
@@ -360,7 +357,6 @@ export class Dashboard {
       this.org = undefined;
 
       if (address) {
-        // DutchX hardcoded avatar
         this.org = await this.daoService.daoAt(address);
       }
 
@@ -401,7 +397,7 @@ export class Dashboard {
     }
 
     this.dutchXSchemes = schemes.filter((s: SchemeInfo) => s.inArc && s.inDao)
-      // DutchX: hack to remove all but the DutchX contracts
+      // hack to remove all but the dxDAO contracts
       .filter((s: SchemeInfo) => this.dutchXSchemeConfigs.has(s.name))
       .sort((a: SchemeInfo, b: SchemeInfo) =>
         this.dutchXSchemeConfigs.get(a.name).position - this.dutchXSchemeConfigs.get(b.name).position
@@ -412,8 +408,8 @@ export class Dashboard {
     this.schemesLoaded = this.dutchXSchemes.length !== this.dutchXSchemeConfigs.keys.length;
     if (!this.schemesLoaded) {
       this.org = undefined;
-      this.eventAggregator.publish('handleFailure',
-        new EventConfigFailure(`not all of the required contracts were found`));
+      this.eventAggregator.publish('handleMessage',
+        new EventConfig(`not all of the required contracts were found`, EventMessageType.Exception));
       this.networkConnectionWizards.run(false, true); // no-op if already running
     } else {
 

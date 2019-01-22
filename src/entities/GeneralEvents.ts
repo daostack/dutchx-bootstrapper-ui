@@ -22,9 +22,9 @@ export class EventConfig {
    */
   public exception: any;
   constructor(
-      public message: string
-    , type: EventMessageType = EventMessageType.Info
-    , lifetime: SnackLifetime = SnackLifetime.transitory
+    public message: string,
+    public type: EventMessageType = EventMessageType.Info,
+    lifetime: SnackLifetime = SnackLifetime.transitory
   ) {
 
     switch (lifetime) {
@@ -68,8 +68,8 @@ export class EventConfigFailure extends EventConfig {
 
 export class EventConfigException extends EventConfig {
   constructor(
-      message: string = 'An error occurred'
-    , public exception: any
+    message: string = 'An error occurred',
+    public exception: any
   ) {
     super(message, EventMessageType.Exception, SnackLifetime.closeButton);
     // the stack trace, etc, will be logged by ConsoleLogService
@@ -79,17 +79,17 @@ export class EventConfigException extends EventConfig {
 
 export class EventConfigAction extends EventConfig {
   constructor(
-      message: string
+    message: string,
     /**
      * text for control
      */
-    , public actionText: string
+    public actionText: string,
     /**
      * called when control is clicked
      */
-    , public action: () => void
-    , type: EventMessageType = EventMessageType.Info
-    , lifetime: SnackLifetime = SnackLifetime.clickToDismiss
+    public action: () => void,
+    type: EventMessageType = EventMessageType.Info,
+    lifetime: SnackLifetime = SnackLifetime.clickToDismiss
   ) {
     super(message, type, lifetime);
     this.actionType = ActionType.button;
@@ -98,12 +98,12 @@ export class EventConfigAction extends EventConfig {
 
 export class EventConfigAddress extends EventConfig {
   constructor(
-      message: string
-    , public address: string
+    message: string,
+    public address: string,
     /**
      * text to display instead of address
      */
-    , public actionText: string
+    public actionText: string
   ) {
     super(message, EventMessageType.Info, SnackLifetime.clickToDismiss);
     this.actionType = ActionType.address;
@@ -113,12 +113,12 @@ export class EventConfigAddress extends EventConfig {
 
 export class EventConfigTransaction extends EventConfigAddress {
   constructor(
-      message: string
-    , public address: string
+    message: string,
+    public address: string,
     /**
      * text to display instead of address
      */
-    , public actionText: string = 'See Transaction'
+    public actionText: string = 'See Transaction'
   ) {
     super(message, address, actionText);
     this.actionType = ActionType.address;

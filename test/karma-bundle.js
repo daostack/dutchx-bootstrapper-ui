@@ -63,7 +63,7 @@ function installJestExpect() {
   jasmine.addMatchers = (jasmineMatchersObject) => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
-      jestMatchersObject[name] = function () {
+      jestMatchersObject[name] = function() {
         const result = jasmineMatchersObject[name](jasmine.matchersUtil, null);
         // if there is no 'negativeCompare', both should be handled by `compare`
         const negativeCompare = result.negativeCompare || result.compare;

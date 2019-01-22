@@ -1,7 +1,7 @@
 {
-  "name": "dutchx-bootstrapper-ui",
+  "name": "dxdao-bootstrapper-ui",
   "version": "0.0.0-alpha.1",
-  "description": "Dutch DAO Reputation Bootstrapper",
+  "description": "dxDAO Initializer",
   "main": "dist_prod/index.html",
   "repository": {
     "url": "https://github.com/daostack/dutchx-bootstrapper-ui.git",
