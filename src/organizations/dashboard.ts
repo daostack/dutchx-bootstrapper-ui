@@ -116,17 +116,15 @@ export class Dashboard {
     ]);
 
   constructor(
-    // tslint:disable: align
-    private daoService: DaoService
-    , private web3: Web3Service
-    , private schemeService: SchemeService
-    , private web3Service: Web3Service
-    , private eventAggregator: EventAggregator
-    , private appConfig: AureliaConfiguration
-    , private arcService: ArcService
-    , private networkConnectionWizards: NetworkConnectionWizards
-    , private dateService: DateService
-    // tslint:enable: align
+    private daoService: DaoService,
+    private web3: Web3Service,
+    private schemeService: SchemeService,
+    private web3Service: Web3Service,
+    private eventAggregator: EventAggregator,
+    private appConfig: AureliaConfiguration,
+    private arcService: ArcService,
+    private networkConnectionWizards: NetworkConnectionWizards,
+    private dateService: DateService
   ) {
 
     $(window).resize(this.fixScrollbar);

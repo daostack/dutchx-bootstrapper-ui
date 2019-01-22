@@ -20,12 +20,10 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   private globalPeriodHasStarted: boolean = false;
 
   constructor(
-    // tslint:disable: align
-    appConfig: AureliaConfiguration
-    , eventAggregator: EventAggregator
-    , web3Service: Web3Service
-    , dateService: DateService
-    // tslint:enable: align
+    appConfig: AureliaConfiguration,
+    eventAggregator: EventAggregator,
+    web3Service: Web3Service,
+    dateService: DateService
   ) {
     super(appConfig, eventAggregator, web3Service);
     this.lockModel.amount = new BigNumber(0); // to avoid validation
