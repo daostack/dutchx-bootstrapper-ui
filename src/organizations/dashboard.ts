@@ -7,6 +7,7 @@ import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DateService } from 'services/DateService';
 import { DisposableCollection } from 'services/DisposableCollection';
+import { IDisposable } from 'services/IDisposable';
 import { LockService } from 'services/lockServices';
 import { NetworkConnectionWizards } from 'services/networkConnectionWizards';
 import { Utils as UtilsInternal } from 'services/utils';
@@ -31,7 +32,6 @@ import { BigNumber, Web3Service } from '../services/Web3Service';
 @singleton(false)
 @autoinject
 export class Dashboard {
-
   /**
    * true if loading the avatar or its schemes
    */
@@ -60,6 +60,7 @@ export class Dashboard {
     return this.totalUserReputationEarned.mul(100).div(this.totalReputationAvailable).toFixed(2).toString();
   }
 
+  private repSummaryCheck: IDisposable = null;
   private address: string;
   private orgName: string;
   private tokenSymbol: string;
@@ -72,7 +73,7 @@ export class Dashboard {
   private dashboardElement: any;
   private lockingPeriodEndDate: Date;
   private fakeRedeem: boolean = false;
-  private canRedeem: boolean = this.fakeRedeem;
+  private canRedeem: boolean = false;
   private networkName: string;
   private options: { address?: Address };
   private redeemables: Array<IRedeemable> = new Array<IRedeemable>();
@@ -115,7 +116,8 @@ export class Dashboard {
     ]);
 
   constructor(
-      private daoService: DaoService
+    // tslint:disable: align
+    private daoService: DaoService
     , private web3: Web3Service
     , private schemeService: SchemeService
     , private web3Service: Web3Service
@@ -124,6 +126,7 @@ export class Dashboard {
     , private arcService: ArcService
     , private networkConnectionWizards: NetworkConnectionWizards
     , private dateService: DateService
+    // tslint:enable: align
   ) {
 
     $(window).resize(this.fixScrollbar);
@@ -223,19 +226,25 @@ export class Dashboard {
     this.fixScrollbar();
 
     this.lockingPeriodEndDate = this.dateService
-    .fromIsoString(this.appConfig.get('lockingPeriodEndDate'), App.timezone);
+      .fromIsoString(this.appConfig.get('lockingPeriodEndDate'), App.timezone);
 
     if (this.fakeRedeem && this.web3Service.isConnected && (this.networkName === 'Ganache')) {
       await UtilsInternal.increaseTime(100000000000, this.web3.web3);
     }
 
-    UtilsInternal.runTimerAtDate(this.fakeRedeem ? new Date() : this.lockingPeriodEndDate, () => {
-      this.canRedeem = true;
-      if (this.org) {
-        this.computeRedeemables();
-      }
-      // $('#globalRedeemBtn').addClass('enabled');
-    });
+    if (!this.repSummaryCheck) {
+      this.repSummaryCheck =
+        this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
+          if (!this.canRedeem && (this.fakeRedeem || (blockDate.getTime() >= this.lockingPeriodEndDate.getTime()))) {
+            this.canRedeem = true;
+            this.repSummaryCheck.dispose();
+            this.repSummaryCheck = null;
+            if (this.org) {
+              this.computeRedeemables();
+            }
+          }
+        });
+    }
 
     const dashboard = $(this.dashboardElement);
 
@@ -266,6 +275,11 @@ export class Dashboard {
   public deactivate() {
     this.subscriptions.dispose();
     this.networkConnectionWizards.close(true);
+  }
+
+  public detached() {
+    this.repSummaryCheck.dispose();
+    this.repSummaryCheck = null;
   }
 
   private async initializeNetwork(): Promise<Web3 | undefined> {
@@ -302,7 +316,7 @@ export class Dashboard {
           // so we will at least be able to find out if we're connected and have a default account
           web3 = await Utils.getWeb3();
           // tslint:disable-next-line:no-empty
-        } catch (ex) {  }
+        } catch (ex) { }
       }
 
       if (networkName === 'Live') {
@@ -314,7 +328,7 @@ export class Dashboard {
             return web3.toWei(gasPrice, 'gwei');
             // tslint:disable-next-line:no-empty
           } catch  {
-            }
+          }
         });
       }
 
@@ -399,14 +413,14 @@ export class Dashboard {
     if (!this.schemesLoaded) {
       this.org = undefined;
       this.eventAggregator.publish('handleFailure',
-      new EventConfigFailure(`not all of the required contracts were found`));
+        new EventConfigFailure(`not all of the required contracts were found`));
       this.networkConnectionWizards.run(false, true); // no-op if already running
     } else {
 
       await this.computeNumLocks();
 
       const wrapper =
-      (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
+        (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
       const mgnTokenAddress = await wrapper.getExternalLockingContract();
       this.appConfig.set('mgnTokenAddress', mgnTokenAddress);
 
@@ -518,7 +532,7 @@ export class Dashboard {
       const auctionWrapper = await WrapperService.factories.Auction4Reputation.at(schemeAddress);
       const numAuctions = await auctionWrapper.getNumberOfAuctions();
       earnedRep = new BigNumber(0);
-      for (let auctionId = 0; auctionId < numAuctions;  ++auctionId) {
+      for (let auctionId = 0; auctionId < numAuctions; ++auctionId) {
         earnedRep = earnedRep.add(await auctionWrapper.getUserEarnedReputation(
           { beneficiaryAddress: this.web3.defaultAccount, auctionId }));
       }
@@ -562,26 +576,26 @@ export class Dashboard {
 
     for (const wrapperName in WrapperService.nonUniversalSchemeFactories) {
       if (WrapperService.nonUniversalSchemeFactories.hasOwnProperty(wrapperName)) {
-      const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
-      if (factory && this.dutchXSchemeConfigs.has(wrapperName)) {
-        /**
-         * look in Arc contracts
-         */
-        let found: boolean;
-        let contract = null;
-        // tslint:disable-next-line:no-empty
-        try { contract = await factory.ensureSolidityContract(); } catch { }
-        if (contract) {
-          const deployedBinary = contract.deployedBinary.substr(0, contract.deployedBinary.indexOf(end));
-          found = code === deployedBinary;
-        }
+        const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
+        if (factory && this.dutchXSchemeConfigs.has(wrapperName)) {
+          /**
+           * look in Arc contracts
+           */
+          let found: boolean;
+          let contract = null;
+          // tslint:disable-next-line:no-empty
+          try { contract = await factory.ensureSolidityContract(); } catch { }
+          if (contract) {
+            const deployedBinary = contract.deployedBinary.substr(0, contract.deployedBinary.indexOf(end));
+            found = code === deployedBinary;
+          }
 
-        if (found) {
-          const wrapper = await factory.at(scheme.address);
-          return SchemeInfo.fromContractWrapper(wrapper, true);
+          if (found) {
+            const wrapper = await factory.at(scheme.address);
+            return SchemeInfo.fromContractWrapper(wrapper, true);
+          }
         }
       }
-     }
     }
     return null;
   }
