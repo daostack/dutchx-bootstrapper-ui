@@ -2,7 +2,7 @@ import { $, $$, browser, by, By, element, ExpectedConditions } from 'aurelia-pro
 import { config } from '../protractor.conf';
 import { PageObjectHome } from './home.po';
 
-describe('DutchX Initializer app', function() {
+describe('dxDAO Initializer app', function() {
   let poHome: PageObjectHome;
 
   beforeEach(async () => {
@@ -12,7 +12,7 @@ describe('DutchX Initializer app', function() {
   });
 
   it('should load the page and display the initial page title', async () => {
-    await expect(poHome.getCurrentPageTitle()).toBe('Dashboard | DutchX Initializer');
+    await expect(poHome.getCurrentPageTitle()).toBe('Dashboard | dxDAO Initializer');
   });
 
   it('should display greeting', async () => {

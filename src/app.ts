@@ -38,10 +38,10 @@ export class App {
   private intervalId: any;
 
   constructor(
-      private web3Service: Web3Service
-    , private signaler: BindingSignaler
-    , private eventAggregator: EventAggregator
-    , appConfig: AureliaConfiguration
+    private web3Service: Web3Service,
+    private signaler: BindingSignaler,
+    private eventAggregator: EventAggregator,
+    appConfig: AureliaConfiguration
   ) {
     App.timezone = appConfig.get('rootTimezone');
   }
@@ -76,7 +76,7 @@ export class App {
 
   private configureRouter(config: RouterConfiguration, router: Router) {
 
-    config.title = 'DutchX Initializer';
+    config.title = 'dxDAO Initializer';
 
     /**
      * first set the landing page.
@@ -95,7 +95,6 @@ export class App {
         name: 'dashboard',
         nav: false,
         // 'address' will be present in the object passed to the 'activate' method of the viewmodel
-        // DutchX: set address to be optional, and this page as the default (instead of Home)
         route: ['dashboard/:address?'],
         title: 'Dashboard',
       }

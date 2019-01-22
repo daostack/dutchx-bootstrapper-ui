@@ -11,9 +11,9 @@
         <img
           src="../../../../static/dutchx-blue.svg"
           class="logo d-inline-block align-top"
-          alt="DutchX"
+          alt="dxDAO"
         >
-        Welcome to the DutchX Initializer</div>
+        Welcome to the dxDAO Initializer</div>
       <div
         else
         class="d-inline"
@@ -33,17 +33,16 @@
               target="_blank"
             >MetaMask browser extension</a>,
             point it to the <span class="important">Main Ethereum Network</span>, then refresh this browser page so you can access the <a
-              href="https://daotalk.org/c/dutchx-dao"
+              href="https://daotalk.org/c/dx-dao"
               target="_blank"
-            >DutchX</a>
-            Initializer.
+            >dxDAO</a> Initializer.
           </p>
 
           <div if.to-view="isConnected && !hasAccount">
             <p>To access the <a
-                href="https://daotalk.org/c/dutchx-dao"
+                href="https://daotalk.org/c/dx-dao"
                 target="_blank"
-              >DutchX</a> Initializer, please log in to MetaMask, select your desired account and allow the DutchX Initializer to access your account.
+              >dxDAO</a> Initializer, please log in to MetaMask, select your desired account and allow the dxDAO Initializer to access your account.
           </div>
 
           <div if.to-view="((isConnected && !hasAccount) || (!landed && hasDao))">
@@ -53,7 +52,7 @@
             <p if.to-view="hasAccount">
               You are currently using the following account:
               <usersaddress></usersaddress>.
-              Please be sure that you intend to use this account in the future for voting within the DutchX DAO.
+              Please be sure that you intend to use this account in the future for voting within the dxDAO.
             </p>
             <!-- "OK" (`land`) will take us off the info panel -->
             <p
@@ -69,7 +68,7 @@
             <p class="buttonContainer"><button
                 class="btn btn-submit"
                 click.delegate="confirm()"
-              >Allow the DutchX Initializer to Access Your Account on MetaMask</button></p>
+              >Allow the dxDAO Initializer to Access Your Account on MetaMask</button></p>
           </div>
 
           <div if.to-view="isConnected && hasAccount">

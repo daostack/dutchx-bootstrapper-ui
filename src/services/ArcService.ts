@@ -6,7 +6,7 @@ import TruffleContract from 'truffle-contract';
 @autoinject
 export class ArcService {
 
-  public logger = LogManager.getLogger('DxBootStrapper');
+  public logger = LogManager.getLogger('dxDAO Bootstrapper');
 
   /**
    * The schemes managed by Arc

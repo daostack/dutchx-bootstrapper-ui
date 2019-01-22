@@ -11,7 +11,7 @@ import {
 export class DaoService {
 
   private daoCache = new Map<string, DaoEx>();
-  private logger = LogManager.getLogger('DxBootStrapper');
+  private logger = LogManager.getLogger('dxDAO Bootstrapper');
   constructor(
     private arcService: ArcService
   ) {
@@ -35,7 +35,7 @@ export class DaoService {
         } // else error will already have been logged by arc.js
       } catch (ex) {
         // don't force the user to see this as a snack every time.
-         // A corrupt DAO may never be repaired.  A message will go to the console.
+        // A corrupt DAO may never be repaired.  A message will go to the console.
         this.logger.error(`Error loading DAO: ${avatarAddress}: ${ex}`);
         return null;
       }

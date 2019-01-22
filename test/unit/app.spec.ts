@@ -46,7 +46,7 @@ describe('the App module', () => {
   });
 
   it('configures the router title', () => {
-    expect(app.router.title).toEqual('DutchX Initializer');
+    expect(app.router.title).toEqual('dxDAO Initializer');
   });
 
   it('should have a dashboard route', () => {

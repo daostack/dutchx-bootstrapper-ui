@@ -6,12 +6,12 @@ import {
   DAO,
   DaoSchemeInfo,
 } from '../services/ArcService';
-import { BigNumber} from '../services/Web3Service';
+import { BigNumber } from '../services/Web3Service';
 
 export class DaoEx extends DAO {
   public static async fromArcJsDao(
-      org: DAO
-    , arcService: ArcService
+    org: DAO,
+    arcService: ArcService
   ): Promise<DaoEx> {
 
     const newDAO = Object.assign(new DaoEx(), org);
@@ -35,7 +35,7 @@ export class DaoEx extends DAO {
   private schemesCache: Map<string, SchemeInfo>;
   private registerSchemeEvent;
   private unRegisterSchemeEvent;
-  private logger = LogManager.getLogger('DxBootStrapper');
+  private logger = LogManager.getLogger('dxDAO Bootstrapper');
 
   /* this is not meant to be instantiated here, only in Arc */
   constructor() {
@@ -61,27 +61,27 @@ export class DaoEx extends DAO {
     return Array.from(this.schemesCache.values());
   }
 
-   /**
-    * Publishes a message.
-    * @param event The event or channel to publish to.
-    * @param data The data to publish on the channel.
-    */
+  /**
+   * Publishes a message.
+   * @param event The event or channel to publish to.
+   * @param data The data to publish on the channel.
+   */
   public publish(_event: string | any, _data?: any): void { return null; }
 
-   /**
-    * Subscribes to a message channel or message type.
-    * @param event The event channel or event data type.
-    * @param callback The callback to be invoked when when the specified message is published.
-    */
+  /**
+   * Subscribes to a message channel or message type.
+   * @param event The event channel or event data type.
+   * @param callback The callback to be invoked when when the specified message is published.
+   */
   // tslint:disable-next-line: ban-types
   public subscribe(_event: string | Function, _callback: Function): Subscription { return null; }
 
-   /**
-    * Subscribes to a message channel or message type,
-    * then disposes the subscription automatically after the first message is received.
-    * @param event The event channel or event data type.
-    * @param callback The callback to be invoked when when the specified message is published.
-    */
+  /**
+   * Subscribes to a message channel or message type,
+   * then disposes the subscription automatically after the first message is received.
+   * @param event The event channel or event data type.
+   * @param callback The callback to be invoked when when the specified message is published.
+   */
   // tslint:disable-next-line: ban-types
   public subscribeOnce(_event: string | Function, _callback: Function): Subscription { return null; }
 
