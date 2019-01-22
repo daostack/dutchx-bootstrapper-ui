@@ -193,49 +193,50 @@
                 </div>
               </div>
               <div class="redeemables">
-                <!-- <button id="globalRedeemBtn" class="btn btn-outline-secondary" disabled.bind="!canRedeem"
-                  click.delegate="redeem()">Redeem</button> -->
-                <div if.bind="canRedeem && totalUserReputationEarned.eq(0)">You have not earned any reputation</div>
-                <div if.bind="canRedeem && totalUserReputationEarned.gt(0)">
-                  <div class="title">You Have Earned <floating-point-number
-                      value.to-view="totalUserReputationEarned | ethwei"
-                      precision="8"
-                      exponentialal-at.to-view="exponentialAtForRep"
-                      trailing-zeroes="2"
-                    ></floating-point-number>
-                    (<floating-point-number
-                      value.to-view="percentUserReputationEarned | ethwei"
-                      precision="4"
-                      trailing-zeroes="2"
-                    ></floating-point-number>%) Reputation:</div>
-                  <div class="body">
-                    <div class="breakdown">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>Reputation</th>
-                            <th>Through</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr repeat.for="redeemable of redeemables">
-                            <td>
-                              <floating-point-number
-                                value.to-view="redeemable.amount | ethwei"
-                                precision="8"
-                                trailing-zeroes="2"
-                                exponentialal-at.to-view="exponentialAtForRep"
-                                placement="left"
-                              ></floating-point-number> Rep
-                            </td>
-                            <td>${redeemable.what}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div>
-                      All reputation earned by all participants, 1000000 Rep, will be distributed
-                      after the initialization phase.
+                <pageloading if.to-view="computingRedeemables">Thanks for waiting while we compute your earned reputation...</pageloading>
+                <div else>
+                  <div if.bind="canRedeem && totalUserReputationEarned.eq(0)">You have not earned any reputation</div>
+                  <div if.bind="canRedeem && totalUserReputationEarned.gt(0)">
+                    <div class="title">You Have Earned <floating-point-number
+                        value.to-view="totalUserReputationEarned | ethwei"
+                        precision="8"
+                        exponentialal-at.to-view="exponentialAtForRep"
+                        trailing-zeroes="2"
+                      ></floating-point-number>
+                      (<floating-point-number
+                        value.to-view="percentUserReputationEarned | ethwei"
+                        precision="4"
+                        trailing-zeroes="2"
+                      ></floating-point-number>%) Reputation:</div>
+                    <div class="body">
+                      <div class="breakdown">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>Reputation</th>
+                              <th>Through</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr repeat.for="redeemable of redeemables">
+                              <td>
+                                <floating-point-number
+                                  value.to-view="redeemable.amount | ethwei"
+                                  precision="8"
+                                  trailing-zeroes="2"
+                                  exponentialal-at.to-view="exponentialAtForRep"
+                                  placement="left"
+                                ></floating-point-number> Rep
+                              </td>
+                              <td>${redeemable.what}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        All reputation earned by all participants, 1000000 Rep, will be distributed
+                        after the initialization phase.
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -80,6 +80,7 @@ export class Dashboard {
   private totalReputationAvailable: BigNumber;
   private _loading: boolean = false;
   private initialized: boolean = false;
+  private computingRedeemables: boolean = false;
   /**
    * Switch reputation numbers to exponential notation at 3 spaces below the decimal,
    * and at the BigNumber default of 20 digits above (basically never goes exponential above).
@@ -476,6 +477,7 @@ export class Dashboard {
 
   private async computeRedeemables(): Promise<void> {
 
+    this.computingRedeemables = true;
     let totalReputationAvailable = new BigNumber(0);
     const redeemables = new Array<IRedeemable>();
     let contractRepReward: BigNumber;
@@ -535,6 +537,8 @@ export class Dashboard {
     } catch (ex) {
       this.eventAggregator.publish('handleException',
         new EventConfigException(`Unable to compute earned reputation `, ex));
+    } finally {
+      this.computingRedeemables = false;
     }
   }
 
