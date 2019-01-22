@@ -1,4 +1,5 @@
-﻿import * as numeral from 'numeral';
+﻿import BigNumber from 'bignumber.js';
+import * as numeral from 'numeral';
 
 export class NumberService {
 
@@ -21,6 +22,51 @@ export class NumberService {
     return numeral(value).format(format);
   }
 
+  /**
+   * returns number with `digits` number of digits.
+   * @param value the value
+   * @param precision Round to the given precision
+   * @param exponentialAt Go exponential at the given magnitude, or low and high values
+   * @param roundUp 0 to round up, 1 to round down
+   */
+  public toFixedNumberString(
+    value: BigNumber | number,
+    precision: number = 5,
+    exponentialAt: number | [number, number] = [-7, 20],
+    roundUp: boolean = false): string | null | undefined {
+
+    // this helps to display the erroneus value in the GUI
+    if (typeof value === 'string') {
+      return value as any;
+    }
+
+    if ((value === null) || (value === undefined)) {
+      return value as any;
+    }
+
+    const isNum = typeof value === 'number';
+
+    if (isNum) {
+      if (Number.isNaN(value as number)) {
+        return null;
+      } else {
+        value = new BigNumber(value);
+      }
+    } else {
+      if ((value as BigNumber).isNaN()) {
+        return null;
+      }
+    }
+
+    const saveConfig = BigNumber.config();
+    BigNumber.config({ EXPONENTIAL_AT: exponentialAt });
+
+    const result = (value as BigNumber).toPrecision(precision, roundUp ? 0 : 1);
+
+    BigNumber.config(saveConfig);
+
+    return result;
+  }
   public fromString(value: string, decimalPlaces: number = 1000): number {
 
     // this helps to display the erroneus value in the GUI
