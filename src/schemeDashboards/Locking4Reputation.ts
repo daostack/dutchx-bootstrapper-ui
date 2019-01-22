@@ -75,8 +75,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       if (this.org) {
         this.getLockingPeriodIsEnded(blockDate);
         this.getLockingPeriodHasNotStarted(blockDate);
-        this.getMsUntilCanLockCountdown();
-        this.getMsRemainingInPeriodCountdown();
+        this.getMsUntilCanLockCountdown(blockDate);
+        this.getMsRemainingInPeriodCountdown(blockDate);
       }
     }));
   }
@@ -212,11 +212,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     return this.lockingPeriodIsEnded = (blockDate > this.lockingEndTime);
   }
 
-  private getMsUntilCanLockCountdown(): number {
-    return this.msUntilCanLockCountdown = this.lockingStartTime.getTime() - Date.now();
+  private getMsUntilCanLockCountdown(_blockDate: Date): number {
+    return this.msUntilCanLockCountdown = Math.max(this.lockingStartTime.getTime() - Date.now(), 0);
   }
 
-  private getMsRemainingInPeriodCountdown(): number {
-    return this.msRemainingInPeriodCountdown = this.lockingEndTime.getTime() - Date.now();
+  private getMsRemainingInPeriodCountdown(_blockDate: Date): number {
+    return this.msRemainingInPeriodCountdown = Math.max(this.lockingEndTime.getTime() - Date.now(), 0);
   }
 }

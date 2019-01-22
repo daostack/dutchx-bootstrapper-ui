@@ -276,8 +276,10 @@ export class Dashboard {
   }
 
   public detached() {
-    this.repSummaryCheck.dispose();
-    this.repSummaryCheck = null;
+    if (this.repSummaryCheck) {
+      this.repSummaryCheck.dispose();
+      this.repSummaryCheck = null;
+    }
   }
 
   private async initializeNetwork(): Promise<Web3 | undefined> {
