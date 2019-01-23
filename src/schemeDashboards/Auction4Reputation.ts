@@ -109,8 +109,6 @@ export class Auction4Reputation extends DaoSchemeDashboard {
         }
 
         if (newAuction) {
-          await this.getAmountBid(this.currentAuctionNumber - 1);
-          await this.getTotalAmountBid(this.currentAuctionNumber - 1);
           await this.getAccountBids();
           this.switchingAuctions(false);
         }
@@ -124,8 +122,6 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     const watcher = this.wrapper.Bid({}, { fromBlock: 'latest' });
 
     watcher.watch(async (_error: Error, event: DecodedLogEntry<Auction4ReputationBidEventResult>) => {
-      await this.getAmountBid(event.args._auctionId.toNumber());
-      await this.getTotalAmountBid(event.args._auctionId.toNumber());
       this.getAccountBids();
     });
 
@@ -143,10 +139,6 @@ export class Auction4Reputation extends DaoSchemeDashboard {
    */
   protected async refresh() {
     this.refreshing = true;
-    if (this.inAuction) {
-      await this.getAmountBid(this.currentAuctionNumber - 1);
-      await this.getTotalAmountBid(this.currentAuctionNumber - 1);
-    }
     if (!this.auctionNotBegun) {
       await this.getAccountBids();
     }
@@ -217,15 +209,6 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
   private getMsRemainingInAuctionCountdown(): number {
     return this.msRemainingInAuctionCountdown = Math.max(0, this.auctionEndTime.getTime() - Date.now());
-  }
-
-  private async getAmountBid(auctionId: number): Promise<BigNumber> {
-    return this.amountBid = await this.wrapper.getBid(this.web3Service.defaultAccount, auctionId);
-  }
-
-  private async getTotalAmountBid(auctionId: number): Promise<BigNumber> {
-    // or getBid for the current user
-    return this.totalAmountBid = await this.wrapper.getAuctionTotalBid(auctionId);
   }
 
   private async getCurrentAuctionNumber(): Promise<number> {
