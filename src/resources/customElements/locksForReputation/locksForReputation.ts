@@ -94,6 +94,7 @@ export class LocksForReputation {
 
 export interface ILockInfoX extends LockInfo {
   units: string;
+  sending: boolean;
 }
 
 interface ILockInfoInternal extends ILockInfoX {

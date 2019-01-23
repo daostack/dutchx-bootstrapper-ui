@@ -6,11 +6,11 @@ import { DisposableCollection } from 'services/DisposableCollection';
 import { Utils } from 'services/utils';
 import { DecodedLogEntry } from 'web3';
 import {
+  ArcTransactionResult,
   Auction4ReputationBidEventResult,
   Auction4ReputationWrapper,
   Erc20Wrapper,
-  WrapperService,
-  ArcTransactionResult
+  WrapperService
 } from '../services/ArcService';
 import { BigNumber, Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';

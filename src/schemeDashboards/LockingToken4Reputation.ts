@@ -8,13 +8,13 @@ import { Utils as UtilsInternal } from 'services/utils';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 import {
   Address,
+  ArcTransactionResult,
   Erc20Factory,
   Erc20Wrapper,
   LockInfo,
   LockingToken4ReputationWrapper,
   TokenLockingOptions,
-  Utils,
-  ArcTransactionResult
+  Utils
 } from '../services/ArcService';
 
 @autoinject

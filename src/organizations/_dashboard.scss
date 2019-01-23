@@ -238,6 +238,7 @@ text-align: center;
 
 .scheme-dashboard .scheme-dashboard-body .btn-submit,
 .scheme-dashboard .scheme-dashboard-body .spinbutton {
+  white-space: nowrap;
   width: 6.1rem;
 }
 
@@ -414,6 +415,13 @@ table.locksForRep td .fa-spin {
   margin-bottom: .55rem;
 }
 
+table.locksForRep td.actions {
+  text-align:center;
+  padding-left:0;
+  padding-right:0;
+  white-space:nowrap;
+}
+
 table.locksForRep td button {
   margin-bottom: 0;
   font-size: 1rem;
@@ -446,11 +454,10 @@ metamaskfeedback .metamask-feedback {
 
 metamaskfeedback .metamask-icon {
   width: 1.5rem;
-  margin-right: .5rem !important;
+  margin-left: .5rem !important;
   padding-bottom: .4rem;
 }
 
-
-// metamask-feedback .metamask-text {
-  
-// }
+metamask-feedback .metamask-text {
+  margin-left: .5rem !important;
+}
