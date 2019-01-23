@@ -40,6 +40,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected locks: Array<ILockInfoX>;
   protected locking: boolean = false;
   protected releasing: boolean = false;
+  protected sending: boolean = false;
 
   protected lockModel: LockingOptions = {
     amount: undefined,
@@ -133,7 +134,12 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       if (alreadyCheckedForBlock || !(await this.getLockBlocker())) {
 
-        const result = await ((await (this.wrapper as any).lock(this.lockModel)) as ArcTransactionResult)
+        this.sending = true;
+        const result = await (await (this.wrapper as any).lock(this.lockModel)
+          .then((tx: ArcTransactionResult) => {
+            this.sending = false;
+            return tx;
+          }))
           .watchForTxMined()
           .then((tx: TransactionReceiptTruffle) => {
             this.getLocks();
@@ -152,6 +158,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       this.eventAggregator.publish('handleException', new EventConfigException(`The lock was not recorded`, ex));
     } finally {
       this.locking = false;
+      this.sending = false;
     }
 
     return false;

@@ -55,16 +55,22 @@
                 value.bind="bidAmount | ethwei"
               ></numeric-input>
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
             <div class="form-group">
               <spinbutton
                 disabled.bind="bidding"
                 onclick.call="bid()"
                 css="btn-submit btn-sm"
+                style="margin-right: .5rem"
                 as-button="true"
                 text="Bid"
                 spin.to-view="bidding"
                 title.to-view="bidding ? 'Submitting bid...' : 'Submit Bid'"
               ></spinbutton>
+              <metamaskfeedback if.to-view="sendingBid"></metamaskfeedback>
             </div>
           </div>
         </div>

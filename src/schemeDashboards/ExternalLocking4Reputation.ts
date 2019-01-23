@@ -19,6 +19,7 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   private registering: boolean = false;
   private globalPeriodHasStarted: boolean = false;
   private globalPeriodSubscription: any = null;
+  private sendingRegister: boolean = false;
 
   constructor(
     appConfig: AureliaConfiguration,
@@ -81,7 +82,13 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
     try {
 
-      const result = await ((await (this.wrapper as any).register()) as ArcTransactionResult).watchForTxMined();
+      this.sendingRegister = true;
+      const result = await (await (this.wrapper as any).register()
+        .then((tx: ArcTransactionResult) => {
+          this.sendingRegister = false;
+          return tx;
+        }))
+        .watchForTxMined();
 
       this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
         `Registration is complete`, result.transactionHash));
@@ -93,9 +100,11 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
       this.eventAggregator.publish('handleException',
         new EventConfigException(`The regisration was not recorded`, ex));
       success = false;
+    } finally {
+      this.registering = false;
+      this.sendingRegister = false;
     }
 
-    this.registering = false;
     return success;
   }
 }

@@ -360,6 +360,7 @@ text-align: center;
 
 .pie-chart .body {
   text-align: center;
+  margin-bottom: 2rem;
 }
 
 .pie-chart img {
@@ -437,3 +438,19 @@ button.spinbutton.btn-submit:disabled:hover {
 .redeemSection .pageloading i {
   color: $color-ds-green;
 }
+
+metamaskfeedback .metamask-feedback {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+metamaskfeedback .metamask-icon {
+  width: 1.5rem;
+  margin-right: .5rem !important;
+  padding-bottom: .4rem;
+}
+
+
+// metamask-feedback .metamask-text {
+  
+// }

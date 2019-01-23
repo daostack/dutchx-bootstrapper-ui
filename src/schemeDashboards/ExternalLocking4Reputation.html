@@ -11,7 +11,10 @@
         Reputation will be distributed to all MGN holders who opt in on receiving dxDAO reputation.
         All you need to do is activate this option here.</p>
 
-      <p>️️️️<span class="warning-icon" style="font-size:1rem">⚠️</span>&nbsp;Please make sure you are connected in MetaMask with the same ETH address that holds your MGN
+      <p>️️️️<span
+          class="warning-icon"
+          style="font-size:1rem"
+        >⚠️</span>&nbsp;Please make sure you are connected in MetaMask with the same ETH address that holds your MGN
         tokens.</p>
     </instructions>
 
@@ -65,6 +68,7 @@
             spin.to-view="registering"
             title.to-view="registering ? 'Registering...' : 'Register'"
           ></spinbutton>
+          <metamaskfeedback if.to-view="sendingRegister"></metamaskfeedback>
           <spinbutton
             if.to-view="inLockingPeriod && !alreadyLocked"
             onclick.call="lock()"
@@ -75,6 +79,7 @@
             spin.to-view="locking"
             title.to-view="locking ? 'Claiming...' : 'Claim'"
           ></spinbutton>
+          <metamaskfeedback if.to-view="sending"></metamaskfeedback>
         </div>
       </form>
     </div>

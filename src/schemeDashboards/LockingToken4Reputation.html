@@ -97,11 +97,13 @@
                     onclick.call="lock()"
                     disabled.bind="locking"
                     css="btn-submit btn-sm"
+                    style="margin-right: .5rem"
                     as-button="true"
                     text="Submit"
                     spin.to-view="locking"
                     title.to-view="locking ? 'Locking...' : 'Submit Lock'"
                   ></spinbutton>
+                  <metamaskfeedback if.to-view="sending"></metamaskfeedback>
                 </div>
               </div>
             </div>

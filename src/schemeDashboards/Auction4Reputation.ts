@@ -9,7 +9,8 @@ import {
   Auction4ReputationBidEventResult,
   Auction4ReputationWrapper,
   Erc20Wrapper,
-  WrapperService
+  WrapperService,
+  ArcTransactionResult
 } from '../services/ArcService';
 import { BigNumber, Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';
@@ -39,6 +40,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private allBids = new Array<IAuctionBidInfo>();
   private _switchingAuctions = false;
   private dashboard: HTMLElement;
+  private sendingBid: boolean = false;
 
   @computedFrom('auctionNotBegun', 'auctionIsOver')
   private get inAuction() {
@@ -169,13 +171,27 @@ export class Auction4Reputation extends DaoSchemeDashboard {
         this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't bid: ${reason}`));
       } else {
 
+        this.sendingBid = true;
+
         await (await this.token.approve({
           amount: this.bidAmount,
           owner: currentAccount,
           spender: this.wrapper.address,
-        })).watchForTxMined();
+        })
+          .then((tx: ArcTransactionResult) => {
+            this.sendingBid = false;
+            return tx;
+          }))
+          .watchForTxMined();
 
-        const result = await (await this.wrapper.bid({ amount: this.bidAmount })).watchForTxMined();
+        this.sendingBid = true;
+
+        const result = await (await this.wrapper.bid({ amount: this.bidAmount })
+          .then((tx: ArcTransactionResult) => {
+            this.sendingBid = false;
+            return tx;
+          }))
+          .watchForTxMined();
 
         this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
           `The bid has been recorded`, result.transactionHash));
@@ -186,6 +202,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     } catch (ex) {
       this.eventAggregator.publish('handleException', new EventConfigException(`The bid was not recorded`, ex));
     } finally {
+      this.sendingBid = false;
       this.bidding = false;
     }
   }
