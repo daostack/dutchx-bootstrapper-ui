@@ -1,7 +1,5 @@
 {
   "rootTimezone": "Asia/Tel_Aviv",
-  "lockingPeriodStartDate": "2019-01-23T14:00:00.000",
-  "lockingPeriodEndDate": "2019-01-23T15:30:00.000",
   "governanceStartDate": "2019-01-23T16:00:00.000",
   "Landing": {
     "lockingPeriodStartDate": "2019-02-18T12:00:00.000",
@@ -10,8 +8,6 @@
   },
   "Ganache": {
     "daoAddress": "0xcb4e66eca663fdb61818d52a152601ca6afef74f",
-    "lockingPeriodStartDate": "2019-01-22T21:35:00.000",
-    "lockingPeriodEndDate":   "2019-01-22T21:45:00.000",
     "gnoTokenAddress": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
     "lockableTokens": [
       {

@@ -227,25 +227,8 @@ export class Dashboard {
      */
     this.fixScrollbar();
 
-    this.lockingPeriodEndDate = this.dateService
-      .fromIsoString(this.appConfig.get('lockingPeriodEndDate'), App.timezone);
-
     if (this.fakeRedeem && this.web3Service.isConnected && (this.networkName === 'Ganache')) {
       await UtilsInternal.increaseTime(100000000000, this.web3.web3);
-    }
-
-    if (!this.repSummaryCheck) {
-      this.repSummaryCheck =
-        this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
-          if (!this.canRedeem && (this.fakeRedeem || (blockDate.getTime() >= this.lockingPeriodEndDate.getTime()))) {
-            this.canRedeem = true;
-            this.repSummaryCheck.dispose();
-            this.repSummaryCheck = null;
-            if (this.org) {
-              this.computeRedeemables();
-            }
-          }
-        });
     }
 
     const dashboard = $(this.dashboardElement);
@@ -425,6 +408,29 @@ export class Dashboard {
       const mgnTokenAddress = await wrapper.getExternalLockingContract();
       this.appConfig.set('mgnTokenAddress', mgnTokenAddress);
 
+      const lockDates = await this.getLockDates();
+
+      this.appConfig.set('lockingPeriodStartDate', this.dateService.toISOString(lockDates.start, App.timezone));
+      this.appConfig.set('lockingPeriodEndDate', this.dateService.toISOString(lockDates.end, App.timezone));
+
+      this.lockingPeriodEndDate = lockDates.end;
+
+      if (!this.repSummaryCheck) {
+        this.repSummaryCheck =
+          this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
+            if (!this.canRedeem &&
+              (this.fakeRedeem || (blockDate.getTime() >= this.lockingPeriodEndDate.getTime()))) {
+
+              this.canRedeem = true;
+              this.repSummaryCheck.dispose();
+              this.repSummaryCheck = null;
+              if (this.org) {
+                this.computeRedeemables();
+              }
+            }
+          });
+      }
+
       if (this.canRedeem) {
         await this.computeRedeemables();
       }
@@ -588,6 +594,17 @@ export class Dashboard {
     return null;
   }
 
+  /**
+   * returns LockingEth4Reputation start and end dates
+   */
+  private async getLockDates(): Promise<IContractLockDates> {
+    const wrapper = await this.getSchemeWrapperFromName('LockingEth4Reputation');
+    return {
+      end: await wrapper.getLockingEndTime(),
+      start: await wrapper.getLockingStartTime(),
+    };
+  }
+
   private fixScrollbar() {
 
     const bodyHeight = $(window).height() || 0;
@@ -612,4 +629,9 @@ interface IRedeemable {
 
 interface ISchemeInfoX extends SchemeInfo {
   numLocks?: number;
+}
+
+interface IContractLockDates {
+  end: Date;
+  start: Date;
 }

@@ -110,7 +110,7 @@ export class DateService {
     }
 
     return this.createMomentFromString(dateString, this.getSafeParams(paramsFrom).format)
-           .format(this.getSafeParams(paramsTo).format);
+      .format(this.getSafeParams(paramsTo).format);
   }
 
   public ticksToString(ticks: number, params?: IFormatParameters | string): string | null {
@@ -229,23 +229,23 @@ export class DateService {
    * format in the config.json file doesn't.
    * @param dt
    */
-  public toISOString(dt: Date): string | null {
+  public toISOString(dt: Date, timezone?: string): string | null {
     if (!dt) {
       return null;
     }
 
-    return this.createMoment(dt).toISOString();
+    return (timezone ? moment.tz(dt, timezone) : moment(dt)).toISOString();
   }
 
-/**
- * Parse date from ISO format.
- *
- * ISO:  https://en.wikipedia.org/wiki/ISO_8601
- * Timezone specifiers: https://github.com/moment/moment-timezone/blob/develop/data/packed/latest.json
- *
- * @param str
- * @param timezone optional timezone specifier like "Asia/Tel_Aviv"
- */
+  /**
+   * Parse date from ISO format.
+   *
+   * ISO:  https://en.wikipedia.org/wiki/ISO_8601
+   * Timezone specifiers: https://github.com/moment/moment-timezone/blob/develop/data/packed/latest.json
+   *
+   * @param str
+   * @param timezone optional timezone specifier like "Asia/Tel_Aviv"
+   */
   public fromIsoString(str: string, timezone?: string): Date | null {
     if (!str) {
       return null;
