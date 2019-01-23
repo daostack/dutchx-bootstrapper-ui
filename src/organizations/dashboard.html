@@ -70,7 +70,10 @@
                 <div class="list-item"><span class="bullet">4</span>Bidding for reputation with DAOstack GEN tokens</div>
               </div>
 
-              <div class="box">The initialization phase will end on ${lockingPeriodEndDate | date:'friendly'}.
+              <div
+                if.to-view="avatarLoaded"
+                class="box"
+              >The initialization phase will end on ${lockingPeriodEndDate | date:'friendly'}.
                 All locked ETH or tokens will be automatically unlocked, and reputation will be automatically redeemed and distributed.</div>
             </div>
           </div>
