@@ -39,9 +39,9 @@
     ]
   },
   "Rinkeby": {
-    "lockingPeriodStartDate": "2019-02-23T12:55:00.000",
-    "lockingPeriodEndDate": "2019-02-23T13:14:00.000",
-    "governanceStartDate": "2019-02-23T15:00:00.000",
+    "lockingPeriodStartDate": "2019-01-23T12:55:00.000",
+    "lockingPeriodEndDate": "2019-01-23T13:14:00.000",
+    "governanceStartDate": "2019-01-23T15:00:00.000",
     "lockableTokens": [
       {
         "address": "0xc778417e063141139fce010982780140aa0cd5ab",
