@@ -262,13 +262,6 @@ export class Dashboard {
     this.networkConnectionWizards.close(true);
   }
 
-  public detached() {
-    if (this.repSummaryCheck) {
-      this.repSummaryCheck.dispose();
-      this.repSummaryCheck = null;
-    }
-  }
-
   private async initializeNetwork(): Promise<Web3 | undefined> {
 
     let web3: Web3;
@@ -370,6 +363,10 @@ export class Dashboard {
 
   private async loadSchemes(): Promise<boolean> {
     this.schemesLoading = this.loading = true;
+    if (this.repSummaryCheck) {
+      this.repSummaryCheck.dispose();
+      this.repSummaryCheck = null;
+    }
     /**
      * Get all schemes associated with the DAO.  These can include non-Arc schemes.
      */
@@ -410,6 +407,9 @@ export class Dashboard {
 
       const lockDates = await this.getLockDates();
 
+      /**
+       * store away for the rest of the UI, in the config for backward-compatibility
+       */
       this.appConfig.set('lockingPeriodStartDate', this.dateService.toISOString(lockDates.start, App.timezone));
       this.appConfig.set('lockingPeriodEndDate', this.dateService.toISOString(lockDates.end, App.timezone));
 

@@ -15,42 +15,40 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
   private alreadyLocked: boolean = false;
   private alreadyRegistered: boolean = false;
-  private globalPeriodStartDate: Date;
   private registering: boolean = false;
   private globalPeriodHasStarted: boolean = false;
-  private globalPeriodSubscription: any = null;
   private sendingRegister: boolean = false;
 
   constructor(
     appConfig: AureliaConfiguration,
     eventAggregator: EventAggregator,
     web3Service: Web3Service,
-    dateService: DateService
+    private dateService: DateService
   ) {
     super(appConfig, eventAggregator, web3Service);
     this.lockModel.amount = new BigNumber(0); // to avoid validation
     this.lockModel.period = 0; // to avoid validation
-    this.globalPeriodStartDate = dateService.fromIsoString(this.appConfig.get('lockingPeriodStartDate'), App.timezone);
   }
 
   public async attached() {
     await super.attached();
-    if (!this.globalPeriodHasStarted) {
-      this.globalPeriodSubscription = this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
-        this.globalPeriodHasStarted = (blockDate >= this.globalPeriodStartDate);
-        if (this.globalPeriodHasStarted) {
-          this.globalPeriodSubscription.dispose();
-          this.globalPeriodSubscription = null;
+    this.subscriptions.push(this.eventAggregator.subscribe('DAO.loaded',
+      () => {
+        if (!this.globalPeriodHasStarted) {
+          const globalPeriodStartDate =
+            this.dateService.fromIsoString(this.appConfig.get('lockingPeriodStartDate'), App.timezone);
+          if (this.lockingPeriodIsEnded) {
+            this.globalPeriodHasStarted = true;
+          } else {
+            const globalPeriodSubscription = this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
+              this.globalPeriodHasStarted = (blockDate >= globalPeriodStartDate);
+              if (this.globalPeriodHasStarted) {
+                globalPeriodSubscription.dispose();
+              }
+            });
+          }
         }
-      });
-    }
-  }
-
-  public detached() {
-    if (this.globalPeriodSubscription) {
-      this.globalPeriodSubscription.dispose();
-      this.globalPeriodSubscription = null;
-    }
+      }));
   }
 
   protected async accountChanged(account: Address) {
