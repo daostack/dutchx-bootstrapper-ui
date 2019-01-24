@@ -40,6 +40,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected locks: Array<ILockInfoX>;
   protected locking: boolean = false;
   protected releasing: boolean = false;
+  protected sending: boolean = false;
 
   protected lockModel: LockingOptions = {
     amount: undefined,
@@ -133,7 +134,12 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       if (alreadyCheckedForBlock || !(await this.getLockBlocker())) {
 
-        const result = await ((await (this.wrapper as any).lock(this.lockModel)) as ArcTransactionResult)
+        this.sending = true;
+        const result = await (await (this.wrapper as any).lock(this.lockModel)
+          .then((tx: ArcTransactionResult) => {
+            this.sending = false;
+            return tx;
+          }))
           .watchForTxMined()
           .then((tx: TransactionReceiptTruffle) => {
             this.getLocks();
@@ -152,12 +158,13 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       this.eventAggregator.publish('handleException', new EventConfigException(`The lock was not recorded`, ex));
     } finally {
       this.locking = false;
+      this.sending = false;
     }
 
     return false;
   }
 
-  protected async release(lock: { lock: LockInfo }): Promise<boolean> {
+  protected async release(lock: { lock: ILockInfoX }): Promise<boolean> {
     const lockInfo = lock.lock;
 
     if (this.locking || this.releasing) {
@@ -166,9 +173,14 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
     try {
 
-      this.releasing = true;
+      this.releasing = lockInfo.sending = true;
 
-      const result = await (await (this.wrapper as any).release(lockInfo)).watchForTxMined();
+      const result = await (await (this.wrapper as any).release(lockInfo)
+        .then((tx: ArcTransactionResult) => {
+          lockInfo.sending = false;
+          return tx;
+        }))
+        .watchForTxMined();
 
       this.eventAggregator.publish('handleTransaction',
         new EventConfigTransaction('The lock has been released', result.transactionHash));
@@ -183,7 +195,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       this.eventAggregator.publish('handleException',
         new EventConfigException(`The lock was not released`, ex));
     } finally {
-      this.releasing = false;
+      this.releasing = lockInfo.sending = false;
     }
     return false;
   }
@@ -198,7 +210,9 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
      * The symbol is for the LocksForReputation table
      */
     for (const lock of locks) {
-      (lock as ILockInfoX).units = await this.getLockUnit(lock as LockInfo);
+      const lockInfoX = lock as ILockInfoX;
+      lockInfoX.units = await this.getLockUnit(lock as LockInfo);
+      lockInfoX.sending = false;
     }
 
     this.locks = locks as Array<ILockInfoX>;

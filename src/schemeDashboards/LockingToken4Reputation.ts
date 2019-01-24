@@ -8,6 +8,7 @@ import { Utils as UtilsInternal } from 'services/utils';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 import {
   Address,
+  ArcTransactionResult,
   Erc20Factory,
   Erc20Wrapper,
   LockInfo,
@@ -60,11 +61,17 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
         const token = (await Erc20Factory.at(this.selectedToken.address)) as Erc20Wrapper;
 
+        this.sending = true;
         await (await token.approve({
           amount: this.lockModel.amount,
           owner: this.lockModel.lockerAddress,
           spender: this.wrapper.address,
-        })).watchForTxMined();
+        })
+          .then((tx: ArcTransactionResult) => {
+            this.sending = false;
+            return tx;
+          }))
+          .watchForTxMined();
 
         this.locking = false; // so will execute lock
 
@@ -78,8 +85,10 @@ export class LockingToken4Reputation extends Locking4Reputation {
     } catch (ex) {
       this.eventAggregator.publish('handleException',
         new EventConfigException(`The token transfer was not approved`, ex));
+    } finally {
+      this.locking = false;
+      this.sending = false;
     }
-    this.locking = false;
     return false;
   }
 
