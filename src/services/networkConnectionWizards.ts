@@ -26,7 +26,7 @@ export class NetworkConnectionWizards {
   private dialogViewModel: ConnectToNet;
 
   constructor(
-      private dialogService: DialogService
+    private dialogService: DialogService
     , private web3: Web3Service
     , private eventAggregator: EventAggregator
   ) {
@@ -69,10 +69,10 @@ export class NetworkConnectionWizards {
            *
            * See: https://github.com/MetaMask/metamask-extension/pull/4703#issuecomment-430814765
            */
-          const enabled = !theWindow.ethereum._metamask.isEnabled ||
-                          (await theWindow.ethereum._metamask.isEnabled());
-          const approved = !theWindow.ethereum._metamask.isApproved ||
-                          (await theWindow.ethereum._metamask.isApproved());
+          const enabled = !(theWindow.ethereum && theWindow.ethereum._metamask.isEnabled) ||
+            (await theWindow.ethereum._metamask.isEnabled());
+          const approved = !(theWindow.ethereum && theWindow.ethereum._metamask.isApproved) ||
+            (await theWindow.ethereum._metamask.isApproved());
 
           this.hasApprovedAccountAccess =
             /**
@@ -85,15 +85,15 @@ export class NetworkConnectionWizards {
       };
 
       this.subscriptions.push(this.eventAggregator
-                        .subscribe('Network.Changed.Id', () => { this.hasDao = false; connectionChanged(); }));
+        .subscribe('Network.Changed.Id', () => { this.hasDao = false; connectionChanged(); }));
       this.subscriptions.push(this.eventAggregator
-                              .subscribe('Network.Changed.Account', () => connectionChanged()));
+        .subscribe('Network.Changed.Account', () => connectionChanged()));
       this.subscriptions.push(this.eventAggregator
-                              .subscribe('DAO.loaded', () => { this.hasDao = true; }));
+        .subscribe('DAO.loaded', () => { this.hasDao = true; }));
       this.subscriptions.push(this.eventAggregator
-                              .subscribe('DAO.Loading', (onOff: boolean): void => {
-        this.loading = onOff;
-      }));
+        .subscribe('DAO.Loading', (onOff: boolean): void => {
+          this.loading = onOff;
+        }));
 
       await connectionChanged();
 
