@@ -5,7 +5,6 @@ import { autoinject } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure, EventConfigTransaction } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { Address, ArcTransactionResult, ExternalLocking4ReputationWrapper, LockInfo } from 'services/ArcService';
-import { DateService } from 'services/DateService';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 
 @autoinject
@@ -22,8 +21,7 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   constructor(
     appConfig: AureliaConfiguration,
     eventAggregator: EventAggregator,
-    web3Service: Web3Service,
-    private dateService: DateService
+    web3Service: Web3Service
   ) {
     super(appConfig, eventAggregator, web3Service);
     this.lockModel.amount = new BigNumber(0); // to avoid validation
@@ -35,8 +33,7 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
     this.subscriptions.push(this.eventAggregator.subscribe('DAO.loaded',
       () => {
         if (!this.globalPeriodHasStarted) {
-          const globalPeriodStartDate =
-            this.dateService.fromIsoString(this.appConfig.get('lockingPeriodStartDate'), App.timezone);
+          const globalPeriodStartDate = this.appConfig.get('lockingPeriodStartDate');
           if (this.lockingPeriodIsEnded) {
             this.globalPeriodHasStarted = true;
           } else {

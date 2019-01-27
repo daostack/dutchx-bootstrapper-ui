@@ -1,6 +1,5 @@
 {
   "rootTimezone": "Asia/Tel_Aviv",
-  "governanceStartDate": "2019-01-23T16:00:00.000",
   "Landing": {
     "lockingPeriodStartDate": "2019-02-18T12:00:00.000",
     "lockingPeriodEndDate":   "2019-03-20T12:00:00.000",

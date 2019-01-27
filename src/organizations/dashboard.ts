@@ -5,7 +5,6 @@ import { autoinject, computedFrom, singleton } from 'aurelia-framework';
 import axios from 'axios';
 import { EventConfig, EventConfigException, EventConfigFailure, EventMessageType } from 'entities/GeneralEvents';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
-import { DateService } from 'services/DateService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { IDisposable } from 'services/IDisposable';
 import { LockService } from 'services/lockServices';
@@ -128,8 +127,7 @@ export class Dashboard {
     private eventAggregator: EventAggregator,
     private appConfig: AureliaConfiguration,
     private arcService: ArcService,
-    private networkConnectionWizards: NetworkConnectionWizards,
-    private dateService: DateService
+    private networkConnectionWizards: NetworkConnectionWizards
   ) {
     $(window).resize(this.fixScrollbar);
   }
@@ -410,8 +408,8 @@ export class Dashboard {
       /**
        * store away for the rest of the UI, in the config for backward-compatibility
        */
-      this.appConfig.set('lockingPeriodStartDate', this.dateService.toISOString(lockDates.start, App.timezone));
-      this.appConfig.set('lockingPeriodEndDate', this.dateService.toISOString(lockDates.end, App.timezone));
+      this.appConfig.set('lockingPeriodStartDate', lockDates.start as any);
+      this.appConfig.set('lockingPeriodEndDate', lockDates.end as any);
 
       this.lockingPeriodEndDate = lockDates.end;
 
