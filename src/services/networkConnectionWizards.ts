@@ -26,9 +26,9 @@ export class NetworkConnectionWizards {
   private dialogViewModel: ConnectToNet;
 
   constructor(
-    private dialogService: DialogService
-    , private web3: Web3Service
-    , private eventAggregator: EventAggregator
+    private dialogService: DialogService,
+    private web3: Web3Service,
+    private eventAggregator: EventAggregator
   ) {
     this.subscriptions = new DisposableCollection();
   }
