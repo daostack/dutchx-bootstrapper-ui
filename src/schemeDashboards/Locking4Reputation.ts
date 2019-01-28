@@ -5,6 +5,7 @@ import { ILockInfoX } from 'resources/customElements/locksForReputation/locksFor
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LockService } from 'services/lockServices';
+import { Utils } from 'services/utils';
 import { EventConfigException, EventConfigFailure, EventConfigTransaction } from '../entities/GeneralEvents';
 import {
   Address,
@@ -73,12 +74,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     }));
 
     this.subscriptions.push(this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
-      if (this.org) {
-        this.getLockingPeriodIsEnded(blockDate);
-        this.getLockingPeriodHasNotStarted(blockDate);
-        this.getMsUntilCanLockCountdown(blockDate);
-        this.getMsRemainingInPeriodCountdown(blockDate);
-      }
+      this.refreshCounters(blockDate);
     }));
   }
 
@@ -94,6 +90,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     this.lockingEndTime = await this.wrapper.getLockingEndTime();
 
     await this.accountChanged(this.web3Service.defaultAccount);
+    await this.refreshCounters(await Utils.lastBlockDate(this.web3Service.web3));
     this.refreshing = false;
     this.loaded = true;
   }
@@ -101,6 +98,13 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected accountChanged(account: Address) {
     this.lockService = new LockService(this.appConfig, this.wrapper, account);
     this.lockModel.lockerAddress = account;
+  }
+
+  protected refreshCounters(blockDate: Date): void {
+    this.getLockingPeriodIsEnded(blockDate);
+    this.getLockingPeriodHasNotStarted(blockDate);
+    this.getMsUntilCanLockCountdown(blockDate);
+    this.getMsRemainingInPeriodCountdown(blockDate);
   }
 
   protected async getLockBlocker(): Promise<boolean> {

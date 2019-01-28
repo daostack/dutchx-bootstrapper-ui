@@ -5,7 +5,6 @@ import { autoinject } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure, EventConfigTransaction } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { Address, ArcTransactionResult, ExternalLocking4ReputationWrapper, LockInfo } from 'services/ArcService';
-import { DateService } from 'services/DateService';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 
 @autoinject
@@ -15,42 +14,38 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
   private alreadyLocked: boolean = false;
   private alreadyRegistered: boolean = false;
-  private globalPeriodStartDate: Date;
   private registering: boolean = false;
   private globalPeriodHasStarted: boolean = false;
-  private globalPeriodSubscription: any = null;
   private sendingRegister: boolean = false;
 
   constructor(
     appConfig: AureliaConfiguration,
     eventAggregator: EventAggregator,
-    web3Service: Web3Service,
-    dateService: DateService
+    web3Service: Web3Service
   ) {
     super(appConfig, eventAggregator, web3Service);
     this.lockModel.amount = new BigNumber(0); // to avoid validation
     this.lockModel.period = 0; // to avoid validation
-    this.globalPeriodStartDate = dateService.fromIsoString(this.appConfig.get('lockingPeriodStartDate'), App.timezone);
   }
 
   public async attached() {
     await super.attached();
-    if (!this.globalPeriodHasStarted) {
-      this.globalPeriodSubscription = this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
-        this.globalPeriodHasStarted = (blockDate >= this.globalPeriodStartDate);
-        if (this.globalPeriodHasStarted) {
-          this.globalPeriodSubscription.dispose();
-          this.globalPeriodSubscription = null;
+    this.subscriptions.push(this.eventAggregator.subscribe('DAO.loaded',
+      () => {
+        if (!this.globalPeriodHasStarted) {
+          const globalPeriodStartDate = this.appConfig.get('lockingPeriodStartDate');
+          if (this.lockingPeriodIsEnded) {
+            this.globalPeriodHasStarted = true;
+          } else {
+            const globalPeriodSubscription = this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
+              this.globalPeriodHasStarted = (blockDate >= globalPeriodStartDate);
+              if (this.globalPeriodHasStarted) {
+                globalPeriodSubscription.dispose();
+              }
+            });
+          }
         }
-      });
-    }
-  }
-
-  public detached() {
-    if (this.globalPeriodSubscription) {
-      this.globalPeriodSubscription.dispose();
-      this.globalPeriodSubscription = null;
-    }
+      }));
   }
 
   protected async accountChanged(account: Address) {
