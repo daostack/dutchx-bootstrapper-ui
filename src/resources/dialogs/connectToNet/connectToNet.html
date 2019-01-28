@@ -5,7 +5,7 @@
   >
     <ux-dialog-header>
       <div
-        if.to-view="!(hasDao && hasApprovedAccountAccess)"
+        if.to-view="loading || !(hasDao && hasApprovedAccountAccess)"
         class="d-inline-block"
       >
         <img
