@@ -207,7 +207,7 @@
                         trailing-zeroes="2"
                       ></floating-point-number>
                       (<floating-point-number
-                        value.to-view="percentUserReputationEarned | ethwei"
+                        value.to-view="percentUserReputationEarned"
                         precision="4"
                         trailing-zeroes="2"
                       ></floating-point-number>%) Reputation:</div>
@@ -237,8 +237,14 @@
                         </table>
                       </div>
                       <div>
-                        All reputation earned by all participants, 1000000 Rep, will be distributed
-                        after the initialization phase.
+                        All reputation earned by all participants,
+                        <floating-point-number
+                          value.to-view="totalReputationAvailable | ethwei"
+                          precision="9"
+                          trailing-zeroes="2"
+                          exponentialal-at.to-view="exponentialAtForRep"
+                          placement="top"
+                        ></floating-point-number> reputation will be distributed after the initialization phase.
                       </div>
                     </div>
                   </div>

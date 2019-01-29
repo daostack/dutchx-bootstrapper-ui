@@ -65,7 +65,7 @@ export class FloatingPointNumber {
       ($(this.textElement) as any).tooltip(
         {
           placement: this.placement,
-          title: value.toNumber(),
+          title: value.toString(10),
           toggle: 'tooltip',
           trigger: 'hover',
         }
