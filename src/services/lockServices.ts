@@ -9,7 +9,7 @@ export class LockService {
   public lockableTokenSpecs: Array<ITokenSpecification>;
 
   constructor(
-      appConfig: AureliaConfiguration
+    appConfig: AureliaConfiguration
     , private wrapper: Locking4ReputationWrapper
     , private userAddress: Address
   ) {
@@ -18,7 +18,7 @@ export class LockService {
 
   public async getUserLocks(): Promise<Array<LockInfo>> {
 
-    const fetcher = (await this.wrapper.getLocks())(
+    const fetcher = this.wrapper.getLocks()(
       { _locker: this.userAddress },
       { fromBlock: 0 });
 
