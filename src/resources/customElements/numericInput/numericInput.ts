@@ -35,7 +35,11 @@ export class NumericInput {
       this.value = undefined;
       // else this.numberService.fromString would return 0
     } else {
-      this.value = this.numberService.fromString(value);
+      /**
+       * Convert commas to decimals.  Not going to try to get NumberService to handle the locale.
+       * It uses 'en' by default.
+       */
+      this.value = this.numberService.fromString(value.replace(',', '.'));
     }
   }
 
@@ -50,9 +54,9 @@ export class NumericInput {
      */
     let newString: string;
     const value = this.value;
-    if ((typeof value === 'string') && (value as string).match(/.*\.$/)) {
+    if ((typeof value === 'string') && (value as string).match(/.*[.,]$/)) {
       newString = value;
-      // numberService.toString would return '' for anything that ends in a '.'
+      // numberService.toString would return '' for anything that ends in a '.' or ','
     } else {
       newString = this.numberService.toString(value);
     }
@@ -78,12 +82,12 @@ export class NumericInput {
     ) {
       // let it happen, don't do anything
       return true;
-    } else {
+    } else if (this.decimal) {
       /**
-       * ecimals are allowed, is a decimal, and there is not already a decimal
+       * decimals ('.' or ',') are allowed, is a decimal, and there is not already a decimal
        */
-      if ((this.decimal && (e.keyCode === 190) &&
-        (!currentValue || !currentValue.length || (currentValue.indexOf('.') === -1)))) {
+      if (((e.keyCode === 190) || ((e.keyCode === 188))) &&
+        (!currentValue || !currentValue.length || !currentValue.match(/[,.]/))) {
         return true;
       }
     }
