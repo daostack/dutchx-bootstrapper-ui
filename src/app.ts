@@ -88,7 +88,7 @@ export class App {
         moduleId: PLATFORM.moduleName('./landing'),
         name: 'landing',
         nav: false,
-        route: ['', 'landing'],
+        route: ['', '/', 'landing', 'home'],
         title: '',
       },
       {
