@@ -6,6 +6,8 @@ import { App } from '../../src/app';
 class RouterStub {
   public routes;
 
+  public options: any = {};
+
   public configure(handler) {
     handler(this);
   }

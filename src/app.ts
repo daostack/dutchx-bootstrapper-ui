@@ -77,7 +77,8 @@ export class App {
   private configureRouter(config: RouterConfiguration, router: Router) {
 
     config.title = 'dxDAO';
-
+    config.options.pushState = true;
+    config.options.root = '/';
     /**
      * first set the landing page.
      * it is possible to be connected but have the wrong chain.
@@ -87,7 +88,7 @@ export class App {
         moduleId: PLATFORM.moduleName('./landing'),
         name: 'landing',
         nav: false,
-        route: ['', 'landing'],
+        route: ['', '/', 'landing', 'home'],
         title: '',
       },
       {
