@@ -76,7 +76,7 @@ export class App {
 
   private configureRouter(config: RouterConfiguration, router: Router) {
 
-    config.title = 'dxDAO Initializer';
+    config.title = 'dxDAO';
 
     /**
      * first set the landing page.
@@ -88,7 +88,7 @@ export class App {
         name: 'landing',
         nav: false,
         route: ['', 'landing'],
-        title: 'Home',
+        title: '',
       },
       {
         moduleId: PLATFORM.moduleName('./organizations/dashboard'),

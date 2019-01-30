@@ -12,7 +12,7 @@ describe('dxDAO Initializer app', function() {
   });
 
   it('should load the page and display the initial page title', async () => {
-    await expect(poHome.getCurrentPageTitle()).toBe('Dashboard | dxDAO Initializer');
+    await expect(poHome.getCurrentPageTitle()).toBe('Dashboard | dxDAO');
   });
 
   it('should display greeting', async () => {
