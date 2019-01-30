@@ -536,7 +536,7 @@ export class Dashboard {
         what: 'GEN auctions',
       });
 
-      this.totalReputationAvailable = this.web3Service.fromWei(totalReputationAvailable);
+      this.totalReputationAvailable = totalReputationAvailable;
       this.redeemables = redeemables;
     } catch (ex) {
       this.eventAggregator.publish('handleException',
