@@ -11,25 +11,33 @@ import { BigNumber } from 'services/Web3Service';
 @autoinject
 export class FloatingPointNumber {
 
+  /**
+   * how many significant digits we want to display
+   */
   @bindable({ defaultBindingMode: bindingMode.toView }) public precision: number | string = 5;
-  @bindable({ defaultBindingMode: bindingMode.toView }) public trailingZeroes?: number | string;
-  @bindable({ defaultBindingMode: bindingMode.toView }) public exponentialAt: number | [number, number] = [-7, 20];
+  @bindable({ defaultBindingMode: bindingMode.toView }) public trailingZeroes?: number | string = 2;
+  /**
+   * Switch numbers to exponential notation at 3 spaces below the decimal,
+   * and at the BigNumber default of 20 digits above (basically never goes exponential above).
+   */
+  @bindable({ defaultBindingMode: bindingMode.toView }) public exponentialAt: number | [number, number] = [-4, 20];
   @bindable({ defaultBindingMode: bindingMode.toView }) public value: number | string | BigNumber;
   @bindable({ defaultBindingMode: bindingMode.toView }) public placement: string = 'top';
 
   private text: string;
   private textElement: HTMLElement;
+  private _value: BigNumber;
 
   constructor(private numberService: NumberService) {
   }
 
-  public attached() {
+  public valueChanged() {
     if ((this.value === undefined) || (this.value === null)) {
       this.text = '';
       return;
     }
 
-    const value = new BigNumber(this.value);
+    this._value = new BigNumber(this.value);
 
     if (this.trailingZeroes) {
       this.trailingZeroes = Number(this.trailingZeroes);
@@ -40,7 +48,7 @@ export class FloatingPointNumber {
     }
 
     let text = this.numberService.toFixedNumberString(
-      value,
+      this._value,
       this.precision as number,
       this.exponentialAt);
 
@@ -60,20 +68,28 @@ export class FloatingPointNumber {
 
     this.text = text;
 
-    if (this.text) {
+    this.setTooltip();
+  }
+
+  public attached() {
+    this.setTooltip();
+  }
+
+  public detached() {
+    ($(this.textElement) as any).tooltip('dispose');
+  }
+
+  private setTooltip() {
+    if (this.textElement && this.text) {
       ($(this.textElement) as any).tooltip('dispose');
       ($(this.textElement) as any).tooltip(
         {
           placement: this.placement,
-          title: value.toString(10),
+          title: this._value.toString(10),
           toggle: 'tooltip',
           trigger: 'hover',
         }
       );
     }
-  }
-
-  public detached() {
-    ($(this.textElement) as any).tooltip('dispose');
   }
 }

@@ -11,7 +11,7 @@
       At the end of the initialization period, your reputation will be calculated pro rata according to the total locked tokens and the value of each token at the time of locking.</instructions>
 
     <div
-      class="scheme-dashboard-body"
+      class="scheme-dashboard-body lockingTokens"
       ref="dashboard"
     >
 
@@ -49,7 +49,8 @@
                     class="dropdown-item"
                     click.delegate="selectToken.call($parent.$parent, tokenSpec)"
                     repeat.for="tokenSpec of $parent.lockableTokens"
-                  >${tokenSpec.symbol}</li>
+                  >${tokenSpec.symbol} (<tokenbalance token.to-view="tokenSpec.address"></tokenbalance>)
+                  </li>
                 </ul>
               </div>
             </div>

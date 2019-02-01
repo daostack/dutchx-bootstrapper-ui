@@ -203,13 +203,10 @@
                     <div class="title">You Have Earned <floating-point-number
                         value.to-view="totalUserReputationEarned | ethwei"
                         precision="8"
-                        exponentialal-at.to-view="exponentialAtForRep"
-                        trailing-zeroes="2"
                       ></floating-point-number>
                       (<floating-point-number
                         value.to-view="percentUserReputationEarned"
                         precision="4"
-                        trailing-zeroes="2"
                       ></floating-point-number>%) Reputation:</div>
                     <div class="body">
                       <div class="breakdown">
@@ -226,8 +223,6 @@
                                 <floating-point-number
                                   value.to-view="redeemable.amount | ethwei"
                                   precision="8"
-                                  trailing-zeroes="2"
-                                  exponentialal-at.to-view="exponentialAtForRep"
                                   placement="left"
                                 ></floating-point-number> Rep
                               </td>
@@ -241,8 +236,6 @@
                         <floating-point-number
                           value.to-view="totalReputationAvailable | ethwei"
                           precision="9"
-                          trailing-zeroes="2"
-                          exponentialal-at.to-view="exponentialAtForRep"
                           placement="top"
                         ></floating-point-number> Rep, will be distributed after the initialization phase.
                       </div>

@@ -80,11 +80,6 @@ export class Dashboard {
   private _loading: boolean = false;
   private initialized: boolean = false;
   private computingRedeemables: boolean = false;
-  /**
-   * Switch reputation numbers to exponential notation at 3 spaces below the decimal,
-   * and at the BigNumber default of 20 digits above (basically never goes exponential above).
-   */
-  private exponentialAtForRep = [-4, 20];
   private org: DaoEx;
 
   private dutchXSchemeConfigs = new Map<string,

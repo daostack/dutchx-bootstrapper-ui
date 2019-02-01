@@ -1,3 +1,13 @@
 <template>
-  <span ref="textElement" class="ethbalance">${text}</span>
+  <floating-point-number
+    class="ethbalance"
+    if.to-view="balance !== null"
+    value.to-view="balance | ethwei"
+    precision="6"
+    placement.to-view="placement"
+  ></floating-point-number>
+  <span
+    else
+    class="ethbalance"
+  >N/A</span>
 </template>
