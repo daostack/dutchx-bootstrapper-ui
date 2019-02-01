@@ -1,3 +1,5 @@
+import { BigNumber } from 'services/Web3Service';
+
 export enum SortOrder {
   ASC = 1,
   DESC = -1,
@@ -15,6 +17,20 @@ export class SortService {
     b = b.toLowerCase();
 
     return a.localeCompare(b) * sortOrder;
+  }
+
+  public static evaluateBigNumber(a: BigNumber, b: BigNumber, sortOrder: SortOrder = SortOrder.ASC) {
+    const isDefinedA = SortService.isDefined(a);
+    const isDefinedB = SortService.isDefined(b);
+
+    if (!isDefinedA && !isDefinedB) { return 0; }
+
+    if (!isDefinedA) { return -sortOrder; }
+    if (!isDefinedB) { return sortOrder; }
+
+    const diff = a.sub(b);
+
+    return ((diff.gt(0) ? 1 : (diff.lt(0) ? -1 : 0))) * sortOrder;
   }
 
   public static evaluateNumber(a: number, b: number, sortOrder: SortOrder = SortOrder.ASC) {

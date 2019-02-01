@@ -1,14 +1,32 @@
 ﻿import { Container } from 'aurelia-dependency-injection';
-import { autoinject, TemplatingEngine } from 'aurelia-framework';
+import { autoinject, BindingEngine, TemplatingEngine } from 'aurelia-framework';
+import { IDisposable } from 'services/IDisposable';
 
 @autoinject
 export class AureliaHelperService {
 
   constructor(
     public container: Container,
-    private templatingEngine: TemplatingEngine
+    private templatingEngine: TemplatingEngine,
+    private bindingEngine: BindingEngine
   ) {
 
+  }
+
+  /**
+   * Create an observable property and subscribe to changes
+   * @param object
+   * @param propertyName
+   * @param func
+   */
+  public createPropertyWatch(
+    object: any,
+    propertyName: string,
+    func: (newValue: any, oldValue: any) => void): IDisposable {
+    return this.bindingEngine.propertyObserver(object, propertyName)
+      .subscribe((newValue, oldValue) => {
+        func(newValue, oldValue);
+      });
   }
 
   /**

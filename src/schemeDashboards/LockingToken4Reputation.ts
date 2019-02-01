@@ -3,7 +3,9 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
+import { AureliaHelperService } from 'services/AureliaHelperService';
 import { ITokenSpecification } from 'services/lockServices';
+import { SortService } from 'services/SortService';
 import { Utils as UtilsInternal } from 'services/utils';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 import {
@@ -29,14 +31,30 @@ export class LockingToken4Reputation extends Locking4Reputation {
   constructor(
     appConfig: AureliaConfiguration,
     eventAggregator: EventAggregator,
-    web3Service: Web3Service
+    web3Service: Web3Service,
+    private aureliaHelperService: AureliaHelperService
   ) {
     super(appConfig, eventAggregator, web3Service);
   }
 
   protected async refresh() {
     await super.refresh();
-    this.lockableTokens = this.lockService.lockableTokenSpecs;
+    const tokens = this.lockService.lockableTokenSpecs;
+    tokens.filter((tokenInfo: ITokenSpecificationX) => {
+      tokenInfo.balance = new BigNumber(0);
+      /**
+       * Whenever a balance changes, sort the array.
+       * Sadly this will sort on the initial fetching of the
+       * balances, but it is a very small list, so not worth optimizing.
+       */
+      this.aureliaHelperService.createPropertyWatch(
+        tokenInfo, 'balance', () => {
+          this.sortTokens();
+        });
+      return true;
+    });
+    this.lockableTokens = tokens;
+    this.sortTokens();
   }
 
   protected async accountChanged(account: Address) {
@@ -109,6 +127,30 @@ export class LockingToken4Reputation extends Locking4Reputation {
   private async selectToken(tokenSpec: ITokenSpecification) {
     this.selectedTokenIsLiquid = await this.getTokenIsLiquid(tokenSpec.address);
     this.selectedToken = tokenSpec;
+  }
+
+  private sortTokens(): void {
+    const tokens = this.lockableTokens;
+
+    /**
+     * what we want here is the concatenation of two arrays, each sorted by symbol:
+     * The first is the set of all zero balances, the second all the rest.
+     */
+    this.lockableTokens = [
+      ...tokens.filter((tokenInfo: ITokenSpecificationX) => {
+        return tokenInfo.balance.eq(0);
+      })
+        .sort((a: ITokenSpecificationX, b: ITokenSpecificationX) => {
+          return SortService.evaluateString(a.symbol, b.symbol);
+        }),
+      ...tokens
+        .filter((tokenInfo: ITokenSpecificationX) => {
+          return !tokenInfo.balance.eq(0);
+        })
+        .sort((a: ITokenSpecificationX, b: ITokenSpecificationX) => {
+          return SortService.evaluateString(a.symbol, b.symbol);
+        }),
+    ];
   }
 }
 
