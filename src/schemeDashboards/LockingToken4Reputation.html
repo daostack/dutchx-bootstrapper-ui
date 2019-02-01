@@ -49,7 +49,10 @@
                     class="dropdown-item"
                     click.delegate="selectToken.call($parent.$parent, tokenSpec)"
                     repeat.for="tokenSpec of $parent.lockableTokens"
-                  >${tokenSpec.symbol} (<tokenbalance token.to-view="tokenSpec.address"></tokenbalance>)
+                  >${tokenSpec.symbol} (<tokenbalance
+                      token.to-view="tokenSpec.address"
+                      balance.from-view="tokenSpec.balance"
+                    ></tokenbalance>)
                   </li>
                 </ul>
               </div>

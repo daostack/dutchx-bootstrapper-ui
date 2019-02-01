@@ -21,7 +21,7 @@ import {
 export class LockingToken4Reputation extends Locking4Reputation {
   protected wrapper: LockingToken4ReputationWrapper;
 
-  private lockableTokens: Array<ITokenSpecification>;
+  private lockableTokens: Array<ITokenSpecificationX>;
   private selectedToken: ITokenSpecification = null;
   private selectedTokenIsLiquid: boolean = false;
   private dashboard: HTMLElement;
@@ -110,4 +110,8 @@ export class LockingToken4Reputation extends Locking4Reputation {
     this.selectedTokenIsLiquid = await this.getTokenIsLiquid(tokenSpec.address);
     this.selectedToken = tokenSpec;
   }
+}
+
+export interface ITokenSpecificationX extends ITokenSpecification {
+  balance?: BigNumber;
 }

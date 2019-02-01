@@ -12,8 +12,8 @@ export class TokenBalance {
 
   @bindable({ defaultBindingMode: bindingMode.toView }) public token: Address;
   @bindable({ defaultBindingMode: bindingMode.toView }) public placement: string = 'top';
+  @bindable({ defaultBindingMode: bindingMode.fromView }) public balance: BigNumber = null;
 
-  private balance: BigNumber;
   private subscription: IDisposable;
 
   private events;

@@ -2,7 +2,7 @@
   <floating-point-number
     class="balance"
     if.to-view="balance !== null"
-    value.to-view="balance | ethwei"
+    value.bind="balance | ethwei"
     precision="6"
     placement.to-view="placement"
   ></floating-point-number>
