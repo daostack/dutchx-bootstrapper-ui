@@ -51,7 +51,7 @@
                     repeat.for="tokenSpec of $parent.lockableTokens"
                   >${tokenSpec.symbol} (<tokenbalance
                       token.to-view="tokenSpec.address"
-                      balance.from-view="tokenSpec.balance"
+                      balance.bind="tokenSpec.balance"
                     ></tokenbalance>)
                   </li>
                 </ul>

@@ -12,7 +12,7 @@ export class TokenBalance {
 
   @bindable({ defaultBindingMode: bindingMode.toView }) public token: Address;
   @bindable({ defaultBindingMode: bindingMode.toView }) public placement: string = 'top';
-  @bindable({ defaultBindingMode: bindingMode.fromView }) public balance: BigNumber = null;
+  @bindable({ defaultBindingMode: bindingMode.twoWay }) public balance: BigNumber = null;
 
   private subscription: IDisposable;
 

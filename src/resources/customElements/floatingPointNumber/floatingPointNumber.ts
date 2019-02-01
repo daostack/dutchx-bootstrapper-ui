@@ -60,9 +60,11 @@ export class FloatingPointNumber {
        * in the requested precision.  In the latter case, `trailingZeroes` limits the number of traling zeros.
        */
       if ((typeof this.trailingZeroes !== 'undefined')) {
-        const regex = new RegExp(`\.[0]{${this.trailingZeroes as number + 1},}$`);
+        const regex = new RegExp(`\\.[0]{${this.trailingZeroes as number + 1},}$`);
 
-        text = text.replace(regex, `.${'0'.repeat(this.trailingZeroes as number)}`);
+        text = text.replace(regex, `.${'0'.repeat(this.trailingZeroes as number)}`)
+          // removes zeroes trailing after non-zero digits below the decimal
+          .replace(/(\.\d*?[1-9])0+$/g, '$1');
       }
     }
 
