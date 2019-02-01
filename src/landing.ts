@@ -31,4 +31,11 @@ export class Landing {
   private msUntilCanLockCountdown(): number {
     return this.lockingPeriodStartDate.getTime() - Date.now();
   }
+
+  private countdownUnits(): string {
+    return (this.msUntilCanLockCountdown() >= 86400000) ? 'days' :
+      ((this.msUntilCanLockCountdown() >= 3600000) ? 'hours' :
+        (this.msUntilCanLockCountdown() >= 60000 ? 'minutes' : 'seconds')
+      );
+  }
 }

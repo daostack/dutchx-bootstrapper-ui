@@ -231,6 +231,10 @@ a.text-warning:focus, a.text-warning:hover {
   cursor: pointer;
 }
 
+.hot:hover {
+  text-decoration: underline;
+}
+
 .inline {
   display: inline-block;
 }
