@@ -29,8 +29,8 @@ export class TokenBalance {
     this.initialize();
   }
 
-  private initialize() {
-    this.stop();
+  private async initialize() {
+    await this.stop();
     this.readBalance();
   }
 

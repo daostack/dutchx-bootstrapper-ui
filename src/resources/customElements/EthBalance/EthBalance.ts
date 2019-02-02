@@ -24,8 +24,8 @@ export class EthBalance {
     this.initialize();
   }
 
-  private initialize() {
-    this.stop();
+  private async initialize(): Promise<void> {
+    await this.stop();
     this.readBalance();
   }
 
@@ -48,7 +48,7 @@ export class EthBalance {
     return this.stop();
   }
 
-  private async readBalance() {
+  private readBalance() {
     /**
      * this is supposed to fire whenever a new block is created
      */
