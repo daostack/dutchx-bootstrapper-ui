@@ -34,7 +34,7 @@ export class TokenBalance {
     this.readBalance();
   }
 
-  private detached() {
+  private detached(): Promise<void> {
     if (this.subscription) {
       this.subscription.dispose();
       this.subscription = null;
@@ -49,7 +49,7 @@ export class TokenBalance {
 
   private stop(): Promise<void> {
     if (this.events) {
-      return (Promise as any).promisify(this.events.stopWatching)()
+      return (Promise as any).promisify(() => this.events.stopWatching())()
         .then(() => {
           this.events = null;
         });

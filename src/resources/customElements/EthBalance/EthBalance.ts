@@ -31,7 +31,7 @@ export class EthBalance {
 
   private stop(): Promise<void> {
     if (this.filter) {
-      return (Promise as any).promisify(this.filter.stopWatching)()
+      return (Promise as any).promisify(() => this.filter.stopWatching())()
         .then(() => {
           this.filter = null;
         });
@@ -40,7 +40,7 @@ export class EthBalance {
     }
   }
 
-  private detached() {
+  private detached(): Promise<void> {
     if (this.subscriptions) {
       this.subscriptions.dispose();
     }
