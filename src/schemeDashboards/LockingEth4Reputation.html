@@ -17,6 +17,14 @@
         class="message"
         if.to-view="lockingPeriodHasNotStarted"
       >The initialization period has not yet begun, you can't yet lock.</div>
+
+      <div
+        class="message"
+        if.to-view="inLockingPeriod"
+      >
+        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining in the initialization period.
+      </div>
+
       <div
         class="message"
         if.to-view="lockingPeriodIsEnded"
