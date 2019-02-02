@@ -6,7 +6,7 @@ import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LockService } from 'services/lockServices';
 import { Utils } from 'services/utils';
-import { EventConfigException, EventConfigFailure, EventConfigTransaction } from '../entities/GeneralEvents';
+import { EventConfigException, EventConfigFailure, EventConfigTransaction, EventMessageType } from '../entities/GeneralEvents';
 import {
   Address,
   ArcTransactionResult,
@@ -19,6 +19,7 @@ import {
 } from '../services/ArcService';
 import { Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';
+import { BalloonService } from 'services/balloonService';
 // import { App } from 'app';
 
 @autoinject
@@ -42,6 +43,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected locking: boolean = false;
   protected releasing: boolean = false;
   protected sending: boolean = false;
+  protected lockButton: HTMLElement;
 
   protected lockModel: LockingOptions = {
     amount: undefined,
@@ -120,7 +122,12 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     }
 
     if (reason) {
-      this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't lock: ${reason}`));
+      // this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't lock: ${reason}`));
+      BalloonService.show({
+        content: `Can't lock: ${reason}`,
+        eventMessageType: EventMessageType.Failure,
+        originatingUiElement: this.lockButton,
+      });
       return true;
     }
 
