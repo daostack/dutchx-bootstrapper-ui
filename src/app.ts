@@ -67,13 +67,6 @@ export class App {
 
   }
 
-  public deactivate() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-    }
-  }
-
   private configureRouter(config: RouterConfiguration, router: Router) {
 
     config.title = 'dxDAO';
