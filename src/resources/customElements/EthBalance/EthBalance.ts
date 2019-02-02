@@ -29,10 +29,14 @@ export class EthBalance {
     this.readBalance();
   }
 
-  private stop() {
+  private stop(): Promise<void> {
     if (this.filter) {
-      this.filter.stopWatching();
-      this.filter = null;
+      return (Promise as any).promisify(this.filter.stopWatching)()
+        .then(() => {
+          this.filter = null;
+        });
+    } else {
+      return Promise.resolve();
     }
   }
 
@@ -41,7 +45,7 @@ export class EthBalance {
       this.subscriptions.dispose();
     }
 
-    this.stop();
+    return this.stop();
   }
 
   private async readBalance() {

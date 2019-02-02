@@ -40,17 +40,21 @@ export class TokenBalance {
       this.subscription = null;
     }
 
-    this.stop();
+    return this.stop();
   }
 
   private tokenChanged() {
     this.initialize();
   }
 
-  private stop() {
+  private stop(): Promise<void> {
     if (this.events) {
-      this.events.stopWatching();
-      this.events = null;
+      return (Promise as any).promisify(this.events.stopWatching)()
+        .then(() => {
+          this.events = null;
+        });
+    } else {
+      return Promise.resolve();
     }
   }
 
