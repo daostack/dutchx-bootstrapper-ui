@@ -137,16 +137,16 @@ export class LockingToken4Reputation extends Locking4Reputation {
      * The first is the set of all zero balances, the second all the rest.
      */
     this.lockableTokens = [
-      ...tokens.filter((tokenInfo: ITokenSpecificationX) => {
-        return tokenInfo.balance.eq(0);
-      })
-        .sort((a: ITokenSpecificationX, b: ITokenSpecificationX) => {
-          return SortService.evaluateString(a.symbol, b.symbol);
-        }),
       ...tokens
         .filter((tokenInfo: ITokenSpecificationX) => {
           return !tokenInfo.balance.eq(0);
         })
+        .sort((a: ITokenSpecificationX, b: ITokenSpecificationX) => {
+          return SortService.evaluateString(a.symbol, b.symbol);
+        }),
+      ...tokens.filter((tokenInfo: ITokenSpecificationX) => {
+        return tokenInfo.balance.eq(0);
+      })
         .sort((a: ITokenSpecificationX, b: ITokenSpecificationX) => {
           return SortService.evaluateString(a.symbol, b.symbol);
         }),

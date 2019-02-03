@@ -83,37 +83,48 @@ export class Dashboard {
   private org: DaoEx;
   private timezone = App.timezone;
 
-  private dutchXSchemeConfigs = new Map<string,
-    { description: string, icon?: string, icon_hover?: string, position: number, hasActiveLocks: boolean }>([
-      ['Auction4Reputation', {
-        description: 'BID GEN',
-        hasActiveLocks: false,
-        icon: './gen_icon_color.svg',
-        icon_hover: './gen_icon_white.svg',
-        position: 4,
-      }],
-      ['ExternalLocking4Reputation', {
-        description: 'REGISTER MGN',
-        hasActiveLocks: false,
-        icon: './mgn_icon_color.svg',
-        icon_hover: './mgn_icon_white.svg',
-        position: 3,
-      }],
-      ['LockingEth4Reputation', {
-        description: 'LOCK ETH',
-        hasActiveLocks: true,
-        icon: './eth_icon_color.svg',
-        icon_hover: './eth_icon_white.svg',
-        position: 1,
-      }],
-      ['LockingToken4Reputation', {
-        description: 'LOCK TOKENS',
-        hasActiveLocks: true,
-        icon: './generic_icon_color.svg',
-        icon_hover: './generic_icon_white.svg',
-        position: 2,
-      }],
-    ]);
+  private dutchXSchemeConfigs = new Map<string, ISchemeConfig>([
+    ['Auction4Reputation', {
+      description: 'BID GEN',
+      hasActiveLocks: false,
+      hasContract: true,
+      icon: './gen_icon_color.svg',
+      icon_hover: './gen_icon_white.svg',
+      position: 4,
+    }],
+    ['ExternalLocking4Reputation', {
+      description: 'REGISTER MGN',
+      hasActiveLocks: false,
+      hasContract: true,
+      icon: './mgn_icon_color.svg',
+      icon_hover: './mgn_icon_white.svg',
+      position: 3,
+    }],
+    ['LockingEth4Reputation', {
+      description: 'LOCK ETH',
+      hasActiveLocks: true,
+      hasContract: true,
+      icon: './eth_icon_color.svg',
+      icon_hover: './eth_icon_white.svg',
+      position: 1,
+    }],
+    ['LockingToken4Reputation', {
+      description: 'LOCK TOKENS',
+      hasActiveLocks: true,
+      hasContract: true,
+      icon: './generic_icon_color.svg',
+      icon_hover: './generic_icon_white.svg',
+      position: 2,
+    }],
+    ['DaoStorytelling', {
+      description: 'DAO STORYTELLING',
+      hasActiveLocks: false,
+      hasContract: false,
+      icon: './t_blue.svg',
+      icon_hover: './t_white.svg',
+      position: 5,
+    }],
+  ]);
 
   constructor(
     private daoService: DaoService,
@@ -385,6 +396,18 @@ export class Dashboard {
     this.dutchXSchemes.map((s) => { s.friendlyName = this.dutchXSchemeConfigs.get(s.name).description; });
 
     this.schemesLoaded = this.dutchXSchemes.length !== this.dutchXSchemeConfigs.keys.length;
+
+    this.dutchXSchemes.push(
+      {
+        address: '',
+        friendlyName: 'DAO STORYTELLING',
+        inArc: true,
+        inDao: true,
+        isRegistered: false,
+        name: 'DaoStorytelling',
+      }
+    );
+
     if (!this.schemesLoaded) {
       this.org = undefined;
       this.eventAggregator.publish('handleMessage',
@@ -628,4 +651,13 @@ interface ISchemeInfoX extends SchemeInfo {
 interface IContractLockDates {
   end: Date;
   start: Date;
+}
+
+interface ISchemeConfig {
+  description: string;
+  hasActiveLocks: boolean;
+  hasContract: boolean;
+  icon?: string;
+  icon_hover?: string;
+  position: number;
 }

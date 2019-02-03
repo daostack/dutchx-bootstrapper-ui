@@ -175,23 +175,16 @@
                 <div class="pie-chart">
                   <div class="title">Vote Staking Period</div>
                   <div class="body">
-                    <p>To participate, you can lock ETH or tokens whitelisted on the DutchX trading protocol, register Magnolia (MGN) earned by trading on the DutchX protocol, or <a
-                        target="_blank"
-                        href="https://medium.com/daostack/on-the-utility-of-the-gen-token-eb4f341d770e"
-                      >bid GEN</a> in any of ten auctions throughout the 30 day vote staking period.</p>
-                    <p>You may participate with more than one method of staking your vote, and you may bid GEN and lock ETH or tokens multiple times, with Reputation accumulating additively. You only need to register Magnolia (MGN) once, with the final amount of Magnolia registered in your wallet at the end of the vote staking period calculated toward your final Reputation award.</p>
-                  </div>
-                  <div class="title">Voting Power Distribution</div>
-                  <div class="body">
-                    <p>When the dxDAO vote staking period ends, the total amount of Reputation (voting power) you have earned will be transferred to the wallet address you used to participate during the vote staking period. To benefit the most from future functionality, use the <a
-                        target="_blank"
-                        href="https://safe.gnosis.io/"
-                      >Gnosis Safe</a> to stake for your vote.</p>
                   </div>
                   <div class="chart">
                     <img src="../../static/ds_dutchx_pie_chart_01-1.svg" />
                     <div style="text-align:center">
-                      Participants may be part of more than one group, and may participate multiple times in each group, with reputation accumulating additively.</div>
+                      <p>To participate, you can lock ETH or tokens whitelisted on the DutchX trading protocol, register Magnolia (MGN) earned by trading on the DutchX protocol, or <a
+                          target="_blank"
+                          href="https://medium.com/daostack/on-the-utility-of-the-gen-token-eb4f341d770e"
+                        >bid GEN</a> in any of ten auctions throughout the 30 day vote staking period.</p>
+                      <p>You may participate with more than one method of staking your vote, and you may bid GEN and lock ETH or tokens multiple times, with Reputation accumulating additively. You only need to register Magnolia (MGN) once, with the final amount of Magnolia registered in your wallet at the end of the vote staking period calculated toward your final Reputation award.</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -199,12 +192,25 @@
           </div>
         </div>
 
-        <div
-          class="redeemSection"
-          if.to-view="canRedeem"
-        >
+        <div class="redeemSection">
           <div class="row">
-            <div class="col-6 offset-3">
+            <div
+              class="col-6 offset-3"
+              if.to-view="!canRedeem"
+            >
+              <div class="title">Voting Power (Reputation) Distribution</div>
+              <div class="body">
+                <p>When the dxDAO vote staking period ends, the total amount of Reputation (voting power) you have earned will be transferred to the wallet address you used to participate during the vote staking period. To benefit the most from future functionality, use the <a
+                    target="_blank"
+                    href="https://safe.gnosis.io/"
+                  >Gnosis Safe</a> to stake for your vote.</p>
+              </div>
+            </div>
+
+            <div
+              class="col-6 offset-3"
+              if.to-view="canRedeem"
+            >
               <div class="title">Voting Power (Reputation) Distribution</div>
               <div class="body">
                 The dxDAO vote staking period ended on ${lockingPeriodEndDate | date:'shortdate'}
