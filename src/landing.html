@@ -1,6 +1,17 @@
 <template>
   <div class="landing-page animated-page container-fluid au-animate">
-    <div class="countdown"><span class="count">${msUntilCanLockCountdown() | timespan:"days" & signal:'secondPassed'}</span>
+    <div
+      class="countdown"
+      if.to-view="(msUntilCanLockCountdown() <= 0) & signal:'secondPassed'"
+    ><a
+        class="count"
+        route-href="route: dashboard"
+      >Click here to take part in the dxDAO</a></div>
+
+    <div
+      class="countdown"
+      else
+    ><span class="count">${msUntilCanLockCountdown() | timespan:countdownUnits() & signal:'secondPassed'}</span>
       until you can take part in the dxDAO</div>
 
     <div class="main-header">

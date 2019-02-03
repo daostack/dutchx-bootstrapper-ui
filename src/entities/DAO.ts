@@ -54,7 +54,6 @@ export class DaoEx extends DAO {
       for (const scheme of schemes) {
         this.schemesCache.set(scheme.address, scheme);
       }
-      this.watchSchemes();
       this.logger.debug(`Finished loading schemes for ${this.name}: ${this.address}`);
     }
 
@@ -92,54 +91,5 @@ export class DaoEx extends DAO {
 
   private async getCurrentSchemes(): Promise<Array<SchemeInfo>> {
     return (await super.getSchemes()).map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
-  }
-
-  private watchSchemes(): void {
-    this.registerSchemeEvent = this.controller.RegisterScheme({ _avatar: this.address }, { fromBlock: 'latest' });
-    this.registerSchemeEvent.watch((err, eventsArray) => this.handleSchemeEvent(err, eventsArray, true));
-
-    this.unRegisterSchemeEvent = this.controller.UnregisterScheme({ _avatar: this.address }, { fromBlock: 'latest' });
-    this.unRegisterSchemeEvent.watch((err, eventsArray) => this.handleSchemeEvent(err, eventsArray, false));
-  }
-
-  private async handleSchemeEvent(_err, eventsArray, adding: boolean): Promise<void> {
-    const newSchemesArray = [];
-    if (!(eventsArray instanceof Array)) {
-      eventsArray = [eventsArray];
-    }
-    const count = eventsArray.length;
-    for (let i = 0; i < count; i++) {
-      const schemeAddress = eventsArray[i].args._scheme;
-      let contractWrapper = this.arcService.contractWrapperFromAddress(schemeAddress) as any;
-
-      if (!contractWrapper) {
-        // then it is a non-arc scheme or TODO:
-        // is an Arc scheme that is older or newer than the one Arc is telling us about
-        contractWrapper = { address: schemeAddress } as any;
-      }
-
-      const schemeInfo = SchemeInfo.fromContractWrapper(contractWrapper, adding);
-      let changed = false;
-      // TODO: get unknown name from Arc
-      if (adding && !this.schemesCache.has(schemeAddress)) {
-        changed = true;
-        this.logger.debug(`caching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}:
-         ${contractWrapper.address}`);
-        this.schemesCache.set(schemeAddress, schemeInfo);
-      } else if (!adding && this.schemesCache.has(schemeAddress)) {
-        changed = true;
-        this.logger.debug(`uncaching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}:
-         ${contractWrapper.address}`);
-        this.schemesCache.delete(schemeAddress);
-      }
-
-      if (changed) {
-        this.publish(DaoEx.daoSchemeSetChangedEvent,
-          {
-            dao: this,
-            scheme: schemeInfo,
-          });
-      }
-    }
   }
 }
