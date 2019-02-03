@@ -72,7 +72,7 @@
               </div>
 
               <div
-                if.to-view="schemesLoaded"
+                if.to-view="schemesLoaded && !canRedeem"
                 class="box"
               >The vote staking period will end on ${lockingPeriodEndDate | date:'shortdate'}
                 at ${lockingPeriodEndDate | date:'amPmTime'} (GMT${lockingPeriodEndDate | date:'GmtOffset'}).
