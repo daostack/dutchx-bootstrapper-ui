@@ -19,15 +19,10 @@ export class App {
 
   private static schemeDashboards = [
     'Auction4Reputation',
-    'ContributionReward',
     'ExternalLocking4Reputation',
-    'GenesisProtocol',
-    'GlobalConstraintRegistrar',
     'LockingEth4Reputation',
     'LockingToken4Reputation',
-    'NonArc',
-    'SchemeRegistrar',
-    'UpgradeScheme',
+    'DaoStorytelling',
   ];
 
   /**

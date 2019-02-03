@@ -177,6 +177,8 @@ module.exports = ({ production, server, coverage } = {}) => {
         { from: 'static/mgn_icon_color.svg' },
         { from: 'static/gen_icon_white.svg' },
         { from: 'static/gen_icon_color.svg' },
+        { from: 'static/t_blue.svg' },
+        { from: 'static/t_white.svg' },
         { from: 'static/base.css' },
         { from: 'node_modules/font-awesome/fonts', to: 'fonts' },
         { from: 'node_modules/material-icons/iconfont/material-icons.css', to: 'fonts'},
