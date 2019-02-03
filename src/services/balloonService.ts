@@ -5,12 +5,15 @@ export class BalloonService {
 
   public static show(config: IBalloonConfig) {
     const element = $(config.originatingUiElement);
-    // const fnPopover = element.popover;
-    // const close = () => { fnPopover('dispose'); };
-    // tslint:disable-next-line: max-line-length
-    const title = `<span class='message'>An Error Has Occurred</span> <button type="button" class="closeBalloon" aria-label="Close"><span aria-hidden="true">&times;</span></button>`;
+    if ($(element).data('bs.popover') && $($(element).data('bs.popover').tip).hasClass('show')) {
+      return;
+    }
 
-    element.popover(
+    // tslint:disable-next-line: max-line-length
+    const title = `<div class="balloonTitle">An Error Has Occurred <button type="button" class="closeBalloon" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
+    const content = `<div class="balloonBody">${config.content}</div>`;
+
+    const po = element.popover(
       Object.assign({},
         config as PopoverOption,
         {
@@ -19,7 +22,12 @@ export class BalloonService {
           placement: 'top',
           title,
           trigger: 'manual',
-        }));
+        },
+        { content }));
+
+    $(element).on('inserted.bs.popover', (_evt: Event): void => {
+      $($(_evt.target).data('bs.popover').tip).addClass('balloon');
+    });
 
     // setTimeout(() => { element.triggerHandler('focus'); }, 0);
     // setTimeout(() => { element.focus(); }, 0);
