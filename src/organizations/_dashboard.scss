@@ -45,7 +45,7 @@
 
 .initializationSection {
   padding-top:4rem;
-  padding-bottom:4rem;
+  padding-bottom:2rem;
 }
 
 .schemesSection {
@@ -484,9 +484,7 @@ metamaskfeedback .metamask-text {
 
 .schedule-section {
   padding-top:4.5rem;
-  padding-bottom:1rem;
   padding-left: 4rem;
   padding-right: 4rem;
-  background: #20afbb;
-  background: radial-gradient(circle, #20afbb 6%, #1a859c 53%, #13687c 100%); 
+  background: $color-ds-grey-1;
 }
