@@ -39,7 +39,19 @@ export class DateService {
 
     const formatArray: Array<IFormat> = [
       {
+        format: 'ZZ',
+        key: 'GmtOffset',
+      },
+      {
+        format: 'h:mma',
+        key: 'amPmTime',
+      },
+      {
         format: 'MMM Do',
+        key: 'shortdayofmonth',
+      },
+      {
+        format: 'MMMM Do',
         key: 'dayofmonth',
       },
       {

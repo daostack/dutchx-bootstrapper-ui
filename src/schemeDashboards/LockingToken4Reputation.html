@@ -6,10 +6,10 @@
     <pageloading></pageloading>
   </div>
   <div else>
-    <instructions if.to-view="!lockingPeriodIsEnded">Select a token, the number of tokens you would like to lock and the length you wish to lock it for.
-      You can lock as many tokens as you like, for up to one year.
-      At the end of the initialization period, your reputation will be calculated pro rata according to the total locked tokens and the value of each token at the time of locking.</instructions>
-
+    <instructions if.to-view="!lockingPeriodIsEnded">
+      <p>Select a token, the number of tokens you would like to lock and the length you wish to lock, for up to one year.</p>
+      <p>At the end of the vote staking period, you will be awarded Reputation d proportionally to the total amount of locked tokens, the value of each token at the time of locking, and the length of the locking period.</p>
+    </instructions>
     <div
       class="scheme-dashboard-body lockingTokens"
       ref="dashboard"
@@ -18,19 +18,19 @@
       <div
         class="message"
         if.to-view="lockingPeriodHasNotStarted"
-      >The initialization period has not yet begun, you can't yet lock.</div>
+      >The vote staking period has not yet begun. Return between ${lockingStartTime | date:'dayofmonth'} through ${lockingEndTime | date:'dayofmonth'} to lock tokens.</div>
 
       <div
         class="message"
         if.to-view="inLockingPeriod"
       >
-        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining in the initialization period.
+        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining in the vote staking period.
       </div>
 
       <div
         class="message"
         if.to-view="lockingPeriodIsEnded"
-      >The initialization period has ended.</div>
+      >The vote staking period has ended.</div>
 
       <form
         if.to-view="inLockingPeriod"
@@ -72,12 +72,9 @@
           <div
             class="message"
             if.to-view="!selectedTokenIsLiquid"
-          >
-            At this point in time, there isn't sufficient trading for ETH/${selectedToken.symbol} on the DutchX.
-            Please choose another token or try again another time. You can read more about this here: <a
-              href="https://dutchx.readthedocs.io"
-              target="_blank"
-            >https://dutchx.readthedocs.io</a>.
+          >To provide liquidity for ETH/GNO on the DutchX, trade on <a target="_blank" href="https://slow.trade">slow.trade</a>,
+           <a target="_blank" href="https://fairdex.net/">Fair DEX</a>,
+           or visit the <a target="_blank" href="https://dutchx.readthedocs.io">DutchX CLI documentation</a>.
           </div>
           <div else>
             <div class="row">
