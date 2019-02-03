@@ -1,0 +1,52 @@
+.participation-dates-section {
+  width: 100%;
+  color: $color-ds-white;
+  text-align: center;
+  padding-bottom: 1.5rem;
+  color: $color-ds-white;
+}
+
+.participation-dates-section .section {
+  text-align: left;
+  padding-top: 1rem;
+  margin-bottom: 3rem;
+}
+
+.participation-dates-section .section .container {
+  padding-left: 0;
+  border-top-width: .5rem;
+  border-top-style: solid;
+  border-top-color: $color-ds-lightblue;
+}
+
+.participation-dates-section .shortdate .asterisk {
+  position: absolute;
+  top: 2.7rem;
+  left: 0rem;
+}
+
+.participation-dates-section .footnote {
+  font-style: italic;
+}
+
+.participation-dates-section .triangle img {
+  width: .5rem;
+  margin-left: .2rem;
+  margin-bottom: -15px;
+}
+
+.participation-dates-section .shortdate {
+  text-transform: uppercase;
+  font-weight: 300;
+  font-size: 1.6rem;
+  margin-bottom: .75rem;
+}
+
+.participation-dates-section .phase {
+  font-weight: 500;
+}
+
+.participation-dates-section .longdate {
+  font-weight: 400;
+  margin-bottom: .75rem;
+}

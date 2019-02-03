@@ -24,27 +24,31 @@ export class EthBalance {
     this.initialize();
   }
 
-  private initialize() {
-    this.stop();
+  private async initialize(): Promise<void> {
+    await this.stop();
     this.readBalance();
   }
 
-  private stop() {
+  private stop(): Promise<void> {
     if (this.filter) {
-      this.filter.stopWatching();
-      this.filter = null;
+      return (Promise as any).promisify(() => this.filter.stopWatching())()
+        .then(() => {
+          this.filter = null;
+        });
+    } else {
+      return Promise.resolve();
     }
   }
 
-  private detached() {
+  private detached(): Promise<void> {
     if (this.subscriptions) {
       this.subscriptions.dispose();
     }
 
-    this.stop();
+    return this.stop();
   }
 
-  private async readBalance() {
+  private readBalance() {
     /**
      * this is supposed to fire whenever a new block is created
      */

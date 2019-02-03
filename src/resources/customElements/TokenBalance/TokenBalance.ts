@@ -29,28 +29,32 @@ export class TokenBalance {
     this.initialize();
   }
 
-  private initialize() {
-    this.stop();
+  private async initialize() {
+    await this.stop();
     this.readBalance();
   }
 
-  private detached() {
+  private detached(): Promise<void> {
     if (this.subscription) {
       this.subscription.dispose();
       this.subscription = null;
     }
 
-    this.stop();
+    return this.stop();
   }
 
   private tokenChanged() {
     this.initialize();
   }
 
-  private stop() {
+  private stop(): Promise<void> {
     if (this.events) {
-      this.events.stopWatching();
-      this.events = null;
+      return (Promise as any).promisify(() => this.events.stopWatching())()
+        .then(() => {
+          this.events = null;
+        });
+    } else {
+      return Promise.resolve();
     }
   }
 
