@@ -6,9 +6,10 @@
     <pageloading></pageloading>
   </div>
   <div else>
-    <instructions if.to-view="!lockingPeriodIsEnded">Select the amount of ETH you would like to lock and the length you wish to lock it for. You can lock
-      as much ETH as you like, for up to one year. At the end of the initialization period, your reputation will be
-      calculated pro rata according to the total locked ETH.</instructions>
+    <instructions if.to-view="!lockingPeriodIsEnded">
+      <p>Select the amount of ETH you would like to lock and the length you wish to lock it, for up to one year.</p>
+      <p>At the end of the vote staking period, you will be awarded Reputation proportionally according to the total amount of ETH locked by all participants and the length of the locking period.</p>
+    </instructions>
     <div
       class="scheme-dashboard-body"
       ref="dashboard"
@@ -16,19 +17,19 @@
       <div
         class="message"
         if.to-view="lockingPeriodHasNotStarted"
-      >The initialization period has not yet begun, you can't yet lock.</div>
+      >The vote staking period has not yet begun. Return between ${lockingStartTime | date:'dayofmonth'} and ${lockingEndTime | date:'dayofmonth'} to lock ETH.</div>
 
       <div
         class="message"
         if.to-view="inLockingPeriod"
       >
-        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining in the initialization period.
+        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining in the vote staking period.
       </div>
 
       <div
         class="message"
         if.to-view="lockingPeriodIsEnded"
-      >The initialization period has ended.</div>
+      >The vote staking period has ended.</div>
       <form
         if.to-view="inLockingPeriod"
         with.bind="lockModel"

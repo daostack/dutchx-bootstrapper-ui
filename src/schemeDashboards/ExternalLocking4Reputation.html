@@ -7,54 +7,51 @@
   </div>
   <div else>
     <instructions if.to-view="!lockingPeriodIsEnded">
-      <p>Your MGN tokens are locked by default in the dxDAO smart contract.
-        Reputation will be distributed to all MGN holders who opt in on receiving dxDAO reputation.
-        All you need to do is activate this option here.</p>
+      <p>Register your wallet address that contains Magnolia (MGN) here.</p>
+      <p>At the end of the vote staking period, you will be awarded Reputation proportional to the amount of MGN in the registered wallet address at the end of the Reputation period.</p>
 
       <p>️️️️<span
           class="warning-icon"
           style="font-size:1rem"
-        >⚠️</span>&nbsp;Please make sure you are connected in MetaMask with the same ETH address that holds your MGN
-        tokens.</p>
+        >⚠️</span>&nbsp;Please make sure you are connected in MetaMask with the same ETH address that holds your MGN tokens.</p>
     </instructions>
 
     <div class="scheme-dashboard-body">
       <div
         class="message"
         if.to-view="!globalPeriodHasStarted"
-      >The initialization period has not yet begun, you can't yet register or claim.</div>
+      >The vote staking period has not yet begun. Return between ${lockingStartTime | date:'dayofmonth'} and ${lockingEndTime | date:'dayofmonth'} to register MGN.</div>
 
       <div
         class="message"
         if.to-view="!alreadyRegistered && lockingPeriodHasNotStarted && globalPeriodHasStarted"
       >
-        ${msUntilCanLockCountdown | timespan:"seconds"} until the 24-hour MGN activation period begins.
+        ${msUntilCanLockCountdown | timespan:"seconds"} until the 24-hour MGN registration period begins.
       </div>
 
       <div
         class="message"
         if.to-view="inLockingPeriod && !alreadyLocked"
       >
-        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining to activate MGN Tokens.
+        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining to register wallet address that contains or will contain MGN at the end of the vote staking period..
       </div>
 
       <div
         class="message"
         if.to-view="lockingPeriodIsEnded"
-      >The initialization period has ended.</div>
+      >The vote staking period has ended.</div>
 
       <div
         class="message"
         if.to-view="inLockingPeriod && alreadyLocked"
-      >You have activated your claim.</div>
+      >You have registered your wallet that contains or will contain MGN at the end of the vote staking period.</div>
 
       <div
         class="message"
         if.to-view="globalPeriodHasStarted && !inLockingPeriod && alreadyRegistered"
-      >You have registered for automatic claim activation.</div>
+      >You have registered your wallet that contains or will contain MGN at the end of the vote staking period.</div>
 
       <form>
-
         <div class="form-group">
           <spinbutton
             if.to-view="globalPeriodHasStarted
@@ -73,11 +70,11 @@
             if.to-view="inLockingPeriod && !alreadyLocked"
             onclick.call="lock()"
             disabled.bind="locking"
-            css="btn-submit btn-sm"
+            css="btn-submit btn-sm btn-register"
             as-button="true"
-            text="Claim"
+            text="Register MGN"
             spin.to-view="locking"
-            title.to-view="locking ? 'Claiming...' : 'Claim'"
+            title.to-view="locking ? 'Registering MGN...' : 'Register MGN'"
           ></spinbutton>
           <metamaskfeedback if.to-view="sending"></metamaskfeedback>
         </div>

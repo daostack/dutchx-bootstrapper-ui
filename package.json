@@ -1,7 +1,7 @@
 {
   "name": "dxdao-bootstrapper-ui",
   "version": "0.0.0-alpha.1",
-  "description": "dxDAO Initializer",
+  "description": "dxDAO Vote Staking Interface",
   "main": "dist_prod/index.html",
   "repository": {
     "url": "https://github.com/daostack/dutchx-bootstrapper-ui.git",
@@ -120,7 +120,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "@daostack/arc.js": "0.0.0-alpha.115",
+    "@daostack/arc.js": "0.0.0-alpha.117",
     "arrive": "^2.4.1",
     "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.1.1",

@@ -1,5 +1,5 @@
 <template>
-  <div class="animated-page au-animate">
+  <div class="dashboard-page animated-page au-animate">
     <header network.to-view="networkName"></header>
 
     <banner></banner>
@@ -20,7 +20,7 @@
           class="logo"
           src="../../static/dutchx-blue.svg"
         />
-        <div class="title">Welcome to the dxDAO Initializer</div>
+        <div class="title">Welcome to the dxDAO Vote Staking Interface</div>
       </div>
 
       <div class="propositionsSection">
@@ -31,8 +31,7 @@
             <div class="title first">A Better Way To Trade</div>
 
             <div class="body">
-              The DutchX is a fully decentralized trading protocol utilizing the Dutch auction principle to mitigate
-              many harmful trading practices such as frontrunning, low liquidity, and third party risk.
+              Governed by the dxDAO, the DutchX is a fully decentralized trading protocol that uses the Dutch auction principle to mitigate harmful trading practices like frontrunning, low liquidity, and third party risk.
             </div>
           </div>
           <div class="col-md-4 proposition">
@@ -40,16 +39,14 @@
 
             <div class="title second">Completely Decentralized</div>
 
-            <div class="body">A community DAO gives traders, market makers, and members the unique ability to govern
-              the DutchX, allowing them to list tokens, manage fees, update the protocol, and more!</div>
+            <div class="body">The community run dxDAO gives its stakeholders, such as traders and market makers, the unique ability to govern the DutchX, allowing them to list tokens, manage fees, update the protocol, and more!</div>
           </div>
           <div class="col-md-4 proposition">
             <div class="icon"><img src="../../static/icon-holographic-governance.svg" /></div>
 
             <div class="title third">Holographic Governance</div>
 
-            <div class="body">Holographic consensus enables the DAO to easily scale, onboarding more traders,
-              liquidity providers, and protocol hackers to its trading ecosystem.</div>
+            <div class="body">Holographic consensus helps DAOs scale, and in the case of the dxDAO, onboard important participants like traders, liquidity providers, and governance enthusiasts into its decentralized finance ecosystem.</div>
           </div>
         </div>
       </div>
@@ -61,24 +58,25 @@
       <div class="initializationSection">
         <div class="row">
           <div class="col-8 offset-2">
-            <div class="title">The Initialization Phase</div>
+            <div class="title">The Vote Staking Period</div>
             <div class="body">
-              <div class="body">To launch the dxDAO there needs to be an initial allocation of user
-                reputation which will accord decision-making voting power.
-                Over the course of the next three months anyone will be able to participate and
-                receive reputation in four ways, by:</div>
+              <div class="body">Before the dxDAO begins making decisions, there is a vote staking period. During this period, users must stake for their vote to receive voting power in the dxDAO upon launch. There are several methods of participating in the vote staking period to earn Reputation:</div>
               <div class="list-items">
-                <div class="list-item"><span class="bullet">1</span>Locking Tokens</div>
-                <div class="list-item"><span class="bullet">2</span>Locking ETH</div>
-                <div class="list-item"><span class="bullet">3</span>Linking locked MGN tokens</div>
-                <div class="list-item"><span class="bullet">4</span>Bidding for reputation with DAOstack GEN tokens</div>
+                <div class="list-item"><span class="bullet">1</span>Locking ETH</div>
+                <div class="list-item"><span class="bullet">2</span>Locking Tokens</div>
+                <div class="list-item"><span class="bullet">3</span>Registering MGN tokens</div>
+                <div class="list-item"><span class="bullet">4</span>Bidding GEN tokens</div>
+                <div style="border-bottom: dashed 1px white; margin-bottom:.5rem"></div>
+                <p>After Vote Staking Period</p>
+                <div class="list-item"><span class="bullet">5</span>Bidding GEN tokens</div>
               </div>
 
               <div
-                if.to-view="schemesLoaded"
+                if.to-view="schemesLoaded && !canRedeem"
                 class="box"
-              >The initialization phase will end on ${lockingPeriodEndDate | date:'friendly'}.
-                All locked ETH or tokens will be automatically unlocked, and reputation will be automatically redeemed and distributed.</div>
+              >The vote staking period will end on ${lockingPeriodEndDate | date:'shortdate'}
+                at ${lockingPeriodEndDate | date:'amPmTime'} (GMT${lockingPeriodEndDate | date:'GmtOffset'}).
+                At this time, Reputation (voting power) will be automatically distributed to participants.</div>
             </div>
           </div>
         </div>
@@ -100,7 +98,7 @@
                 class="col-12 col-md-4"
                 style="min-width: 25rem"
               >
-                <div class="body">How would you like to obtain reputation in the dxDAO?</div>
+                <div class="body">How do you plan to stake for your vote in the dxDAO?</div>
                 <ul class="list-group clean dashboard-schemes">
                   <li
                     class="list-group-item"
@@ -175,10 +173,25 @@
               </div>
               <div class="col-12 col-md-5">
                 <div class="pie-chart">
-                  <div class="body">Initial Reputation Allocation</div>
+                  <div class="title">Vote Staking Period</div>
+                  <div class="body">
+                    <p>To participate, you can lock ETH or tokens whitelisted on the DutchX trading protocol, register Magnolia (MGN) earned by trading on the DutchX protocol, or <a
+                        target="_blank"
+                        href="https://medium.com/daostack/on-the-utility-of-the-gen-token-eb4f341d770e"
+                      >bid GEN</a> in any of ten auctions throughout the 30 day vote staking period.</p>
+                    <p>You may participate with more than one method of staking your vote, and you may bid GEN and lock ETH or tokens multiple times, with Reputation accumulating additively. You only need to register Magnolia (MGN) once, with the final amount of Magnolia registered in your wallet at the end of the vote staking period calculated toward your final Reputation award.</p>
+                  </div>
+                  <div class="title">Voting Power Distribution</div>
+                  <div class="body">
+                    <p>When the dxDAO vote staking period ends, the total amount of Reputation (voting power) you have earned will be transferred to the wallet address you used to participate during the vote staking period. To benefit the most from future functionality, use the <a
+                        target="_blank"
+                        href="https://safe.gnosis.io/"
+                      >Gnosis Safe</a> to stake for your vote.</p>
+                  </div>
                   <div class="chart">
                     <img src="../../static/ds_dutchx_pie_chart_01-1.svg" />
-                    <div style="text-align:center">Participants may be part of more than one group, and may participate multiple times in each group, with reputation accumulating additively.</div>
+                    <div style="text-align:center">
+                      Participants may be part of more than one group, and may participate multiple times in each group, with reputation accumulating additively.</div>
                   </div>
                 </div>
               </div>
@@ -186,18 +199,16 @@
           </div>
         </div>
 
-        <div class="redeemSection">
+        <div
+          class="redeemSection"
+          if.to-view="canRedeem"
+        >
           <div class="row">
             <div class="col-6 offset-3">
-              <div class="title">Reputation Distribution</div>
+              <div class="title">Voting Power (Reputation) Distribution</div>
               <div class="body">
-                <div if.to-view="canRedeem">
-                  The dxDAO initialization phase ended on ${lockingPeriodEndDate | date:'friendly'}.
-                </div>
-                <div else>
-                  When the dxDAO initialization phase ends, the total amount of reputation you have earned will be
-                  transferred to the ETH address you used to submit the locks.
-                </div>
+                The dxDAO vote staking period ended on ${lockingPeriodEndDate | date:'shortdate'}
+                at ${lockingPeriodEndDate | date:'amPmTime'} (GMT${lockingPeriodEndDate | date:'GmtOffset'}).
               </div>
               <div class="redeemables">
                 <pageloading if.to-view="computingRedeemables">Thanks for waiting while we compute your earned reputation...</pageloading>
@@ -236,12 +247,8 @@
                         </table>
                       </div>
                       <div>
-                        All reputation earned by all participants,
-                        <floating-point-number
-                          value.to-view="totalReputationAvailable | ethwei"
-                          precision="9"
-                          placement="top"
-                        ></floating-point-number> Rep, will be distributed after the initialization phase.
+                        <p>All reputation earned by all participants will be distributed after the vote staking period.</p>
+                        <p>Reputation is not an ERC-20 token and will not appear in most wallets. To confirm on Etherscan you’ve received Reputation, follow [this tutorial].</p>
                       </div>
                     </div>
                   </div>

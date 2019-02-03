@@ -11,7 +11,7 @@
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
           <div class="triangle"><img src="./DS_DXDAO_ARROW_ICON_FFFFFF.svg"></div>
-          <div class="shortdate">${lockingPeriodStartDate | date:'dayofmonth'}</div>
+          <div class="shortdate">${lockingPeriodStartDate | date:'shortdayofmonth'}</div>
           <div class="phase">Vote Staking Period</div>
           <div class="longdate">${lockingPeriodStartDate | date:'shortdate'} through ${lockingPeriodEndDate | date:'shortdate'}</div>
           <div class="body">This is when you can take part in the above-mentioned vote staking period to gain Reputation (voting power).</div>
@@ -20,7 +20,7 @@
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
           <div class="triangle"><img src="./DS_DXDAO_ARROW_ICON_FFFFFF.svg"></div>
-          <div class="shortdate">${lockingPeriodEndDate | date:'dayofmonth'}</div>
+          <div class="shortdate">${lockingPeriodEndDate | date:'shortdayofmonth'}</div>
           <div class="phase">Reputation (Voting Power) Distribution Period</div>
           <div class="longdate">${lockingPeriodEndDate | date:'shortdate'} through ${lastLockingPeriodDate | date:'shortdate'}</div>
           <div class="body">Come back to the vote staking interface to see your individual amount of Reputation!</div>
@@ -29,7 +29,7 @@
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
           <div class="triangle"><img src="./DS_DXDAO_ARROW_ICON_FFFFFF.svg"></div>
-          <div class="shortdate"><span class="asterisk">*</span>${governanceStartDate | date:'dayofmonth'}</div>
+          <div class="shortdate"><span class="asterisk">*</span>${governanceStartDate | date:'shortdayofmonth'}</div>
           <div class="phase">Community Governance</div>
           <div class="longdate">${governanceStartDate | date:'shortdate'}</div>
           <div class="body">

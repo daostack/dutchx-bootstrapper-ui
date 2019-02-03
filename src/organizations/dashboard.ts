@@ -81,6 +81,7 @@ export class Dashboard {
   private initialized: boolean = false;
   private computingRedeemables: boolean = false;
   private org: DaoEx;
+  private timezone = App.timezone;
 
   private dutchXSchemeConfigs = new Map<string,
     { description: string, icon?: string, icon_hover?: string, position: number, hasActiveLocks: boolean }>([
@@ -92,7 +93,7 @@ export class Dashboard {
         position: 4,
       }],
       ['ExternalLocking4Reputation', {
-        description: 'LOCK MGN',
+        description: 'REGISTER MGN',
         hasActiveLocks: false,
         icon: './mgn_icon_color.svg',
         icon_hover: './mgn_icon_white.svg',
@@ -501,7 +502,7 @@ export class Dashboard {
 
       redeemables.push({
         amount: earnedRep,
-        what: 'Other locked tokens',
+        what: 'Locked tokens',
       });
 
       schemeAddress = this.getSchemeInfoFromName('ExternalLocking4Reputation').address;
@@ -512,7 +513,7 @@ export class Dashboard {
 
       redeemables.push({
         amount: earnedRep,
-        what: 'Locked MGN tokens',
+        what: 'Registered MGN tokens',
       });
 
       schemeAddress = this.getSchemeInfoFromName('Auction4Reputation').address;
@@ -528,7 +529,7 @@ export class Dashboard {
 
       redeemables.push({
         amount: earnedRep,
-        what: 'GEN auctions',
+        what: 'Bid GEN tokens',
       });
 
       this.totalReputationAvailable = totalReputationAvailable;

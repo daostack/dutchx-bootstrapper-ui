@@ -2,7 +2,7 @@ import { $, $$, browser, by, By, element, ExpectedConditions } from 'aurelia-pro
 import { config } from '../protractor.conf';
 import { PageObjectHome } from './home.po';
 
-describe('dxDAO Initializer app', function() {
+describe('dxDAO Vote Staking Interface app', function() {
   let poHome: PageObjectHome;
 
   beforeEach(async () => {

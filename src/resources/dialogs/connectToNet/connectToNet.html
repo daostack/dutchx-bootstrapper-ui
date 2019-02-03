@@ -13,7 +13,7 @@
           class="logo d-inline-block align-top"
           alt="dxDAO"
         >
-        Welcome to the dxDAO Initializer</div>
+        Welcome to the dxDAO Vote Staking Interface</div>
       <div
         else
         class="d-inline"
@@ -42,7 +42,7 @@
             <p>To access the <a
                 href="https://daotalk.org/c/dx-dao"
                 target="_blank"
-              >dxDAO</a> Initializer, please log in to MetaMask, select your desired account and allow the dxDAO Initializer to access your account.
+              >dxDAO</a> Vote Staking Interface, please log in to MetaMask, select your desired account and allow the dxDAO Vote Staking Interface to access your account.
           </div>
 
           <div if.to-view="((isConnected && !hasAccount) || (!landed && hasDao))">
@@ -68,7 +68,7 @@
             <p class="buttonContainer"><button
                 class="btn btn-submit"
                 click.delegate="confirm()"
-              >Allow the dxDAO Initializer to Access Your Account on MetaMask</button></p>
+              >Allow the dxDAO Vote Staking Interface to Access Your Account on MetaMask</button></p>
           </div>
 
           <div if.to-view="isConnected && hasAccount">

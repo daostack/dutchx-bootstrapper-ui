@@ -58,7 +58,7 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
     if (!(await this.wrapper.hasTokenToActivate(this.lockModel.lockerAddress))) {
       this.eventAggregator.publish('handleFailure',
-        new EventConfigFailure(`Can't activate: No MGN tokens reserved to claim`));
+        new EventConfigFailure(`Can't activate: No MGN tokens reserved to register`));
       return false;
     }
 

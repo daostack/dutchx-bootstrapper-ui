@@ -1,3 +1,7 @@
+.dashboard-page {
+  padding-bottom: 3rem;
+}
+
 .main-spinner .pageloading i {
   font-size: 4rem;
   margin-bottom: 2rem;
@@ -59,7 +63,9 @@
   border-top-style: solid;
 }
 
-.schemesSection .body {
+.schemesSection .body,
+.schemesSection .title
+ {
   font-size: 1.25rem;
   margin-bottom: 1.25rem;
 }
@@ -242,6 +248,10 @@ text-align: center;
   width: 6.1rem;
 }
 
+.scheme-dashboard .scheme-dashboard-body .btn-submit.btn-register {
+  width: 8.7rem;
+}
+
 .scheme-dashboard .scheme-dashboard-body.lockingTokens .dropdown {
   /**
     so the DDDL items won't get too wide and wrap
@@ -251,15 +261,11 @@ text-align: center;
 
 .redeemSection {
   background-color: $color-ds-darkblue;
-}
-
-.redeemSection {
   color: $color-ds-white;
   vertical-align: middle;
   display: inline-block;
   width:100%;
   padding-top: 4rem;
-  padding-bottom: 2rem;
 }
 
 .propositionsSection .title {
@@ -364,10 +370,15 @@ text-align: center;
 .pie-chart {
   padding-left:1rem;
   padding-right:1rem;
+  text-align: center;
+}
+
+.pie-chart .title {
+  font-weight: 500;
+  margin-bottom: 1rem;
 }
 
 .pie-chart .body {
-  text-align: center;
   margin-bottom: 2rem;
 }
 
@@ -375,6 +386,7 @@ text-align: center;
   max-width:100%;
   max-height:auto;
   margin-bottom: 2rem;
+  margin-top: 1.5rem;
 }
 
 // Small devices (landscape phones, 576px and up)
@@ -478,4 +490,3 @@ metamaskfeedback .metamask-text {
   background: #20afbb;
   background: radial-gradient(circle, #20afbb 6%, #1a859c 53%, #13687c 100%); 
 }
-
