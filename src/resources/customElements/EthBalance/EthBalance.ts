@@ -1,44 +1,32 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject, containerless, customElement } from 'aurelia-framework';
-import { NumberService } from 'services/numberService';
-import { Web3Service } from '../../../services/Web3Service';
+import { autoinject, bindable, bindingMode, containerless, customElement } from 'aurelia-framework';
+import { DisposableCollection } from 'services/DisposableCollection';
+import { BigNumber, Web3Service } from '../../../services/Web3Service';
 
 @autoinject
 @containerless
 @customElement('ethbalance')
 export class EthBalance {
+  @bindable({ defaultBindingMode: bindingMode.toView }) public placement: string = 'top';
 
-  private text: string;
-  private ethBalance: string = '';
-  private rawBalance: string = '';
+  private balance: BigNumber;
   private filter: any;
-  private textElement: HTMLElement;
+  private subscriptions = new DisposableCollection();
 
   constructor(
     private web3: Web3Service,
-    eventAggregator: EventAggregator,
-    private numberService: NumberService) {
-    eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
-    eventAggregator.subscribe('Network.Changed.Id', () => { this.initialize(); });
+    private eventAggregator: EventAggregator) {
   }
 
   public attached() {
+    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); }));
+    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id', () => { this.initialize(); }));
     this.initialize();
   }
 
-  private initialize(): Promise<void> {
+  private initialize() {
     this.stop();
-    return this.readBalance().then(() => {
-      ($(this.textElement) as any).tooltip('dispose');
-      ($(this.textElement) as any).tooltip(
-        {
-          placement: 'left',
-          title: this.rawBalance,
-          toggle: 'tooltip',
-          trigger: 'hover',
-        }
-      );
-    });
+    this.readBalance();
   }
 
   private stop() {
@@ -49,6 +37,10 @@ export class EthBalance {
   }
 
   private detached() {
+    if (this.subscriptions) {
+      this.subscriptions.dispose();
+    }
+
     this.stop();
   }
 
@@ -65,11 +57,7 @@ export class EthBalance {
   private async getBalance() {
     try {
       const ethAddress = this.web3.defaultAccount;
-      const balance = this.web3.fromWei(await this.web3.getBalance(ethAddress));
-      this.rawBalance = `${balance.toString(10)} ETH`;
-      this.ethBalance = this.numberService.toFixedNumberString(balance, 5);
-
-      this.text = `${this.ethBalance} ETH`;
+      this.balance = await this.web3.getBalance(ethAddress);
       // tslint:disable-next-line:no-empty
     } catch (ex) {
     }

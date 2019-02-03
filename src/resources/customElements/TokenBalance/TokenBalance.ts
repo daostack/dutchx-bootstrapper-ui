@@ -1,7 +1,8 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, bindingMode, containerless, customElement } from 'aurelia-framework';
 import { Address } from 'services/ArcService';
-import { NumberService } from 'services/numberService';
+import { IDisposable } from 'services/IDisposable';
+import { BigNumber } from 'services/Web3Service';
 import { TokenService } from '../../../services/TokenService';
 
 @autoinject
@@ -10,20 +11,21 @@ import { TokenService } from '../../../services/TokenService';
 export class TokenBalance {
 
   @bindable({ defaultBindingMode: bindingMode.toView }) public token: Address;
+  @bindable({ defaultBindingMode: bindingMode.toView }) public placement: string = 'top';
+  @bindable({ defaultBindingMode: bindingMode.twoWay }) public balance: BigNumber = null;
 
-  private balance: string;
+  private subscription: IDisposable;
 
   private events;
 
   constructor(
     private tokenService: TokenService,
-    eventAggregator: EventAggregator,
-    private numberService: NumberService
+    private eventAggregator: EventAggregator
   ) {
-    eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
   }
 
   public attached() {
+    this.subscription = this.eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
     this.initialize();
   }
 
@@ -33,6 +35,11 @@ export class TokenBalance {
   }
 
   private detached() {
+    if (this.subscription) {
+      this.subscription.dispose();
+      this.subscription = null;
+    }
+
     this.stop();
   }
 
@@ -65,13 +72,12 @@ export class TokenBalance {
     }
 
     if (!this.events) {
-      this.balance = `N/A`;
+      this.balance = null;
     }
   }
   private async getBalance(token) {
     try {
-      this.balance =
-        this.numberService.toFixedNumberString(await this.tokenService.getUserErc20TokenBalance(token, true), 5);
+      this.balance = await this.tokenService.getUserErc20TokenBalance(token);
       // tslint:disable-next-line:no-empty
     } catch {
     }
