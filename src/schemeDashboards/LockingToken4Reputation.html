@@ -18,7 +18,7 @@
       <div
         class="message"
         if.to-view="lockingPeriodHasNotStarted"
-      >The vote staking period has not yet begun. Return between ${lockingStartTime | date:'dayofmonth'} through ${lockingEndTime | date:'dayofmonth'} to lock tokens.</div>
+      >The vote staking period has not yet begun. Return between ${lockingStartTime | date:'dayofmonth'} and ${lockingEndTime | date:'dayofmonth'} to lock tokens.</div>
 
       <div
         class="message"
@@ -72,9 +72,18 @@
           <div
             class="message"
             if.to-view="!selectedTokenIsLiquid"
-          >To provide liquidity for ETH/GNO on the DutchX, trade on <a target="_blank" href="https://slow.trade">slow.trade</a>,
-           <a target="_blank" href="https://fairdex.net/">Fair DEX</a>,
-           or visit the <a target="_blank" href="https://dutchx.readthedocs.io">DutchX CLI documentation</a>.
+          >To provide liquidity for ETH/GNO on the DutchX, trade on <a
+              target="_blank"
+              href="https://slow.trade"
+            >slow.trade</a>,
+            <a
+              target="_blank"
+              href="https://fairdex.net/"
+            >Fair DEX</a>,
+            or visit the <a
+              target="_blank"
+              href="https://dutchx.readthedocs.io"
+            >DutchX CLI documentation</a>.
           </div>
           <div else>
             <div class="row">

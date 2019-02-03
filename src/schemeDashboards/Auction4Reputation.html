@@ -28,7 +28,7 @@
       <div
         class="message"
         if.to-view="auctionNotBegun"
-      >The vote staking period has not yet begun. Return between ${lockingStartTime | date:'dayofmonth'} through ${lockingEndTime | date:'dayofmonth'} to bid GEN.</div>
+      >The vote staking period has not yet begun. Return between ${auctionsStartTime | date:'dayofmonth'} and ${auctionsEndTime | date:'dayofmonth'} to bid GEN.</div>
       <div
         class="message"
         if.to-view="auctionIsOver"
