@@ -2,9 +2,15 @@ import { App } from 'app';
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
-import { EventConfigException, EventConfigFailure, EventConfigTransaction } from 'entities/GeneralEvents';
+import {
+  EventConfigException,
+  EventConfigFailure,
+  EventConfigTransaction,
+  EventMessageType
+} from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { Address, ArcTransactionResult, ExternalLocking4ReputationWrapper, LockInfo } from 'services/ArcService';
+import { BalloonService } from 'services/balloonService';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 
 @autoinject
@@ -17,6 +23,7 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   private registering: boolean = false;
   private globalPeriodHasStarted: boolean = false;
   private sendingRegister: boolean = false;
+  private registerButton: HTMLElement;
 
   constructor(
     appConfig: AureliaConfiguration,
@@ -59,6 +66,12 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
     if (!(await this.wrapper.hasTokenToActivate(this.lockModel.lockerAddress))) {
       this.eventAggregator.publish('handleFailure',
         new EventConfigFailure(`Can't activate: No MGN tokens reserved to register`));
+
+      await BalloonService.show({
+        content: `Can't activate: No MGN tokens reserved to register`,
+        eventMessageType: EventMessageType.Failure,
+        originatingUiElement: this.lockButton,
+      });
       return false;
     }
 
@@ -78,6 +91,7 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
     try {
 
       this.sendingRegister = true;
+
       const result = await (await (this.wrapper as any).register()
         .then((tx: ArcTransactionResult) => {
           this.sendingRegister = false;
@@ -94,6 +108,13 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
     } catch (ex) {
       this.eventAggregator.publish('handleException',
         new EventConfigException(`The regisration was not recorded`, ex));
+
+      await BalloonService.show({
+        content: `The regisration was not recorded`,
+        eventMessageType: EventMessageType.Exception,
+        originatingUiElement: this.registerButton,
+      });
+
       success = false;
     } finally {
       this.registering = false;

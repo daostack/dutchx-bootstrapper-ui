@@ -70,7 +70,7 @@
           </div>
         </div>
 
-        <div if.to-view="selectedToken">
+        <div show.to-view="selectedToken">
           <div
             class="message"
             if.to-view="!selectedTokenIsLiquid"
@@ -120,6 +120,7 @@
                     as-button="true"
                     text="Submit"
                     spin.to-view="locking"
+                    ref="lockButton"
                     title.to-view="locking ? 'Locking...' : 'Submit Lock'"
                   ></spinbutton>
                   <metamaskfeedback if.to-view="sending"></metamaskfeedback>
@@ -133,7 +134,7 @@
       <div if.to-view="locks.length">
         <locks-for-reputation
           locks.to-view="locks"
-          release.call="release({lock})"
+          release.call="release({lock, releaseButton })"
           wrapper.one-time="wrapper"
           refresh.call="getLocks()"
         ></locks-for-reputation>
