@@ -7,6 +7,9 @@ import { DateService } from 'services/DateService';
 export class Landing {
 
   private lockingPeriodStartDate: Date;
+  private scheduleModel = {
+    isLanding: true,
+  };
 
   constructor(
     private appConfig: AureliaConfiguration,

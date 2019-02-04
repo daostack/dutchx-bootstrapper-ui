@@ -5,6 +5,10 @@
   padding-bottom: 1.5rem;
 }
 
+.participation-dates-section.landing {
+  color: $color-ds-white;
+}
+
 .participation-dates-section .section {
   text-align: left;
   padding-top: 1rem;
@@ -16,6 +20,10 @@
   border-top-width: .5rem;
   border-top-style: solid;
   border-top-color: $color-ds-darkblue;
+}
+
+.participation-dates-section.landing .section .container {
+  border-top-color: $color-ds-lightblue;
 }
 
 .participation-dates-section .shortdate .asterisk {
