@@ -41,8 +41,8 @@ export class BalloonService {
     });
   }
 
-  public static hide(element: JQuery) {
-    const popover = element.parents('.popover');
+  public static hide(closeButton: JQuery) {
+    const popover = closeButton.parents('.popover');
     // resolve the promise
     (popover.data(this.promiseResolveFn) as () => void)();
     popover.data(this.promiseResolveFn, undefined);

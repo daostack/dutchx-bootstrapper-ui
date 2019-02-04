@@ -122,7 +122,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     }
 
     if (reason) {
-      // this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't lock: ${reason}`));
+      this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't lock: ${reason}`));
       await BalloonService.show({
         content: `Can't lock: ${reason}`,
         eventMessageType: EventMessageType.Failure,
@@ -167,6 +167,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
     } catch (ex) {
       this.eventAggregator.publish('handleException', new EventConfigException(`The lock was not recorded`, ex));
+      await BalloonService.show({
+        content: `The lock was not recorded`,
+        eventMessageType: EventMessageType.Exception,
+        originatingUiElement: this.lockButton,
+      });
     } finally {
       this.locking = false;
       this.sending = false;
@@ -175,8 +180,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     return false;
   }
 
-  protected async release(lock: { lock: ILockInfoX }): Promise<boolean> {
-    const lockInfo = lock.lock;
+  protected async release(config: { lock: ILockInfoX, releaseButton: HTMLElement }): Promise<boolean> {
+    const lockInfo = config.lock;
 
     if (this.locking || this.releasing) {
       return false;
@@ -205,6 +210,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     } catch (ex) {
       this.eventAggregator.publish('handleException',
         new EventConfigException(`The lock was not released`, ex));
+      await BalloonService.show({
+        content: `The lock was not released`,
+        eventMessageType: EventMessageType.Exception,
+        originatingUiElement: config.releaseButton,
+      });
     } finally {
       this.releasing = lockInfo.sending = false;
     }

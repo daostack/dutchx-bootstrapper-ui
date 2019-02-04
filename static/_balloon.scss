@@ -8,6 +8,8 @@
   display: inline-block;
   color: $color-ds-red;
   font-size: 1rem;
+  padding-right: .9rem;
+  overflow-x: hidden;
 }
 
 .balloonBody {
@@ -31,26 +33,5 @@
 
 .balloonTitle button.closeBalloon:hover {
   text-decoration: underline;
-}
-
-.balloon.failure .body {
-  color: $color-ds-white;
-  background-color: $color-ds-red;
-}
-
-.balloon.info .body {
-  color: $color-ds-white;
-  background-color: $color-ds-darkblue;
-}
-
-.balloon.info .body a {
-  margin-left: .5rem;  
-  color: $color-ds-yellow;
-  text-transform:uppercase;  
-}
-
-.balloon .message {
-  display: inline-block;
-  margin-right: 1rem;
 }
 
