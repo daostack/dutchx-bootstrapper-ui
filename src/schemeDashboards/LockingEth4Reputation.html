@@ -83,7 +83,7 @@
       <div if.to-view="locks.length">
         <locks-for-reputation
           locks.to-view="locks"
-          release.call="release({lock})"
+          release.call="release({lock, releaseButton })"
           wrapper.one-time="wrapper"
           refresh.call="getLocks()"
         ></locks-for-reputation>

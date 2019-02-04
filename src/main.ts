@@ -38,7 +38,6 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName('resources/customElements/TokenBalance/TokenBalance'),
     PLATFORM.moduleName('resources/customElements/locksForReputation/locksForReputation'),
     PLATFORM.moduleName('resources/customElements/copyToClipboardButton/copyToClipboardButton'),
-    PLATFORM.moduleName('resources/customElements/banner/banner'),
     PLATFORM.moduleName('resources/customElements/numericInput/numericInput'),
     PLATFORM.moduleName('resources/customElements/floatingPointNumber/floatingPointNumber'),
     PLATFORM.moduleName('resources/customElements/spinButton.html'),

@@ -40,14 +40,14 @@
         </td>
         <td class="actions">
           <button
-            click.delegate="_release(lock)"
+            click.delegate="_release(lock, $event)"
             disabled.bind="!lock.canRelease"
-            if.to-view="!lock.releasing && !lock.released"
+            show.to-view="!lock.releasing && !lock.released"
             class="btn btn-link"
           >Release</button>
           <div
-            if.to-view="lock.releasing && !lock.released"
-            title="Releasing"
+            show.to-view="lock.releasing && !lock.released"
+            data-title="Releasing"
             class="inline text-primary fa-refresh fa fa-spin"
             style="line-height: 21px"
           ></div>
