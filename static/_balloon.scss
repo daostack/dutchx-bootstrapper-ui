@@ -4,12 +4,12 @@
   border-bottom-style: solid;
 }
 
-.balloonTitle {
+.balloonTitle .text {
   display: inline-block;
   color: $color-ds-red;
   font-size: 1rem;
-  padding-right: .9rem;
-  overflow-x: hidden;
+  display: inline-block;
+  padding-right: 2rem;
 }
 
 .balloonBody {

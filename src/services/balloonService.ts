@@ -14,7 +14,7 @@ export class BalloonService {
     return new Promise((resolve: () => void) => {
 
       // tslint:disable-next-line: max-line-length
-      const title = `<div class="balloonTitle">An Error Has Occurred <button type="button" class="closeBalloon" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
+      const title = `<div class="balloonTitle"><div class="text">An Error Has Occurred</div><button type="button" class="closeBalloon" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
       const content = `<div class="balloonBody">${config.content}</div>`;
 
       element.popover(
