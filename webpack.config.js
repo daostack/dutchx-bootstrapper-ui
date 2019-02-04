@@ -177,6 +177,8 @@ module.exports = ({ production, server, coverage } = {}) => {
         { from: 'static/mgn_icon_color.svg' },
         { from: 'static/gen_icon_white.svg' },
         { from: 'static/gen_icon_color.svg' },
+        { from: 'src/schedule/DS_DXDAO_ARROW_ICON_white.svg' },
+        { from: 'src/schedule/DS_DXDAO_ARROW_ICON_black.svg' },
         { from: 'static/t_blue.svg' },
         { from: 'static/t_white.svg' },
         { from: 'static/base.css' },

@@ -1,16 +1,19 @@
 <template>
-  <div class="participation-dates-section">
+  <div
+    class="participation-dates-section"
+    ref="sectionElement"
+  >
     <div class="row">
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
-          <div class="triangle"><img src="./DS_DXDAO_ARROW_ICON_FFFFFF.svg"></div>
+          <div class="triangle"><img src="${ getTriangle() }"></div>
           <div class="shortdate">Now</div>
           <div class="body">We are working to get the vote staking interface for the dxDAO up and running.</div>
         </div>
       </div>
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
-          <div class="triangle"><img src="./DS_DXDAO_ARROW_ICON_FFFFFF.svg"></div>
+          <div class="triangle"><img src="${ getTriangle() }"></div>
           <div class="shortdate">${lockingPeriodStartDate | date:'shortdayofmonth'}</div>
           <div class="phase">Vote Staking Period</div>
           <div class="longdate">${lockingPeriodStartDate | date:'shortdate'} through ${lockingPeriodEndDate | date:'shortdate'}</div>
@@ -19,7 +22,7 @@
       </div>
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
-          <div class="triangle"><img src="./DS_DXDAO_ARROW_ICON_FFFFFF.svg"></div>
+          <div class="triangle"><img src="${ getTriangle() }"></div>
           <div class="shortdate">${lockingPeriodEndDate | date:'shortdayofmonth'}</div>
           <div class="phase">Reputation (Voting Power) Distribution Period</div>
           <div class="longdate">${lockingPeriodEndDate | date:'shortdate'} through ${lastLockingPeriodDate | date:'shortdate'}</div>
@@ -28,7 +31,7 @@
       </div>
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
-          <div class="triangle"><img src="./DS_DXDAO_ARROW_ICON_FFFFFF.svg"></div>
+          <div class="triangle"><img src="${ getTriangle() }"></div>
           <div class="shortdate"><span class="asterisk">*</span>${governanceStartDate | date:'shortdayofmonth'}</div>
           <div class="phase">Community Governance</div>
           <div class="longdate">${governanceStartDate | date:'shortdate'}</div>
