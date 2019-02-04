@@ -1,9 +1,10 @@
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
-import { EventConfigException, EventConfigFailure } from 'entities/GeneralEvents';
+import { EventConfigException, EventConfigFailure, EventMessageType } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { AureliaHelperService } from 'services/AureliaHelperService';
+import { BalloonService } from 'services/balloonService';
 import { ITokenSpecification } from 'services/lockServices';
 import { SortService } from 'services/SortService';
 import { Utils as UtilsInternal } from 'services/utils';
@@ -103,6 +104,11 @@ export class LockingToken4Reputation extends Locking4Reputation {
     } catch (ex) {
       this.eventAggregator.publish('handleException',
         new EventConfigException(`The token transfer was not approved`, ex));
+      await BalloonService.show({
+        content: `The token transfer was not approved`,
+        eventMessageType: EventMessageType.Exception,
+        originatingUiElement: this.lockButton,
+      });
     } finally {
       this.locking = false;
       this.sending = false;
