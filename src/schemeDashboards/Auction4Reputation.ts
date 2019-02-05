@@ -1,5 +1,5 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject, computedFrom } from 'aurelia-framework';
+import { autoinject, computedFrom, View } from 'aurelia-framework';
 import {
   EventConfigException,
   EventConfigFailure,
@@ -47,7 +47,10 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private _switchingAuctions = false;
   private dashboard: HTMLElement;
   private sendingBid: boolean = false;
-  private bidButton: HTMLElement;
+  private myView: JQuery;
+  private get bidButton(): HTMLElement {
+    return this.myView.find('#bidButton')[0];
+  }
 
   @computedFrom('auctionNotBegun', 'auctionIsOver')
   private get inAuction() {
@@ -59,6 +62,10 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     protected web3Service: Web3Service
   ) {
     super();
+  }
+
+  public created(owningView: View, _myView: View) {
+    this.myView = $((owningView as any).firstChild);
   }
 
   public async activate(model: ISchemeDashboardModel) {
