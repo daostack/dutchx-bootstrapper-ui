@@ -23,7 +23,9 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   private registering: boolean = false;
   private globalPeriodHasStarted: boolean = false;
   private sendingRegister: boolean = false;
-  private registerButton: HTMLElement;
+  private get registerButton(): HTMLElement {
+    return this.myView.find('#registerButton')[0];
+  }
 
   constructor(
     appConfig: AureliaConfiguration,

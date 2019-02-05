@@ -1,12 +1,18 @@
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject, computedFrom } from 'aurelia-framework';
+import { autoinject, computedFrom, View } from 'aurelia-framework';
 import { ILockInfoX } from 'resources/customElements/locksForReputation/locksForReputation';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LockService } from 'services/lockServices';
 import { Utils } from 'services/utils';
-import { EventConfigException, EventConfigFailure, EventConfigTransaction, EventMessageType } from '../entities/GeneralEvents';
+import {
+  EventConfigException,
+  EventConfigFailure,
+  EventConfigTransaction,
+  EventMessageType
+} from '../entities/GeneralEvents';
 import {
   Address,
   ArcTransactionResult,
@@ -19,7 +25,6 @@ import {
 } from '../services/ArcService';
 import { Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';
-import { BalloonService } from 'services/balloonService';
 // import { App } from 'app';
 
 @autoinject
@@ -43,7 +48,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected locking: boolean = false;
   protected releasing: boolean = false;
   protected sending: boolean = false;
-  protected lockButton: HTMLElement;
+  protected myView: JQuery;
+
+  protected get lockButton(): HTMLElement {
+    return this.myView.find('#lockButton')[0];
+  }
 
   protected lockModel: LockingOptions = {
     amount: undefined,
@@ -60,6 +69,10 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     protected web3Service: Web3Service
   ) {
     super();
+  }
+
+  public created(owningView: View, _myView: View) {
+    this.myView = $((owningView as any).firstChild);
   }
 
   public async activate(model: ISchemeDashboardModel) {
