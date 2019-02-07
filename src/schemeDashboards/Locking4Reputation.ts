@@ -193,7 +193,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     return false;
   }
 
-  protected async release(config: { lock: ILockInfoX, releaseButton: HTMLElement }): Promise<boolean> {
+  protected async release(config: { lock: ILockInfoX, releaseButton: JQuery<EventTarget> }): Promise<boolean> {
     const lockInfo = config.lock;
 
     if (this.locking || this.releasing) {
