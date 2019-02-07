@@ -9,7 +9,7 @@ export class LocksForReputation {
   @bindable({ defaultBindingMode: bindingMode.oneWay }) public locks: Array<LockInfo>;
   // tslint:disable-next-line: variable-name
   @bindable({ defaultBindingMode: bindingMode.oneTime })
-  public release: ({ lock: LockInfo, releaseButton: HtmlElement }) => Promise<boolean>;
+  public release: (config: { lock: LockInfo, releaseButton: JQuery<EventTarget> }) => Promise<boolean>;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public wrapper: Locking4ReputationWrapper;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public refresh: () => Promise<void>;
 

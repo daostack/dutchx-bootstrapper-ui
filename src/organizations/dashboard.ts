@@ -5,6 +5,7 @@ import { autoinject, computedFrom, singleton } from 'aurelia-framework';
 import axios from 'axios';
 import { EventConfig, EventConfigException, EventConfigFailure, EventMessageType } from 'entities/GeneralEvents';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { IDisposable } from 'services/IDisposable';
 import { LockService } from 'services/lockServices';
@@ -248,6 +249,7 @@ export class Dashboard {
       const button = $(e.target);
       const li = button.closest('li');
       li.addClass('selected');
+      BalloonService.unhide(button as JQuery);
     });
 
     dashboard.on('hide.bs.collapse', '.scheme-dashboard', function(e: Event) {
@@ -257,6 +259,7 @@ export class Dashboard {
       const button = $(e.target);
       const li = button.closest('li');
       li.removeClass('selected');
+      BalloonService.hide(button as JQuery);
     });
 
     this.polishDom();
@@ -618,8 +621,8 @@ export class Dashboard {
   private fixScrollbar() {
 
     const bodyHeight = $(window).height() || 0;
-    const headerHeight = $('.header.navbar').height() || 0;
-    const footerHeight = $('.footer.navbar').height() || 0;
+    const headerHeight = $('.header.navbar').outerHeight() || 0;
+    const footerHeight = $('.footer.navbar').outerHeight() || 0;
 
     $('.dashboard-main-content').css(
       {

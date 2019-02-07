@@ -139,7 +139,7 @@
     "momentjs": "^2.0.0",
     "node-waves": "^0.7.6",
     "numeral": "^2.0.6",
-    "popper.js": "^1.14.3",
+    "popper.js": "^1.14.7",
     "rxjs": "^5.5.6",
     "snackbarjs": "^1.1.0",
     "tslint": "^5.12.0"
