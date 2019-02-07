@@ -283,13 +283,6 @@ export class Dashboard {
 
       try {
         web3 = await InitializeArcJs({
-          deployedContractAddresses: {
-            rinkeby: {
-              base: {
-                DAOToken: '0x543Ff227F64Aa17eA132Bf9886cAb5DB55DCAddf',
-              },
-            },
-          },
           filter: {},
           useMetamaskEthereumWeb3Provider: true,
           watchForAccountChanges: true,
