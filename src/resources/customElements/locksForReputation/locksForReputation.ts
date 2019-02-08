@@ -49,10 +49,11 @@ export class LocksForReputation {
   private async _release(lock: ILockInfoInternal, event: Event) {
     if (!lock.canRelease) { return; }
 
-    const releaseButton = $(event.target).next();
-
-    lock.releasing = true;
     try {
+      lock.releasing = true;
+
+      const releaseButton = $(event.target).next();
+
       const success = await this.release({ lock, releaseButton });
       if (success) {
         lock.canRelease = false; // await this.canRelease(lock);
