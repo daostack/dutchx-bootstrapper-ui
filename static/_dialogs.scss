@@ -53,6 +53,15 @@ ux-dialog.alert {
   max-width: 50rem;
 }
 
+ux-dialog.connections .disclaimer {
+  overflow-y: auto;
+  max-height: 31rem;
+}
+
+ux-dialog.connections .disclaimer .checks {
+  margin-left: 1rem;
+}
+
 ux-dialog-overlay.active {
   background-color:$color-ds-black;
   opacity: .5 !important;

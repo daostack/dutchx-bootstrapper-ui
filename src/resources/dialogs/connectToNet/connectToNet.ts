@@ -1,5 +1,5 @@
 import { Address } from '@daostack/arc.js';
-import { DialogController } from 'aurelia-dialog';
+import { DialogCancelableOperationResult, DialogController } from 'aurelia-dialog';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, computedFrom } from 'aurelia-framework';
 import { DisposableCollection } from 'services/DisposableCollection';
@@ -12,14 +12,16 @@ export class ConnectToNet {
   private model: IConnectToNetModel;
   private networkName: string;
   private subscriptions: DisposableCollection = new DisposableCollection();
-  private userAccount: Address;
+  private userAccount: Address = null;
   private isDone: boolean;
   private landed: boolean;
   private _hasAccepted = false;
+  private checked1: boolean = false;
+  private checked2: boolean = false;
 
-  @computedFrom('userAccount, _hasAccepted')
+  @computedFrom('_hasAccepted')
   private get hasAccepted(): boolean {
-    return LocalStorageService.getItem(this.disclaimerAcceptanceKey(), false) === 'yes';
+    return this._hasAccepted || (LocalStorageService.getItem(this.disclaimerAcceptanceKey(), false) === 'yes');
   }
   private set hasAccepted(val: boolean) {
     this._hasAccepted = val;
@@ -29,9 +31,9 @@ export class ConnectToNet {
   }
 
   constructor(
-      private controller: DialogController
-    , private eventAggregator: EventAggregator
-    , private web3: Web3Service) { }
+    private controller: DialogController,
+    private eventAggregator: EventAggregator,
+    private web3: Web3Service) { }
 
   public async activate(model: IConnectToNetModel) {
     this.networkName = this.web3.networkName;
@@ -42,30 +44,29 @@ export class ConnectToNet {
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id', () => {
       this.networkName = this.web3.networkName;
       this.userAccount = this.web3.defaultAccount;
+      this._hasAccepted = this.checked1 = this.checked2 = false;
     }));
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => {
       this.userAccount = this.web3.defaultAccount;
+      this._hasAccepted = this.checked1 = this.checked2 = false;
     }));
   }
 
-  public close(cancelled: boolean = false) {
+  public close(cancelled: boolean = false): Promise<DialogCancelableOperationResult> {
     this.subscriptions.dispose();
-    this.controller.close(!cancelled);
+    return this.controller.close(!cancelled);
   }
 
-  private land() {
-    if (this.hasAccepted) {
-      // disclaimer has  already been accepted
-      this.close(false);
-    } else {
-      this.landed = true;
-    }
+  private async land() {
+    // for clean transition
+    await this.close(false);
+    this.landed = true;
   }
 
   private accept() {
-    this.close(false);
-    // timeout to keep GUI transition clean
-    setTimeout(() => { this.hasAccepted = true; }, 10);
+    if (this.checked1 && this.checked2) {
+      this.hasAccepted = true;
+    }
   }
 
   /**
