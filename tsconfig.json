@@ -6,6 +6,7 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "sourceRoot": "src",
+    "sourceMap": true,
     "baseUrl": "src",
     "importHelpers": true,
     "noImplicitAny": false,

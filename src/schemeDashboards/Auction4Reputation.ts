@@ -33,7 +33,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private refreshing: boolean = false;
   private loaded: boolean = false;
   private subscriptions = new DisposableCollection();
-  private bidding: boolean = false;
+  private _bidding: boolean = false;
   private currentAuctionNumber: number;
   private auctionCount: number;
   private auctionEndTime: Date;
@@ -50,6 +50,16 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private myView: JQuery;
   private get bidButton(): HTMLElement {
     return this.myView.find('#bidButton')[0];
+  }
+
+  @computedFrom('_bidding')
+  protected get bidding(): boolean {
+    return this._bidding;
+  }
+
+  protected set bidding(val: boolean) {
+    this._bidding = val;
+    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
   }
 
   @computedFrom('auctionNotBegun', 'auctionIsOver')
