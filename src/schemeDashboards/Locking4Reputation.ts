@@ -45,10 +45,30 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected lockerInfo: LockerInfo;
   protected subscriptions = new DisposableCollection();
   protected locks: Array<ILockInfoX>;
-  protected locking: boolean = false;
-  protected releasing: boolean = false;
+  protected _locking: boolean = false;
+  protected _releasing: boolean = false;
   protected sending: boolean = false;
   protected myView: JQuery;
+
+  @computedFrom('_locking')
+  protected get locking(): boolean {
+    return this._locking;
+  }
+
+  protected set locking(val: boolean) {
+    this._locking = val;
+    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
+  }
+
+  @computedFrom('_releasing')
+  protected get releasing(): boolean {
+    return this._releasing;
+  }
+
+  protected set releasing(val: boolean) {
+    this._releasing = val;
+    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
+  }
 
   protected get lockButton(): HTMLElement {
     return this.myView.find('#lockButton')[0];

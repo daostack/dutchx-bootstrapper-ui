@@ -115,7 +115,6 @@ text-align: center;
 
 .dashboard-schemes li.list-group-item div.row {
   width:100%;
-  cursor: pointer; 
 }
 
 .dashboard-schemes li.list-group-item:not(.selected) {
@@ -128,12 +127,41 @@ text-align: center;
   background-color: $color-ds-grey-1;
 }
 
+.dashboard-schemes li.list-group-item.frozen .scheme-use-button {
+  cursor: default; 
+}
+
+.dashboard-schemes li.list-group-item:not(.selected).frozen .scheme-use-button:hover {
+  background-color: $color-ds-grey-1;
+}
+
+.dashboard-schemes li.list-group-item:not(.selected).frozen:hover .scheme-name.activeLocks {
+  color: $color-ds-orange;
+}
+
+.dashboard-schemes li.list-group-item:not(.selected).frozen:hover .scheme-icon img.not-selected {
+  display: inline-block;
+}
+
+.dashboard-schemes li.list-group-item:not(.selected).frozen:hover .scheme-icon img.selected {
+  display: none;
+}
+
+.dashboard-schemes li.list-group-item:not(.selected).frozen:hover {
+  color: inherit;
+}
+
+.dashboard-schemes li.list-group-item:not(.selected).frozen:hover .scheme-arrow-down {
+  color: $color-ds-grey-3;
+}
+
 .dashboard-schemes li.list-group-item .scheme-use-button {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
   width: 100%;
+  cursor: pointer; 
  }
 
 .dashboard-schemes li.list-group-item .scheme-use-button table {
@@ -154,7 +182,7 @@ text-align: center;
   color: $color-ds-white;
 }
 
-.dashboard-schemes li.list-group-item:not(.selected) .scheme-icon .selected {
+.dashboard-schemes li.list-group-item:not(.selected) .scheme-icon img.selected {
   display: none;
 }
 

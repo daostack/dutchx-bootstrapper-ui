@@ -1,7 +1,6 @@
-import { App } from 'app';
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject } from 'aurelia-framework';
+import { autoinject, computedFrom } from 'aurelia-framework';
 import {
   EventConfigException,
   EventConfigFailure,
@@ -20,11 +19,21 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
   private alreadyLocked: boolean = false;
   private alreadyRegistered: boolean = false;
-  private registering: boolean = false;
+  private _registering: boolean = false;
   private globalPeriodHasStarted: boolean = false;
   private sendingRegister: boolean = false;
   private get registerButton(): HTMLElement {
     return this.myView.find('#registerButton')[0];
+  }
+
+  @computedFrom('_registering')
+  protected get registering(): boolean {
+    return this._registering;
+  }
+
+  protected set registering(val: boolean) {
+    this._registering = val;
+    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
   }
 
   constructor(

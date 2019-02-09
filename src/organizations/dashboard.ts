@@ -83,6 +83,7 @@ export class Dashboard {
   private computingRedeemables: boolean = false;
   private org: DaoEx;
   private timezone = App.timezone;
+  private dashboardBusy: boolean = false;
 
   private dutchXSchemeConfigs = new Map<string, ISchemeConfig>([
     ['Auction4Reputation', {
@@ -199,6 +200,15 @@ export class Dashboard {
       this.computeNumLocks();
     }));
 
+    this.subscriptions.push(this.eventAggregator.subscribe('dashboard.busy', (val: boolean) => {
+      if (val) {
+        $('.dashboard-schemes li.list-group-item').addClass('frozen');
+      } else {
+        $('.dashboard-schemes li.list-group-item').removeClass('frozen');
+      }
+      this.dashboardBusy = val;
+    }));
+
     if (!this.initialized) {
       await this.initializeNetwork();
     }
@@ -242,9 +252,12 @@ export class Dashboard {
     /**
      * css will reference the 'selected' class
      */
-    dashboard.on('show.bs.collapse', '.scheme-dashboard', function(e: Event) {
-      // ignore bubbles from nested collapsables
-      if (!$(this).is(e.target as any)) { return; }
+    dashboard.on('show.bs.collapse', '.scheme-dashboard', (e: Event) => {
+
+      if (this.dashboardBusy) {
+        e.preventDefault();
+        return;
+      }
 
       const button = $(e.target);
       const li = button.closest('li');
@@ -252,9 +265,12 @@ export class Dashboard {
       BalloonService.unhide(button as JQuery);
     });
 
-    dashboard.on('hide.bs.collapse', '.scheme-dashboard', function(e: Event) {
-      // ignore bubbles from nested collapsables
-      if (!$(this).is(e.target as any)) { return; }
+    dashboard.on('hide.bs.collapse', '.scheme-dashboard', (e: Event) => {
+
+      if (this.dashboardBusy) {
+        e.preventDefault();
+        return;
+      }
 
       const button = $(e.target);
       const li = button.closest('li');
@@ -657,3 +673,7 @@ interface ISchemeConfig {
   icon_hover?: string;
   position: number;
 }
+
+// export interface IPreventDashboardCollapse {
+//   prevent: () => void;
+// }
