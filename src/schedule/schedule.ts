@@ -1,7 +1,9 @@
 import { App } from 'app';
 import { AureliaConfiguration } from 'aurelia-configuration';
+import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { DateService } from 'services/DateService';
+import { IDisposable } from 'services/IDisposable';
 
 @autoinject
 export class Schedule {
@@ -12,28 +14,76 @@ export class Schedule {
   private lastLockingPeriodDate: Date;
   private sectionElement: HTMLElement;
   private isLanding: boolean;
+  private lockingPeriodHasNotStarted: boolean;
+  private inLockingPeriod: boolean;
+  private inRepDistributionPeriod: boolean;
+  private inGovernancePeriod: boolean;
+  private subscription: IDisposable;
 
   constructor(
     private appConfig: AureliaConfiguration,
+    protected eventAggregator: EventAggregator,
     private dateService: DateService
   ) {
-    this.lockingPeriodEndDate = this.dateService
-      .fromIsoString(this.appConfig.get('Landing.lockingPeriodEndDate'), App.timezone);
-    this.lockingPeriodStartDate = this.dateService
-      .fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'), App.timezone);
-    this.governanceStartDate = this.dateService
-      .fromIsoString(this.appConfig.get('Landing.governanceStartDate'), App.timezone);
-    this.lastLockingPeriodDate = new Date(this.governanceStartDate.getTime() - 86400000);
   }
 
   public activate(model: { isLanding: boolean }) {
     this.isLanding = model && model.isLanding;
+    this.lockingPeriodEndDate = this.dateService
+      .fromIsoString(this.appConfig.get(
+        this.isLanding ? 'Landing.lockingPeriodEndDate' : 'lockingPeriodEndDate'), App.timezone);
+    this.lockingPeriodStartDate = this.dateService
+      .fromIsoString(this.appConfig.get(
+        this.isLanding ? 'Landing.lockingPeriodStartDate' : 'lockingPeriodStartDate'), App.timezone);
+    this.governanceStartDate = this.dateService
+      .fromIsoString(this.appConfig.get(
+        'Landing.governanceStartDate'), App.timezone);
+    this.lastLockingPeriodDate = new Date(this.governanceStartDate.getTime() - 86400000);
   }
 
   public attached() {
     if (this.isLanding) {
       $(this.sectionElement).addClass('landing');
     }
+    this.subscription = this.eventAggregator.subscribe('secondPassed', () => {
+      this.getGovPeriod();
+      if (this.inGovernancePeriod) {
+        this.subscription.dispose();
+        this.subscription = null;
+        return;
+      }
+      this.getLockingPeriodHasNotStarted();
+      this.getInLockingPeriod();
+      this.getInRepDistPeriod();
+    });
+  }
+
+  public detached() {
+    if (this.subscription) {
+      this.subscription.dispose();
+    }
+  }
+
+  private getLockingPeriodHasNotStarted(): boolean {
+    const now = new Date();
+    return this.lockingPeriodHasNotStarted = (now < this.lockingPeriodStartDate);
+  }
+
+  private getInLockingPeriod(): boolean {
+    const now = new Date();
+    return this.inLockingPeriod =
+      (now >= this.lockingPeriodStartDate) && (now < this.lockingPeriodEndDate);
+  }
+
+  private getInRepDistPeriod(): boolean {
+    const now = new Date();
+    return this.inRepDistributionPeriod =
+      (now >= this.lockingPeriodEndDate) && (now < this.governanceStartDate);
+  }
+
+  private getGovPeriod(): boolean {
+    const now = new Date();
+    return this.inGovernancePeriod = (now >= this.governanceStartDate);
   }
 
   private getTriangle(): string {
