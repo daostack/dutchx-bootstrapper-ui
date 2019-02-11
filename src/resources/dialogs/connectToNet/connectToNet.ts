@@ -17,16 +17,8 @@ export class ConnectToNet {
   private landed: boolean;
   private checked1: boolean = false;
   private checked2: boolean = false;
-
-  private get hasAccepted(): boolean {
-    return LocalStorageService.getItem(this.disclaimerAcceptanceKey(), false) === 'yes';
-  }
-  private set hasAccepted(val: boolean) {
-    if (this.userAccount && val) {
-      LocalStorageService.setItem(this.disclaimerAcceptanceKey(), val ? 'yes' : 'no', false);
-    }
-    this.eventAggregator.publish('connect.disclaimed', this.hasAccepted);
-  }
+  private checkStateChangeTimerId: any;
+  private hasAccepted: boolean = false;
 
   constructor(
     private controller: DialogController,
@@ -42,21 +34,74 @@ export class ConnectToNet {
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id', () => {
       this.networkName = this.web3.networkName;
       this.userAccount = this.web3.defaultAccount;
-      this.hasAccepted = this.checked1 = this.checked2 = false;
+      this.checked1 = this.checked2 = false;
+      this.setHasAccepted(false);
     }));
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => {
       this.userAccount = this.web3.defaultAccount;
-      this.hasAccepted = this.checked1 = this.checked2 = false;
+      this.checked1 = this.checked2 = false;
+      this.setHasAccepted(false);
     }));
+
+    this.hasAccepted = this.getHasAccepted();
 
     if (this.hasAccepted) {
       this.eventAggregator.publish('connect.disclaimed', true);
     }
+
+    /**
+     * hack to moniter when the disclaimer window may become visible
+     */
+    if (!this.readyToShowDisclaimer) {
+      this.checkStateChangeTimerId = setInterval(() => {
+        /**
+         * checking here to see if we are about to show the disclaimer window
+         * and want to resize the window.
+         */
+        if (this.readyToShowDisclaimer) {
+          this.reposition();
+          this.stopInterval();
+        }
+      }, 250);
+    }
+  }
+
+  public deactivate() {
+    this.stopInterval();
   }
 
   public close(cancelled: boolean = false): Promise<DialogCancelableOperationResult> {
     this.subscriptions.dispose();
     return this.controller.close(!cancelled);
+  }
+
+  private reposition(): void {
+    (this.controller.renderer as any).centerDialog();
+  }
+
+  private stopInterval() {
+    if (this.checkStateChangeTimerId) {
+      clearInterval(this.checkStateChangeTimerId);
+      this.checkStateChangeTimerId = null;
+    }
+  }
+  private getHasAccepted(): boolean {
+    return LocalStorageService.getItem(this.disclaimerAcceptanceKey, false) === 'yes';
+  }
+
+  private setHasAccepted(val: boolean): void {
+    if (val) {
+      LocalStorageService.setItem(this.disclaimerAcceptanceKey, 'yes', false);
+    }
+    this.hasAccepted = val;
+    this.eventAggregator.publish('connect.disclaimed', val);
+  }
+
+  private get readyToShowDisclaimer(): boolean {
+    return !this.hasAccepted &&
+      this.model.isConnected &&
+      this.model.hasAccount &&
+      this.model.hasApprovedAccountAccess;
   }
 
   private async land() {
@@ -71,7 +116,8 @@ export class ConnectToNet {
 
   private async accept() {
     if (this.checked1 && this.checked2) {
-      this.hasAccepted = true;
+      this.setHasAccepted(true);
+      setTimeout(() => this.reposition(), 0);
     }
   }
 
@@ -82,7 +128,7 @@ export class ConnectToNet {
     this.model.confirm();
   }
 
-  private disclaimerAcceptanceKey() {
+  private get disclaimerAcceptanceKey(): string {
     // the '_1' is a version number
     return `disclaimerAccepted_1_${this.userAccount}`;
   }

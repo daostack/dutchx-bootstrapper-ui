@@ -100,8 +100,7 @@ export class NetworkConnectionWizards {
       /**
        * the dialog will close itself when a dao is loaded
        */
-      return this.promise = (this.dialogService.open(ConnectToNet, this,
-        { host: $('.dashboard-main-content')[0] })
+      return this.promise = (this.dialogService.open(ConnectToNet, this)
         .then((openDialogResult: DialogOpenResult) => {
           this.dialogViewModel = openDialogResult.controller.controller.viewModel as ConnectToNet;
           return openDialogResult.closeResult;
