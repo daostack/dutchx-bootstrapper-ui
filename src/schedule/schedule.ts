@@ -4,6 +4,8 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { DateService } from 'services/DateService';
 import { IDisposable } from 'services/IDisposable';
+import { Web3Service } from 'services/Web3Service';
+import { Web3 } from 'web3';
 
 @autoinject
 export class Schedule {
@@ -23,12 +25,13 @@ export class Schedule {
   constructor(
     private appConfig: AureliaConfiguration,
     protected eventAggregator: EventAggregator,
-    private dateService: DateService
+    private dateService: DateService,
+    private web3: Web3Service
   ) {
   }
 
   public activate(model: { isLanding: boolean }) {
-    this.isLanding = model && model.isLanding;
+    this.isLanding = (model && model.isLanding) || !this.web3.isConnected;
     this.lockingPeriodEndDate = this.dateService
       .fromIsoString(this.appConfig.get(
         this.isLanding ? 'Landing.lockingPeriodEndDate' : 'lockingPeriodEndDate'), App.timezone);
