@@ -15,19 +15,17 @@ export class ConnectToNet {
   private userAccount: Address = null;
   private isDone: boolean;
   private landed: boolean;
-  private _hasAccepted = false;
   private checked1: boolean = false;
   private checked2: boolean = false;
 
-  @computedFrom('_hasAccepted')
   private get hasAccepted(): boolean {
-    return this._hasAccepted || (LocalStorageService.getItem(this.disclaimerAcceptanceKey(), false) === 'yes');
+    return LocalStorageService.getItem(this.disclaimerAcceptanceKey(), false) === 'yes';
   }
   private set hasAccepted(val: boolean) {
-    this._hasAccepted = val;
-    if (this.userAccount) {
+    if (this.userAccount && val) {
       LocalStorageService.setItem(this.disclaimerAcceptanceKey(), val ? 'yes' : 'no', false);
     }
+    this.eventAggregator.publish('connect.disclaimed', this.hasAccepted);
   }
 
   constructor(
@@ -44,12 +42,16 @@ export class ConnectToNet {
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id', () => {
       this.networkName = this.web3.networkName;
       this.userAccount = this.web3.defaultAccount;
-      this._hasAccepted = this.checked1 = this.checked2 = false;
+      this.hasAccepted = this.checked1 = this.checked2 = false;
     }));
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => {
       this.userAccount = this.web3.defaultAccount;
-      this._hasAccepted = this.checked1 = this.checked2 = false;
+      this.hasAccepted = this.checked1 = this.checked2 = false;
     }));
+
+    if (this.hasAccepted) {
+      this.eventAggregator.publish('connect.disclaimed', true);
+    }
   }
 
   public close(cancelled: boolean = false): Promise<DialogCancelableOperationResult> {
@@ -58,12 +60,16 @@ export class ConnectToNet {
   }
 
   private async land() {
-    // for clean transition
-    await this.close(false);
-    this.landed = true;
+    if (this.hasAccepted) {
+      // disclaimer has  already been accepted
+      await this.close(false);
+      this.eventAggregator.publish('connect.complete');
+    } else {
+      this.landed = true;
+    }
   }
 
-  private accept() {
+  private async accept() {
     if (this.checked1 && this.checked2) {
       this.hasAccepted = true;
     }

@@ -9,7 +9,7 @@ import { BigNumber, Web3Service } from '../../../services/Web3Service';
 export class EthBalance {
   @bindable({ defaultBindingMode: bindingMode.toView }) public placement: string = 'top';
 
-  private balance: BigNumber;
+  private balance: BigNumber = null;
   private filter: any;
   private subscriptions = new DisposableCollection();
 
@@ -61,7 +61,11 @@ export class EthBalance {
   private async getBalance() {
     try {
       const ethAddress = this.web3.defaultAccount;
-      this.balance = await this.web3.getBalance(ethAddress);
+      if (ethAddress) {
+        this.balance = await this.web3.getBalance(ethAddress);
+      } else {
+        this.balance = null;
+      }
       // tslint:disable-next-line:no-empty
     } catch (ex) {
     }

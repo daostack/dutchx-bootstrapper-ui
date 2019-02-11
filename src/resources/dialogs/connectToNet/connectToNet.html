@@ -5,7 +5,7 @@
   >
     <ux-dialog-header>
       <div
-        if.to-view="loading || !(hasDao && hasApprovedAccountAccess)"
+        if.to-view="loading || (!hasDao && !hasApprovedAccountAccess)"
         class="d-inline-block"
       >
         <img
@@ -13,13 +13,23 @@
           class="logo d-inline-block align-top"
           alt="dxDAO"
         >
-        Welcome to the dxDAO Vote Staking Interface</div>
+        Welcome to the dxDAO Vote Staking Interface
+      </div>
+
       <div
-        else
+        if.to-view="!loading && (hasAccepted && hasDao && hasApprovedAccountAccess)"
         class="d-inline"
       >
         <div class="d-inline-block warning-icon">⚠️</div>Important Notice: Reputation is Not Transferable
       </div>
+
+      <div
+        if.to-view="!loading && (!hasAccepted && isConnected && hasAccount && hasApprovedAccountAccess)"
+        class="d-inline"
+      >
+        <div class="d-inline-block warning-icon">⚠️</div>Disclaimer
+      </div>
+
     </ux-dialog-header>
     <ux-dialog-body>
       <div class="body">
@@ -27,59 +37,55 @@
           <pageloading></pageloading>
         </div>
         <div else>
-          <div if.to-view="hasAccepted">
-            <p if.to-view="!isConnected">
-              There seems to be no connection to the blockchain. Please install and/or enable the <a
-                href="https://metamask.io/"
-                target="_blank"
-              >MetaMask browser extension</a>,
-              point it to the <span class="important">Main Ethereum Network</span>, then refresh this browser page so you can access the <a
+          <p if.to-view="!isConnected">
+            There seems to be no connection to the blockchain. Please install and/or enable the <a
+              href="https://metamask.io/"
+              target="_blank"
+            >MetaMask browser extension</a>,
+            point it to the <span class="important">Main Ethereum Network</span>, then refresh this browser page so you can access the <a
+              href="https://daotalk.org/c/dx-dao"
+              target="_blank"
+            >dxDAO</a> Initializer.
+          </p>
+
+          <div if.to-view="isConnected && !hasAccount">
+            <p>To access the <a
                 href="https://daotalk.org/c/dx-dao"
                 target="_blank"
-              >dxDAO</a> Initializer.
-            </p>
-
-            <div if.to-view="isConnected && !hasAccount">
-              <p>To access the <a
-                  href="https://daotalk.org/c/dx-dao"
-                  target="_blank"
-                >dxDAO</a> Vote Staking Interface, please log in to MetaMask, select your desired account and allow the dxDAO Vote Staking Interface to access your account.
-            </div>
-
-            <div if.to-view="((isConnected && !hasAccount) || (!landed && hasDao))">
-              <p><span class="important">Important</span>: Reputation earned by locking tokens cannot be transferred.
-                <span if.to-view="!hasAccount">Please ensure you have selected the account (ETH Address) you intend to use in the future for voting within the DAO.</span>
-              </p>
-              <p if.to-view="hasAccount">
-                You are currently using the following account:
-                <usersaddress></usersaddress>.
-                Please be sure that you intend to use this account in the future for voting within the dxDAO.
-              </p>
-              <!-- "OK" (`land`) will take us off the info panel -->
-              <p
-                if.to-view="hasDao && hasApprovedAccountAccess"
-                class="buttonContainer"
-              ><button
-                  class="btn btn-submit"
-                  click.delegate="land()"
-                >OK</button></p>
-            </div>
-
-            <div if.to-view="isConnected && (!hasAccount || !hasApprovedAccountAccess)">
-              <p class="buttonContainer"><button
-                  class="btn btn-submit"
-                  click.delegate="confirm()"
-                >Allow the dxDAO Vote Staking Interface to Access Your Account on MetaMask</button></p>
-            </div>
-
-            <div if.to-view="isConnected && hasAccount">
-              <p if.to-view="!hasDao">
-                Please check MetaMask and make sure you are connected to the Main Ethereum Network.
-              </p>
-            </div>
+              >dxDAO</a> Vote Staking Interface, please log in to MetaMask, select your desired account and allow the dxDAO Vote Staking Interface to access your account.
           </div>
+
+          <div if.to-view="((isConnected && !hasAccount) || (hasAccepted && !landed && hasDao))">
+            <p><span class="important">Important</span>: Reputation earned by locking tokens cannot be transferred.
+              <span if.to-view="!hasAccount">Please ensure you have selected the account (ETH Address) you intend to use in the future for voting within the DAO.</span>
+            </p>
+            <p if.to-view="hasAccount">
+              You are currently using the following account:
+              <usersaddress></usersaddress>.
+              Please be sure that you intend to use this account in the future for voting within the dxDAO.
+            </p>
+            <p
+              if.to-view="hasDao && hasApprovedAccountAccess"
+              class="buttonContainer"
+            ><button
+                class="btn btn-submit"
+                click.delegate="land()"
+              >OK</button></p>
+          </div>
+
+          <div if.to-view="isConnected && (!hasAccount || !hasApprovedAccountAccess)">
+            <p class="buttonContainer"><button
+                class="btn btn-submit"
+                click.delegate="confirm()"
+              >Allow the dxDAO Vote Staking Interface to Access Your Account on MetaMask</button></p>
+          </div>
+
+          <div if.to-view="hasAccepted && isConnected && hasAccount && !hasDao">
+            Please check MetaMask and make sure you are connected to the Main Ethereum Network.
+          </div>
+
           <div
-            else
+            if.to-view="!hasAccepted && isConnected && hasAccount && hasApprovedAccountAccess"
             class="disclaimer"
           >
             <div class="title">Required technical ‘know how’</div>

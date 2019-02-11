@@ -1,7 +1,7 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, bindingMode, containerless, customElement } from 'aurelia-framework';
 import { Address } from 'services/ArcService';
-import { IDisposable } from 'services/IDisposable';
+import { DisposableCollection } from 'services/DisposableCollection';
 import { BigNumber } from 'services/Web3Service';
 import { TokenService } from '../../../services/TokenService';
 
@@ -14,7 +14,7 @@ export class TokenBalance {
   @bindable({ defaultBindingMode: bindingMode.toView }) public placement: string = 'top';
   @bindable({ defaultBindingMode: bindingMode.twoWay }) public balance: BigNumber = null;
 
-  private subscription: IDisposable;
+  private subscriptions = new DisposableCollection();
 
   private events;
 
@@ -25,7 +25,8 @@ export class TokenBalance {
   }
 
   public attached() {
-    this.subscription = this.eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
+    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); }));
+    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id', () => { this.initialize(); }));
     this.initialize();
   }
 
@@ -35,9 +36,8 @@ export class TokenBalance {
   }
 
   private detached(): Promise<void> {
-    if (this.subscription) {
-      this.subscription.dispose();
-      this.subscription = null;
+    if (this.subscriptions) {
+      this.subscriptions.dispose();
     }
 
     return this.stop();
