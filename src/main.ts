@@ -34,6 +34,7 @@ export async function configure(aurelia: Aurelia) {
   aurelia.use.globalResources([
     PLATFORM.moduleName('resources/customElements/EtherscanLink/EtherscanLink'),
     PLATFORM.moduleName('resources/customElements/EthBalance/EthBalance'),
+    PLATFORM.moduleName('resources/customElements/MgnBalance/MgnBalance'),
     PLATFORM.moduleName('resources/customElements/UsersAddress/UsersAddress'),
     PLATFORM.moduleName('resources/customElements/TokenBalance/TokenBalance'),
     PLATFORM.moduleName('resources/customElements/locksForReputation/locksForReputation'),

@@ -410,10 +410,9 @@ export class Dashboard {
 
       await this.computeNumLocks();
 
-      const wrapper =
+      const mgnWrapper =
         (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
-      const mgnTokenAddress = await wrapper.getExternalLockingContract();
-      this.appConfig.set('mgnTokenAddress', mgnTokenAddress);
+      this.appConfig.set('mgnWrapper', mgnWrapper as any);
 
       const lockDates = await this.getLockDates();
 
