@@ -19,7 +19,7 @@
     ]
   },
   "Kovan": {
-    "daoAddress": "0xDc81648652687096aeBaa5007D0dA108030FfA14",
+    "daoAddress": "0xf434409d6acdda94917e47ff008d270bc3770200",
     "lockableTokens": [
       {
         "address": "0x98709b83af325a46edfac2f053a730a2980b3682",
