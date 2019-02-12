@@ -38,7 +38,7 @@
 
             <div class="title second">Completely Decentralized</div>
 
-            <div class="body">The community run dxDAO gives its stakeholders, such as traders and market makers, the unique ability to govern the DutchX, allowing them to list tokens, manage fees, update the protocol, and more!</div>
+            <div class="body">The community run dxDAO gives its stakeholders, such as traders and market makers, the unique ability to govern the DutchX, allowing them to list tokens, manage liquidity contribution, update the protocol, and more!</div>
           </div>
           <div class="col-md-4 proposition">
             <div class="icon"><img src="../../static/icon-holographic-governance.svg" /></div>
@@ -59,7 +59,8 @@
           <div class="col-8 offset-2">
             <div class="title">The Vote Staking Period</div>
             <div class="body">
-              <div class="body">Before the dxDAO begins making decisions, there is a vote staking period. During this period, users must stake for their vote to receive voting power in the dxDAO upon launch. There are several methods of participating in the vote staking period to earn Reputation:</div>
+              <div class="body">Before the dxDAO begins making decisions, there is a vote staking period. During this period, users must stake for their vote to receive voting power in the dxDAO upon launch.
+                There are several methods of participating in the vote staking period to earn Reputations-all your reputation earned is added across all categories:</div>
               <div class="list-items">
                 <div class="list-item"><span class="bullet">1</span>Locking ETH</div>
                 <div class="list-item"><span class="bullet">2</span>Locking Tokens</div>
@@ -67,7 +68,7 @@
                 <div class="list-item"><span class="bullet">4</span>Bidding GEN tokens</div>
                 <div style="border-bottom: dashed 1px white; margin-bottom:.5rem"></div>
                 <p>After Vote Staking Period</p>
-                <div class="list-item"><span class="bullet">5</span>Bidding GEN tokens</div>
+                <div class="list-item"><span class="bullet">5</span>DAO Storytelling</div>
               </div>
 
               <div
@@ -244,7 +245,7 @@
                                   value.to-view="redeemable.amount | ethwei"
                                   precision="8"
                                   placement="left"
-                                ></floating-point-number> Rep
+                                ></floating-point-number>
                               </td>
                               <td>${redeemable.what}</td>
                             </tr>
@@ -252,7 +253,7 @@
                         </table>
                       </div>
                       <div>
-                        <p>All reputation earned by all participants will be distributed after the vote staking period.</p>
+                        <p>Now wait for the governance phase to begin ${governanceStartDate | date:'shortdayofmonth'} - what will the first proposals be?</p>
                         <p>Reputation is not an ERC-20 token and will not appear in most wallets. To confirm on Etherscan you’ve received Reputation, follow [this tutorial].</p>
                       </div>
                     </div>

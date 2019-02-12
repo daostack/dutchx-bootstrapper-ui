@@ -5,6 +5,7 @@ import { autoinject, computedFrom, singleton } from 'aurelia-framework';
 import axios from 'axios';
 import { EventConfig, EventConfigException, EventConfigFailure, EventMessageType } from 'entities/GeneralEvents';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { DateService } from 'services/DateService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { IDisposable } from 'services/IDisposable';
 import { LockService } from 'services/lockServices';
@@ -71,6 +72,7 @@ export class Dashboard {
   private schemesLoading: boolean = false;
   private dashboardElement: any;
   private lockingPeriodEndDate: Date;
+  private governanceStartDate: Date;
   private fakeRedeem: boolean = false;
   private canRedeem: boolean = false;
   private networkName: string;
@@ -136,7 +138,7 @@ export class Dashboard {
     private appConfig: AureliaConfiguration,
     private arcService: ArcService,
     private networkConnectionWizards: NetworkConnectionWizards,
-    private app: App
+    private dateService: DateService
   ) {
     $(window).resize(this.fixScrollbar);
   }
@@ -445,6 +447,8 @@ export class Dashboard {
       this.appConfig.set('lockingPeriodEndDate', lockDates.end as any);
 
       this.lockingPeriodEndDate = lockDates.end;
+      this.governanceStartDate = this.dateService
+        .fromIsoString(this.appConfig.get('Landing.governanceStartDate'), App.timezone);
 
       if (!this.repSummaryCheck) {
         this.repSummaryCheck =
