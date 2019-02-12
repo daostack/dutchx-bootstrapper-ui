@@ -22,7 +22,7 @@ export class Schedule {
     this.lockingPeriodStartDate = this.dateService
       .fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'), App.timezone);
     this.governanceStartDate = this.dateService
-      .fromIsoString(this.appConfig.get('Landing.governanceStartDate'), App.timezone);
+      .fromIsoString(this.appConfig.get('governanceStartDate'), App.timezone);
     this.lastLockingPeriodDate = new Date(this.governanceStartDate.getTime() - 86400000);
   }
 

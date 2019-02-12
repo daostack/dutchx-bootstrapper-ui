@@ -448,7 +448,7 @@ export class Dashboard {
 
       this.lockingPeriodEndDate = lockDates.end;
       this.governanceStartDate = this.dateService
-        .fromIsoString(this.appConfig.get('Landing.governanceStartDate'), App.timezone);
+        .fromIsoString(this.appConfig.get('governanceStartDate'), App.timezone);
 
       if (!this.repSummaryCheck) {
         this.repSummaryCheck =

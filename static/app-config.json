@@ -1,9 +1,9 @@
 {
   "rootTimezone": "Asia/Tel_Aviv",
+  "governanceStartDate":    "2019-04-04T12:00:00.000",
   "Landing": {
     "lockingPeriodStartDate": "2019-02-18T12:00:00.000",
-    "lockingPeriodEndDate":   "2019-03-20T12:00:00.000",
-    "governanceStartDate":    "2019-04-04T12:00:00.000"
+    "lockingPeriodEndDate":   "2019-03-20T12:00:00.000"
   },
   "Ganache": {
     "daoAddress": "0xcb4e66eca663fdb61818d52a152601ca6afef74f",
@@ -19,6 +19,7 @@
     ]
   },
   "Kovan": {
+    "daoAddress": "0xDc81648652687096aeBaa5007D0dA108030FfA14",
     "lockableTokens": [
       {
         "address": "0x98709b83af325a46edfac2f053a730a2980b3682",
@@ -35,6 +36,7 @@
     ]
   },
   "Rinkeby": {
+    "daoAddress": "0x9af6e37b6a61fd55c9358339d9019f3a1dee8432",
     "lockableTokens": [
       {
         "address": "0xc778417e063141139fce010982780140aa0cd5ab",
