@@ -249,13 +249,12 @@ text-align: center;
   width: 8.7rem;
 }
 
-.scheme-dashboard .scheme-dashboard-body.lockingTokens .dropdown {
-  /**
-    so the DDDL items won't get too wide and wrap
-  */
-  padding-right: 1.2rem;
+.scheme-dashboard .scheme-dashboard-body.lockingTokens .dropdown .dropdown-menu {
+  overflow-y: auto;
+  max-height: 30rem;
+  padding-right: 1.2rem !important;
 }
-
+sf
 .redeemSection {
   background-color: $color-ds-darkblue;
   color: $color-ds-white;

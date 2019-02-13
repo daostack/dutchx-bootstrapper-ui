@@ -6,7 +6,7 @@ import { BigNumber, Web3Service } from './Web3Service';
 export class TokenService {
 
   constructor(
-      private web3: Web3Service
+    private web3: Web3Service
   ) { }
 
   public async getDaoTokenSymbol(token: DaoTokenWrapper): Promise<string> {
@@ -58,7 +58,7 @@ export class TokenService {
     const token = await this.getErc20Token(tokenAddress);
 
     if (!token) {
-      return new BigNumber(0);
+      return null;
     }
 
     return this.getErc20TokenBalance(token, accountAddress, inEth);

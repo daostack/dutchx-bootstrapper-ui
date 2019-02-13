@@ -49,20 +49,22 @@
                   aria-expanded="false"
                 >${selectedToken ? "Selected token: " + selectedToken.symbol : "Select a
                   Token to Lock"}</a>
-                <ul
+                <div
                   class="dropdown-menu"
                   aria-labelledby="lockableTokensDdl"
                 >
-                  <li
+                  <a
+                    href="#"
                     class="dropdown-item"
                     click.delegate="selectToken.call($parent.$parent, tokenSpec)"
                     repeat.for="tokenSpec of $parent.lockableTokens"
                   >${tokenSpec.symbol} (<tokenbalance
                       token.to-view="tokenSpec.address"
                       balance.bind="tokenSpec.balance"
+                      trailing-zeroes.to-view="0"
                     ></tokenbalance>)
-                  </li>
-                </ul>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
