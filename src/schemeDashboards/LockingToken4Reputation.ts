@@ -6,6 +6,7 @@ import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { AureliaHelperService } from 'services/AureliaHelperService';
 import { ITokenSpecification } from 'services/lockServices';
 import { SortService } from 'services/SortService';
+import { TokenService } from 'services/TokenService';
 import { Utils as UtilsInternal } from 'services/utils';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 import {
@@ -23,7 +24,7 @@ import {
 export class LockingToken4Reputation extends Locking4Reputation {
   protected wrapper: LockingToken4ReputationWrapper;
 
-  private lockableTokens: Array<ITokenSpecificationX>;
+  private lockableTokens: Array<ITokenSpecificationX> = [];
   private selectedToken: ITokenSpecification = null;
   private selectedTokenIsLiquid: boolean = false;
   private dashboard: HTMLElement;
@@ -32,29 +33,36 @@ export class LockingToken4Reputation extends Locking4Reputation {
     appConfig: AureliaConfiguration,
     eventAggregator: EventAggregator,
     web3Service: Web3Service,
-    private aureliaHelperService: AureliaHelperService
+    private aureliaHelperService: AureliaHelperService,
+    private tokenService: TokenService
   ) {
     super(appConfig, eventAggregator, web3Service);
   }
 
   protected async refresh() {
     await super.refresh();
-    const tokens = this.lockService.lockableTokenSpecs;
-    tokens.filter((tokenInfo: ITokenSpecificationX) => {
-      tokenInfo.balance = new BigNumber(0);
-      /**
-       * Whenever a balance changes, sort the array.
-       * Sadly this will sort on the initial fetching of the
-       * balances, but it is a very small list, so not worth optimizing.
-       */
-      this.aureliaHelperService.createPropertyWatch(
-        tokenInfo, 'balance', () => {
-          this.sortTokens();
+    const tokens: Array<ITokenSpecificationX> = this.lockService.lockableTokenSpecs;
+    for (const tokenInfo of tokens) {
+      await this.tokenService.getUserTokenBalance(tokenInfo.address)
+        .then((balance: BigNumber) => {
+          tokenInfo.balance = balance;
+          /**
+           * Whenever a balance changes, sort the array.
+           */
+          this.aureliaHelperService.createPropertyWatch(
+            tokenInfo, 'balance', (newValue: BigNumber, oldValue: BigNumber) => {
+              if ((!newValue && oldValue) ||
+                (newValue && !oldValue) ||
+                (newValue && oldValue && !newValue.eq(oldValue))) {
+                /**
+                 * Trying not to trigger this too often.
+                 */
+                this.lockableTokens = this.sortTokens(this.lockableTokens);
+              }
+            });
         });
-      return true;
-    });
-    this.lockableTokens = tokens;
-    this.sortTokens();
+    }
+    this.lockableTokens = this.sortTokens(tokens);
   }
 
   protected async accountChanged(account: Address) {
@@ -129,28 +137,27 @@ export class LockingToken4Reputation extends Locking4Reputation {
     this.selectedToken = tokenSpec;
   }
 
-  private sortTokens(): void {
-    const tokens = this.lockableTokens;
-
+  private sortTokens(tokens: Array<ITokenSpecificationX>): Array<ITokenSpecificationX> {
     /**
      * what we want here is the concatenation of two arrays, each sorted by symbol:
      * The first is the set of all zero balances, the second all the rest.
      */
-    this.lockableTokens = [
+    tokens = [
       ...tokens
         .filter((tokenInfo: ITokenSpecificationX) => {
-          return !tokenInfo.balance.eq(0);
+          return tokenInfo.balance && !tokenInfo.balance.eq(0);
         })
         .sort((a: ITokenSpecificationX, b: ITokenSpecificationX) => {
           return SortService.evaluateString(a.symbol, b.symbol);
         }),
       ...tokens.filter((tokenInfo: ITokenSpecificationX) => {
-        return tokenInfo.balance.eq(0);
+        return !tokenInfo.balance || tokenInfo.balance.eq(0);
       })
         .sort((a: ITokenSpecificationX, b: ITokenSpecificationX) => {
           return SortService.evaluateString(a.symbol, b.symbol);
         }),
     ];
+    return tokens;
   }
 }
 

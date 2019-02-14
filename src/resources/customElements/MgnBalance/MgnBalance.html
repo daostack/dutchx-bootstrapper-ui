@@ -1,14 +1,13 @@
 <template>
   <floating-point-number
-    class="balance"
+    class="ethbalance"
     if.to-view="balance !== null"
-    value.bind="balance | ethwei"
+    value.to-view="balance | ethwei"
     precision="6"
     placement.to-view="placement"
-    trailing-zeroes.to-view="trailingZeroes"
   ></floating-point-number>
   <span
     else
-    class="balance"
+    class="ethbalance"
   >N/A</span>
 </template>

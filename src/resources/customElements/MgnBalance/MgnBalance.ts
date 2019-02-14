@@ -1,3 +1,5 @@
+import { ExternalLocking4ReputationWrapper } from '@daostack/arc.js';
+import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, bindingMode, containerless, customElement } from 'aurelia-framework';
 import { DisposableCollection } from 'services/DisposableCollection';
@@ -5,17 +7,19 @@ import { BigNumber, Web3Service } from '../../../services/Web3Service';
 
 @autoinject
 @containerless
-@customElement('ethbalance')
-export class EthBalance {
+@customElement('mgnbalance')
+export class MgnBalance {
   @bindable({ defaultBindingMode: bindingMode.toView }) public placement: string = 'top';
 
-  private balance: BigNumber = null;
+  private balance: BigNumber;
   private filter: any;
   private subscriptions = new DisposableCollection();
+  private checking: boolean = false;
 
   constructor(
     private web3: Web3Service,
-    private eventAggregator: EventAggregator) {
+    private eventAggregator: EventAggregator,
+    private appConfig: AureliaConfiguration) {
   }
 
   public attached() {
@@ -59,15 +63,19 @@ export class EthBalance {
   }
 
   private async getBalance() {
-    try {
-      const accountAddress = this.web3.defaultAccount;
-      if (accountAddress) {
-        this.balance = await this.web3.getBalance(accountAddress);
-      } else {
-        this.balance = null;
+    if (!this.checking) {
+      try {
+        this.checking = true;
+        const mgnWrapper: ExternalLocking4ReputationWrapper = this.appConfig.get('mgnWrapper');
+        if (mgnWrapper) {
+          const accountAddress = this.web3.defaultAccount;
+          this.balance = await mgnWrapper.accountTokenBalance(accountAddress);
+        } else {
+          this.balance = null;
+        }
+      } finally {
+        this.checking = false;
       }
-      // tslint:disable-next-line:no-empty
-    } catch (ex) {
     }
   }
 }
