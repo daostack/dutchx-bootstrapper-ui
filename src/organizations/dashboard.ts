@@ -677,7 +677,7 @@ export class Dashboard {
     setTimeout(() => { this.fixScrollbar(); }, 0);
   }
 
-  private toggleDisclaimer(evt: Event) {
+  private toggleDisclaimer() {
     $('.dashboard-page #disclaimer').collapse('toggle');
     // timeout allows a little more BMD animation to show
     setTimeout(() => { this.showingDisclaimer = !this.showingDisclaimer; }, 500);
