@@ -65,6 +65,13 @@ export class FloatingPointNumber {
         text = text.replace(regex, `.${'0'.repeat(this.trailingZeroes as number)}`)
           // removes zeroes trailing after non-zero digits below the decimal
           .replace(/(\.\d*?[1-9])0+$/g, '$1');
+
+        /**
+         * Don't be left with a trailing "." when trailingZeroes is 0
+         */
+        if ((this.trailingZeroes === 0) && text && (text[text.length - 1] === '.')) {
+          text = text.slice(0, text.length - 1);
+        }
       }
     }
 
