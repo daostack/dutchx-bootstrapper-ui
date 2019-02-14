@@ -73,7 +73,6 @@ export class MgnBalance {
         } else {
           this.balance = null;
         }
-        // tslint:disable-next-line:no-empty
       } finally {
         this.checking = false;
       }
