@@ -126,6 +126,9 @@ export class EventConfigTransaction extends EventConfig {
     public _address: string
   ) {
     super(message);
+    /**
+     * automatically disappear after 5 seconds
+     */
     this.duration = 5000;
     this.actionType = ActionType.none;
   }
