@@ -3,6 +3,30 @@
   margin-bottom: 2rem;
 }
 
+.dashboard-page .disclaimer {
+  padding-top: 2rem;
+  padding-bottom: .5rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.dashboard-page .disclaimer,
+.dashboard-page .disclaimer .contract {
+  background-color: $color-ds-red;
+  text-align: justify;
+  font-weight: 500;
+  font-size: 1.25rem;
+}
+
+.dashboard-page .disclaimer .contract {
+  margin-top: 3rem;
+}
+
+.dashboard-page .disclaimer .body {
+  text-align:center;
+  width:100%;
+}
+
 .dashboard-main-content {
   overflow-x: auto;
   overflow-y: scroll;
