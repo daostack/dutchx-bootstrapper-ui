@@ -1,6 +1,6 @@
 <template>
-  <div class="landing-page animated-page container-fluid au-animate">
-    <div
+  <div class="landing-page">
+    <!-- <div
       class="countdown"
       if.to-view="(msUntilCanLockCountdown() <= 0) & signal:'secondPassed'"
     ><a
@@ -13,130 +13,169 @@
       else
     ><span class="count">${msUntilCanLockCountdown() | timespan:countdownUnits() & signal:'secondPassed'}</span>
       until you can take part in the dxDAO</div>
+ -->
 
-    <div class="main-header">
-      <img src="../static/header-static.jpg" />
-    </div>
-
-    <div class="primary-section">
-      <div class="row">
-        <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-          <div class="icon"><img src="../static/dutchx-blue.svg" /></div>
-
-          <div class="header">A Better Way To Trade</div>
-
-          <div class="body-text">
-            <p>
-              The future of organizations is DAOs. The dxDAO is a next-generation DAO, designed to facilitate global, open trade.
-            </p>
-
-            <a>
-              The first dApp governed by the dxDAO will be the DutchX, an open trading protocol for ERC20 tokens using the Dutch auction mechanism. It determines a fair value for tokens, permits trading in low liquidity environments with no third party risk, and mitigates harmful trading practices like front-running.
-              You can find all information and documentation about the DutchX <a
-                href="https://dutchx.readthedocs.io"
-                target="_blank"
-              >here</a>, and join the discussion in this <a
-                href="https://daotalk.org/c/dx-dao"
-                target="_blank"
-              >Forum</a>.
-              </p>
-          </div>
-        </div>
+    <nav class="navbar navbar-expand-lg flex-column flex-sm-row delayed-warning-section">
+      <div class="navbar-text">
+        The dxDAO launch has been delayed for security reasons, in order to run an additional bug bounty program and audit on the codebase.
+        <p style="margin-top:1rem;">
+          Learn more in on the <a
+            href="https://blog.gnosis.pm/security-update-on-the-dxdao-bug-bounty-52cec0f02cde"
+            target="_blank"
+          >blog post here</a>.
+        </p>
       </div>
-    </div>
+    </nav>
 
-    <div class="secondary-sections">
-      <div class="row">
-        <div class="col-md-12 col-lg-5 offset-lg-1">
-          <div class="section green">
-            <div class="header">The Long-term Mission</div>
+    <!-- <div class="delayed-warning-section">WARNING:
+      The dxDAO launch has been delayed for security reasons, in order to run an additional bug bounty program and audit on the codebase.
+      <p style="margin-top:1rem">
+        Learn more in on the <a
+          href="https://blog.gnosis.pm/security-update-on-the-dxdao-bug-bounty-52cec0f02cde"
+          target="_blank"
+        >blog post here</a>.
+      </p>
+    </div> -->
+
+    <div class="main-content">
+      <div class="main-header">
+        <img src="../static/header-static.jpg" />
+      </div>
+
+      <div class="primary-section">
+        <div class="row">
+          <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+            <div class="icon"><img src="../static/dutchx-blue.svg" /></div>
+
+            <div class="header">A Better Way To Trade</div>
+
             <div class="body-text">
-              <p>For a decentralized protocol to reach its full potential, every layer of the stack must be decentralized, including governance. When a protocol is sufficiently decentralized at each layer, it becomes more resilient and ultimately more trustworthy for its users.</p>
+              <p>
+                The future of organizations is DAOs. The dxDAO is a next-generation DAO, designed to facilitate global, open trade.
+              </p>
 
-              <p>Without a central governing body, protocols and dApps will be able to more easily sustain themselves and adjust when facing adversarial risks. When the direction and parameterization of the protocol is collectively governed, users become more confident that further versions will align with their interests.</p>
-
-              <p>In the future, software—through the collective help of human actors—will own itself, run itself, and strategize for itself. Unlimited value exchange is one of the most critical and vulnerable components of the decentralization stack and where this future begins.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-12 col-lg-5">
-          <div class="section darkblue">
-            <div class="header">What is there to govern?</div>
-            <div class="body-text">
-              <p>The dxDAO can decide on any governance questions relating to the dxDAO or the DutchX trading protocol. Some examples include updates of the smart contract logic, whitelisting of tokens, changing the fee structure, incentivizing marketing efforts, asking for an additional security audit, or creating a liquidity provision on the DutchX trading protocol. The DAO may additionally find a need to fund its future <a
-                  href="https://github.com/gnosis/dx-daostack"
+              <a>
+                The first dApp governed by the dxDAO will be the DutchX, an open trading protocol for ERC20 tokens using the Dutch auction mechanism. It determines a fair value for tokens, permits trading in low liquidity environments with no third party risk, and mitigates harmful trading practices like front-running.
+                You can find all information and documentation about the DutchX <a
+                  href="https://dutchx.readthedocs.io"
                   target="_blank"
-                >open-source development</a>, which would require decision-making around allocating fees.
-              </p>
+                >here</a>, and join the discussion in this <a
+                  href="https://daotalk.org/c/dx-dao"
+                  target="_blank"
+                >Forum</a>.
+                </p>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="btn-container">
+        <a
+          class="btn btn-primary"
+          style="margin-right:.5rem"
+          href=""
+          target="_blank"
+        >White Paper</a>
+        <a
+          class="btn btn-primary"
+          style="margin-left:.5rem"
+          href=""
+          target="_blank"
+        >Walkthrough</a>
+      </div> -->
+      </div>
 
-              <p>In the future, the dxDAO may then decide to deploy and govern other decentralized trading protocols.</p>
+      <div class="secondary-sections">
+        <div class="row">
+          <div class="col-md-12 col-lg-5 offset-lg-1">
+            <div class="section green">
+              <div class="header">The Long-term Mission</div>
+              <div class="body-text">
+                <p>For a decentralized protocol to reach its full potential, every layer of the stack must be decentralized, including governance. When a protocol is sufficiently decentralized at each layer, it becomes more resilient and ultimately more trustworthy for its users.</p>
+
+                <p>Without a central governing body, protocols and dApps will be able to more easily sustain themselves and adjust when facing adversarial risks. When the direction and parameterization of the protocol is collectively governed, users become more confident that further versions will align with their interests.</p>
+
+                <p>In the future, software—through the collective help of human actors—will own itself, run itself, and strategize for itself. Unlimited value exchange is one of the most critical and vulnerable components of the decentralization stack and where this future begins.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 col-lg-5">
+            <div class="section darkblue">
+              <div class="header">What is there to govern?</div>
+              <div class="body-text">
+                <p>The dxDAO can decide on any governance questions relating to the dxDAO or the DutchX trading protocol. Some examples include updates of the smart contract logic, whitelisting of tokens, changing the fee structure, incentivizing marketing efforts, asking for an additional security audit, or creating a liquidity provision on the DutchX trading protocol. The DAO may additionally find a need to fund its future <a
+                    href="https://github.com/gnosis/dx-daostack"
+                    target="_blank"
+                  >open-source development</a>, which would require decision-making around allocating fees.
+                </p>
+
+                <p>In the future, the dxDAO may then decide to deploy and govern other decentralized trading protocols.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-lg-5 offset-lg-1">
+            <div class="section bluegreen">
+              <div class="header">What is the thought behind the Vote staking period?</div>
+              <div class="body-text">dxDAO's vote staking period seeks to place some priority on participation in the dxDAO by individuals or projects that are interested in the governance of decentralized exchanges, while still making Reputation (voting power) available to a larger user base.</div>
+            </div>
+          </div>
+
+          <div class="col-md-12 col-lg-5">
+            <div class="section lightblue">
+              <div class="header">How do I vote and what is Reputation (voting power)?</div>
+              <div class="body-text">Voting will be carried out using <a
+                  href="https://alchemy.daostack.io/#/"
+                  target="_blank"
+                >Alchemy</a>, the friendly DAO interface powered by DAOstack. By default, proposals submitted to the DAO require an absolute majority of voting power to pass—that is, greater than 50% of the total Reputation in the DAO. However, this can be changed so that only a relative majority is required, meaning more Reputation votes for the proposal than against it within a given time frame. Whether an absolute or relative majority is required depends on the activity in a prediction market, in which proposals may be "<a
+                  href="https://medium.com/daostack/on-the-utility-of-the-gen-token-eb4f341d770e"
+                  target="_blank"
+                >boosted</a>" when enough tokens are staked to predict a proposal’s passing by the DAO. This tandem system—Reputation-based voting along with token-based predicting—is the essence of the <a
+                  href="https://medium.com/daostack/on-the-utility-of-the-gen-token-eb4f341d770e"
+                  target="_blank"
+                >Holographic Consensus</a> framework developed by DAOstack.
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-12 col-lg-5 offset-lg-1">
-          <div class="section bluegreen">
-            <div class="header">What is the thought behind the initial Reputation distribution?</div>
-            <div class="body-text">dxDAO's vote staking period seeks to place some priority on participation in the dxDAO by individuals or projects that are interested in the governance of decentralized exchanges, while still making Reputation (voting power) available to a larger user base.</div>
-          </div>
-        </div>
 
-        <div class="col-md-12 col-lg-5">
-          <div class="section lightblue">
-            <div class="header">How do I vote and what is Reputation (voting power)?</div>
-            <div class="body-text">Voting will be carried out using <a
-                href="https://alchemy.daostack.io/#/"
-                target="_blank"
-              >Alchemy</a>, the friendly DAO interface powered by DAOstack. By default, proposals submitted to the DAO require an absolute majority of voting power to pass—that is, greater than 50% of the total Reputation in the DAO. However, this can be changed so that only a relative majority is required, meaning more Reputation votes for the proposal than against it within a given time frame. Whether an absolute or relative majority is required depends on the activity in a prediction market, in which proposals may be "<a
-                href="https://medium.com/daostack/on-the-utility-of-the-gen-token-eb4f341d770e"
-                target="_blank"
-              >boosted</a>" when enough tokens are staked to predict a proposal’s passing by the DAO. This tandem system—Reputation-based voting along with token-based predicting—is the essence of the <a
-                href="https://medium.com/daostack/on-the-utility-of-the-gen-token-eb4f341d770e"
-                target="_blank"
-              >Holographic Consensus</a> framework developed by DAOstack.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      <div class="pie-chart-section">
 
-    <div class="pie-chart-section">
+        <div class="row">
+          <div class="col-md-12 col-lg-10 offset-lg-1">
 
-      <div class="row">
-        <div class="col-md-12 col-lg-10 offset-lg-1">
+            <div class="pie-title">How much and how is Reputation exactly distributed?</div>
 
-          <div class="pie-title">How much and how is Reputation exactly distributed?</div>
-
-          <compose
+            <!-- <compose
             view-model="./schedule/schedule"
             model.to-view="scheduleModel"
-          ></compose>
+          ></compose> -->
 
-          <div class="pie-chart">
-            <img
-              class="landscape"
-              src="../static/pie-chart-static-landscape.svg"
-            />
-            <img
-              class="portrait-small"
-              src="../static/pie-chart-static-portrait.svg"
-            />
-            <img
-              class="portrait-medium"
-              src="../static/pie-chart-static-portrait.svg"
-            />
-            <div class="footer">Participants may be part of more than one group, with Reputation accumulating additively.</div>
+            <div class="pie-chart">
+              <img
+                class="landscape"
+                src="../static/pie-chart-static-landscape.svg"
+              />
+              <img
+                class="portrait-small"
+                src="../static/pie-chart-static-portrait.svg"
+              />
+              <img
+                class="portrait-medium"
+                src="../static/pie-chart-static-portrait.svg"
+              />
+              <div class="footer">Participants may be part of more than one group, with Reputation accumulating additively.</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="join-section">
-      <div class="body">Join the discussion in this <a
-          href="https://daotalk.org/c/dx-dao"
-          target="_blank"
-        >Forum</a></div>
+      <div class="join-section">
+        <div class="body">Join the discussion in this <a
+            href="https://daotalk.org/c/dx-dao"
+            target="_blank"
+          >Forum</a></div>
+      </div>
     </div>
   </div>
 </template>

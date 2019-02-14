@@ -17,10 +17,11 @@ export class Landing {
   ) {
     this.lockingPeriodStartDate = this.dateService
       .fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'), App.timezone);
+    $(window).resize(this.fixScrollbar);
   }
 
-  public activate() {
-    $('body').css('overflow', 'auto');
+  public attached() {
+    this.fixScrollbar();
   }
 
   private msUntilCanLockCountdown(): number {
@@ -33,4 +34,16 @@ export class Landing {
         (this.msUntilCanLockCountdown() >= 60000 ? 'minutes' : 'seconds')
       );
   }
+
+  private fixScrollbar() {
+
+    const bodyHeight = $(window).outerHeight() || 0;
+    const headerHeight = $('.landing-page .navbar').outerHeight() || 0;
+
+    $('.landing-page .main-content').css(
+      {
+        'max-height': `${bodyHeight - headerHeight}px`,
+      });
+  }
+
 }

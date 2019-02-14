@@ -225,8 +225,6 @@ export class Dashboard {
 
   public async attached() {
 
-    $('body').css('overflow', 'hidden');
-
     /**
      * prevents some jitter
      */

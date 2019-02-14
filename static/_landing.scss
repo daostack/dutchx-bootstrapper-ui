@@ -1,12 +1,25 @@
 @import "./colors";
 
-.landing-page {
-  padding-top: 4rem;
-  padding-left: 0;
-  padding-right: 0;
+.landing-page .delayed-warning-section {
+  background-color: $color-ds-red;
+  padding-top: 2rem;
+  padding-bottom: .5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  text-align: center;
+  font-weight: 500;
+  font-size: 1.25rem;
+}
+
+.landing-page .main-content {
+  overflow-x: auto;
+  overflow-y: scroll;
+  /* so top can be repositioned when header height changes (see fixScrollbar) */
+  position: relative;
 }
 
 .landing-page .countdown {
+  padding-top: 4rem;
   padding-left: 1rem;
   padding-right: 1rem;
   font-size:3rem;
@@ -187,4 +200,17 @@
   text-align: center;
   color: $color-ds-white;
   font-size: 2.6rem;
+}
+
+.landing-page .btn-container {
+  text-align: center;
+}
+
+.landing-page .btn-container .btn-primary {
+  background-color: $color-ds-darkblue !important;
+}
+
+.landing-page .btn-container .btn-primary:hover {
+  background: $color-ds-white !important;
+  color: $color-ds-darkblue !important;
 }
