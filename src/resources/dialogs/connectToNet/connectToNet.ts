@@ -1,5 +1,5 @@
 import { Address } from '@daostack/arc.js';
-import { DialogController } from 'aurelia-dialog';
+import { DialogCancelableOperationResult, DialogController } from 'aurelia-dialog';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, computedFrom } from 'aurelia-framework';
 import { DisposableCollection } from 'services/DisposableCollection';
@@ -12,26 +12,18 @@ export class ConnectToNet {
   private model: IConnectToNetModel;
   private networkName: string;
   private subscriptions: DisposableCollection = new DisposableCollection();
-  private userAccount: Address;
+  private userAccount: Address = null;
   private isDone: boolean;
   private landed: boolean;
-  private _hasAccepted = false;
-
-  @computedFrom('userAccount, _hasAccepted')
-  private get hasAccepted(): boolean {
-    return LocalStorageService.getItem(this.disclaimerAcceptanceKey(), false) === 'yes';
-  }
-  private set hasAccepted(val: boolean) {
-    this._hasAccepted = val;
-    if (this.userAccount) {
-      LocalStorageService.setItem(this.disclaimerAcceptanceKey(), val ? 'yes' : 'no', false);
-    }
-  }
+  private checked1: boolean = false;
+  private checked2: boolean = false;
+  private checkStateChangeTimerId: any;
+  private hasAccepted: boolean = false;
 
   constructor(
-      private controller: DialogController
-    , private eventAggregator: EventAggregator
-    , private web3: Web3Service) { }
+    private controller: DialogController,
+    private eventAggregator: EventAggregator,
+    private web3: Web3Service) { }
 
   public async activate(model: IConnectToNetModel) {
     this.networkName = this.web3.networkName;
@@ -42,30 +34,91 @@ export class ConnectToNet {
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id', () => {
       this.networkName = this.web3.networkName;
       this.userAccount = this.web3.defaultAccount;
+      this.checked1 = this.checked2 = false;
+      this.setHasAccepted(false);
     }));
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => {
       this.userAccount = this.web3.defaultAccount;
+      this.checked1 = this.checked2 = false;
+      this.setHasAccepted(false);
     }));
+
+    this.hasAccepted = this.getHasAccepted();
+
+    if (this.hasAccepted) {
+      this.eventAggregator.publish('connect.disclaimed', true);
+    }
+
+    /**
+     * hack to moniter when the disclaimer window may become visible
+     */
+    if (!this.readyToShowDisclaimer) {
+      this.checkStateChangeTimerId = setInterval(() => {
+        /**
+         * checking here to see if we are about to show the disclaimer window
+         * and want to resize the window.
+         */
+        if (this.readyToShowDisclaimer) {
+          this.reposition();
+          this.stopInterval();
+        }
+      }, 250);
+    }
   }
 
-  public close(cancelled: boolean = false) {
+  public deactivate() {
+    this.stopInterval();
+  }
+
+  public close(cancelled: boolean = false): Promise<DialogCancelableOperationResult> {
     this.subscriptions.dispose();
-    this.controller.close(!cancelled);
+    return this.controller.close(!cancelled);
   }
 
-  private land() {
+  private reposition(): void {
+    (this.controller.renderer as any).centerDialog();
+  }
+
+  private stopInterval() {
+    if (this.checkStateChangeTimerId) {
+      clearInterval(this.checkStateChangeTimerId);
+      this.checkStateChangeTimerId = null;
+    }
+  }
+  private getHasAccepted(): boolean {
+    return LocalStorageService.getItem(this.disclaimerAcceptanceKey, false) === 'yes';
+  }
+
+  private setHasAccepted(val: boolean): void {
+    if (val) {
+      LocalStorageService.setItem(this.disclaimerAcceptanceKey, 'yes', false);
+    }
+    this.hasAccepted = val;
+    this.eventAggregator.publish('connect.disclaimed', val);
+  }
+
+  private get readyToShowDisclaimer(): boolean {
+    return !this.hasAccepted &&
+      this.model.isConnected &&
+      this.model.hasAccount &&
+      this.model.hasApprovedAccountAccess;
+  }
+
+  private async land() {
     if (this.hasAccepted) {
       // disclaimer has  already been accepted
-      this.close(false);
+      await this.close(false);
+      this.eventAggregator.publish('connect.complete');
     } else {
       this.landed = true;
     }
   }
 
-  private accept() {
-    this.close(false);
-    // timeout to keep GUI transition clean
-    setTimeout(() => { this.hasAccepted = true; }, 10);
+  private async accept() {
+    if (this.checked1 && this.checked2) {
+      this.setHasAccepted(true);
+      setTimeout(() => this.reposition(), 0);
+    }
   }
 
   /**
@@ -75,7 +128,7 @@ export class ConnectToNet {
     this.model.confirm();
   }
 
-  private disclaimerAcceptanceKey() {
+  private get disclaimerAcceptanceKey(): string {
     // the '_1' is a version number
     return `disclaimerAccepted_1_${this.userAccount}`;
   }

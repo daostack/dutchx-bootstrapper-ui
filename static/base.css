@@ -25,7 +25,8 @@
 
 body {
   font-weight: 300 !important;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
   font-family: "DINPro,Roboto,Helvetica,Arial,sans-serif";
   color: #212529; /* from BMD, make it official */
 }

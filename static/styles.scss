@@ -394,3 +394,8 @@ etherscanlink {
   bottom: .1rem;
   font-size: 1.5rem;
 }
+
+button.btn-submit:disabled,
+button.btn-submit:disabled:hover {
+  @extend .btn-submit:hover;
+}

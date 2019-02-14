@@ -82,6 +82,7 @@ export class Dashboard {
   private computingRedeemables: boolean = false;
   private org: DaoEx;
   private timezone = App.timezone;
+  private disclaimed = false;
 
   private dutchXSchemeConfigs = new Map<string, ISchemeConfig>([
     ['Auction4Reputation', {
@@ -134,7 +135,8 @@ export class Dashboard {
     private eventAggregator: EventAggregator,
     private appConfig: AureliaConfiguration,
     private arcService: ArcService,
-    private networkConnectionWizards: NetworkConnectionWizards
+    private networkConnectionWizards: NetworkConnectionWizards,
+    private app: App
   ) {
     $(window).resize(this.fixScrollbar);
   }
@@ -151,12 +153,11 @@ export class Dashboard {
     const subscription1 = AccountService.subscribeToAccountChanges(async (account: Address) => {
       await this.initializeNetwork();
       this.eventAggregator.publish('Network.Changed.Account', account);
-      if (!this.org) {
-        this.loadAvatar();
-      } else {
-        this.networkConnectionWizards.run(true, false);
-        this.loadSchemes();
-      }
+      /**
+       * this will notify if the new user is discaimed, and we will then load the avatar
+       * or schemes accordingly.
+       */
+      this.networkConnectionWizards.run(!!this.org, false);
     });
 
     this.subscriptions.push({ dispose: () => subscription1.unsubscribe() });
@@ -170,14 +171,32 @@ export class Dashboard {
     const subscription2 = AccountService.subscribeToNetworkChanges(async (networkId: number) => {
       await this.initializeNetwork();
       this.eventAggregator.publish('Network.Changed.Id', networkId);
-      this.networkName = this.web3.networkName;
-      if (this.fakeRedeem && this.web3Service.isConnected && (this.networkName === 'Ganache')) {
-        await UtilsInternal.increaseTime(100000000000, this.web3.web3);
+      if (this.disclaimed) {
+        this.networkName = this.web3.networkName;
+        if (this.fakeRedeem && this.web3Service.isConnected && (this.networkName === 'Ganache')) {
+          await UtilsInternal.increaseTime(100000000000, this.web3.web3);
+        }
+        await this.loadAvatar();
+      } else {
+        this.networkConnectionWizards.run(false, false);
       }
-      await this.loadAvatar();
     });
 
     this.subscriptions.push({ dispose: () => subscription2.unsubscribe() });
+
+    this.subscriptions.push(this.eventAggregator.subscribe('connect.disclaimed', (disclaimed: boolean) => {
+      this.disclaimed = disclaimed;
+      if (this.disclaimed) {
+        if (!this.org) {
+          /**
+           * this will inform the connection dialog as to what to do next
+           */
+          this.loadAvatar();
+        } else {
+          this.loadSchemes();
+        }
+      }
+    }));
 
     /*******************
      * Handle avatar loaded.  Load schemes.
@@ -206,18 +225,7 @@ export class Dashboard {
       this.networkName = this.web3.networkName;
 
       /*******************
-       * Start wizard if there is no DAO, otherwise we're good
-       */
-      if (!this.org) {
-        /**
-         * we'll handle events from here to load a DAO
-         */
-        this.networkConnectionWizards.run(false, false);
-        this.loadAvatar();
-      }
-    } else { // an error occurred initializing
-      /**
-       * let the subscriptions above deal with everything
+       * Start wizard
        */
       this.networkConnectionWizards.run(!!this.org, false);
     }
@@ -272,12 +280,28 @@ export class Dashboard {
 
     try {
 
+      try {
+        // so we will at least be able to find out if we're connected and have a default account
+        await Utils.getWeb3();
+        // tslint:disable-next-line:no-empty
+      } catch (ex) {
+        this.eventAggregator.publish('handleException', new EventConfigException(`web3 is not found `, ex));
+        this.networkConnectionWizards.run(false, false);
+        return Promise.resolve(null);
+      }
+
       const networkName = await Utils.getNetworkName();
       this.appConfig.setEnvironment(networkName);
-
       ConfigService.set('logLevel',
         // tslint:disable-next-line: no-bitwise
         (networkName === 'Live') ? LogLevel.info | LogLevel.warn | LogLevel.error : LogLevel.all);
+
+      if (!this.appConfig.get('lockableTokens')) {
+        this.eventAggregator.publish('handleMessage',
+          new EventConfig(`the network ${networkName} has not been configured`, EventMessageType.Exception));
+        this.networkConnectionWizards.run(false, false);
+        return Promise.resolve(null);
+      }
 
       try {
         web3 = await InitializeArcJs({
