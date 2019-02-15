@@ -35,12 +35,12 @@ export class ConnectToNet {
       this.networkName = this.web3.networkName;
       this.userAccount = this.web3.defaultAccount;
       this.checked1 = this.checked2 = false;
-      this.setHasAccepted(false);
+      this.setHasAccepted(this.getHasAccepted());
     }));
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => {
       this.userAccount = this.web3.defaultAccount;
       this.checked1 = this.checked2 = false;
-      this.setHasAccepted(false);
+      this.setHasAccepted(this.getHasAccepted());
     }));
 
     this.hasAccepted = this.getHasAccepted();
