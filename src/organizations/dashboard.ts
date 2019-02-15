@@ -678,9 +678,8 @@ export class Dashboard {
   }
 
   private toggleDisclaimer() {
+    this.showingDisclaimer = !this.showingDisclaimer;
     $('.dashboard-page #disclaimer').collapse('toggle');
-    // timeout allows a little more BMD animation to show
-    setTimeout(() => { this.showingDisclaimer = !this.showingDisclaimer; }, 500);
   }
 }
 
