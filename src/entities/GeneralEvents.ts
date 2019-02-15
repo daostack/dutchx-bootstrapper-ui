@@ -18,6 +18,11 @@ export class EventConfig {
    */
   public addressType: string;
   /**
+   * Element from with the error originated.  Supply this only to obtain UI-specific behavior,
+   * like balloons.  Currently only for failures and exceptions.
+   */
+  public originatingUiElement: HTMLElement;
+  /**
    * for when action is Exception
    */
   public exception: any;
@@ -59,21 +64,25 @@ export class EventConfig {
 
 export class EventConfigFailure extends EventConfig {
   constructor(
-    message: string = 'An error occurred'
+    message: string = 'An error occurred',
+    originatingUiElement?: HTMLElement
   ) {
     super(message, EventMessageType.Failure, SnackLifetime.closeButton);
     this.message = `${this.message}`;
+    this.originatingUiElement = originatingUiElement;
   }
 }
 
 export class EventConfigException extends EventConfig {
   constructor(
     message: string = 'An error occurred',
-    public exception: any
+    public exception: any,
+    originatingUiElement?: HTMLElement
   ) {
     super(message, EventMessageType.Exception, SnackLifetime.closeButton);
     // the stack trace, etc, will be logged by ConsoleLogService
     this.message = this.message;
+    this.originatingUiElement = originatingUiElement;
   }
 }
 
@@ -111,18 +120,17 @@ export class EventConfigAddress extends EventConfig {
   }
 }
 
-export class EventConfigTransaction extends EventConfigAddress {
+export class EventConfigTransaction extends EventConfig {
   constructor(
     message: string,
-    public address: string,
-    /**
-     * text to display instead of address
-     */
-    public actionText: string = 'See Transaction'
+    public _address: string
   ) {
-    super(message, address, actionText);
-    this.actionType = ActionType.address;
-    this.addressType = 'tx';
+    super(message);
+    /**
+     * automatically disappear after 5 seconds
+     */
+    this.duration = 5000;
+    this.actionType = ActionType.none;
   }
 }
 

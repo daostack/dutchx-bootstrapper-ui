@@ -1,12 +1,18 @@
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject, computedFrom } from 'aurelia-framework';
+import { autoinject, computedFrom, View } from 'aurelia-framework';
 import { ILockInfoX } from 'resources/customElements/locksForReputation/locksForReputation';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LockService } from 'services/lockServices';
 import { Utils } from 'services/utils';
-import { EventConfigException, EventConfigFailure, EventConfigTransaction } from '../entities/GeneralEvents';
+import {
+  EventConfigException,
+  EventConfigFailure,
+  EventConfigTransaction,
+  EventMessageType
+} from '../entities/GeneralEvents';
 import {
   Address,
   ArcTransactionResult,
@@ -39,9 +45,34 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected lockerInfo: LockerInfo;
   protected subscriptions = new DisposableCollection();
   protected locks: Array<ILockInfoX>;
-  protected locking: boolean = false;
-  protected releasing: boolean = false;
+  protected _locking: boolean = false;
+  protected _releasing: boolean = false;
   protected sending: boolean = false;
+  protected myView: JQuery;
+
+  @computedFrom('_locking')
+  protected get locking(): boolean {
+    return this._locking;
+  }
+
+  protected set locking(val: boolean) {
+    this._locking = val;
+    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
+  }
+
+  @computedFrom('_releasing')
+  protected get releasing(): boolean {
+    return this._releasing;
+  }
+
+  protected set releasing(val: boolean) {
+    this._releasing = val;
+    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
+  }
+
+  protected get lockButton(): HTMLElement {
+    return this.myView.find('#lockButton')[0];
+  }
 
   protected lockModel: LockingOptions = {
     amount: undefined,
@@ -58,6 +89,10 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     protected web3Service: Web3Service
   ) {
     super();
+  }
+
+  public created(owningView: View, _myView: View) {
+    this.myView = $((owningView as any).firstChild);
   }
 
   public async activate(model: ISchemeDashboardModel) {
@@ -121,6 +156,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
     if (reason) {
       this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't lock: ${reason}`));
+      await BalloonService.show({
+        content: `Can't lock: ${reason}`,
+        eventMessageType: EventMessageType.Failure,
+        originatingUiElement: this.lockButton,
+      });
       return true;
     }
 
@@ -160,6 +200,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
     } catch (ex) {
       this.eventAggregator.publish('handleException', new EventConfigException(`The lock was not recorded`, ex));
+      await BalloonService.show({
+        content: `The lock was not recorded`,
+        eventMessageType: EventMessageType.Exception,
+        originatingUiElement: this.lockButton,
+      });
     } finally {
       this.locking = false;
       this.sending = false;
@@ -168,8 +213,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     return false;
   }
 
-  protected async release(lock: { lock: ILockInfoX }): Promise<boolean> {
-    const lockInfo = lock.lock;
+  protected async release(config: { lock: ILockInfoX, releaseButton: JQuery<EventTarget> }): Promise<boolean> {
+    const lockInfo = config.lock;
 
     if (this.locking || this.releasing) {
       return false;
@@ -198,6 +243,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     } catch (ex) {
       this.eventAggregator.publish('handleException',
         new EventConfigException(`The lock was not released`, ex));
+      await BalloonService.show({
+        content: `The lock was not released`,
+        eventMessageType: EventMessageType.Exception,
+        originatingUiElement: config.releaseButton,
+      });
     } finally {
       this.releasing = lockInfo.sending = false;
     }

@@ -8,7 +8,8 @@ export class LocksForReputation {
 
   @bindable({ defaultBindingMode: bindingMode.oneWay }) public locks: Array<LockInfo>;
   // tslint:disable-next-line: variable-name
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) public release: ({ lock: LockInfo }) => Promise<boolean>;
+  @bindable({ defaultBindingMode: bindingMode.oneTime })
+  public release: (config: { lock: LockInfo, releaseButton: JQuery<EventTarget> }) => Promise<boolean>;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public wrapper: Locking4ReputationWrapper;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public refresh: () => Promise<void>;
 
@@ -45,12 +46,15 @@ export class LocksForReputation {
     this.loading = false;
   }
 
-  private async _release(lock: ILockInfoInternal) {
+  private async _release(lock: ILockInfoInternal, event: Event) {
     if (!lock.canRelease) { return; }
 
-    lock.releasing = true;
     try {
-      const success = await this.release({ lock });
+      lock.releasing = true;
+
+      const releaseButton = $(event.target).next();
+
+      const success = await this.release({ lock, releaseButton });
       if (success) {
         lock.canRelease = false; // await this.canRelease(lock);
         lock.amount = (await this.wrapper.getLockInfo(lock.lockerAddress, lock.lockId)).amount;

@@ -5,6 +5,7 @@ import { autoinject, computedFrom, singleton } from 'aurelia-framework';
 import axios from 'axios';
 import { EventConfig, EventConfigException, EventConfigFailure, EventMessageType } from 'entities/GeneralEvents';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { IDisposable } from 'services/IDisposable';
 import { LockService } from 'services/lockServices';
@@ -83,6 +84,7 @@ export class Dashboard {
   private org: DaoEx;
   private timezone = App.timezone;
   private disclaimed = false;
+  private dashboardBusy: boolean = false;
 
   private dutchXSchemeConfigs = new Map<string, ISchemeConfig>([
     ['Auction4Reputation', {
@@ -217,6 +219,15 @@ export class Dashboard {
       this.computeNumLocks();
     }));
 
+    this.subscriptions.push(this.eventAggregator.subscribe('dashboard.busy', (val: boolean) => {
+      if (val) {
+        $('.dashboard-schemes li.list-group-item').addClass('frozen');
+      } else {
+        $('.dashboard-schemes li.list-group-item').removeClass('frozen');
+      }
+      this.dashboardBusy = val;
+    }));
+
     if (!this.initialized) {
       await this.initializeNetwork();
     }
@@ -247,22 +258,30 @@ export class Dashboard {
     /**
      * css will reference the 'selected' class
      */
-    dashboard.on('show.bs.collapse', '.scheme-dashboard', function(e: Event) {
-      // ignore bubbles from nested collapsables
-      if (!$(this).is(e.target as any)) { return; }
+    dashboard.on('show.bs.collapse', '.scheme-dashboard', (e: Event) => {
+
+      if (this.dashboardBusy) {
+        e.preventDefault();
+        return;
+      }
 
       const button = $(e.target);
       const li = button.closest('li');
       li.addClass('selected');
+      BalloonService.unhide(button as JQuery);
     });
 
-    dashboard.on('hide.bs.collapse', '.scheme-dashboard', function(e: Event) {
-      // ignore bubbles from nested collapsables
-      if (!$(this).is(e.target as any)) { return; }
+    dashboard.on('hide.bs.collapse', '.scheme-dashboard', (e: Event) => {
+
+      if (this.dashboardBusy) {
+        e.preventDefault();
+        return;
+      }
 
       const button = $(e.target);
       const li = button.closest('li');
       li.removeClass('selected');
+      BalloonService.hide(button as JQuery);
     });
 
     this.polishDom();
@@ -639,8 +658,8 @@ export class Dashboard {
   private fixScrollbar() {
 
     const bodyHeight = $(window).height() || 0;
-    const headerHeight = $('.header.navbar').height() || 0;
-    const footerHeight = $('.footer.navbar').height() || 0;
+    const headerHeight = $('.header.navbar').outerHeight() || 0;
+    const footerHeight = $('.footer.navbar').outerHeight() || 0;
 
     $('.dashboard-main-content').css(
       {
@@ -675,3 +694,7 @@ interface ISchemeConfig {
   icon_hover?: string;
   position: number;
 }
+
+// export interface IPreventDashboardCollapse {
+//   prevent: () => void;
+// }

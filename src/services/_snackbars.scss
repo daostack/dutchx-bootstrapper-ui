@@ -1,5 +1,6 @@
 .snackbar {
   max-width: 37rem;
+  min-width: inherit;
 }
 
 .snackbar.snack-failure .snackbar-content {
@@ -19,23 +20,19 @@
   padding:.25rem;
   padding-top: 0px;
   padding-bottom: 0px;
-  margin-left: .5rem;
+  margin-left: .75rem;
   text-transform:uppercase;
 }
 
 .snackbar-action-wrapper > a {
   color: $gray-800;
-  margin-left: .5rem;  
+  margin-left: .75rem;  
   text-transform:uppercase;  
 }
 
 .snackbar-action-wrapper button:hover {
   background-color: transparent;
   text-decoration: underline;
-}
-
-.snackbar-message-text {
-  margin-right:.25rem;
 }
 
 #snackbar-container {
