@@ -3,6 +3,7 @@ import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { DateService } from 'services/DateService';
+import { DisposableCollection } from 'services/DisposableCollection';
 import { IDisposable } from 'services/IDisposable';
 import { Web3Service } from 'services/Web3Service';
 import { Web3 } from 'web3';
@@ -20,7 +21,7 @@ export class Schedule {
   private inLockingPeriod: boolean;
   private inRepDistributionPeriod: boolean;
   private inGovernancePeriod: boolean;
-  private subscription: IDisposable;
+  private subscriptions = new DisposableCollection();
 
   constructor(
     private appConfig: AureliaConfiguration,
@@ -44,29 +45,36 @@ export class Schedule {
      * 24-hours before governance period starts
      */
     this.lastLockingPeriodDate = new Date(this.governanceStartDate.getTime() - 86400000);
+
+    if (!this.isLanding) {
+      this.subscriptions.push(this.eventAggregator
+        .subscribe('DAO.loaded', () => {
+          this.lockingPeriodEndDate = this.dateService
+            .fromIsoString(this.appConfig.get('lockingPeriodEndDate'), App.timezone);
+          this.lockingPeriodStartDate = this.dateService
+            .fromIsoString(this.appConfig.get('lockingPeriodStartDate'), App.timezone);
+        }));
+    }
   }
 
   public attached() {
     if (this.isLanding) {
       $(this.sectionElement).addClass('landing');
     }
-    this.subscription = this.eventAggregator.subscribe('secondPassed', () => {
+    this.subscriptions.push(this.eventAggregator.subscribe('secondPassed', () => {
       this.getGovPeriod();
       if (this.inGovernancePeriod) {
-        this.subscription.dispose();
-        this.subscription = null;
+        this.subscriptions.dispose();
         return;
       }
       this.getLockingPeriodHasNotStarted();
       this.getInLockingPeriod();
       this.getInRepDistPeriod();
-    });
+    }));
   }
 
   public detached() {
-    if (this.subscription) {
-      this.subscription.dispose();
-    }
+    this.subscriptions.dispose();
   }
 
   private getLockingPeriodHasNotStarted(): boolean {
