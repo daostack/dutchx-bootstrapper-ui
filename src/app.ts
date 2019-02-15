@@ -44,10 +44,11 @@ export class App {
   public activate() {
     this.intervalId = setInterval(async () => {
       this.signaler.signal('secondPassed');
+      let blockDate;
       if (this.web3Service.isConnected) {
-        const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
-        this.eventAggregator.publish('secondPassed', blockDate);
+        blockDate = await Utils.lastBlockDate(this.web3Service.web3);
       }
+      this.eventAggregator.publish('secondPassed', blockDate);
     }, 1000);
   }
 

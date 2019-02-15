@@ -8,7 +8,22 @@
         <div class="container">
           <div class="triangle"><img src="${ getTriangle() }"></div>
           <div class="shortdate">Now</div>
-          <div class="body">We are working to get the vote staking interface for the dxDAO up and running.</div>
+          <div
+            class="body"
+            if.to-view="lockingPeriodHasNotStarted"
+          >We are working to get the vote staking interface for the dxDAO up and running.</div>
+          <div
+            class="body"
+            if.to-view="inLockingPeriod"
+          >Vote staking period is live.</div>
+          <div
+            class="body"
+            if.to-view="inRepDistributionPeriod"
+          >Reputation (voting power) distribution period is live.</div>
+          <div
+            class="body"
+            if.to-view="inGovernancePeriod"
+          >Community Governance is live.</div>
         </div>
       </div>
       <div class="col-12 col-md-6 col-xl-3 section">
