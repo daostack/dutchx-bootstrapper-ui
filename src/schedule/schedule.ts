@@ -41,6 +41,9 @@ export class Schedule {
     this.governanceStartDate = this.dateService
       .fromIsoString(this.appConfig.get(
         'Landing.governanceStartDate'), App.timezone);
+    /**
+     * 24-hours before governance period starts
+     */
     this.lastLockingPeriodDate = new Date(this.governanceStartDate.getTime() - 86400000);
   }
 
