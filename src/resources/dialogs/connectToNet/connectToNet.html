@@ -56,7 +56,7 @@
           </div>
 
           <div if.to-view="((isConnected && !hasAccount) || (hasAccepted && !landed && hasDao))">
-            <p><span class="important">Important</span>: Reputation earned by locking tokens cannot be transferred.
+            <p><span class="important">Important</span>: Reputation cannot be transferred.
               <span if.to-view="!hasAccount">Please ensure you have selected the account (ETH Address) you intend to use in the future for voting within the DAO.</span>
             </p>
             <p if.to-view="hasAccount">
