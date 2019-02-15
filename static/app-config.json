@@ -1,9 +1,9 @@
 {
   "rootTimezone": "Asia/Tel_Aviv",
-  "governanceStartDate":    "2019-04-04T12:00:00.000",
+  "governanceStartDate":    "2019-03-06T12:00:00.000",
   "Landing": {
     "lockingPeriodStartDate": "2019-02-18T12:00:00.000",
-    "lockingPeriodEndDate":   "2019-03-20T12:00:00.000"
+    "lockingPeriodEndDate":   "2019-03-04T12:00:00.000"
   },
   "Ganache": {
     "daoAddress": "0xcb4e66eca663fdb61818d52a152601ca6afef74f",
@@ -65,6 +65,7 @@
     ]
   },
   "Live": {
+    "daoAddress": "0xBdb281FF81C51dB8787B8504604B993e777F32Ce",
     "lockableTokens": [
       {
         "symbol": "WETH",

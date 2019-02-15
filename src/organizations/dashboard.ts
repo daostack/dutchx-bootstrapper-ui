@@ -87,6 +87,7 @@ export class Dashboard {
   private timezone = App.timezone;
   private disclaimed = false;
   private dashboardBusy: boolean = false;
+  private showingDisclaimer = false;
 
   private dutchXSchemeConfigs = new Map<string, ISchemeConfig>([
     ['Auction4Reputation', {
@@ -664,15 +665,22 @@ export class Dashboard {
     const bodyHeight = $(window).height() || 0;
     const headerHeight = $('.header.navbar').outerHeight() || 0;
     const footerHeight = $('.footer.navbar').outerHeight() || 0;
+    const disclaimer = $('.disclaimer').outerHeight() || 0;
 
     $('.dashboard-main-content').css(
       {
-        'max-height': `${bodyHeight - headerHeight - footerHeight}px`,
+        'max-height': `${bodyHeight - headerHeight - footerHeight - disclaimer}px`,
       });
   }
 
   private polishDom() {
     setTimeout(() => { this.fixScrollbar(); }, 0);
+  }
+
+  private toggleDisclaimer() {
+    $('.dashboard-page #disclaimer').collapse('toggle');
+    // timeout allows a little more BMD animation to show
+    setTimeout(() => { this.showingDisclaimer = !this.showingDisclaimer; }, 500);
   }
 }
 

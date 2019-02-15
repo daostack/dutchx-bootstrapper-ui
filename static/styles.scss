@@ -75,6 +75,10 @@ footer, .navbar.footer {
   display: inline-block;
 }
 
+.navbar.header a {
+  white-space: nowrap;
+}
+
 .navbar.footer {
   padding-top: .5rem;
   padding-bottom: .5rem;
