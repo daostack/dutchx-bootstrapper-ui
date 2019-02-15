@@ -30,11 +30,11 @@
         class="message"
         if.to-view="lockingPeriodIsEnded"
       >The vote staking period has ended.</div>
-      <form
-        if.to-view="inLockingPeriod"
-        with.bind="lockModel"
-      >
-        <div class="row">
+      <form if.to-view="inLockingPeriod">
+        <div
+          class="row"
+          with.bind="lockModel"
+        >
           <div class="col-5">
             <div class="form-group bmd-form-group">
               <label for="lockAmount">ETH to lock</label>
@@ -70,6 +70,7 @@
                   as-button="true"
                   text="Submit"
                   spin.to-view="locking"
+                  id="lockButton"
                   title.to-view="locking ? 'Locking...' : 'Submit Lock'"
                 ></spinbutton>
                 <metamaskfeedback if.to-view="sending"></metamaskfeedback>
@@ -82,7 +83,7 @@
       <div if.to-view="locks.length">
         <locks-for-reputation
           locks.to-view="locks"
-          release.call="release({lock})"
+          release.call="release({lock, releaseButton })"
           wrapper.one-time="wrapper"
           refresh.call="getLocks()"
         ></locks-for-reputation>

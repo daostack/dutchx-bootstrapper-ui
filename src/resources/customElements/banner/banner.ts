@@ -1,7 +1,7 @@
 import { CssAnimator } from 'aurelia-animator-css';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, containerless } from 'aurelia-framework';
-import { EventConfig, EventConfigException, EventConfigTransaction, EventMessageType } from 'entities/GeneralEvents';
+import { EventConfig, EventConfigException, EventMessageType } from 'entities/GeneralEvents';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { fnVoid } from 'services/ArcService';
@@ -18,7 +18,7 @@ export class Banner {
   private banner: HTMLElement;
   private elMessage: HTMLElement;
   private subscriptions: DisposableCollection = new DisposableCollection();
-  private queue: Subject<IBannerConfig >;
+  private queue: Subject<IBannerConfig>;
   private etherScanTooltipConfig = {
     placement: 'bottom',
     title: 'Click to go to etherscan.io transaction information page',
@@ -27,24 +27,22 @@ export class Banner {
   };
 
   constructor(
-      eventAggregator: EventAggregator
-    , private animator: CssAnimator
-    , private aureliaHelperService: AureliaHelperService
+    eventAggregator: EventAggregator,
+    private animator: CssAnimator,
+    private aureliaHelperService: AureliaHelperService
   ) {
-    this.subscriptions.push(eventAggregator
-      .subscribe('handleTransaction', (config: EventConfigException | any) => this.handleTransaction(config)));
     this.subscriptions.push(eventAggregator
       .subscribe('handleException', (config: EventConfigException | any) => this.handleException(config)));
     this.subscriptions.push(eventAggregator
       .subscribe('handleFailure', (config: EventConfig | string) => this.handleFailure(config)));
 
-    this.queue = new Subject<IBannerConfig >();
+    this.queue = new Subject<IBannerConfig>();
     /**
      * messages added to the queue will show up here, generating a new queue
      * of observables whose values don't resolve until they are observed
      */
     const that = this;
-    this.queue.concatMap((config: IBannerConfig ) => {
+    this.queue.concatMap((config: IBannerConfig) => {
       return Observable.fromPromise(new Promise(function(resolve: fnVoid) {
         // with timeout, give a cleaner buffer in between consecutive snacks
         setTimeout(async () => {
@@ -88,6 +86,11 @@ export class Banner {
   }
 
   private handleException(config: EventConfigException | any) {
+
+    if ((config as any).originatingUiElement) {
+      return;
+    }
+
     if (!(config instanceof EventConfigException)) {
       // then config is the exception itself
       const ex = config as any;
@@ -97,24 +100,27 @@ export class Banner {
     this.queueEventConfig({ message: config.message, type: EventMessageType.Exception });
   }
 
-  private handleTransaction(config: EventConfigTransaction) {
-    // tslint:disable-next-line:max-line-length
-    const message = `${config.message}<etherscanlink address="${config.address}" text="${config.actionText || config.address}" type="${config.addressType || 'address'}" tooltip.bind="etherScanTooltipConfig"></etherscanlink>`;
-    this.queueEventConfig({ message, type: EventMessageType.Info });
-  }
-
   private handleFailure(config: EventConfig | string) {
-    const bannerConfig = { message: (typeof config === 'string')
-    ? config as string : config.message, type: EventMessageType.Failure };
+
+    if ((config as any).originatingUiElement) {
+      return;
+    }
+
+    const bannerConfig = {
+      message: (typeof config === 'string')
+        ? config as string : config.message,
+      type: EventMessageType.Failure,
+    };
+
     this.queueEventConfig(bannerConfig);
   }
 
-  private queueEventConfig(config: IBannerConfig ) {
+  private queueEventConfig(config: IBannerConfig) {
     this.queue.next(config);
   }
 }
 
-interface IBannerConfig  {
+interface IBannerConfig {
   type: EventMessageType;
   message: string;
 }

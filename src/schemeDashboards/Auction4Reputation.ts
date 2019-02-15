@@ -1,7 +1,13 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject, computedFrom } from 'aurelia-framework';
-import { EventConfigException, EventConfigFailure, EventConfigTransaction } from 'entities/GeneralEvents';
+import { autoinject, computedFrom, View } from 'aurelia-framework';
+import {
+  EventConfigException,
+  EventConfigFailure,
+  EventConfigTransaction,
+  EventMessageType
+} from 'entities/GeneralEvents';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { Utils } from 'services/utils';
 import { DecodedLogEntry } from 'web3';
@@ -27,7 +33,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private refreshing: boolean = false;
   private loaded: boolean = false;
   private subscriptions = new DisposableCollection();
-  private bidding: boolean = false;
+  private _bidding: boolean = false;
   private currentAuctionNumber: number;
   private auctionCount: number;
   private auctionEndTime: Date;
@@ -41,6 +47,20 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private _switchingAuctions = false;
   private dashboard: HTMLElement;
   private sendingBid: boolean = false;
+  private myView: JQuery;
+  private get bidButton(): HTMLElement {
+    return this.myView.find('#bidButton')[0];
+  }
+
+  @computedFrom('_bidding')
+  protected get bidding(): boolean {
+    return this._bidding;
+  }
+
+  protected set bidding(val: boolean) {
+    this._bidding = val;
+    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
+  }
 
   @computedFrom('auctionNotBegun', 'auctionIsOver')
   private get inAuction() {
@@ -52,6 +72,10 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     protected web3Service: Web3Service
   ) {
     super();
+  }
+
+  public created(owningView: View, _myView: View) {
+    this.myView = $((owningView as any).firstChild);
   }
 
   public async activate(model: ISchemeDashboardModel) {
@@ -161,6 +185,11 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
       if (reason) {
         this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't bid: ${reason}`));
+        await BalloonService.show({
+          content: `Can't bid: ${reason}`,
+          eventMessageType: EventMessageType.Failure,
+          originatingUiElement: this.bidButton,
+        });
       } else {
 
         this.sendingBid = true;
@@ -193,6 +222,13 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
     } catch (ex) {
       this.eventAggregator.publish('handleException', new EventConfigException(`The bid was not recorded`, ex));
+
+      await BalloonService.show({
+        content: `The bid was not recorded`,
+        eventMessageType: EventMessageType.Exception,
+        originatingUiElement: this.bidButton,
+      });
+
     } finally {
       this.sendingBid = false;
       this.bidding = false;

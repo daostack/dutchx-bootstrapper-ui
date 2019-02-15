@@ -5,7 +5,7 @@ import 'rxjs/add/operator/concatMap';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'snackbarjs';
-import { ActionType, EventConfig } from '../entities/GeneralEvents';
+import { ActionType, EventConfig, EventConfigTransaction } from '../entities/GeneralEvents';
 import { AureliaHelperService } from './AureliaHelperService';
 import { DisposableCollection } from './DisposableCollection';
 
@@ -20,15 +20,17 @@ export class SnackbarService {
   private snackQueue: Subject<EventConfig>;
 
   constructor(
-      eventAggregator: EventAggregator
-    , private aureliaHelperService: AureliaHelperService
+    eventAggregator: EventAggregator,
+    private aureliaHelperService: AureliaHelperService
   ) {
     this.subscriptions.push(eventAggregator
-                       .subscribe('handleSuccess', (config: EventConfig | string) => this.handleSuccess(config)));
+      .subscribe('handleTransaction', (config: EventConfigTransaction | any) => this.handleTransaction(config)));
     this.subscriptions.push(eventAggregator
-                       .subscribe('handleWarning', (config: EventConfig | string) => this.handleWarning(config)));
+      .subscribe('handleSuccess', (config: EventConfig | string) => this.handleSuccess(config)));
     this.subscriptions.push(eventAggregator
-                       .subscribe('showMessage', (config: EventConfig | string) => this.showMessage(config)));
+      .subscribe('handleWarning', (config: EventConfig | string) => this.handleWarning(config)));
+    this.subscriptions.push(eventAggregator
+      .subscribe('showMessage', (config: EventConfig | string) => this.showMessage(config)));
 
     this.snackQueue = new Subject<EventConfig>();
     /**
@@ -71,13 +73,17 @@ export class SnackbarService {
     this.serveSnack(config);
   }
 
+  private handleTransaction(config: EventConfigTransaction) {
+    this.serveSnack(config);
+  }
+
   private completeConfig(config: EventConfig | string, defaults: any = {}): EventConfig {
     if (typeof config === 'string') {
       config = { message: config as string } as EventConfig;
     }
 
     return Object.assign({ style: 'snack-info', duration: 3000, actionType: ActionType.none },
-                         defaults, config);
+      defaults, config);
   }
 
   private getISnackBarConfig(config: EventConfig): ISnackBarConfig {
@@ -97,12 +103,12 @@ export class SnackbarService {
       case ActionType.address:
         text = config.actionText || config.address;
         templateAction =
-        `<span class="snackbar-action-wrapper"><etherscanlink address=
+          `<span class="snackbar-action-wrapper"><etherscanlink address=
         "${config.address}" text="${text}" type="${config.addressType || 'address'}"></etherscanlink></span>`;
         break;
       case ActionType.button:
         templateAction =
-        `<span class="snackbar-action-wrapper"><button type="button" class="btn" click.delegate='action()'>
+          `<span class="snackbar-action-wrapper"><button type="button" class="btn" click.delegate='action()'>
         ${config.actionText}</button></span>`;
         break;
     }
