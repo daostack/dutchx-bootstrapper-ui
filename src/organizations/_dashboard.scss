@@ -176,8 +176,9 @@ text-align: center;
   color: inherit;
 }
 
-.dashboard-schemes li.list-group-item:not(.selected).frozen:hover .scheme-arrow-down {
-  color: $color-ds-grey-3;
+.dashboard-schemes li.list-group-item.frozen .scheme-arrow-up,
+.dashboard-schemes li.list-group-item.frozen .scheme-arrow-down {
+  display:none;
 }
 
 .dashboard-schemes li.list-group-item .scheme-use-button {

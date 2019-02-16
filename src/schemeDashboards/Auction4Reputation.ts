@@ -180,8 +180,18 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     try {
 
       this.bidding = true;
+      let reason: string;
 
-      const reason = await this.wrapper.getBidBlocker({ amount: this.bidAmount });
+      /**
+       * DEMO
+       */
+      if (this.bidAmount && this.bidAmount.gt(this.web3Service.toWei(50))) {
+        reason = `Demo bid cannot be more than 50 GEN`;
+      }
+
+      if (!reason) {
+        reason = await this.wrapper.getBidBlocker({ amount: this.bidAmount });
+      }
 
       if (reason) {
         this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't bid: ${reason}`));
