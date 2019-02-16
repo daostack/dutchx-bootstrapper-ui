@@ -124,18 +124,43 @@ export class LockingToken4Reputation extends Locking4Reputation {
     return false;
   }
 
+  protected async getLockBlocker(_reason?: string): Promise<boolean> {
+    let reason: string;
+    if (this.lockModel.amount) {
+      /**
+       * get token value in ETH
+       */
+      const priceFactor = await this.getTokenPriceFactor((this.lockModel as TokenLockingOptions).tokenAddress);
+
+      const ethValue = priceFactor.mul(this.lockModel.amount as BigNumber);
+
+      if (ethValue.gt(this.web3Service.toWei(0.2))) {
+        reason = `Demo lock cannot be for more than 0.2 ETH`;
+      }
+    }
+    return super.getLockBlocker(reason);
+  }
+
   protected getLockUnit(lockInfo: LockInfo): Promise<string> {
     return this.lockService.getLockedTokenSymbol(lockInfo);
   }
 
   private async getTokenIsLiquid(token: Address): Promise<boolean> {
+    return (await this.getTokenPriceFactor(token)) !== null;
+  }
+
+  private async getTokenPriceFactor(token: Address): Promise<BigNumber | null> {
     const oracleAddress = await this.wrapper.getPriceOracleAddress();
 
     const oracle = (await Utils.requireContract('PriceOracleInterface')).at(oracleAddress);
 
     const price = (await oracle.getPrice(token)) as Array<BigNumber>;
 
-    return price && (price.length === 2) && price[0].gt(0) && price[1].gt(0);
+    if (price && (price.length === 2) && price[0].gt(0) && price[1].gt(0)) {
+      return price[0].div(price[1]);
+    } else {
+      return null;
+    }
   }
 
   private async selectToken(tokenSpec: ITokenSpecification) {

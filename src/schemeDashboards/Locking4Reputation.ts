@@ -23,7 +23,7 @@ import {
   TransactionReceiptTruffle,
   WrapperService
 } from '../services/ArcService';
-import { Web3Service } from '../services/Web3Service';
+import { BigNumber, Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';
 // import { App } from 'app';
 
@@ -142,12 +142,14 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     this.getMsRemainingInPeriodCountdown(blockDate);
   }
 
-  protected async getLockBlocker(): Promise<boolean> {
+  protected async getLockBlocker(reason?: string): Promise<boolean> {
 
-    let reason;
-
-    if (!Number.isInteger(this.lockModel.period)) {
-      reason = 'The desired locking period is not expressed as a number of days';
+    if (!reason) {
+      if (!Number.isInteger(this.lockModel.period)) {
+        reason = 'The desired locking period is not expressed as a number of days';
+      } else if (this.lockModel.period > 2592000) {
+        reason = 'Demo locking period cannot be more than 30 days';
+      }
     }
 
     if (!reason) {
