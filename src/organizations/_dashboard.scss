@@ -41,11 +41,10 @@
   position: relative;
 }
 
-.dashboard-main-content .row,
- {
-  /* avoids overflow in x for the entire page and the appearance of a horix scrollbar */
-  margin-left:0;
-  margin-right:0;
+.dashboard-main-content .row {
+  /* avoids overflow in x for the entire page and the appearance of a horiz scrollbar */
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .dashboard-header {

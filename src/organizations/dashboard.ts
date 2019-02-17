@@ -684,6 +684,9 @@ export class Dashboard {
   private toggleDisclaimer() {
     this.showingDisclaimer = !this.showingDisclaimer;
     $('.dashboard-page #disclaimer').collapse('toggle');
+    $('.dashboard-page #disclaimer').one(
+      this.showingDisclaimer ? 'shown.bs.collapse' : 'hidden.bs.collapse', () => {this.fixScrollbar(); }
+    );
   }
 }
 
