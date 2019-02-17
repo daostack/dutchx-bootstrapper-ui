@@ -4,27 +4,34 @@
 }
 
 .dashboard-page .disclaimer {
-  padding-top: 2rem;
+  padding-top: 1rem;
   padding-bottom: .5rem;
   padding-left: 3rem;
   padding-right: 3rem;
+  overflow-y: auto;
 }
 
 .dashboard-page .disclaimer,
 .dashboard-page .disclaimer .contract {
   background-color: $color-ds-red;
-  text-align: justify;
-  font-weight: 500;
-  font-size: 1.25rem;
-}
-
-.dashboard-page .disclaimer .contract {
-  margin-top: 3rem;
+  font-size: 1rem;
 }
 
 .dashboard-page .disclaimer .body {
-  text-align:center;
   width:100%;
+}
+
+.dashboard-page .disclaimer .warning {
+  font-weight: 500;
+}
+
+.dashboard-page .disclaimer .contract {
+  text-align: justify;
+  margin-top: 1rem;
+}
+
+.dashboard-page .disclaimer a {
+  color: $color-ds-white;
 }
 
 .dashboard-main-content {
