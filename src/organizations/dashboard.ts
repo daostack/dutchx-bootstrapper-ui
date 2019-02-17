@@ -87,7 +87,7 @@ export class Dashboard {
   private timezone = App.timezone;
   private disclaimed = false;
   private dashboardBusy: boolean = false;
-  private showingDisclaimer = false;
+  private showingDisclaimer = true;
 
   private dutchXSchemeConfigs = new Map<string, ISchemeConfig>([
     ['Auction4Reputation', {
@@ -671,6 +671,10 @@ export class Dashboard {
       {
         'max-height': `${bodyHeight - headerHeight - footerHeight - disclaimer}px`,
       });
+
+    $('.disclaimer').css({
+      'max-height': `${bodyHeight - headerHeight - footerHeight}px`,
+    });
   }
 
   private polishDom() {
