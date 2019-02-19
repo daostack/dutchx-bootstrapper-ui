@@ -13,7 +13,7 @@
 
 .dashboard-page .disclaimer,
 .dashboard-page .disclaimer .contract {
-  background-color: $color-ds-red;
+  background-color: $color-ds-red-2;
   font-size: 1rem;
 }
 
@@ -316,7 +316,7 @@ text-align: center;
 .scheme-dashboard .scheme-dashboard-body.lockingTokens .dropdown .dropdown-menu {
   overflow-y: auto;
   max-height: 30rem;
-  padding-right: 1.2rem !important;
+  margin-right: 1.2rem !important;
 }
 
 .redeemSection {
@@ -514,9 +514,18 @@ table.locksForRep td button:disabled:hover {
   color: inherit;
 }
 
-button.spinbutton.btn-submit:disabled, 
+table.locksForRep td button.btn-link.release:disabled {
+  cursor: not-allowed;
+  text-decoration: none;
+  pointer-events: all; // weird bootstrap bug requires this
+}
+
+table.locksForRep td button.btn-link.complete {
+  color: $color-ds-green;
+}
+
 button.spinbutton.btn-submit:disabled:hover {
-  @extend .btn-submit:hover;
+  cursor: not-allowed;
 }
 
 .locksRefreshButton .spinbutton-icon {

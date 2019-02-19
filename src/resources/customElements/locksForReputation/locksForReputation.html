@@ -43,7 +43,7 @@
             click.delegate="_release(lock, $event)"
             disabled.bind="!lock.canRelease"
             show.to-view="!lock.releasing && !lock.released"
-            class="btn btn-link"
+            class="btn btn-link release"
           >Release</button>
           <div
             show.to-view="lock.releasing && !lock.released"
@@ -57,7 +57,7 @@
           ></metamaskfeedback>
           <button
             if.to-view="lock.released"
-            class="btn btn-link"
+            class="btn btn-link complete"
             disabled
           >Completed</button>
         </td>
