@@ -58,11 +58,14 @@ footer, .navbar.footer {
   background-color: $color-ds-grey-7 !important;
 }
 
+.navbar {
+  z-index: 998;
+}
+
 .navbar.header {
   background-color: $color-ds-black !important;
   padding-top: .5rem;
   padding-bottom: .5rem;
-  z-index: 998;
 }
 
 .navbar.header .logo {
@@ -78,6 +81,17 @@ footer, .navbar.footer {
 .navbar.header a {
   white-space: nowrap;
 }
+
+.navbar.header .nav-link {
+  font-size: .85rem;
+  padding-left: .6rem;
+  padding-right: .6rem;
+}
+
+.navbar.header .connection {
+  padding-left:.75rem;
+}
+
 
 .navbar.footer {
   padding-top: .5rem;
