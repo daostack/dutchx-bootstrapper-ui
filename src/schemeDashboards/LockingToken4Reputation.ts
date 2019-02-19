@@ -42,28 +42,33 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
   protected async refresh() {
     await super.refresh();
-    const tokens: Array<ITokenSpecificationX> = this.lockService.lockableTokenSpecs;
-    for (const tokenInfo of tokens) {
-      await this.tokenService.getUserTokenBalance(tokenInfo.address)
-        .then((balance: BigNumber) => {
-          tokenInfo.balance = balance;
-          /**
-           * Whenever a balance changes, sort the array.
-           */
-          this.aureliaHelperService.createPropertyWatch(
-            tokenInfo, 'balance', (newValue: BigNumber, oldValue: BigNumber) => {
-              if ((!newValue && oldValue) ||
-                (newValue && !oldValue) ||
-                (newValue && oldValue && !newValue.eq(oldValue))) {
-                /**
-                 * Trying not to trigger this too often.
-                 */
-                this.lockableTokens = this.sortTokens(this.lockableTokens);
-              }
-            });
-        });
+    this.refreshing = true;
+    try {
+      const tokens: Array<ITokenSpecificationX> = this.lockService.lockableTokenSpecs;
+      for (const tokenInfo of tokens) {
+        await this.tokenService.getUserTokenBalance(tokenInfo.address)
+          .then((balance: BigNumber) => {
+            tokenInfo.balance = balance;
+            /**
+             * Whenever a balance changes, sort the array.
+             */
+            this.aureliaHelperService.createPropertyWatch(
+              tokenInfo, 'balance', (newValue: BigNumber, oldValue: BigNumber) => {
+                if ((!newValue && oldValue) ||
+                  (newValue && !oldValue) ||
+                  (newValue && oldValue && !newValue.eq(oldValue))) {
+                  /**
+                   * Trying not to trigger this too often.
+                   */
+                  this.lockableTokens = this.sortTokens(this.lockableTokens);
+                }
+              });
+          });
+      }
+      this.lockableTokens = this.sortTokens(tokens);
+    } finally {
+      this.refreshing = false;
     }
-    this.lockableTokens = this.sortTokens(tokens);
   }
 
   protected async accountChanged(account: Address) {

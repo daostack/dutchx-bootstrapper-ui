@@ -1,7 +1,7 @@
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, computedFrom, View } from 'aurelia-framework';
-import { ILockInfoX } from 'resources/customElements/locksForReputation/locksForReputation';
+import { ILocksTableInfo } from 'resources/customElements/locksForReputation/locksForReputation';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
@@ -44,7 +44,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected loaded: boolean = false;
   protected lockerInfo: LockerInfo;
   protected subscriptions = new DisposableCollection();
-  protected locks: Array<ILockInfoX>;
+  protected locks: Array<ILocksTableInfo>;
   protected _locking: boolean = false;
   protected _releasing: boolean = false;
   protected sending: boolean = false;
@@ -102,15 +102,22 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   public async attached() {
 
-    await this.refresh();
+    this.loaded = false;
 
-    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', (account: Address) => {
-      this.accountChanged(account);
-    }));
+    try {
 
-    this.subscriptions.push(this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
-      this.refreshCounters(blockDate);
-    }));
+      await this.refresh();
+
+      this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', (account: Address) => {
+        this.accountChanged(account);
+      }));
+
+      this.subscriptions.push(this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
+        this.refreshCounters(blockDate);
+      }));
+    } finally {
+      this.loaded = true;
+    }
   }
 
   public detached() {
@@ -119,19 +126,16 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   protected async refresh() {
     this.refreshing = true;
-    this.loaded = false;
-
     this.lockingStartTime = await this.wrapper.getLockingStartTime();
     this.lockingEndTime = await this.wrapper.getLockingEndTime();
 
     await this.accountChanged(this.web3Service.defaultAccount);
     await this.refreshCounters(await Utils.lastBlockDate(this.web3Service.web3));
     this.refreshing = false;
-    this.loaded = true;
   }
 
   protected accountChanged(account: Address) {
-    this.lockService = new LockService(this.appConfig, this.wrapper, account);
+    this.lockService = new LockService(this.wrapper, account, this.blockNumber);
     this.lockModel.lockerAddress = account;
   }
 
@@ -215,7 +219,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     return false;
   }
 
-  protected async release(config: { lock: ILockInfoX, releaseButton: JQuery<EventTarget> }): Promise<boolean> {
+  protected async release(config: { lock: ILocksTableInfo, releaseButton: JQuery<EventTarget> }): Promise<boolean> {
     const lockInfo = config.lock;
 
     if (this.locking || this.releasing) {
@@ -266,12 +270,12 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
      * The symbol is for the LocksForReputation table
      */
     for (const lock of locks) {
-      const lockInfoX = lock as ILockInfoX;
+      const lockInfoX = lock as ILocksTableInfo;
       lockInfoX.units = await this.getLockUnit(lock as LockInfo);
       lockInfoX.sending = false;
     }
 
-    this.locks = locks as Array<ILockInfoX>;
+    this.locks = locks as Array<ILocksTableInfo>;
   }
 
   private getLockingPeriodHasNotStarted(blockDate: Date): boolean {
