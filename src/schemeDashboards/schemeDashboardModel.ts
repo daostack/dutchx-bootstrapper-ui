@@ -8,4 +8,5 @@ export interface ISchemeDashboardModel {
   org: DaoEx;
   orgName: string;
   orgAddress: Address;
+  blockNumber: number;
 }

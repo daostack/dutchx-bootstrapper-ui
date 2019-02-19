@@ -148,6 +148,9 @@ export class Dashboard {
 
   public async activate(options: { address?: Address, fakeRedeem?: string } = {}) {
 
+    // tslint:disable-next-line: no-console
+    // console.time('activate');
+
     this.options = options;
     this.fakeRedeem = !!options.fakeRedeem || false;
 
@@ -209,7 +212,9 @@ export class Dashboard {
     this.subscriptions.push(this.eventAggregator.subscribe('Avatar.loaded', () => {
       this.loadSchemes().then((schemesLoaded: boolean) => {
         if (schemesLoaded) {
-          this.eventAggregator.publish('DAO.loaded', this.org);
+          // tslint:disable-next-line: no-console
+          // console.timeStamp('Schemes Processed');
+          setTimeout(() => this.eventAggregator.publish('DAO.loaded', this.org), 0);
         }
       });
     }));
@@ -243,9 +248,15 @@ export class Dashboard {
        */
       this.networkConnectionWizards.run(!!this.org, false);
     }
+
+    // tslint:disable-next-line: no-console
+    // console.timeEnd('activate');
   }
 
   public async attached() {
+
+    // tslint:disable-next-line: no-console
+    // console.time('attached');
 
     /**
      * prevents some jitter
@@ -288,6 +299,9 @@ export class Dashboard {
     });
 
     this.polishDom();
+
+    // tslint:disable-next-line: no-console
+    // console.timeEnd('attached');
   }
 
   public deactivate() {
@@ -371,6 +385,9 @@ export class Dashboard {
   }
 
   private async loadAvatar(): Promise<DaoEx | undefined> {
+    // tslint:disable-next-line: no-console
+    // console.time('loadAvatar');
+
     const address = this.options.address || this.appConfig.get('daoAddress');
 
     if (!this.org || (address !== this.org.address)) {
@@ -393,17 +410,25 @@ export class Dashboard {
       this.polishDom();
 
       if (this.org) {
-        this.eventAggregator.publish('Avatar.loaded', this.org);
+        // tslint:disable-next-line: no-console
+        // console.timeStamp('Avatar Loaded');
+        // so setSchemes won't start before we return
+        setTimeout(() => this.eventAggregator.publish('Avatar.loaded', this.org), 0);
       } else {
         this.loading = false;
         this.networkConnectionWizards.run(false, true); // noop if already running
       }
     }
 
+    // tslint:disable-next-line: no-console
+    // console.timeEnd('loadAvatar');
     return this.org;
   }
 
   private async loadSchemes(): Promise<boolean> {
+    // tslint:disable-next-line: no-console
+    // console.time('loadSchemes');
+
     this.schemesLoading = this.loading = true;
     if (this.repSummaryCheck) {
       this.repSummaryCheck.dispose();
@@ -414,7 +439,13 @@ export class Dashboard {
      */
     const schemes = (await this.schemeService.getSchemesForDao(this.address));
 
+    // tslint:disable-next-line: no-console
+    // console.timeStamp('loadSchemes');
+
     const nonArcSchemes = schemes.filter((s: SchemeInfo) => !s.inArc);
+
+    // tslint:disable-next-line: no-console
+    // console.time('findNonDeployedArcScheme');
 
     for (const scheme of nonArcSchemes) {
       const foundScheme = await this.findNonDeployedArcScheme(scheme);
@@ -422,6 +453,11 @@ export class Dashboard {
         schemes[schemes.indexOf(scheme)] = foundScheme;
       }
     }
+    // tslint:disable-next-line: no-console
+    // console.timeEnd('findNonDeployedArcScheme');
+
+    // tslint:disable-next-line: no-console
+    // console.timeStamp('loadSchemes');
 
     this.dutchXSchemes = schemes.filter((s: SchemeInfo) => s.inArc && s.inDao)
       // hack to remove all but the dxDAO contracts
@@ -437,6 +473,7 @@ export class Dashboard {
     this.dutchXSchemes.push(
       {
         address: '',
+        blockNumber: 0,
         friendlyName: 'DAO STORYTELLING',
         inArc: true,
         inDao: true,
@@ -447,18 +484,26 @@ export class Dashboard {
 
     if (!this.schemesLoaded) {
       this.org = undefined;
-      this.eventAggregator.publish('handleMessage',
-        new EventConfig(`not all of the required contracts were found`, EventMessageType.Exception));
+      setTimeout(() => this.eventAggregator.publish('handleMessage',
+        new EventConfig(`not all of the required contracts were found`, EventMessageType.Exception)), 0);
       this.networkConnectionWizards.run(false, true); // no-op if already running
     } else {
 
+      // tslint:disable-next-line: no-console
+      // console.time('gatherInfo');
       await this.computeNumLocks();
+
+      // tslint:disable-next-line: no-console
+      // console.timeStamp('loadSchemes');
 
       const mgnWrapper =
         (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
       this.appConfig.set('mgnWrapper', mgnWrapper as any);
 
       const lockDates = await this.getLockDates();
+
+      // tslint:disable-next-line: no-console
+      // console.timeStamp('loadSchemes');
 
       /**
        * store away for the rest of the UI, in the config for backward-compatibility
@@ -490,9 +535,16 @@ export class Dashboard {
         await this.computeRedeemables();
       }
     }
+
+    // tslint:disable-next-line: no-console
+    // console.timeEnd('gatherInfo');
+
     this.schemesLoading = this.loading = false;
 
     this.polishDom();
+
+    // tslint:disable-next-line: no-console
+    // console.timeEnd('loadSchemes');
 
     return Promise.resolve(this.schemesLoaded);
   }
@@ -604,18 +656,24 @@ export class Dashboard {
   }
 
   private async computeNumLocks(): Promise<void> {
+    // tslint:disable-next-line: no-console
+    // console.time('computeNumLocks');
     let wrapper = await this.getSchemeWrapperFromName('LockingEth4Reputation');
-    let lockService = new LockService(this.appConfig, wrapper, this.web3Service.defaultAccount);
     let schemeInfo = this.getSchemeInfoFromName('LockingEth4Reputation');
-    schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => !li.released).length;
+    let lockService = new LockService(wrapper, this.web3Service.defaultAccount, schemeInfo.blockNumber);
+    schemeInfo.numLocks = await lockService.getUserUnReleasedLockCount();
 
     wrapper = await this.getSchemeWrapperFromName('LockingToken4Reputation');
-    lockService = new LockService(this.appConfig, wrapper, this.web3Service.defaultAccount);
     schemeInfo = this.getSchemeInfoFromName('LockingToken4Reputation');
-    schemeInfo.numLocks = (await lockService.getUserLocks()).filter((li: LockInfo) => !li.released).length;
+    lockService = new LockService(wrapper, this.web3Service.defaultAccount, schemeInfo.blockNumber);
+    schemeInfo.numLocks = await lockService.getUserUnReleasedLockCount();
+    // tslint:disable-next-line: no-console
+    // console.timeEnd('computeNumLocks');
   }
 
   private async findNonDeployedArcScheme(scheme: SchemeInfo): Promise<SchemeInfo | null> {
+    // tslint:disable-next-line: no-console
+    // // console.time('findNonDeployedArcScheme');
     // see: https://solidity.readthedocs.io/en/latest/metadata.html
     const end = 'a165627a7a72305820';
     let code = await (Promise as any).promisify((callback: any): any =>
@@ -641,11 +699,18 @@ export class Dashboard {
 
           if (found) {
             const wrapper = await factory.at(scheme.address);
-            return SchemeInfo.fromContractWrapper(wrapper, true);
+            // tslint:disable-next-line: no-console
+            // // console.timeEnd('findNonDeployedArcScheme');
+            return SchemeInfo.fromContractWrapper(
+              wrapper,
+              true,
+              scheme.blockNumber);
           }
         }
       }
     }
+    // tslint:disable-next-line: no-console
+    // // console.timeEnd('findNonDeployedArcScheme');
     return null;
   }
 
@@ -653,11 +718,16 @@ export class Dashboard {
    * returns LockingEth4Reputation start and end dates
    */
   private async getLockDates(): Promise<IContractLockDates> {
+    // tslint:disable-next-line: no-console
+    // console.time('getLockDates');
     const wrapper = await this.getSchemeWrapperFromName('LockingEth4Reputation');
-    return {
+    const dates = {
       end: await wrapper.getLockingEndTime(),
       start: await wrapper.getLockingStartTime(),
     };
+    // tslint:disable-next-line: no-console
+    // console.timeEnd('getLockDates');
+    return dates;
   }
 
   private fixScrollbar() {
@@ -685,7 +755,7 @@ export class Dashboard {
     this.showingDisclaimer = !this.showingDisclaimer;
     $('.dashboard-page #disclaimer').collapse('toggle');
     $('.dashboard-page #disclaimer').one(
-      this.showingDisclaimer ? 'shown.bs.collapse' : 'hidden.bs.collapse', () => {this.fixScrollbar(); }
+      this.showingDisclaimer ? 'shown.bs.collapse' : 'hidden.bs.collapse', () => { this.fixScrollbar(); }
     );
   }
 }

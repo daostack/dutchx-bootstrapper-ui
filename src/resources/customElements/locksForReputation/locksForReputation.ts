@@ -1,12 +1,14 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, bindingMode } from 'aurelia-framework';
 import { LockInfo, Locking4ReputationWrapper } from 'services/ArcService';
+import { ILockInfoX } from 'services/lockServices';
 import { Web3Service } from 'services/Web3Service';
 
 @autoinject
 export class LocksForReputation {
 
-  @bindable({ defaultBindingMode: bindingMode.oneWay }) public locks: Array<LockInfo>;
+  @bindable({ defaultBindingMode: bindingMode.oneWay })
+  public locks: Array<LockInfo> = [];
   // tslint:disable-next-line: variable-name
   @bindable({ defaultBindingMode: bindingMode.oneTime })
   public release: (config: { lock: LockInfo, releaseButton: JQuery<EventTarget> }) => Promise<boolean>;
@@ -96,12 +98,12 @@ export class LocksForReputation {
   }
 }
 
-export interface ILockInfoX extends LockInfo {
+export interface ILocksTableInfo extends ILockInfoX {
   units: string;
   sending: boolean;
 }
 
-interface ILockInfoInternal extends ILockInfoX {
+interface ILockInfoInternal extends ILocksTableInfo {
   canRelease: boolean;
   releasing: boolean;
   releasableToday: boolean;

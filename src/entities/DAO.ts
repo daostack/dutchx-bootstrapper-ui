@@ -6,15 +6,16 @@ import {
   DAO,
   DaoSchemeInfo,
 } from '../services/ArcService';
-import { BigNumber } from '../services/Web3Service';
+import { BigNumber, Web3Service } from '../services/Web3Service';
 
 export class DaoEx extends DAO {
   public static async fromArcJsDao(
     org: DAO,
-    arcService: ArcService
+    arcService: ArcService,
+    web3: Web3Service
   ): Promise<DaoEx> {
 
-    const newDAO = Object.assign(new DaoEx(), org);
+    const newDAO = Object.assign(new DaoEx(web3), org);
     newDAO.arcService = arcService;
     newDAO.address = org.avatar.address;
     newDAO.name = org.name;
@@ -22,25 +23,17 @@ export class DaoEx extends DAO {
     return newDAO;
   }
 
-  /**
-   * a Scheme has been added or removed from a DAO.
-   */
-  private static daoSchemeSetChangedEvent: string = 'daoSchemeSetChanged';
-
   public address: string;
   public name: string;
   public arcService: ArcService;
   public omega: BigNumber; // in wei
 
   private schemesCache: Map<string, SchemeInfo>;
-  private registerSchemeEvent;
-  private unRegisterSchemeEvent;
   private logger = LogManager.getLogger('dxDAO Bootstrapper');
 
   /* this is not meant to be instantiated here, only in Arc */
-  constructor() {
+  constructor(private web3: Web3Service) {
     super();
-    includeEventsIn(this);
   }
 
   /**
@@ -60,36 +53,17 @@ export class DaoEx extends DAO {
     return Array.from(this.schemesCache.values());
   }
 
-  /**
-   * Publishes a message.
-   * @param event The event or channel to publish to.
-   * @param data The data to publish on the channel.
-   */
-  public publish(_event: string | any, _data?: any): void { return null; }
-
-  /**
-   * Subscribes to a message channel or message type.
-   * @param event The event channel or event data type.
-   * @param callback The callback to be invoked when when the specified message is published.
-   */
-  // tslint:disable-next-line: ban-types
-  public subscribe(_event: string | Function, _callback: Function): Subscription { return null; }
-
-  /**
-   * Subscribes to a message channel or message type,
-   * then disposes the subscription automatically after the first message is received.
-   * @param event The event channel or event data type.
-   * @param callback The callback to be invoked when when the specified message is published.
-   */
-  // tslint:disable-next-line: ban-types
-  public subscribeOnce(_event: string | Function, _callback: Function): Subscription { return null; }
-
-  public dispose() {
-    this.registerSchemeEvent.stopWatching();
-    this.unRegisterSchemeEvent.stopWatching();
-  }
-
   private async getCurrentSchemes(): Promise<Array<SchemeInfo>> {
-    return (await super.getSchemes()).map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
+
+    const networkName = this.web3.networkName;
+
+    const filter =
+      /**
+       * temporary hack to make search for DAO schemes work faster and not crash metamask
+       */
+      (networkName === 'Live') ? { _sender: '0x0A530100Affb0A06eDD2eD74e335aFC50624f345' } : {};
+
+    return (await super.getSchemes('', filter))
+      .map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
   }
 }

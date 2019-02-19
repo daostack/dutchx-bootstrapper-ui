@@ -6,6 +6,7 @@ import * as Bluebird from 'bluebird';
 import 'bootstrap-material-design';
 import 'popper.js';
 import { ConsoleLogService } from 'services/ConsoleLogService';
+import { LockService } from 'services/lockServices';
 import { SnackbarService } from 'services/SnackbarService';
 import { DateService } from './services/DateService';
 
@@ -69,5 +70,6 @@ export async function configure(aurelia: Aurelia) {
   // not using aurelia.container.get(AlertService);
   aurelia.container.get(SnackbarService);
   aurelia.container.get(DateService);
+  LockService.initialize(aurelia.container);
   await aurelia.setRoot(PLATFORM.moduleName('app'));
 }

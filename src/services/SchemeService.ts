@@ -12,8 +12,8 @@ export class SchemeService {
   public availableSchemes: Array<ContractWrapperInfo>;
 
   constructor(
-      private arcService: ArcService
-    , private daoService: DaoService
+    private arcService: ArcService,
+    private daoService: DaoService
   ) {
     this.availableSchemes = this.arcService.arcSchemes;
   }
@@ -29,6 +29,9 @@ export class SchemeService {
    */
   public async getSchemesForDao(daoAddress: string, excludeNonArcSchemes: boolean = false): Promise<Array<SchemeInfo>> {
 
+    // tslint:disable-next-line: no-console
+    // console.time('getSchemesForDao');
+
     const schemes = (await this._getSchemesInDao(daoAddress)).filter((s) => !excludeNonArcSchemes || s.inArc);
 
     const schemesMap = new Map<string, SchemeInfo>();
@@ -37,18 +40,8 @@ export class SchemeService {
       schemesMap.set(scheme.address, scheme);
     }
 
-    /**
-     * Now merge the list of schemes that the org has with the available Arc schemes that it doesn't have
-     * so that the returned list contains all the schemes both contained and not contained by the Dao.
-     */
-    // let availableSchemes = this.availableSchemes;
-    // for (let availableScheme of availableSchemes) {
-    //   let isInDao = schemesMap.has(availableScheme.address);
-    //   if (!isInDao) {
-    //     schemes.push(SchemeInfo.fromContractWrapper(availableScheme, false));
-    //   }
-    // }
-
+    // tslint:disable-next-line: no-console
+    // console.timeEnd('getSchemesForDao');
     return schemes;
   }
 
