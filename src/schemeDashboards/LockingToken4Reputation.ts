@@ -174,8 +174,6 @@ export class LockingToken4Reputation extends Locking4Reputation {
   }
 
   private sortTokens(tokens: Array<ITokenSpecificationX>): Array<ITokenSpecificationX> {
-    // tslint:disable-next-line: no-console
-    console.log('sorting...')
     /**
      * what we want here is the concatenation of two arrays, each sorted by symbol:
      * The first is the set of all zero balances, the second all the rest.
