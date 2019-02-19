@@ -47,11 +47,13 @@ export class LockService {
       const released = !!releases.filter((ri: ReleaseInfo) => ri.lockId === event.args._lockingId).length;
 
       if (!locks.get(event.args._lockingId)) {
+        const lockInfo = await this.wrapper.contract.lockers(this.userAddress, event.args._lockingId);
+
         locks.set(event.args._lockingId, {
           amount,
           lockId: event.args._lockingId,
           lockerAddress: event.args._locker,
-          releaseTime: new Date(event.args._period.toNumber() * 1000),
+          releaseTime: new Date(lockInfo[1].toNumber() * 1000),
           released,
           transactionHash: event.transactionHash,
         });
