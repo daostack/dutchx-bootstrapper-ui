@@ -66,16 +66,20 @@ footer, .navbar.footer {
   background-color: $color-ds-black !important;
   padding-top: .5rem;
   padding-bottom: .5rem;
+  color: $color-ds-white;
 }
 
 .navbar.header .logo {
   margin-left:.2rem;
-  margin-right:1.2rem;
-  height:2rem;
+  margin-right:.6rem;
+  height:1.8rem;
  }
 
 .navbar.header .company-name {
   display: inline-block;
+  font-size: 1.1rem;
+  position: relative;
+  top: -.12rem;
 }
 
 .navbar.header a {
@@ -88,10 +92,14 @@ footer, .navbar.footer {
   padding-right: .6rem;
 }
 
+.navbar.header .userAddress etherscanlink {
+  position: relative;
+  top: -.1rem;
+}
+
 .navbar.header .connection {
   padding-left:.75rem;
 }
-
 
 .navbar.footer {
   padding-top: .5rem;
@@ -110,8 +118,14 @@ footer, .navbar.footer {
 }
 
 .navbar.footer .userBalance .balance,
-.navbar.footer .userBalance .ethbalance {
+.navbar.footer .userBalance .ethbalance,
+.navbar.header .userBalance .balance,
+.navbar.header .userBalance .ethbalance {
   color: $color-ds-yellow;
+}
+
+.navbar.footer .userBalance .balance,
+.navbar.footer .userBalance .ethbalance {
   margin-right:.5rem;
 }
 
@@ -158,6 +172,9 @@ section h4 {
 .footer .ethbalance,
 .footer  .genbalance,
 .footer etherscanlink a,
+.header .ethbalance,
+.header  .genbalance,
+.header etherscanlink a,
 .header a,
 .snackbar-action-wrapper etherscanlink a,
 .snackbar-action-wrapper .copy-to-clip-button,
@@ -376,7 +393,7 @@ etherscanlink {
   display: inline-block;
 }
 
-.smallEtherScanlLink {
+.smallEtherScanLink {
   display:inline-block;
   vertical-align: middle;
   width:4rem;

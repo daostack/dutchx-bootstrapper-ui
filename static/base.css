@@ -30,22 +30,3 @@ body {
   font-family: "DINPro,Roboto,Helvetica,Arial,sans-serif";
   color: #212529; /* from BMD, make it official */
 }
-
-.splash {
-  font-family: DinPro;
-}
-
-.splash h1 {
-  font-weight: 400;
-  margin-bottom: 2rem;
-  color:#007BBC;
-}
-
-.splash img {
-  margin-bottom: 3.5rem;
-  width: 7rem
-}
-
-.splash span.fa-spin {
-  color: #007BBC;
-}

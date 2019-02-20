@@ -1,0 +1,19 @@
+<template bindable="network, connected">
+  <div
+    if.to-view="connected"
+    class="connection"
+  >
+    <div
+      if.bind="network !== 'Live'"
+      class="navbar-text color-red nowrap"
+    >
+      Testing (${network})
+    </div>
+    <div
+      else
+      class="navbar-text color-green nowrap"
+    >Live (mainnet)</div>
+  </div>
+  </div>
+
+</template>

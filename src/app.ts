@@ -54,11 +54,6 @@ export class App {
 
   public attached() {
     ($('body') as any)
-      /* override the body style set in the splash screen */
-      // .css({
-      //   "color": "black",
-      //   "background-color": "white"
-      // })
       .bootstrapMaterialDesign({ global: { label: { className: 'bmd-label-floating' } } });
 
   }
