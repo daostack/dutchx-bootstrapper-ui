@@ -6,15 +6,14 @@
 .dashboard-page .disclaimer {
   padding-top: 1rem;
   padding-bottom: .5rem;
-  padding-left: 3rem;
-  padding-right: 3rem;
+  padding-left: .5rem;
+  padding-right: .5rem;
   overflow-y: auto;
 }
 
 .dashboard-page .disclaimer,
 .dashboard-page .disclaimer .contract {
   background-color: $color-ds-red-2;
-  font-size: 1rem;
 }
 
 .dashboard-page .disclaimer .body {
@@ -23,11 +22,13 @@
 
 .dashboard-page .disclaimer .warning {
   font-weight: 500;
+  font-size: .8rem;
 }
 
 .dashboard-page .disclaimer .contract {
   text-align: justify;
   margin-top: 1rem;
+  font-size: .75rem;
 }
 
 .dashboard-page .disclaimer a {
@@ -476,10 +477,21 @@ text-align: center;
     padding-right:2rem;
   }
 
+  .dashboard-page .disclaimer .body {
+    font-size: .9rem;
+  }
+
+  .dashboard-page .disclaimer .contract {
+    font-size: .9rem;
+  }
 }
 
 // Extra large devices (large desktops, 1200px and up)
-// @media (min-width: 1200px) { ... }
+@media (min-width: 1200px) {
+  .dashboard-page .schemesSection #accordion_arc_schemes {
+    min-width: 25rem;
+  }
+}
 
 table.locksForRep {
   border-top: solid $color-ds-black 1px;

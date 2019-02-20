@@ -46,6 +46,7 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName('resources/customElements/instructions.html'),
     PLATFORM.moduleName('resources/customElements/pageLoading.html'),
     PLATFORM.moduleName('resources/customElements/metamaskFeedback.html'),
+    PLATFORM.moduleName('resources/customElements/networkFeedback.html'),
     PLATFORM.moduleName('resources/valueConverters/number'),
     PLATFORM.moduleName('resources/valueConverters/ethwei'),
     PLATFORM.moduleName('resources/valueConverters/date'),

@@ -46,11 +46,16 @@ ux-dialog {
   border-width: 0 !important;
 }
 
+ux-dialog-container>div>div {
+  min-width: 10rem;
+}
+
 ux-dialog.connections,
 ux-dialog.alert {
   border-top-width: .5rem !important;
   border-top-color: $color-ds-black !important;
-  max-width: 52rem;
+  max-width: 53rem;
+  min-width: 10rem;
 }
 
 ux-dialog.connections .disclaimer {
@@ -78,6 +83,11 @@ ux-dialog.connections .disclaimer .title {
 ux-dialog.connections .disclaimer .body p:before {
   content: "\2022";
   margin-right: .35rem;
+}
+
+ux-dialog.connections .disclaimer .checks .checkbox label {
+  white-space: normal;
+  margin-right: 2rem;
 }
 
 ux-dialog.connections .disclaimer .checks input[type=checkbox]:checked + .checkbox-decorator .check,

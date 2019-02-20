@@ -61,7 +61,11 @@
             </p>
             <p if.to-view="hasAccount">
               You are currently using the following account:
-              <usersaddress></usersaddress>.
+              <usersaddress class="d-none d-sm-inline-block"></usersaddress>
+              <usersaddress
+                class="d-sm-none"
+                small="true"
+              ></usersaddress>.
               Please be sure that you intend to use this account in the future for voting within the dxDAO.
             </p>
             <p
@@ -76,6 +80,7 @@
           <div if.to-view="isConnected && (!hasAccount || !hasApprovedAccountAccess)">
             <p class="buttonContainer"><button
                 class="btn btn-submit"
+                style="white-space: normal"
                 click.delegate="confirm()"
               >Allow the dxDAO Vote Staking Interface to Access Your Account on MetaMask</button></p>
           </div>
