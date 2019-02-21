@@ -10,6 +10,7 @@ import {
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { Address, ArcTransactionResult, ExternalLocking4ReputationWrapper, LockInfo } from 'services/ArcService';
 import { BalloonService } from 'services/balloonService';
+import { WalletService } from 'services/walletService';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 
 @autoinject
@@ -39,7 +40,8 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   constructor(
     appConfig: AureliaConfiguration,
     eventAggregator: EventAggregator,
-    web3Service: Web3Service
+    web3Service: Web3Service,
+    private walletService: WalletService
   ) {
     super(appConfig, eventAggregator, web3Service);
     this.lockModel.amount = new BigNumber(0); // to avoid validation

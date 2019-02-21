@@ -38,21 +38,24 @@
         </div>
         <div else>
           <p if.to-view="!isConnected">
-            There seems to be no connection to the blockchain. Please install and/or enable the <a
+            There seems to be no connection to the blockchain. Please install and/or enable a web3 wallet such as <a
               href="https://metamask.io/"
               target="_blank"
-            >MetaMask browser extension</a>,
+            >MetaMask</a>, or the <a
+              href="https://safe.gnosis.io/"
+              target="_blank"
+            >Gnosis Safe</a>,
             point it to the <span class="important">Main Ethereum Network</span>, then refresh this browser page so you can access the <a
               href="https://daotalk.org/c/dx-dao"
               target="_blank"
-            >dxDAO</a> Initializer.
+            >dxDAO</a> Vote Staking UI.
           </p>
 
           <div if.to-view="isConnected && !hasAccount">
             <p>To access the <a
                 href="https://daotalk.org/c/dx-dao"
                 target="_blank"
-              >dxDAO</a> Vote Staking Interface, please log in to MetaMask, select your desired account and allow the dxDAO Vote Staking Interface to access your account.
+              >dxDAO</a> Vote Staking Interface, please log in to ${walletService.currentWallet.name & signal:'wallet.changed'}, select your desired account and allow the dxDAO Vote Staking Interface to access your account.
           </div>
 
           <div if.to-view="((isConnected && !hasAccount) || (hasAccepted && !landed && hasDao))">
@@ -82,11 +85,11 @@
                 class="btn btn-submit"
                 style="white-space: normal"
                 click.delegate="confirm()"
-              >Allow the dxDAO Vote Staking Interface to Access Your Account on MetaMask</button></p>
+              >Allow the dxDAO Vote Staking Interface to Access Your Account on ${walletService.currentWallet.name & signal:'wallet.changed'}</button></p>
           </div>
 
           <div if.to-view="hasAccepted && isConnected && hasAccount && !hasDao">
-            Please check MetaMask and make sure you are connected to the Main Ethereum Network.
+            Please check ${walletService.currentWallet.name & signal:'wallet.changed'} and make sure you are connected to the Main Ethereum Network.
           </div>
 
           <div
