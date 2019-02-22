@@ -1,10 +1,13 @@
-import { includeEventsIn, Subscription } from 'aurelia-event-aggregator';
 import { LogManager } from 'aurelia-framework';
 import { SchemeInfo } from '../entities/SchemeInfo';
 import {
   ArcService,
+  ControllerRegisterSchemeEventLogEntry,
   DAO,
   DaoSchemeInfo,
+  DecodedLogEntryEvent,
+  fnVoid,
+  WrapperService,
 } from '../services/ArcService';
 import { BigNumber, Web3Service } from '../services/Web3Service';
 
@@ -63,7 +66,62 @@ export class DaoEx extends DAO {
        */
       (networkName === 'Live') ? { _sender: '0x0A530100Affb0A06eDD2eD74e335aFC50624f345' } : {};
 
-    return (await super.getSchemes('', filter))
+    /**
+     * For performance: By not using this.getSchemes() we are assuming that none of the DAO's schemes will have been
+     * unregistered and reregistered.  Thus we save some time by not calling controller.isSchemeRegistered().
+     */
+    const foundSchemes = new Array<DaoSchemeInfo>();
+    const controller = this.controller;
+
+    /**
+     * Another hack to get the block number.  Makes a huge difference in timing.
+     * This will work for any DAO created after this one, but not before.  It will
+     * diminish in effectiveness as time goes by.
+     */
+    const registerSchemeEvent = controller.RegisterScheme(
+      Object.assign({}, filter), // _avatar only matters with Universal controller
+      { fromBlock: 7219952, toBlock: 'latest' }
+    );
+
+    await new Promise((resolve: fnVoid, reject: (error: Error) => void): void => {
+      registerSchemeEvent.get((
+        err: Error,
+        log: DecodedLogEntryEvent<ControllerRegisterSchemeEventLogEntry> |
+          Array<DecodedLogEntryEvent<ControllerRegisterSchemeEventLogEntry>>) => {
+        if (err) {
+          return reject(err);
+        }
+        this.handleSchemeEvent(log, foundSchemes);
+        return resolve();
+      });
+    });
+
+    return foundSchemes
       .map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
+  }
+
+  private handleSchemeEvent(
+    log: DecodedLogEntryEvent<ControllerRegisterSchemeEventLogEntry> |
+      Array<DecodedLogEntryEvent<ControllerRegisterSchemeEventLogEntry>>,
+    schemes: Array<Partial<DaoSchemeInfo>>
+  ): void {
+
+    if (!Array.isArray(log)) {
+      log = [log];
+    }
+    const count = log.length;
+    for (let i = 0; i < count; i++) {
+      const address = log[i].args._scheme;
+      const wrapper = WrapperService.wrappersByAddress.get(address);
+
+      if (!wrapper) { // none of the contracts we care about have been deployed by Arc
+        const schemeInfo: Partial<DaoSchemeInfo> = {
+          address,
+          blockNumber: log[i].blockNumber,
+          wrapper,
+        };
+        schemes.push(schemeInfo);
+      }
+    }
   }
 }

@@ -439,9 +439,6 @@ export class Dashboard {
      */
     const schemes = (await this.schemeService.getSchemesForDao(this.address));
 
-    // tslint:disable-next-line: no-console
-    // console.timeStamp('loadSchemes');
-
     const nonArcSchemes = schemes.filter((s: SchemeInfo) => !s.inArc);
 
     // tslint:disable-next-line: no-console
@@ -455,9 +452,6 @@ export class Dashboard {
     }
     // tslint:disable-next-line: no-console
     // console.timeEnd('findNonDeployedArcScheme');
-
-    // tslint:disable-next-line: no-console
-    // console.timeStamp('loadSchemes');
 
     this.dutchXSchemes = schemes.filter((s: SchemeInfo) => s.inArc && s.inDao)
       // hack to remove all but the dxDAO contracts
@@ -489,21 +483,13 @@ export class Dashboard {
       this.networkConnectionWizards.run(false, true); // no-op if already running
     } else {
 
-      // tslint:disable-next-line: no-console
-      // console.time('gatherInfo');
       await this.computeNumLocks();
-
-      // tslint:disable-next-line: no-console
-      // console.timeStamp('loadSchemes');
 
       const mgnWrapper =
         (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
       this.appConfig.set('mgnWrapper', mgnWrapper as any);
 
       const lockDates = await this.getLockDates();
-
-      // tslint:disable-next-line: no-console
-      // console.timeStamp('loadSchemes');
 
       /**
        * store away for the rest of the UI, in the config for backward-compatibility
@@ -535,9 +521,6 @@ export class Dashboard {
         await this.computeRedeemables();
       }
     }
-
-    // tslint:disable-next-line: no-console
-    // console.timeEnd('gatherInfo');
 
     this.schemesLoading = this.loading = false;
 
@@ -655,20 +638,26 @@ export class Dashboard {
     }
   }
 
-  private async computeNumLocks(): Promise<void> {
-    // tslint:disable-next-line: no-console
-    // console.time('computeNumLocks');
-    let wrapper = await this.getSchemeWrapperFromName('LockingEth4Reputation');
-    let schemeInfo = this.getSchemeInfoFromName('LockingEth4Reputation');
-    let lockService = new LockService(wrapper, this.web3Service.defaultAccount, schemeInfo.blockNumber);
-    schemeInfo.numLocks = await lockService.getUserUnReleasedLockCount();
+  private computeNumLocks(): void {
+    this.getSchemeWrapperFromName('LockingEth4Reputation')
+      .then((wrapper: Locking4ReputationWrapper) => {
+        const schemeInfo1 = this.getSchemeInfoFromName('LockingEth4Reputation');
+        const lockService = new LockService(wrapper, this.web3Service.defaultAccount, schemeInfo1.blockNumber);
+        lockService.getUserUnReleasedLockCount()
+          .then((numLocks: number) => {
+            schemeInfo1.numLocks = numLocks;
+          });
+      });
 
-    wrapper = await this.getSchemeWrapperFromName('LockingToken4Reputation');
-    schemeInfo = this.getSchemeInfoFromName('LockingToken4Reputation');
-    lockService = new LockService(wrapper, this.web3Service.defaultAccount, schemeInfo.blockNumber);
-    schemeInfo.numLocks = await lockService.getUserUnReleasedLockCount();
-    // tslint:disable-next-line: no-console
-    // console.timeEnd('computeNumLocks');
+    this.getSchemeWrapperFromName('LockingToken4Reputation')
+      .then((wrapper: Locking4ReputationWrapper) => {
+        const schemeInfo2 = this.getSchemeInfoFromName('LockingToken4Reputation');
+        const lockService = new LockService(wrapper, this.web3Service.defaultAccount, schemeInfo2.blockNumber);
+        lockService.getUserUnReleasedLockCount()
+          .then((numLocks: number) => {
+            schemeInfo2.numLocks = numLocks;
+          });
+      });
   }
 
   private async findNonDeployedArcScheme(scheme: SchemeInfo): Promise<SchemeInfo | null> {
