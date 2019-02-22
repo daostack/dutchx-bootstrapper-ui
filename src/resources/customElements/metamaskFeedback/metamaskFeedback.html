@@ -5,7 +5,7 @@
     title="Awaiting your approval of a transaction in Metamask"
   >
     <img
-      class="metamask-icon"
+      class="${icononly ? 'metamask-icon-only' : 'metamask-icon'}"
       src="${walletService.currentWallet.icon | imageContext & signal:'wallet.changed' }"
     />
     <span

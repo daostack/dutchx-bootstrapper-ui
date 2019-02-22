@@ -1,17 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="58px" height="37px" viewBox="0 0 58 37" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 53.1 (72631) - https://sketchapp.com -->
-    <title>Artboard</title>
-    <desc>Created with Sketch.</desc>
-    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <rect id="Rectangle" fill="#2E2E2E" x="0" y="0" width="52" height="37" rx="5"></rect>
-        <path d="M42,9.75 L52.5,9.75 C54.5710678,9.75 56.25,11.4289322 56.25,13.5 L56.25,22.5 C56.25,24.5710678 54.5710678,26.25 52.5,26.25 L42,26.25 C37.4436508,26.25 33.75,22.5563492 33.75,18 C33.75,13.4436508 37.4436508,9.75 42,9.75 Z" id="Rectangle" stroke="#FFFFFF" stroke-width="2.5" fill="#6C6C6C"></path>
-        <circle id="Oval" fill="#FFFFFF" cx="42" cy="18" r="3"></circle>
-        <g id="Ethereum_logo_2014" transform="translate(16.000000, 18.500000) scale(-1, 1) translate(-16.000000, -18.500000) translate(8.000000, 5.000000)" fill="#FFFFFF" fill-rule="nonzero">
-            <polygon id="Path" points="8 0 8 18 16 13.2719355"></polygon>
-            <polygon id="Path" points="8 0 0 13.2718894 8 18 8 9.63624683"></polygon>
-            <polygon id="Path" points="8.09721247 20.6118012 8 20.7289264 8 26.7193268 8.09721247 27 16 16"></polygon>
-            <polygon id="Path" points="8 27 8 20.6118012 0 16"></polygon>
-        </g>
-    </g>
+<svg width="58" height="58" xmlns="http://www.w3.org/2000/svg">
+ <!-- Generator: Sketch 53.1 (72631) - https://sketchapp.com -->
+
+ <title>Artboard</title>
+ <desc>Created with Sketch.</desc>
+ <g>
+  <title>background</title>
+  <rect height="60" width="60" y="-1" x="-1" fill="none" id="canvas_background"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <g fill-rule="evenodd" fill="none" id="Artboard">
+   <rect rx="5" height="37" width="52" y="11" x="0" fill="#2e2e2e" id="Rectangle"/>
+   <path d="m42,20.75l10.5,0c2.071072,0 3.75,1.67893 3.75,3.75l0,9c0,2.071068 -1.678928,3.75 -3.75,3.75l-10.5,0c-4.556351,0 -8.25,-3.693649 -8.25,-8.25c0,-4.556351 3.693649,-8.25 8.25,-8.25z" stroke-width="2.5" stroke="#ffffff" fill="#6c6c6c" id="Rectangle"/>
+   <circle r="3" cy="29" cx="42" fill="#ffffff" id="Oval"/>
+   <g transform="translate(16 18.5) scale(-1, 1) translate(-16 -18.5) translate(8 5)" fill-rule="nonzero" fill="#ffffff" id="Ethereum_logo_2014">
+    <polygon points="8,11 8,29 16,24.2719" id="Path"/>
+    <polygon points="8,11 0,24.2719 8,29 8,20.6362" id="Path"/>
+    <polygon points="8.09721,31.6118 8,31.7289 8,37.7193 8.09721,38 16,27" id="Path"/>
+    <polygon points="8,38 8,31.6118 0,27" id="Path"/>
+   </g>
+  </g>
+ </g>
 </svg>
