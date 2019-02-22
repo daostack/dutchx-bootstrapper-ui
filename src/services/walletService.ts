@@ -21,8 +21,8 @@ export class WalletService {
 
   private static UNKNOWN: IWalletInfo =
     {
-      icon: '',
-      name: '[Unknown]',
+      icon: 'Unknown.svg',
+      name: '(Unknown Wallet)',
     };
 
   public currentWallet: IWalletInfo = WalletService.UNKNOWN;
@@ -55,10 +55,16 @@ export class WalletService {
   private async refreshWallet() {
     if (this.web3.isConnected) {
       const theWindow = (window as any);
-      if (theWindow.ethereum && theWindow.ethereum._metamask) {
-        this.setCurrentWallet(WalletService.METAMASK);
-      } else if (this.web3 && (this.web3.currentProvider as any).isSafe) {
+      /**
+       * At the moment, we are configuring arc.js to automatically use the MetaMask
+       * provider which makes it look like MetaMask is present even when it is not.
+       * So here we check first for Safe, which will only appear to be present when it
+       * really is.
+       */
+      if (this.web3 && (this.web3.currentProvider as any).isSafe) {
         this.setCurrentWallet(WalletService.SAFE);
+      } else if (theWindow.ethereum && theWindow.ethereum._metamask) {
+        this.setCurrentWallet(WalletService.METAMASK);
       } else {
         this.setCurrentWallet(WalletService.UNKNOWN);
       }

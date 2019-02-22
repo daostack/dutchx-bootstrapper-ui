@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="58px" height="37px" viewBox="0 0 58 37" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.1 (72631) - https://sketchapp.com -->
+    <title>Artboard</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="#2E2E2E" x="0" y="0" width="52" height="37" rx="5"></rect>
+        <path d="M42,9.75 L52.5,9.75 C54.5710678,9.75 56.25,11.4289322 56.25,13.5 L56.25,22.5 C56.25,24.5710678 54.5710678,26.25 52.5,26.25 L42,26.25 C37.4436508,26.25 33.75,22.5563492 33.75,18 C33.75,13.4436508 37.4436508,9.75 42,9.75 Z" id="Rectangle" stroke="#FFFFFF" stroke-width="2.5" fill="#6C6C6C"></path>
+        <circle id="Oval" fill="#FFFFFF" cx="42" cy="18" r="3"></circle>
+        <g id="Ethereum_logo_2014" transform="translate(16.000000, 18.500000) scale(-1, 1) translate(-16.000000, -18.500000) translate(8.000000, 5.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <polygon id="Path" points="8 0 8 18 16 13.2719355"></polygon>
+            <polygon id="Path" points="8 0 0 13.2718894 8 18 8 9.63624683"></polygon>
+            <polygon id="Path" points="8.09721247 20.6118012 8 20.7289264 8 26.7193268 8.09721247 27 16 16"></polygon>
+            <polygon id="Path" points="8 27 8 20.6118012 0 16"></polygon>
+        </g>
+    </g>
+</svg>

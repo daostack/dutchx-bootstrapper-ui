@@ -74,12 +74,12 @@ export class NetworkConnectionWizards {
           const approved = !(theWindow.ethereum && theWindow.ethereum._metamask.isApproved) ||
             (await theWindow.ethereum._metamask.isApproved());
 
+          /**
+           * `window.ethereum` is supplied by MM and Safe.  It is not supplied by ganache.
+           * We are configuring Arc.js to use the metamask provider,
+           * thus `theWindow.ethereum._metamask` is always present *and functioning* even with Safe.
+           */
           this.hasApprovedAccountAccess =
-            /**
-             * !theWindow.ethereum happens when there is a local server or otherwise not using metamask.
-             * We return true in this case because MM is thus not present and we don't want to trigger
-             * any interaction with it.  If there is no connection we'll do the right thing.
-             */
             !theWindow.ethereum || (enabled || approved);
         }
       };
