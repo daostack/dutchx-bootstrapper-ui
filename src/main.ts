@@ -8,6 +8,7 @@ import 'popper.js';
 import { ConsoleLogService } from 'services/ConsoleLogService';
 import { LockService } from 'services/lockServices';
 import { SnackbarService } from 'services/SnackbarService';
+import { WalletService } from 'services/walletService';
 import { DateService } from './services/DateService';
 
 // remove out if you don't want a Promise polyfill (remove also from webpack.config.js)
@@ -45,7 +46,7 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName('resources/customElements/spinButton.html'),
     PLATFORM.moduleName('resources/customElements/instructions.html'),
     PLATFORM.moduleName('resources/customElements/pageLoading.html'),
-    PLATFORM.moduleName('resources/customElements/metamaskFeedback.html'),
+    PLATFORM.moduleName('resources/customElements/metamaskFeedback/metamaskFeedback'),
     PLATFORM.moduleName('resources/customElements/networkFeedback.html'),
     PLATFORM.moduleName('resources/valueConverters/number'),
     PLATFORM.moduleName('resources/valueConverters/ethwei'),
@@ -68,9 +69,7 @@ export async function configure(aurelia: Aurelia) {
   await aurelia.start();
   // just to initialize them and get them running
   aurelia.container.get(ConsoleLogService);
-  // not using aurelia.container.get(AlertService);
   aurelia.container.get(SnackbarService);
-  aurelia.container.get(DateService);
   LockService.initialize(aurelia.container);
   await aurelia.setRoot(PLATFORM.moduleName('app'));
 }
