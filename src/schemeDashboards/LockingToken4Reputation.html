@@ -57,11 +57,12 @@
                     href="#"
                     class="dropdown-item"
                     click.delegate="selectToken.call($parent.$parent, tokenSpec)"
-                    repeat.for="tokenSpec of $parent.lockableTokens"
+                    repeat.for="tokenSpec of $parent.lockableTokens | sortTokens & debounce:1000 "
                   >${tokenSpec.symbol} (<tokenbalance
                       token.to-view="tokenSpec.address"
                       balance.bind="tokenSpec.balance"
                       trailing-zeroes.to-view="0"
+                      balance-changed.call="balanceChanged($last)"
                     ></tokenbalance>)
                   </a>
                 </div>

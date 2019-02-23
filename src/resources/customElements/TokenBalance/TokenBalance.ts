@@ -14,12 +14,15 @@ export class TokenBalance {
   @bindable({ defaultBindingMode: bindingMode.toView }) public placement: string = 'top';
   @bindable({ defaultBindingMode: bindingMode.twoWay }) public balance: BigNumber = null;
   @bindable({ defaultBindingMode: bindingMode.toView }) public trailingZeroes?: number | string = 2;
+  @bindable({ defaultBindingMode: bindingMode.oneTime })
+  public balanceChanged?: () => void;
 
   private event: EventFetcher<TransferEventResult>;
   private subscriptions = new DisposableCollection();
   private tokenWrapper: Erc20Wrapper;
   private checking: boolean = false;
   private account: Address;
+  private initialized = false;
 
   constructor(
     private web3: Web3Service,
@@ -29,6 +32,7 @@ export class TokenBalance {
   }
 
   public attached() {
+
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account',
       (account: Address) => {
         this.account = account;
@@ -72,6 +76,7 @@ export class TokenBalance {
   }
 
   private detached(): void {
+
     if (this.subscriptions) {
       this.subscriptions.dispose();
     }
@@ -95,7 +100,12 @@ export class TokenBalance {
       try {
         this.checking = true;
         if (this.account) {
+          const oldBalance = this.balance;
           this.balance = await this.tokenService.getUserErc20TokenBalance(this.tokenWrapper);
+          if (this.balanceChanged &&
+            ((typeof oldBalance === 'undefined') || !this.balance.eq(oldBalance))) {
+            this.balanceChanged();
+          }
         } else {
           this.balance = null;
         }
