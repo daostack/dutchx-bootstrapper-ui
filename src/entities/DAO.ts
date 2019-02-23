@@ -66,6 +66,14 @@ export class DaoEx extends DAO {
        */
       (networkName === 'Live') ? { _sender: '0x0A530100Affb0A06eDD2eD74e335aFC50624f345' } : {};
 
+    const web3Options = {
+      /**
+       * temporary hack to make search for DAO schemes work faster and not crash metamask
+       */
+      fromBlock: (networkName === 'Live') ? 7219952 : 0,
+      toBlock: 'latest',
+    };
+
     /**
      * For performance: By not using this.getSchemes() we are assuming that none of the DAO's schemes will have been
      * unregistered and reregistered.  Thus we save some time by not calling controller.isSchemeRegistered().
@@ -79,8 +87,8 @@ export class DaoEx extends DAO {
      * diminish in effectiveness as time goes by.
      */
     const registerSchemeEvent = controller.RegisterScheme(
-      Object.assign({}, filter), // _avatar only matters with Universal controller
-      { fromBlock: 7219952, toBlock: 'latest' }
+      filter, // _avatar only matters with Universal controller
+      web3Options
     );
 
     await new Promise((resolve: fnVoid, reject: (error: Error) => void): void => {

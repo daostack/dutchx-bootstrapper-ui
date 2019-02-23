@@ -1,8 +1,8 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, bindingMode, containerless, customElement } from 'aurelia-framework';
-import { Address } from 'services/ArcService';
+import { Address, DecodedLogEntryEvent, Erc20Wrapper, EventFetcher, TransferEventResult } from 'services/ArcService';
 import { DisposableCollection } from 'services/DisposableCollection';
-import { BigNumber } from 'services/Web3Service';
+import { BigNumber, Web3Service } from 'services/Web3Service';
 import { TokenService } from '../../../services/TokenService';
 
 @autoinject
@@ -15,76 +15,91 @@ export class TokenBalance {
   @bindable({ defaultBindingMode: bindingMode.twoWay }) public balance: BigNumber = null;
   @bindable({ defaultBindingMode: bindingMode.toView }) public trailingZeroes?: number | string = 2;
 
+  private event: EventFetcher<TransferEventResult>;
   private subscriptions = new DisposableCollection();
-
-  private events;
+  private tokenWrapper: Erc20Wrapper;
+  private checking: boolean = false;
+  private account: Address;
 
   constructor(
+    private web3: Web3Service,
     private tokenService: TokenService,
     private eventAggregator: EventAggregator
   ) {
   }
 
   public attached() {
-    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); }));
-    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id', () => { this.initialize(); }));
+    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account',
+      (account: Address) => {
+        this.account = account;
+        this.getBalance();
+      }));
+    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id',
+      () => { this.initialize(); }));
     this.initialize();
   }
 
   private async initialize() {
-    await this.stop();
-    this.readBalance();
+    this.stop();
+    this.account = this.web3.defaultAccount;
+    if (this.token) {
+
+      this.tokenWrapper = await this.tokenService.getErc20Token(this.token);
+
+      if (this.tokenWrapper) {
+        // note we're not handling Mint here, assuming it is not important
+        this.event = this.tokenWrapper.Transfer({}, { fromBlock: 'latest' },
+          (error: Error, event: DecodedLogEntryEvent<TransferEventResult>): void => {
+            if (!error) {
+              // events on this contract may relate to other accounts than the current one
+              if ((event.args.from === this.account) || (event.args.to === this.account)) {
+                this.getBalance();
+              }
+            }
+          });
+
+        this.getBalance();
+      }
+    }
+
+    if (!this.event) {
+      this.balance = null;
+    }
   }
 
-  private detached(): Promise<void> {
+  private detached(): void {
     if (this.subscriptions) {
       this.subscriptions.dispose();
     }
 
-    return this.stop();
+    this.stop();
   }
 
   private tokenChanged() {
     this.initialize();
   }
 
-  private stop(): Promise<void> {
-    if (this.events) {
-      return (Promise as any).promisify(() => this.events.stopWatching())()
-        .then(() => {
-          this.events = null;
-        });
-    } else {
-      return Promise.resolve();
+  private stop(): void {
+    if (this.event) {
+      this.event.stopWatching();
+      this.event = null;
     }
   }
 
-  private async readBalance() {
-
-    if (this.token) {
-
-      const token = await this.tokenService.getErc20Token(this.token);
-
-      if (token) {
-        this.getBalance(token);
-
-        this.events = token.contract.allEvents({ fromBlock: 'latest' });
-
-        this.events.watch(() => {
-          this.getBalance(token);
-        });
+  private async getBalance() {
+    if (!this.checking) {
+      try {
+        this.checking = true;
+        if (this.account) {
+          this.balance = await this.tokenService.getUserErc20TokenBalance(this.tokenWrapper);
+        } else {
+          this.balance = null;
+        }
+        // tslint:disable-next-line:no-empty
+      } catch (ex) {
+      } finally {
+        this.checking = false;
       }
-    }
-
-    if (!this.events) {
-      this.balance = null;
-    }
-  }
-  private async getBalance(token) {
-    try {
-      this.balance = await this.tokenService.getUserErc20TokenBalance(token);
-      // tslint:disable-next-line:no-empty
-    } catch {
     }
   }
 }
