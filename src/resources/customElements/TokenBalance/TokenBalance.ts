@@ -32,7 +32,11 @@ export class TokenBalance {
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account',
       (account: Address) => {
         this.account = account;
-        this.getBalance();
+        if (!this.tokenWrapper) {
+          this.initialize();
+        } else {
+          this.getBalance();
+        }
       }));
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id',
       () => { this.initialize(); }));
@@ -42,7 +46,7 @@ export class TokenBalance {
   private async initialize() {
     this.stop();
     this.account = this.web3.defaultAccount;
-    if (this.token) {
+    if (this.account && this.token) {
 
       this.tokenWrapper = await this.tokenService.getErc20Token(this.token);
 
