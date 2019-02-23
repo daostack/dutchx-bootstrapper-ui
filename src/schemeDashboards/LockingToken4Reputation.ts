@@ -1,6 +1,6 @@
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject } from 'aurelia-framework';
+import { autoinject, signalBindings } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure, EventMessageType } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { AureliaHelperService } from 'services/AureliaHelperService';
@@ -29,6 +29,7 @@ export class LockingToken4Reputation extends Locking4Reputation {
   private selectedToken: ITokenSpecification = null;
   private selectedTokenIsLiquid: boolean = false;
   private dashboard: HTMLElement;
+  private tokensInited = false;
 
   constructor(
     appConfig: AureliaConfiguration,
@@ -43,35 +44,18 @@ export class LockingToken4Reputation extends Locking4Reputation {
   protected async refresh() {
     await super.refresh();
     this.refreshing = true;
-    try {
-      const tokens: Array<ITokenSpecificationX> = this.lockService.lockableTokenSpecs;
-      for (const tokenInfo of tokens) {
-        await this.tokenService.getUserTokenBalance(tokenInfo.address)
-          .then((balance: BigNumber) => {
-            tokenInfo.balance = balance;
-            /**
-             * Whenever a balance changes, sort the array.
-             */
-            this.aureliaHelperService.createPropertyWatch(
-              tokenInfo, 'balance', (newValue: BigNumber, oldValue: BigNumber) => {
-                if ((!newValue && oldValue) ||
-                  (newValue && !oldValue) ||
-                  (newValue && oldValue && !newValue.eq(oldValue))) {
-                  /**
-                   * Trying not to trigger this too often.
-                   */
-                  this.lockableTokens = this.sortTokens(this.lockableTokens);
-                }
-              });
-          });
-      }
-      this.lockableTokens = this.sortTokens(tokens);
-    } finally {
-      this.refreshing = false;
-    }
+    /**
+     * This will cause all of the TokenBalance elements to be created, attached and for them to set
+     * their balances.
+     */
+    this.lockableTokens = this.lockService.lockableTokenSpecs;
+    this.refreshing = false;
   }
 
   protected async accountChanged(account: Address) {
+    /**
+     * note: Tokens will update themselves with the new account balances
+     */
     await super.accountChanged(account);
     return this.getLocks();
   }
@@ -173,27 +157,20 @@ export class LockingToken4Reputation extends Locking4Reputation {
     this.selectedToken = tokenSpec;
   }
 
-  private sortTokens(tokens: Array<ITokenSpecificationX>): Array<ITokenSpecificationX> {
+  private balanceChanged(isLast: boolean): void {
+
     /**
-     * what we want here is the concatenation of two arrays, each sorted by symbol:
-     * The first is the set of all zero balances, the second all the rest.
+     * isLast is true when this is the last token in the list. We don't want to
+     * invoke SortTokens during initial loading until we've reached the last token
+     * in the list.  After that, we sort whenever there is a change.
      */
-    tokens = [
-      ...tokens
-        .filter((tokenInfo: ITokenSpecificationX) => {
-          return tokenInfo.balance && !tokenInfo.balance.eq(0);
-        })
-        .sort((a: ITokenSpecificationX, b: ITokenSpecificationX) => {
-          return SortService.evaluateString(a.symbol, b.symbol);
-        }),
-      ...tokens.filter((tokenInfo: ITokenSpecificationX) => {
-        return !tokenInfo.balance || tokenInfo.balance.eq(0);
-      })
-        .sort((a: ITokenSpecificationX, b: ITokenSpecificationX) => {
-          return SortService.evaluateString(a.symbol, b.symbol);
-        }),
-    ];
-    return tokens;
+    if (isLast && !this.tokensInited) {
+      this.tokensInited = true;
+    }
+
+    if (this.tokensInited) {
+      signalBindings('token.changed');
+    }
   }
 }
 

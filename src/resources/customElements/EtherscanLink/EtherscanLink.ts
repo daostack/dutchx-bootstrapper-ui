@@ -36,11 +36,11 @@ export class EtherscanLink {
   }
 
   public attached() {
-    let targetedNetwork = this.web3.networkName;
-    if (targetedNetwork === 'Live') {
+    let targetedNetwork = `${this.web3.networkName}.`;
+    if (targetedNetwork === 'Live.') {
       targetedNetwork = '';
     }
-    const isGanache = targetedNetwork === 'Ganache';
+    const isGanache = targetedNetwork === 'Ganache.';
     if (this.type === 'tx') {
       this.copyMessage = 'Hash has been copied to the clipboard';
     } else {
@@ -55,7 +55,7 @@ export class EtherscanLink {
     } else {
       // go with etherscan
       this.networkExplorerUri =
-      `http://${targetedNetwork}.etherscan.io/${this.type === 'tx' ? 'tx' : 'address'}/${this.address}`;
+        `http://${targetedNetwork}etherscan.io/${this.type === 'tx' ? 'tx' : 'address'}/${this.address}`;
     }
 
     /** timeout so setting of this.networkExplorerUri takes effect in DOM */
