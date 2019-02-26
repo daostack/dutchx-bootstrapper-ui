@@ -516,9 +516,10 @@ table.locksForRep td.actions {
   white-space:nowrap;
 }
 
-table.locksForRep td button {
+table.locksForRep td.actions button {
   margin-bottom: 0;
   font-size: 1rem;
+  padding-left: .2rem;
 }
 
 table.locksForRep td button:disabled,
