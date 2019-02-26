@@ -1,6 +1,7 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, bindingMode } from 'aurelia-framework';
 import { LockInfo, Locking4ReputationWrapper } from 'services/ArcService';
+import { DateService } from 'services/DateService';
 import { ILockInfoX } from 'services/lockServices';
 import { Web3Service } from 'services/Web3Service';
 
@@ -21,7 +22,8 @@ export class LocksForReputation {
 
   constructor(
     private web3Service: Web3Service,
-    private eventAggregator: EventAggregator
+    private eventAggregator: EventAggregator,
+    private dateService: DateService
   ) {
   }
 
@@ -85,6 +87,12 @@ export class LocksForReputation {
     return (releaseTime.getDate() === now.getDate()) &&
       (releaseTime.getMonth() === now.getMonth()) &&
       (releaseTime.getFullYear() === now.getFullYear());
+  }
+
+  private releaseDate(lock: ILockInfoInternal): string {
+
+    // tslint:disable-next-line: max-line-length
+    return `${this.dateService.toString(lock.releaseTime, lock.releasableToday ? 'table-time' : 'table-date')}${lock.releasableToday ? ' today' : ''}`;
   }
 
   private async _refresh(): Promise<void> {

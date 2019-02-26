@@ -13,55 +13,57 @@
       ></spinbutton>
     </div>
   </div>
-  <table class="table locksForRep">
-    <thead class="thead-light">
-      <tr>
-        <th style="text-align:left;width: 20%;">Amount</th>
-        <th>Of</th>
-        <th>Releasable</th>
-        <th>&nbsp;</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr if.to-view="_locks.length === 0">
-        <td
-          colspan="100"
-          style="text-align: center; padding-top: 1rem"
-        >
-          You have not yet submitted any locks
-        </td>
-      </tr>
-      <tr repeat.for="lock of _locks">
-        <td>${lock.amount | ethwei}</td>
-        <td>${lock.units}</td>
-        <td style="white-space:nowrap">
-          ${lock.releaseTime | date:lock.releasableToday ? 'table-time' : 'table-date'}</span>
-          <span if.one-time="lock.releasableToday"> today</span>
-        </td>
-        <td class="actions">
-          <button
-            click.delegate="_release(lock, $event)"
-            disabled.bind="!lock.canRelease"
-            show.to-view="!lock.releasing && !lock.released"
-            class="btn btn-link release"
-          >Release</button>
-          <div
-            show.to-view="lock.releasing && !lock.released"
-            data-title="Releasing"
-            class="inline text-primary fa-refresh fa fa-spin"
-            style="line-height: 21px"
-          ></div>
-          <metamaskfeedback
-            icononly="true"
-            if.to-view="lock.sending"
-          ></metamaskfeedback>
-          <button
-            if.to-view="lock.released"
-            class="btn btn-link complete"
-            disabled
-          >Completed</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table locksForRep">
+      <thead class="thead-light">
+        <tr>
+          <th style="text-align:left;width: 20%;">Amount</th>
+          <th style="width: 70%; text-align: center">Releasable</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr if.to-view="_locks.length === 0">
+          <td
+            colspan="100"
+            style="text-align: center; padding-top: 1rem"
+          >
+            You have not yet submitted any locks
+          </td>
+        </tr>
+        <tr repeat.for="lock of _locks">
+          <td style="white-space: nowrap">${lock.amount | ethwei} ${lock.units}</td>
+          <td
+            style="text-align: center; white-space:nowrap;max-width:3rem; overflow: hidden; text-overflow: ellipsis;"
+            title="${releaseDate(lock)}"
+          >
+            ${releaseDate(lock)}
+          </td>
+          <td class="actions">
+            <button
+              click.delegate="_release(lock, $event)"
+              disabled.bind="!lock.canRelease"
+              show.to-view="!lock.releasing && !lock.released"
+              class="btn btn-link release"
+            >Release</button>
+            <div
+              show.to-view="lock.releasing && !lock.released"
+              data-title="Releasing"
+              class="inline text-primary fa-refresh fa fa-spin"
+              style="line-height: 21px"
+            ></div>
+            <metamaskfeedback
+              icononly="true"
+              if.to-view="lock.sending"
+            ></metamaskfeedback>
+            <button
+              if.to-view="lock.released"
+              class="btn btn-link complete"
+              disabled
+            >Completed</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
