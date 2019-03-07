@@ -41,7 +41,6 @@ export class LocksForReputation {
     const tmpLocks = newLocks as Array<ILockInfoInternal>;
 
     for (const lock of tmpLocks) {
-      // lock.canRedeem = await this.canRedeem(lock);
       lock.canRelease = await this.canRelease(lock);
       lock.releasableToday = this.releasableToday(lock.releaseTime);
     }

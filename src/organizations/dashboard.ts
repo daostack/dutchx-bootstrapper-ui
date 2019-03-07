@@ -75,7 +75,7 @@ export class Dashboard {
   private lockingPeriodEndDate: Date;
   private governanceStartDate: Date;
   private fakeRedeem: boolean = false;
-  private canRedeem: boolean = false;
+  private hasComputedReputation: boolean = false;
   private networkName: string;
   private options: { address?: Address };
   private redeemables: Array<IRedeemable> = new Array<IRedeemable>();
@@ -501,13 +501,17 @@ export class Dashboard {
       this.governanceStartDate = this.dateService
         .fromIsoString(this.appConfig.get('governanceStartDate'), App.timezone);
 
-      if (!this.repSummaryCheck) {
+      const blockNumber = await UtilsInternal.lastBlockDate(this.web3Service.web3);
+
+      if (this.fakeRedeem || this.canComputeReputation(blockNumber)) {
+        this.computeRedeemables();
+      } else {
+
         this.repSummaryCheck =
           this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
-            if (!this.canRedeem &&
-              (this.fakeRedeem || (blockDate.getTime() >= this.lockingPeriodEndDate.getTime()))) {
+            if (!this.hasComputedReputation && !this.computingRedeemables &&
+              (this.fakeRedeem || this.canComputeReputation(blockDate))) {
 
-              this.canRedeem = true;
               this.repSummaryCheck.dispose();
               this.repSummaryCheck = null;
               if (this.org) {
@@ -515,10 +519,6 @@ export class Dashboard {
               }
             }
           });
-      }
-
-      if (this.canRedeem) {
-        await this.computeRedeemables();
       }
     }
 
@@ -579,9 +579,15 @@ export class Dashboard {
     let contractRepReward: BigNumber;
 
     try {
-      let schemeAddress = this.getSchemeInfoFromName('LockingEth4Reputation').address;
+      let schemeInfo = this.getSchemeInfoFromName('LockingEth4Reputation');
+      let schemeAddress = schemeInfo.address;
+      let schemeBirthBlock = schemeInfo.blockNumber;
       let wrapper: Locking4ReputationWrapper = await WrapperService.factories.LockingEth4Reputation.at(schemeAddress);
-      let earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
+      let earnedRep = await wrapper.getUserEarnedReputation(
+        {
+          contractBirthBlock: schemeBirthBlock,
+          lockerAddress: this.web3.defaultAccount,
+        });
       contractRepReward = await wrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
@@ -590,9 +596,15 @@ export class Dashboard {
         what: 'Locked ETH',
       });
 
-      schemeAddress = this.getSchemeInfoFromName('LockingToken4Reputation').address;
+      schemeInfo = this.getSchemeInfoFromName('LockingToken4Reputation');
+      schemeAddress = schemeInfo.address;
+      schemeBirthBlock = schemeInfo.blockNumber;
       wrapper = await WrapperService.factories.LockingToken4Reputation.at(schemeAddress);
-      earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
+      earnedRep = await wrapper.getUserEarnedReputation(
+        {
+          contractBirthBlock: schemeBirthBlock,
+          lockerAddress: this.web3.defaultAccount,
+        });
       contractRepReward = await wrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
@@ -601,9 +613,15 @@ export class Dashboard {
         what: 'Locked tokens',
       });
 
-      schemeAddress = this.getSchemeInfoFromName('ExternalLocking4Reputation').address;
+      schemeInfo = this.getSchemeInfoFromName('ExternalLocking4Reputation');
+      schemeAddress = schemeInfo.address;
+      schemeBirthBlock = schemeInfo.blockNumber;
       wrapper = await WrapperService.factories.ExternalLocking4Reputation.at(schemeAddress);
-      earnedRep = await wrapper.getUserEarnedReputation({ lockerAddress: this.web3.defaultAccount });
+      earnedRep = await wrapper.getUserEarnedReputation(
+        {
+          contractBirthBlock: schemeBirthBlock,
+          lockerAddress: this.web3.defaultAccount,
+        });
       contractRepReward = await wrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
 
@@ -612,13 +630,20 @@ export class Dashboard {
         what: 'Registered MGN tokens',
       });
 
-      schemeAddress = this.getSchemeInfoFromName('Auction4Reputation').address;
+      schemeInfo = this.getSchemeInfoFromName('Auction4Reputation');
+      schemeAddress = schemeInfo.address;
+      schemeBirthBlock = schemeInfo.blockNumber;
       const auctionWrapper = await WrapperService.factories.Auction4Reputation.at(schemeAddress);
       const numAuctions = await auctionWrapper.getNumberOfAuctions();
       earnedRep = new BigNumber(0);
       for (let auctionId = 0; auctionId < numAuctions; ++auctionId) {
-        earnedRep = earnedRep.add(await auctionWrapper.getUserEarnedReputation(
-          { beneficiaryAddress: this.web3.defaultAccount, auctionId }));
+        earnedRep = earnedRep.add(await auctionWrapper.getUserEarnedReputation
+          (
+            {
+              auctionId,
+              beneficiaryAddress: this.web3.defaultAccount,
+              contractBirthBlock: schemeBirthBlock,
+            }));
       }
       contractRepReward = await auctionWrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
@@ -635,6 +660,7 @@ export class Dashboard {
         new EventConfigException(`Unable to compute earned reputation `, ex));
     } finally {
       this.computingRedeemables = false;
+      this.hasComputedReputation = true;
     }
   }
 
@@ -740,6 +766,10 @@ export class Dashboard {
     setTimeout(() => { this.fixScrollbar(); }, 0);
   }
 
+  private canComputeReputation(blockDate: Date) {
+    return blockDate.getTime() >= this.lockingPeriodEndDate.getTime();
+  }
+
   private toggleDisclaimer() {
     this.showingDisclaimer = !this.showingDisclaimer;
     $('.dashboard-page #disclaimer').collapse('toggle');
@@ -771,7 +801,3 @@ interface ISchemeConfig {
   icon_hover?: string;
   position: number;
 }
-
-// export interface IPreventDashboardCollapse {
-//   prevent: () => void;
-// }
