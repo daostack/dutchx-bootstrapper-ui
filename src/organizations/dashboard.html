@@ -116,7 +116,7 @@
               </div>
 
               <div
-                if.to-view="schemesLoaded && !canRedeem"
+                if.to-view="schemesLoaded && !canComputeReputation"
                 class="box"
               >The vote staking period will end on ${lockingPeriodEndDate | date:'shortdate'}
                 at ${lockingPeriodEndDate | date:'amPmTime'} (GMT${lockingPeriodEndDate | date:'GmtOffset'}).
@@ -238,7 +238,7 @@
           <div class="row">
             <div
               class="col-6 offset-3"
-              if.to-view="!canRedeem"
+              if.to-view="!canComputeReputation"
             >
               <div class="title">Voting Power (Reputation) Distribution</div>
               <div class="body">
@@ -251,7 +251,7 @@
 
             <div
               class="col-6 offset-3"
-              if.to-view="canRedeem"
+              if.to-view="canComputeReputation"
             >
               <div class="title">Voting Power (Reputation) Distribution</div>
               <div class="body">
@@ -261,8 +261,8 @@
               <div class="redeemables">
                 <pageloading if.to-view="computingRedeemables">Thanks for waiting while we compute your earned reputation...</pageloading>
                 <div else>
-                  <div if.bind="canRedeem && totalUserReputationEarned.eq(0)">You have not earned any reputation</div>
-                  <div if.bind="canRedeem && totalUserReputationEarned.gt(0)">
+                  <div if.bind="canComputeReputation && totalUserReputationEarned.eq(0)">You have not earned any reputation</div>
+                  <div if.bind="canComputeReputation && totalUserReputationEarned.gt(0)">
                     <div class="title">You Have Earned <floating-point-number
                         value.to-view="totalUserReputationEarned | ethwei"
                         precision="8"
