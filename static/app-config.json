@@ -62,6 +62,7 @@
   },
   "Live": {
     "daoAddress": "0xBdb281FF81C51dB8787B8504604B993e777F32Ce",
+    "DxControllerBirthBlock": "7219965",
     "lockableTokens": [
       {
         "symbol": "BAT",

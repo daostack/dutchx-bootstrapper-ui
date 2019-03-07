@@ -1,7 +1,7 @@
+import { AureliaConfiguration } from 'aurelia-configuration';
 import { includeEventsIn } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { LogManager } from 'aurelia-framework';
-import { Web3Service } from 'services/Web3Service';
 import { DaoEx } from '../entities/DAO';
 import {
   ArcService,
@@ -15,7 +15,7 @@ export class DaoService {
   private logger = LogManager.getLogger('dxDAO Bootstrapper');
   constructor(
     private arcService: ArcService,
-    private web3: Web3Service
+    private appSettings: AureliaConfiguration
   ) {
     includeEventsIn(this);
   }
@@ -32,7 +32,7 @@ export class DaoService {
         const org = await DAO.at(avatarAddress);
 
         if (org) {
-          dao = await DaoEx.fromArcJsDao(org, this.arcService, this.web3);
+          dao = await DaoEx.fromArcJsDao(org, this.arcService, this.appSettings);
           this.logger.debug(`loaded dao ${dao.name}: ${dao.address}`);
         } // else error will already have been logged by arc.js
       } catch (ex) {
