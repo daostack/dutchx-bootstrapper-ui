@@ -60,11 +60,11 @@ export class DaoEx extends DAO {
 
     const networkName = this.web3.networkName;
 
-    const filter =
-      /**
-       * temporary hack to make search for DAO schemes work faster and not crash metamask
-       */
-      (networkName === 'Live') ? { _sender: '0x0A530100Affb0A06eDD2eD74e335aFC50624f345' } : {};
+    const filter = {};
+    /**
+     * temporary hack to make search for DAO schemes work faster and not crash metamask
+     */
+    // (networkName === 'Live') ? { _sender: '0x0A530100Affb0A06eDD2eD74e335aFC50624f345' } : {};
 
     const web3Options = {
       /**
