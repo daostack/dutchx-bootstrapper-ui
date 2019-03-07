@@ -88,6 +88,7 @@ export class Dashboard {
   private disclaimed = false;
   private dashboardBusy: boolean = false;
   private showingDisclaimer = true;
+  private canComputeReputation = false;
 
   private dutchXSchemeConfigs = new Map<string, ISchemeConfig>([
     ['Auction4Reputation', {
@@ -392,6 +393,11 @@ export class Dashboard {
 
     if (!this.org || (address !== this.org.address)) {
 
+      if (this.repSummaryCheck) {
+        this.repSummaryCheck.dispose();
+        this.repSummaryCheck = null;
+      }
+
       this.avatarLoaded = this.schemesLoaded = this.schemesLoading = false;
       this.avatarLoading = this.loading = true;
       this.org = undefined;
@@ -430,10 +436,6 @@ export class Dashboard {
     // console.time('loadSchemes');
 
     this.schemesLoading = this.loading = true;
-    if (this.repSummaryCheck) {
-      this.repSummaryCheck.dispose();
-      this.repSummaryCheck = null;
-    }
     /**
      * Get all schemes associated with the DAO.  These can include non-Arc schemes.
      */
@@ -503,20 +505,21 @@ export class Dashboard {
 
       const blockNumber = await UtilsInternal.lastBlockDate(this.web3Service.web3);
 
-      if (this.fakeRedeem || this.canComputeReputation(blockNumber)) {
+      if (this.fakeRedeem || this.computeCanComputeReputation(blockNumber)) {
+        this.canComputeReputation = true;
         this.computeRedeemables();
       } else {
 
         this.repSummaryCheck =
           this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
-            if (!this.hasComputedReputation && !this.computingRedeemables &&
-              (this.fakeRedeem || this.canComputeReputation(blockDate))) {
 
+            if (!this.hasComputedReputation && !this.computingRedeemables &&
+              (this.fakeRedeem || this.computeCanComputeReputation(blockDate))) {
+
+              this.canComputeReputation = true;
               this.repSummaryCheck.dispose();
               this.repSummaryCheck = null;
-              if (this.org) {
-                this.computeRedeemables();
-              }
+              this.computeRedeemables();
             }
           });
       }
@@ -766,7 +769,7 @@ export class Dashboard {
     setTimeout(() => { this.fixScrollbar(); }, 0);
   }
 
-  private canComputeReputation(blockDate: Date) {
+  private computeCanComputeReputation(blockDate: Date) {
     return blockDate.getTime() >= this.lockingPeriodEndDate.getTime();
   }
 
