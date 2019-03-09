@@ -56,7 +56,7 @@ export class DaoEx extends DAO {
 
   private async getCurrentSchemes(): Promise<Array<SchemeInfo>> {
 
-    const filter = {};
+    const filter = { _avatar: this.address };
     /**
      * temporary hack to make search for DAO schemes work faster and not crash metamask
      */
