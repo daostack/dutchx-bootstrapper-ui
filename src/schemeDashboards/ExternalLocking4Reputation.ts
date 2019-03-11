@@ -40,8 +40,7 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   constructor(
     appConfig: AureliaConfiguration,
     eventAggregator: EventAggregator,
-    web3Service: Web3Service,
-    private walletService: WalletService
+    web3Service: Web3Service
   ) {
     super(appConfig, eventAggregator, web3Service);
     this.lockModel.amount = new BigNumber(0); // to avoid validation
@@ -50,22 +49,13 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
   public async attached() {
     await super.attached();
-    this.subscriptions.push(this.eventAggregator.subscribe('DAO.loaded',
-      () => {
-        if (!this.globalPeriodHasStarted) {
-          const globalPeriodStartDate = this.appConfig.get('lockingPeriodStartDate');
-          if (this.lockingPeriodIsEnded) {
-            this.globalPeriodHasStarted = true;
-          } else {
-            const globalPeriodSubscription = this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
-              this.globalPeriodHasStarted = (blockDate >= globalPeriodStartDate);
-              if (this.globalPeriodHasStarted) {
-                globalPeriodSubscription.dispose();
-              }
-            });
-          }
-        }
-      }));
+    const globalPeriodStartDate = this.appConfig.get('lockingPeriodStartDate');
+    const globalPeriodSubscription = this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
+      this.globalPeriodHasStarted = (blockDate >= globalPeriodStartDate);
+      if (this.globalPeriodHasStarted) {
+        globalPeriodSubscription.dispose();
+      }
+    });
   }
 
   protected async accountChanged(account: Address) {
