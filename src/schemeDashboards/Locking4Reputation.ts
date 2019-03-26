@@ -20,6 +20,7 @@ import {
   LockInfo,
   Locking4ReputationWrapper,
   LockingOptions,
+  ReleaseOptions,
   TransactionReceiptTruffle,
   WrapperService
 } from '../services/ArcService';
@@ -76,6 +77,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   protected lockModel: LockingOptions = {
     amount: undefined,
+    legalContractHash: undefined,
     lockerAddress: undefined,
     period: undefined,
   };
@@ -184,6 +186,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       if (alreadyCheckedForBlock || !(await this.getLockBlocker())) {
 
+        this.lockModel.legalContractHash = this.legalContractHash;
+
         this.sending = true;
         const result = await (await (this.wrapper as any).lock(this.lockModel)
           .then((tx: ArcTransactionResult) => {
@@ -229,6 +233,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     try {
 
       this.releasing = lockInfo.sending = true;
+      (lockInfo as any as ReleaseOptions).legalContractHash = this.legalContractHash;
 
       const result = await (await (this.wrapper as any).release(lockInfo)
         .then((tx: ArcTransactionResult) => {

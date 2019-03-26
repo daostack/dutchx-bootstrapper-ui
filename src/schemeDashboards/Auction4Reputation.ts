@@ -190,7 +190,10 @@ export class Auction4Reputation extends DaoSchemeDashboard {
       }
 
       if (!reason) {
-        reason = await this.wrapper.getBidBlocker({ amount: this.bidAmount });
+        reason = await this.wrapper.getBidBlocker({
+          amount: this.bidAmount,
+          legalContractHash: this.legalContractHash,
+        });
       }
 
       if (reason) {
@@ -217,7 +220,10 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
         this.sendingBid = true;
 
-        const result = await (await this.wrapper.bid({ amount: this.bidAmount })
+        const result = await (await this.wrapper.bid({
+          amount: this.bidAmount,
+          legalContractHash: this.legalContractHash,
+        })
           .then((tx: ArcTransactionResult) => {
             this.sendingBid = false;
             return tx;

@@ -120,7 +120,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "@daostack/arc.js": "0.0.0-alpha.128",
+    "@daostack/arc.js": "0.0.0-alpha.129",
     "arrive": "^2.4.1",
     "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.1.1",
@@ -128,7 +128,7 @@
     "aurelia-dialog": "^2.0.0-rc.5",
     "axios": "^0.18.0",
     "bluebird": "^3.5.2",
-    "bootstrap": "^4.1.1",
+    "bootstrap": "4.2.1",
     "bootstrap-material-design": "^4.1.1",
     "es6-promisify": "^6.0.0",
     "express": "^4.16.4",

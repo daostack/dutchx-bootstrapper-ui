@@ -147,13 +147,15 @@ export class Dashboard {
     $(window).resize(this.fixScrollbar);
   }
 
-  public async activate(options: { address?: Address, fakeRedeem?: string } = {}) {
+  public async activate(options:
+    { address?: Address, fakeRedeem?: string /*, ref?: Address*/ } = {}) {
 
     // tslint:disable-next-line: no-console
     // console.time('activate');
 
     this.options = options;
     this.fakeRedeem = !!options.fakeRedeem || false;
+    // this.referrerAddress = options.ref;
 
     /*******************
      * Handle account change.  Load a DAO if we don't already have one.
@@ -555,6 +557,7 @@ export class Dashboard {
 
   private schemeDashboardViewModel(scheme: SchemeInfo): ISchemeDashboardModel {
     return Object.assign({}, {
+      legalContractHash: this.appConfig.get('legalContractHash'),
       org: this.org,
       orgAddress: this.address,
       orgName: this.orgName,

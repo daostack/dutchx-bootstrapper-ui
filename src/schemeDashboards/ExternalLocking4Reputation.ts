@@ -104,7 +104,11 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
       this.sendingRegister = true;
 
-      const result = await (await (this.wrapper as any).register()
+      const result = await (await (this.wrapper as any).register(
+        {
+          legalContractHash: this.legalContractHash,
+        }
+      )
         .then((tx: ArcTransactionResult) => {
           this.sendingRegister = false;
           return tx;
