@@ -1,13 +1,14 @@
 {
   "rootTimezone": "Asia/Tel_Aviv",
-  "governanceStartDate":      "2019-03-06T12:00:00.000",
+  "governanceStartDate":        "2019-04-17T00:00:00.000+0200",
   "legalContractHash": "0x0",
+  "maxLockingPeriodDays": 30,
   "Landing": {
-    "lockingPeriodStartDate": "2019-02-18T12:00:00.000",
-    "lockingPeriodEndDate":   "2019-03-04T12:00:00.000"
+  "lockingPeriodStartDate":     "2019-04-01T12:00:00.000+0200",
+  "lockingPeriodEndDate":       "2019-04-14T23:59:59.999+0200"
   },
   "Ganache": {
-    "daoAddress": "0xcb4e66eca663fdb61818d52a152601ca6afef74f",
+    "daoAddress": "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
     "lockableTokens": [
       {
         "address": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
@@ -37,7 +38,7 @@
     ]
   },
   "Rinkeby": {
-    "daoAddress": "0x5d9dbe05164b62c66c3b4fa46156f96dda6dc916",
+    "daoAddress": "0x51dd1aFF1299A17cbAcC0d5b52EAD4D1c38FaE5f",
     "lockableTokens": [
       {
         "address": "0x3615757011112560521536258c1e7325ae3b48ae",

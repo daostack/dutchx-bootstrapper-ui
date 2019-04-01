@@ -26,11 +26,11 @@ export class LockingEth4ReputationDashboard extends Locking4Reputation {
     return success;
   }
 
-  protected async getLockBlocker(_reason?: string): Promise<boolean> {
-    let reason: string;
-    if (this.lockModel.amount && (this.lockModel.amount as BigNumber).gt(this.web3Service.toWei(0.2))) {
-      reason = `Demo lock cannot be for more than 0.2 ETH`;
-    }
-    return super.getLockBlocker(reason);
-  }
+  // protected async getLockBlocker(_reason?: string): Promise<boolean> {
+  //   let reason: string;
+  //   if (this.lockModel.amount && (this.lockModel.amount as BigNumber).gt(this.web3Service.toWei(0.2))) {
+  //     reason = `Demo lock cannot be for more than 0.2 ETH`;
+  //   }
+  //   return super.getLockBlocker(reason);
+  // }
 }

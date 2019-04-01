@@ -65,11 +65,6 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   }
 
   protected async lock(): Promise<boolean> {
-    /**
-     * DEMO
-     */
-    return false;
-
     if (!(await this.wrapper.hasTokenToActivate(this.lockModel.lockerAddress))) {
       this.eventAggregator.publish('handleFailure',
         new EventConfigFailure(`Can't activate: No MGN tokens reserved to register`));
@@ -91,12 +86,6 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
   protected getLockUnit(_lockInfo: LockInfo): Promise<string> { return Promise.resolve(''); }
 
   protected async register(): Promise<boolean> {
-
-    /**
-     * DEMO
-     */
-    return false;
-
     this.registering = true;
     let success: boolean;
 

@@ -184,14 +184,15 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
       /**
        * DEMO
+       * if (this.bidAmount && this.bidAmount.gt(this.web3Service.toWei(50))) {
+       *   reason = `Demo bid cannot be more than 50 GEN`;
+       * }
        */
-      if (this.bidAmount && this.bidAmount.gt(this.web3Service.toWei(50))) {
-        reason = `Demo bid cannot be more than 50 GEN`;
-      }
 
       if (!reason) {
         reason = await this.wrapper.getBidBlocker({
           amount: this.bidAmount,
+          auctionId: this.currentAuctionNumber - 1,
           legalContractHash: this.legalContractHash,
         });
       }
@@ -221,6 +222,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
         result = await this.wrapper.bid({
           amount: this.bidAmount,
+          auctionId: this.currentAuctionNumber - 1,
           legalContractHash: this.legalContractHash,
         });
 

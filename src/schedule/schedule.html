@@ -11,36 +11,36 @@
           <div
             class="body"
             if.to-view="lockingPeriodHasNotStarted"
-          >Take part in the user interface demo.</div>
+          >Take part in the vote staking interface.</div>
           <div
             class="body"
             if.to-view="inLockingPeriod"
-          >Demo vote staking period is live.</div>
+          >Vote staking period is live.</div>
           <div
             class="body"
             if.to-view="inRepDistributionPeriod"
-          >Demo reputation (voting power) distribution period is live.</div>
+          >Reputation (voting power) distribution period is live.</div>
           <div
             class="body"
             if.to-view="inGovernancePeriod"
-          >Demo community governance is live.</div>
+          >Community governance is live.</div>
         </div>
       </div>
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
           <div class="triangle"><img src="${ getTriangle() }"></div>
           <div class="shortdate">${lockingPeriodStartDate | date:'shortdayofmonth'}</div>
-          <div class="phase">Demo Vote Staking Period</div>
+          <div class="phase">Vote Staking Period</div>
           <div class="longdate">${lockingPeriodStartDate | date:'shortdate'} through ${lockingPeriodEndDate | date:'shortdate'}</div>
-          <div class="body">This is when you can take part in the above-mentioned demo vote staking period to gain Reputation (voting power).</div>
+          <div class="body">This is when you can take part in the above-mentioned vote staking period to gain Reputation (voting power).</div>
         </div>
       </div>
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
           <div class="triangle"><img src="${ getTriangle() }"></div>
           <div class="shortdate">${lockingPeriodEndDate | date:'shortdayofmonth'}</div>
-          <div class="phase">Demo Reputation (Voting Power) Distribution Period</div>
-          <div class="longdate">${lockingPeriodEndDate | date:'shortdate'} through ${lastLockingPeriodDate | date:'shortdate'}</div>
+          <div class="phase">Reputation (Voting Power) Distribution Period</div>
+          <div class="longdate">${distributionPeriodStartDate | date:'shortdate'} through ${distributionPeriodEndDate | date:'shortdate'}</div>
           <div class="body">Come back to the vote staking interface to see your individual amount of Reputation!</div>
         </div>
       </div>
@@ -48,7 +48,7 @@
         <div class="container">
           <div class="triangle"><img src="${ getTriangle() }"></div>
           <div class="shortdate"><span class="asterisk">*</span>${governanceStartDate | date:'shortdayofmonth'}</div>
-          <div class="phase">Demo Community Governance</div>
+          <div class="phase">Community Governance</div>
           <div class="longdate">${governanceStartDate | date:'shortdate'}</div>
           <div class="body">
           </div>

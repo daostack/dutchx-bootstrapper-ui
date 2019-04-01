@@ -80,7 +80,16 @@ export class App {
         name: 'dashboard',
         nav: false,
         // 'address' will be present in the object passed to the 'activate' method of the viewmodel
-        route: ['dashboard/:address?', 'stake-for-your-vote/:address?'],
+        route: ['dashboard/:address?'],
+        title: 'Stake for Your Vote',
+      }
+      ,
+      {
+        moduleId: PLATFORM.moduleName('./organizations/dashboard'),
+        name: 'stake-for-your-vote',
+        nav: false,
+        // 'address' will be present in the object passed to the 'activate' method of the viewmodel
+        route: ['stake-for-your-vote/:address?'],
         title: 'Stake for Your Vote',
       }
       , {

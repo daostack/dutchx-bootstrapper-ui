@@ -774,7 +774,7 @@ export class Dashboard {
   }
 
   private computeCanComputeReputation(blockDate: Date) {
-    return blockDate.getTime() >= this.lockingPeriodEndDate.getTime();
+    return blockDate.getTime() > this.lockingPeriodEndDate.getTime();
   }
 
   private toggleDisclaimer() {

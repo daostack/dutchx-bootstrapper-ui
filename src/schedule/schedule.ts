@@ -14,7 +14,8 @@ export class Schedule {
   private lockingPeriodEndDate: Date;
   private lockingPeriodStartDate: Date;
   private governanceStartDate: Date;
-  private lastLockingPeriodDate: Date;
+  private distributionPeriodStartDate: Date;
+  private distributionPeriodEndDate: Date;
   private sectionElement: HTMLElement;
   private isLanding: boolean;
   private lockingPeriodHasNotStarted: boolean;
@@ -33,18 +34,25 @@ export class Schedule {
 
   public activate(model: { isLanding: boolean }) {
     this.isLanding = (model && model.isLanding) || !this.web3.isConnected;
-    this.lockingPeriodEndDate = this.dateService
-      .fromIsoString(this.appConfig.get(
-        this.isLanding ? 'Landing.lockingPeriodEndDate' : 'lockingPeriodEndDate'), App.timezone);
-    this.lockingPeriodStartDate = this.dateService
-      .fromIsoString(this.appConfig.get(
-        this.isLanding ? 'Landing.lockingPeriodStartDate' : 'lockingPeriodStartDate'), App.timezone);
+
     this.governanceStartDate = this.dateService
       .fromIsoString(this.appConfig.get('governanceStartDate'), App.timezone);
+
+    if (this.isLanding) {
+      this.lockingPeriodEndDate = this.dateService
+        .fromIsoString(this.appConfig.get('Landing.lockingPeriodEndDate'), App.timezone);
+      this.lockingPeriodStartDate = this.dateService
+        .fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'), App.timezone);
+      /**
+       * 24-hours after locking period ends
+       */
+      this.distributionPeriodStartDate = new Date(this.lockingPeriodEndDate.getTime() + 86400000);
+    }
+
     /**
      * 24-hours before governance period starts
      */
-    this.lastLockingPeriodDate = new Date(this.governanceStartDate.getTime() - 86400000);
+    this.distributionPeriodEndDate = new Date(this.governanceStartDate.getTime() - 86400000);
 
     if (!this.isLanding) {
       this.subscriptions.push(this.eventAggregator
@@ -53,6 +61,10 @@ export class Schedule {
             .fromIsoString(this.appConfig.get('lockingPeriodEndDate'), App.timezone);
           this.lockingPeriodStartDate = this.dateService
             .fromIsoString(this.appConfig.get('lockingPeriodStartDate'), App.timezone);
+          /**
+           * 24-hours after locking period ends
+           */
+          this.distributionPeriodStartDate = new Date(this.lockingPeriodEndDate.getTime() + 86400000);
         }));
     }
   }
@@ -85,13 +97,13 @@ export class Schedule {
   private getInLockingPeriod(): boolean {
     const now = new Date();
     return this.inLockingPeriod =
-      (now >= this.lockingPeriodStartDate) && (now < this.lockingPeriodEndDate);
+      (now >= this.lockingPeriodStartDate) && (now <= this.lockingPeriodEndDate);
   }
 
   private getInRepDistPeriod(): boolean {
     const now = new Date();
     return this.inRepDistributionPeriod =
-      (now >= this.lockingPeriodEndDate) && (now < this.governanceStartDate);
+      (now > this.lockingPeriodEndDate) && (now < this.governanceStartDate);
   }
 
   private getGovPeriod(): boolean {

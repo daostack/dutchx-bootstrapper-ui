@@ -17,6 +17,7 @@ export class MgnBalance {
   private subscriptions = new DisposableCollection();
   private account: Address;
   private checking: boolean = false;
+  private mgnWrapper: ExternalLocking4ReputationWrapper;
 
   constructor(
     private web3: Web3Service,
@@ -30,7 +31,10 @@ export class MgnBalance {
         this.account = account;
         this.getBalance();
       }));
-    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id',
+    /**
+     * need this because mgnWrapper won't be available until schemes are loaded
+     */
+    this.subscriptions.push(this.eventAggregator.subscribe('DAO.loaded',
       () => { this.initialize(); }));
     this.initialize();
   }
@@ -38,13 +42,17 @@ export class MgnBalance {
   private async initialize(): Promise<void> {
     this.stop();
     this.account = this.web3.defaultAccount;
-    /**
-     * this is supposed to fire whenever a new block is created
-     */
-    this.filter = this.web3.eth.filter('latest', () => {
+    this.mgnWrapper = this.appConfig.get('mgnWrapper');
+
+    if (this.mgnWrapper) {
+      /**
+       * this is supposed to fire whenever a new block is created
+       */
+      this.filter = this.web3.eth.filter('latest', () => {
+        this.getBalance();
+      });
       this.getBalance();
-    });
-    this.getBalance();
+    }
   }
 
   private stop(): void {
@@ -66,10 +74,9 @@ export class MgnBalance {
     if (!this.checking) {
       try {
         this.checking = true;
-        const mgnWrapper: ExternalLocking4ReputationWrapper = this.appConfig.get('mgnWrapper');
-        if (mgnWrapper) {
+        if (this.mgnWrapper) {
           const accountAddress = this.web3.defaultAccount;
-          this.balance = await mgnWrapper.accountTokenBalance(accountAddress);
+          this.balance = await this.mgnWrapper.accountTokenBalance(accountAddress);
         } else {
           this.balance = null;
         }

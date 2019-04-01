@@ -113,22 +113,22 @@ export class LockingToken4Reputation extends Locking4Reputation {
     return false;
   }
 
-  protected async getLockBlocker(_reason?: string): Promise<boolean> {
-    let reason: string;
-    if (this.lockModel.amount) {
-      /**
-       * get token value in ETH
-       */
-      const priceFactor = await this.getTokenPriceFactor((this.lockModel as TokenLockingOptions).tokenAddress);
+  // protected async getLockBlocker(_reason?: string): Promise<boolean> {
+  //   let reason: string;
+  //   if (this.lockModel.amount) {
+  //     /**
+  //      * get token value in ETH
+  //      */
+  //     const priceFactor = await this.getTokenPriceFactor((this.lockModel as TokenLockingOptions).tokenAddress);
 
-      const ethValue = priceFactor.mul(this.lockModel.amount as BigNumber);
+  //     const ethValue = priceFactor.mul(this.lockModel.amount as BigNumber);
 
-      if (ethValue.gt(this.web3Service.toWei(0.2))) {
-        reason = `Demo lock cannot be for more than 0.2 ETH`;
-      }
-    }
-    return super.getLockBlocker(reason);
-  }
+  //     if (ethValue.gt(this.web3Service.toWei(0.2))) {
+  //       reason = `Demo lock cannot be for more than 0.2 ETH`;
+  //     }
+  //   }
+  //   return super.getLockBlocker(reason);
+  // }
 
   protected getLockUnit(lockInfo: LockInfo): Promise<string> {
     return this.lockService.getLockedTokenSymbol(lockInfo);

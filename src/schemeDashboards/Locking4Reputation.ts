@@ -153,9 +153,14 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     if (!reason) {
       if (!Number.isInteger(this.lockModel.period)) {
         reason = 'The desired locking period is not expressed as a number of days';
-      } else if (this.lockModel.period > 2592000) {
-        reason = 'Demo locking period cannot be more than 30 days';
       }
+      // else {
+      //   const maxLockingPeriodDays = this.appConfig.get('maxLockingPeriodDays');
+      //   // convert days to seconds
+      //   if (this.lockModel.period > (maxLockingPeriodDays * 86400)) {
+      //     reason = `Locking period cannot be more than ${maxLockingPeriodDays} days`;
+      //   }
+      // }
     }
 
     if (!reason) {
