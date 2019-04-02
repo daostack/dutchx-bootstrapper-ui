@@ -1,7 +1,7 @@
 {
   "rootTimezone": "Asia/Tel_Aviv",
   "governanceStartDate":        "2019-04-17T00:00:00.000+0200",
-  "legalContractHash": "0x0",
+  "legalContractHash": "0x00000000000000000000000000000000",
   "maxLockingPeriodDays": 30,
   "Landing": {
   "lockingPeriodStartDate":     "2019-04-01T12:00:00.000+0200",
