@@ -47,12 +47,20 @@ export class Schedule {
        * 24-hours after locking period ends
        */
       this.distributionPeriodStartDate = new Date(this.lockingPeriodEndDate.getTime() + 86400000);
+      /** just for testing scenarios */
+      if (this.distributionPeriodStartDate > this.governanceStartDate) {
+        this.distributionPeriodStartDate = this.governanceStartDate;
+      }
     }
 
     /**
      * 24-hours before governance period starts
      */
     this.distributionPeriodEndDate = new Date(this.governanceStartDate.getTime() - 86400000);
+    /** just for testing scenarios */
+    if (this.distributionPeriodEndDate < this.distributionPeriodStartDate) {
+      this.distributionPeriodEndDate = this.distributionPeriodStartDate;
+    }
 
     if (!this.isLanding) {
       this.subscriptions.push(this.eventAggregator
@@ -65,6 +73,14 @@ export class Schedule {
            * 24-hours after locking period ends
            */
           this.distributionPeriodStartDate = new Date(this.lockingPeriodEndDate.getTime() + 86400000);
+          /** just for testing scenarios */
+          if (this.distributionPeriodStartDate > this.governanceStartDate) {
+            this.distributionPeriodStartDate = this.governanceStartDate;
+          }
+          /** just for testing scenarios */
+          if (this.distributionPeriodEndDate < this.distributionPeriodStartDate) {
+            this.distributionPeriodEndDate = this.distributionPeriodStartDate;
+          }
         }));
     }
   }
