@@ -258,6 +258,8 @@ export class Dashboard {
 
   public async attached() {
 
+    $('body').css('overflow-y', 'hidden');
+
     // tslint:disable-next-line: no-console
     // console.time('attached');
 

@@ -57,3 +57,12 @@
   font-weight: 400;
   margin-bottom: .75rem;
 }
+
+.participation-dates-section a {
+  color: $color-ds-yellow;
+}
+
+.participation-dates-section a:hover {
+  color: $color-ds-yellow;
+  text-decoration: underline;
+}
