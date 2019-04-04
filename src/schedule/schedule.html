@@ -11,19 +11,22 @@
           <div
             class="body"
             if.to-view="lockingPeriodHasNotStarted"
-          >Take part in the vote staking interface.</div>
+          >Getting ready to launch the dxDAO.</div>
           <div
             class="body"
             if.to-view="inLockingPeriod"
-          >Vote staking period is live.</div>
+          ><a route-href="route: stake-for-your-vote">Take part in the user interface</a>.</div>
           <div
             class="body"
             if.to-view="inRepDistributionPeriod"
-          >Reputation (voting power) distribution period is live.</div>
+          ><a route-href="route: stake-for-your-vote">Check out your reputation</a>.</div>
           <div
             class="body"
             if.to-view="inGovernancePeriod"
-          >Community governance is live.</div>
+          ><a
+              href="https://alchemy.daostack.io"
+              target="_blank"
+            >Take part in the dxDAO</a>.</div>
         </div>
       </div>
       <div class="col-12 col-md-6 col-xl-3 section">
