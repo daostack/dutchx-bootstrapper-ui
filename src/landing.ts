@@ -17,7 +17,7 @@ export class Landing {
   ) {
     this.lockingPeriodStartDate = this.dateService
       .fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'), App.timezone);
-    //$(window).resize(this.fixScrollbar);
+    // $(window).resize(this.fixScrollbar);
   }
 
   public activate() {
