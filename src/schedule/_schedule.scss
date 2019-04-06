@@ -58,11 +58,11 @@
   margin-bottom: .75rem;
 }
 
-.participation-dates-section a {
+.participation-dates-section.landing a {
   color: $color-ds-yellow;
 }
 
-.participation-dates-section a:hover {
+.participation-dates-section.landing a:hover {
   color: $color-ds-yellow;
   text-decoration: underline;
 }

@@ -95,7 +95,10 @@
       </div>
 
       <div class="schedule-section">
-        <compose view-model="../schedule/schedule"></compose>
+        <compose
+          view-model="../schedule/schedule"
+          model.to-view="scheduleModel"
+        ></compose>
       </div>
 
       <div class="initializationSection">

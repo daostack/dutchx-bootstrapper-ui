@@ -89,6 +89,9 @@ export class Dashboard {
   private dashboardBusy: boolean = false;
   private showingDisclaimer = true;
   private canComputeReputation = false;
+  private scheduleModel = {
+    dao: undefined as DaoEx,
+  };
 
   private dutchXSchemeConfigs = new Map<string, ISchemeConfig>([
     ['Auction4Reputation', {
@@ -408,7 +411,7 @@ export class Dashboard {
       this.org = undefined;
 
       if (address) {
-        this.org = await this.daoService.daoAt(address);
+        this.scheduleModel.dao = this.org = await this.daoService.daoAt(address);
       }
 
       if (this.org) {
