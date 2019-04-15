@@ -74,6 +74,7 @@ export class Dashboard {
   private dashboardElement: any;
   private lockingPeriodEndDate: Date;
   private governanceStartDate: Date;
+  private redeemingStartDate: Date;
   private fakeRedeem: boolean = false;
   private hasComputedReputation: boolean = false;
   private networkName: string;
@@ -84,7 +85,6 @@ export class Dashboard {
   private initialized: boolean = false;
   private computingRedeemables: boolean = false;
   private org: DaoEx;
-  private timezone = App.timezone;
   private disclaimed = false;
   private dashboardBusy: boolean = false;
   private showingDisclaimer = true;
@@ -317,6 +317,12 @@ export class Dashboard {
     this.networkConnectionWizards.close(true);
   }
 
+  public getSchemeInfoFromName(name: string): ISchemeInfoX {
+    return this.dutchXSchemes.filter((s: ISchemeInfoX) => {
+      return s.name === name;
+    })[0];
+  }
+
   private async initializeNetwork(): Promise<Web3 | undefined> {
 
     let web3: Web3;
@@ -411,7 +417,7 @@ export class Dashboard {
       this.org = undefined;
 
       if (address) {
-        this.scheduleModel.dao = this.org = await this.daoService.daoAt(address);
+        this.org = await this.daoService.daoAt(address);
       }
 
       if (this.org) {
@@ -509,7 +515,12 @@ export class Dashboard {
 
       this.lockingPeriodEndDate = lockDates.end;
       this.governanceStartDate = this.dateService
-        .fromIsoString(this.appConfig.get('governanceStartDate'), App.timezone);
+        .fromIsoString(this.appConfig.get('governanceStartDate'));
+      // one second after locking period ends
+      this.redeemingStartDate = new Date(this.lockingPeriodEndDate.getTime() + 1000);
+
+      // now that dates are set we can set this
+      this.scheduleModel.dao = this.org;
 
       const blockNumber = await UtilsInternal.lastBlockDate(this.web3Service.web3);
 
@@ -570,12 +581,6 @@ export class Dashboard {
       tokenSymbol: this.tokenSymbol,
     },
       scheme);
-  }
-
-  private getSchemeInfoFromName(name: string): ISchemeInfoX {
-    return this.dutchXSchemes.filter((s: ISchemeInfoX) => {
-      return s.name === name;
-    })[0];
   }
 
   private getSchemeWrapperFromName(name: string): Promise<Locking4ReputationWrapper> {

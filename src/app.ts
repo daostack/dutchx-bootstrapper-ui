@@ -35,10 +35,8 @@ export class App {
   constructor(
     private web3Service: Web3Service,
     private signaler: BindingSignaler,
-    private eventAggregator: EventAggregator,
-    appConfig: AureliaConfiguration
+    private eventAggregator: EventAggregator
   ) {
-    App.timezone = appConfig.get('rootTimezone');
   }
 
   public activate() {
@@ -99,6 +97,13 @@ export class App {
         nav: false,
         route: ['txInfo/:txHash'],
         title: 'Transaction Information',
+      },
+      , {
+        moduleId: PLATFORM.moduleName('./liquidity/liquidity'),
+        name: 'liquidity',
+        nav: false,
+        route: ['liquidity'],
+        title: 'Token Liquidity',
       },
     ]);
 

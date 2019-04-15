@@ -1,11 +1,10 @@
 {
-  "rootTimezone": "Etc/GMT-0",
-  "governanceStartDate":        "2019-04-04T15:00:00.000+0000",
+  "governanceStartDate":          "2019-04-16T15:00:00.000+0000",
   "legalContractHash": "0x00000000000000000000000000000000",
   "maxLockingPeriodDays": 30,
   "Landing": {
-  "lockingPeriodStartDate":     "2019-04-04T09:00:00.000+0000",
-  "lockingPeriodEndDate":       "2019-04-04T14:30:00.999+0000"
+    "lockingPeriodStartDate":     "2019-04-16T09:00:00.000+0000",
+    "lockingPeriodEndDate":       "2019-04-16T14:29:59.000+0000"
   },
   "Ganache": {
     "daoAddress": "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",

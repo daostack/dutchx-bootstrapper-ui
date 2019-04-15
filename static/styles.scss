@@ -23,6 +23,7 @@ $font-family-base: "DINPro";
 @import "./landing";
 @import "./src/organizations/dashboard";
 @import "./src/services/snackbars";
+@import "./src/liquidity/liquidity";
 
 .color-green {
   color: $color-ds-green !important;
@@ -434,4 +435,9 @@ etherscanlink {
 button.btn-submit:disabled,
 button.btn-submit:disabled:hover {
   @extend .btn-submit:hover;
+}
+
+.main-spinner .pageloading i {
+  font-size: 4rem;
+  margin-bottom: 2rem;
 }

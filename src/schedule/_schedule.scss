@@ -32,6 +32,13 @@
   left: 0rem;
 }
 
+.participation-dates-section .shortdate .time {
+  display: inline-block;
+  white-space: nowrap;
+  font-size:.75rem;
+  margin-left:.5rem;
+}
+
 .participation-dates-section .footnote {
   font-style: italic;
 }

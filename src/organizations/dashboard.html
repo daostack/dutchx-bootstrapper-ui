@@ -121,8 +121,8 @@
               <div
                 if.to-view="schemesLoaded && !canComputeReputation"
                 class="box"
-              >The vote staking period will end on ${lockingPeriodEndDate | date:'shortdate'}
-                at ${lockingPeriodEndDate | date:'amPmTime'} (GMT${lockingPeriodEndDate | date:'GmtOffset'}).
+              >The vote staking period will end on ${redeemingStartDate | date:'shortdate'}
+                at ${redeemingStartDate | date:{ format: 'amPmHourTz' }}).
                 At this time, Reputation (voting power) will be automatically distributed to participants.</div>
             </div>
           </div>
@@ -258,8 +258,8 @@
             >
               <div class="title">Voting Power (Reputation) Distribution</div>
               <div class="body">
-                The dxDAO vote staking period ended on ${lockingPeriodEndDate | date:'shortdate'}
-                at ${lockingPeriodEndDate | date:'amPmTime'} (GMT${lockingPeriodEndDate | date:'GmtOffset'}).
+                The dxDAO vote staking period ended on ${redeemingStartDate | date:'shortdate'}
+                at ${redeemingStartDate | date:{ format: 'amPmHourTz' }}).
               </div>
               <div class="redeemables">
                 <pageloading if.to-view="computingRedeemables">Thanks for waiting while we compute your earned reputation...</pageloading>

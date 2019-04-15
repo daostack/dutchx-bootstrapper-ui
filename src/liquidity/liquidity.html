@@ -1,0 +1,26 @@
+<template>
+  <div class="liquidity-page container animated-page au-animate">
+    <h1 class="title">Token Liquidity<pageloading
+        if.bind="loading"
+        icononly="true"
+      ></pageloading>
+    </h1>
+    <div if.bind='noScheme'>This page won't work unless you first navigate to the <a route-href="route: stake-for-your-vote">Vote Staking Interface</a>, load a DAO and click the browser "Back" button to return to this page.</div>
+    <div else>
+      <div if.bind="!loading">
+        <table class="table">
+          <thead>
+            <th>Symbol</th>
+            <th>Is Liquid</th>
+          </thead>
+          <tbody>
+            <tr repeat.for="token of tokens">
+              <td>${token.symbol}</td>
+              <td style>${token.isLiquid ? "yes" : "no"}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</template>

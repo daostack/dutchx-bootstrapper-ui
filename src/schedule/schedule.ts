@@ -44,12 +44,12 @@ export class Schedule {
     }
 
     this.governanceStartDate = this.dateService
-      .fromIsoString(this.appConfig.get('governanceStartDate'), App.timezone);
+      .fromIsoString(this.appConfig.get('governanceStartDate'));
 
     /**
-     * 24-hours before governance period starts
+     * one second before governance period starts
      */
-    this.distributionPeriodEndDate = new Date(this.governanceStartDate.getTime() - 86400000);
+    this.distributionPeriodEndDate = new Date(this.governanceStartDate.getTime() - 1000);
 
     if (this.isLanding || this.dao) {
       this.initFromAppConfig();
@@ -78,16 +78,16 @@ export class Schedule {
 
   private initFromAppConfig() {
     /**
-     * then the appCOnfig is good
+     * then the appConfig is good
      */
     this.lockingPeriodEndDate = this.dateService
-      .fromIsoString(this.appConfig.get('Landing.lockingPeriodEndDate'), App.timezone);
+      .fromIsoString(this.appConfig.get(`${this.isLanding ? 'Landing.' : ''}lockingPeriodEndDate`));
     this.lockingPeriodStartDate = this.dateService
-      .fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'), App.timezone);
+      .fromIsoString(this.appConfig.get(`${this.isLanding ? 'Landing.' : ''}lockingPeriodStartDate`));
     /**
-     * 24-hours after locking period ends
+     * one second after locking period ends
      */
-    this.distributionPeriodStartDate = new Date(this.lockingPeriodEndDate.getTime() + 86400000);
+    this.distributionPeriodStartDate = new Date(this.lockingPeriodEndDate.getTime() + 1000);
     /** just for testing scenarios */
     if (this.distributionPeriodStartDate > this.governanceStartDate) {
       this.distributionPeriodStartDate = this.governanceStartDate;
