@@ -60,6 +60,11 @@ export class Schedule {
     if (this.isLanding) {
       $(this.sectionElement).addClass('landing');
     }
+
+    this.getLockingPeriodHasNotStarted();
+    this.getInLockingPeriod();
+    this.getInRepDistPeriod();
+
     this.subscriptions.push(this.eventAggregator.subscribe('secondPassed', () => {
       this.getGovPeriod();
       if (this.inGovernancePeriod) {

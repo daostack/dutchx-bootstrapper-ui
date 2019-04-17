@@ -480,24 +480,24 @@ export class Dashboard {
 
     this.schemesLoaded = this.dutchXSchemes.length !== this.dutchXSchemeConfigs.keys.length;
 
-    this.dutchXSchemes.push(
-      {
-        address: '',
-        blockNumber: 0,
-        friendlyName: 'DAO STORYTELLING',
-        inArc: true,
-        inDao: true,
-        isRegistered: false,
-        name: 'DaoStorytelling',
-      }
-    );
-
     if (!this.schemesLoaded) {
       this.org = undefined;
       setTimeout(() => this.eventAggregator.publish('handleMessage',
         new EventConfig(`not all of the required contracts were found`, EventMessageType.Exception)), 0);
       this.networkConnectionWizards.run(false, true); // no-op if already running
     } else {
+
+      this.dutchXSchemes.push(
+        {
+          address: '',
+          blockNumber: 0,
+          friendlyName: 'DAO STORYTELLING',
+          inArc: true,
+          inDao: true,
+          isRegistered: false,
+          name: 'DaoStorytelling',
+        }
+      );
 
       await this.computeNumLocks();
 

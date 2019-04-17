@@ -1,7 +1,7 @@
 {
   "governanceStartDate":          "2019-04-16T15:00:00.000+0000",
   "legalContractHash": "0x00000000000000000000000000000000",
-  "maxLockingPeriodDays": 30,
+  "maxLockingPeriodDays": 365,
   "Landing": {
     "lockingPeriodStartDate":     "2019-04-16T09:00:00.000+0000",
     "lockingPeriodEndDate":       "2019-04-16T14:29:59.000+0000"
