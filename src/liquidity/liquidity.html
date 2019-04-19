@@ -19,9 +19,14 @@
             <!-- <td style>${token.isLiquid ? "yes" : "no"}</td> -->
             <td>
               <floating-point-number
+                if.to-view="!!token.price"
                 trailing-zeroes="2"
                 value.to-view="token.price"
               ></floating-point-number>
+              <div
+                else
+                class="noprice"
+              >0.0</div>
             </td>
           </tr>
         </tbody>
