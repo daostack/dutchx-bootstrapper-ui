@@ -1,4 +1,3 @@
-import { App } from 'app';
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
@@ -16,12 +15,12 @@ export class Schedule {
   private distributionPeriodStartDate: Date;
   private distributionPeriodEndDate: Date;
   private sectionElement: HTMLElement;
-  private isLanding: boolean;
+  private isLanding: boolean = false;
   private dao: DaoEx;
-  private lockingPeriodHasNotStarted: boolean;
-  private inLockingPeriod: boolean;
-  private inRepDistributionPeriod: boolean;
-  private inGovernancePeriod: boolean;
+  private lockingPeriodHasNotStarted: boolean = false;
+  private inLockingPeriod: boolean = false;
+  private inRepDistributionPeriod: boolean = false;
+  private inGovernancePeriod: boolean = false;
   private subscriptions = new DisposableCollection();
 
   constructor(

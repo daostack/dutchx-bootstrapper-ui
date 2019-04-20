@@ -24,6 +24,7 @@ $font-family-base: "DINPro";
 @import "./src/organizations/dashboard";
 @import "./src/services/snackbars";
 @import "./src/liquidity/liquidity";
+@import "./src/status/status";
 
 .color-green {
   color: $color-ds-green !important;

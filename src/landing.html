@@ -4,9 +4,17 @@
       class="countdown"
       if.to-view="(msUntilCanLockCountdown() <= 0) & signal:'secondPassed'"
     ><a
+        if.to-view="inGovernancePeriod()"
+        class="count"
+        href="https://alchemy.daostack.io"
+        target="_blank"
+      >Click here to take part in the dxDAO</a>
+      <a
+        else
         class="count"
         route-href="route: stake-for-your-vote"
-      >Click here to take part in the dxDAO</a></div>
+      >Click here to take part in the dxDAO</a>
+    </div>
 
     <div
       class="countdown"
@@ -115,7 +123,7 @@
             <div class="section lightblue">
               <div class="header">How do I vote and what is Reputation (voting power)?</div>
               <div class="body-text">Voting will be carried out using <a
-                  href="https://alchemy.daostack.io/#/"
+                  href="https://alchemy.daostack.io"
                   target="_blank"
                 >Alchemy</a>, the friendly DAO interface powered by DAOstack. By default, proposals submitted to the DAO require an absolute majority of voting power to pass—that is, greater than 50% of the total Reputation in the DAO. However, this can be changed so that only a relative majority is required, meaning more Reputation votes for the proposal than against it within a given time frame. Whether an absolute or relative majority is required depends on the activity in a prediction market, in which proposals may be "<a
                   href="https://medium.com/daostack/on-the-utility-of-the-gen-token-eb4f341d770e"

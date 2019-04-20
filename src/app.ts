@@ -105,6 +105,13 @@ export class App {
         route: ['liquidity'],
         title: 'Token Liquidity',
       },
+      , {
+        moduleId: PLATFORM.moduleName('./status/status'),
+        name: 'status',
+        nav: false,
+        route: ['status'],
+        title: 'Initialization Period Status',
+      },
     ]);
 
     config.fallbackRoute('');

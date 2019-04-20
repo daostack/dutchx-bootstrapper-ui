@@ -7,6 +7,7 @@ import { DateService } from 'services/DateService';
 export class Landing {
 
   private lockingPeriodStartDate: Date;
+  private governanceStartDate: Date;
   private scheduleModel = {
     isLanding: true,
   };
@@ -17,7 +18,8 @@ export class Landing {
   ) {
     this.lockingPeriodStartDate = this.dateService
       .fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'));
-    // $(window).resize(this.fixScrollbar);
+    this.governanceStartDate = this.dateService
+      .fromIsoString(this.appConfig.get('governanceStartDate'));
   }
 
   public activate() {
@@ -30,6 +32,10 @@ export class Landing {
 
   private msUntilCanLockCountdown(): number {
     return this.lockingPeriodStartDate.getTime() - Date.now();
+  }
+
+  private inGovernancePeriod(): boolean {
+    return Date.now() >= this.governanceStartDate.getTime();
   }
 
   private countdownUnits(): string {
