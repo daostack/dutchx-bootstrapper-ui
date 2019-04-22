@@ -189,23 +189,19 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
         this.lockModel.legalContractHash = this.legalContractHash;
 
         this.sending = true;
-        const result = await (await (this.wrapper as any).lock(this.lockModel)
-          .then((tx: ArcTransactionResult) => {
-            this.sending = false;
-            return tx;
-          }))
-          .watchForTxMined()
-          .then((tx: TransactionReceiptTruffle) => {
-            this.getLocks();
-            return tx;
-          });
+
+        const result = await (this.wrapper as any).lock(this.lockModel);
+
+        this.sending = false;
+
+        await result.watchForTxMined();
+
+        await this.getLocks();
 
         this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
           `The lock has been recorded`, result.transactionHash));
 
         this.eventAggregator.publish('Lock.Submitted');
-
-        return true;
       }
 
     } catch (ex) {
@@ -216,11 +212,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
         originatingUiElement: this.lockButton,
       });
     } finally {
-      this.locking = false;
       this.sending = false;
+      this.locking = false;
     }
 
-    return false;
+    return true;
   }
 
   protected async release(config: { lock: ILocksTableInfo, releaseButton: JQuery<EventTarget> }): Promise<boolean> {
@@ -235,12 +231,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       this.releasing = lockInfo.sending = true;
       (lockInfo as any as ReleaseOptions).legalContractHash = this.legalContractHash;
 
-      const result = await (await (this.wrapper as any).release(lockInfo)
-        .then((tx: ArcTransactionResult) => {
-          lockInfo.sending = false;
-          return tx;
-        }))
-        .watchForTxMined();
+      const result = await (this.wrapper as any).release(lockInfo);
+
+      lockInfo.sending = false;
+
+      await result.watchForTxMined();
 
       this.eventAggregator.publish('handleTransaction',
         new EventConfigTransaction('The lock has been released', result.transactionHash));

@@ -207,31 +207,29 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
         this.sendingBid = true;
 
-        await (await this.token.approve({
+        let result = await this.token.approve({
           amount: this.bidAmount,
           owner: currentAccount,
           spender: this.wrapper.address,
-        })
-          .then((tx: ArcTransactionResult) => {
-            this.sendingBid = false;
-            return tx;
-          }))
-          .watchForTxMined();
+        });
+
+        this.sendingBid = false;
+
+        await result.watchForTxMined();
 
         this.sendingBid = true;
 
-        const result = await (await this.wrapper.bid({
+        result = await this.wrapper.bid({
           amount: this.bidAmount,
           legalContractHash: this.legalContractHash,
-        })
-          .then((tx: ArcTransactionResult) => {
-            this.sendingBid = false;
-            return tx;
-          }))
-          .watchForTxMined();
+        });
+
+        this.sendingBid = false;
+
+        await result.watchForTxMined();
 
         this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
-          `The bid has been recorded`, result.transactionHash));
+          `The bid has been recorded`, (result as any).transactionHash));
 
         Utils.resetInputField(this.dashboard, 'bidAmount', null);
       }
