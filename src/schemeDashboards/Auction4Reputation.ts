@@ -281,8 +281,28 @@ export class Auction4Reputation extends DaoSchemeDashboard {
       const numAuctions = this.auctionCount;
       for (let auctionNum = 1; auctionNum <= numAuctions; ++auctionNum) {
 
-        const bidAmount = await await this.wrapper.getBid(this.web3Service.defaultAccount, auctionNum - 1);
-        const totalAuctionBidAmount = await this.wrapper.getAuctionTotalBid(auctionNum - 1);
+        let bidAmount = new BigNumber(0);
+        let totalAuctionBidAmount = new BigNumber(0);
+
+        if ((this.currentAuctionNumber === undefined) || (auctionNum <= this.currentAuctionNumber)) {
+          bidAmount = await await this.wrapper.getBid(this.web3Service.defaultAccount, auctionNum - 1);
+          totalAuctionBidAmount = await this.wrapper.getAuctionTotalBid(auctionNum - 1);
+
+          if (bidAmount.eq(0)) {
+            /**
+             * see if it is 0 by result of the reputation being redeemed
+             */
+            const events = await this.wrapper.Bid(
+              { _bidder: this.web3Service.defaultAccount, _auctionId: auctionNum - 1 },
+              { fromBlock: this.blockNumber || 0 }).get();
+            if (events.length) {
+              if (events.length > 1) {
+                throw new Error('unexpectedly received more than one Redeem event for the account');
+              }
+              bidAmount = events[0].args._amount;
+            }
+          }
+        }
 
         const bidInfo = {
           auctionNum,
