@@ -10,15 +10,15 @@
   "author": "DAOstack",
   "license": "GPL-3.0",
   "engines": {
-    "node": ">=10.14.2"
+    "node": "^10.15.0"
   },
   "scripts": {
-    "start": "nps",
-    "build": "nps build.production",
-    "heroku-postbuild": "npm run build",
-    "test": "nps test",
-    "lint": "nps lint",
-    "lint.andFix": "nps lint.andFix"
+  "start": "nps",
+  "build": "nps build.production",
+  "heroku-postbuild": "npm run build",
+  "test": "nps test",
+  "lint": "nps lint",
+  "lint.andFix": "nps lint.andFix"
   },
   "bugs": {
     "url": "https://github.com/daostack/dutchx-bootstrapper-ui/issues"
