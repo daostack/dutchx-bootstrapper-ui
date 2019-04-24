@@ -348,6 +348,7 @@ export class Dashboard extends BaseNetworkPage {
               beneficiaryAddress: this.web3.defaultAccount,
               contractBirthBlock: schemeBirthBlock,
             }));
+        await UtilsInternal.sleep(0);
       }
       contractRepReward = await auctionWrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
