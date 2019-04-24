@@ -348,6 +348,10 @@ export class Dashboard extends BaseNetworkPage {
               beneficiaryAddress: this.web3.defaultAccount,
               contractBirthBlock: schemeBirthBlock,
             }));
+        /**
+         * without this, and if the final connect prompt is closed, MM will crash during
+         * the loop.
+         */
         await UtilsInternal.sleep(0);
       }
       contractRepReward = await auctionWrapper.getReputationReward();
