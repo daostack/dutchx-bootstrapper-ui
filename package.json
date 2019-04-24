@@ -10,7 +10,7 @@
   "author": "DAOstack",
   "license": "GPL-3.0",
   "engines": {
-    "node": ">=10.14.2"
+    "node": "^10.15.0"
   },
   "scripts": {
     "start": "nps",
