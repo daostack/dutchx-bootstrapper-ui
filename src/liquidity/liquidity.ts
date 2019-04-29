@@ -3,7 +3,6 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { BaseNetworkPage } from 'baseNetworkPage';
 import { SchemeInfo } from 'entities/SchemeInfo';
-import { loadavg } from 'os';
 import { DaoService } from 'services/DaoService';
 import { ITokenSpecification, LockService } from 'services/lockServices';
 import { NetworkConnectionWizards } from 'services/networkConnectionWizards';
@@ -12,7 +11,7 @@ import { SortService } from 'services/SortService';
 import { TokenService } from 'services/TokenService';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 import {
-  ArcService, LockingToken4ReputationWrapper, WrapperService
+  ArcService, WrapperService
 } from '../services/ArcService';
 
 @autoinject
@@ -66,23 +65,23 @@ export class Liquidity extends BaseNetworkPage {
       const tokenLockingWrapper = await WrapperService.factories.LockingToken4Reputation.at(schemeInfo.address);
 
       // make a copy because the original is used by the token locking dashboard
-      this.tokens = [...this.appConfig.get('lockableTokens')];
+      const tokens = [...this.appConfig.get('lockableTokens')];
 
-      for (const tokenSpec of this.tokens) {
+      for (const tokenSpec of tokens) {
         const price = await this.tokenService.getTokenPriceFactor(tokenSpec.address, tokenLockingWrapper);
         tokenSpec.isLiquid = !!price;
         tokenSpec.price = price;
       }
 
       this.tokens = [
-        ...this.tokens
+        ...tokens
           .filter((tokenInfo: ITokenSpecificationX) => {
             return tokenInfo.isLiquid;
           })
           .sort((a: ITokenSpecificationX, b: ITokenSpecificationX) => {
             return SortService.evaluateString(a.symbol, b.symbol);
           }),
-        ...this.tokens
+        ...tokens
           .filter((tokenInfo: ITokenSpecificationX) => {
             return !tokenInfo.isLiquid;
           })

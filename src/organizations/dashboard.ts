@@ -416,16 +416,11 @@ export class Dashboard extends BaseNetworkPage {
     const bodyHeight = $(window).height() || 0;
     const headerHeight = $('.header.navbar').outerHeight() || 0;
     const footerHeight = $('.footer.navbar').outerHeight() || 0;
-    const disclaimer = $('.disclaimer').outerHeight() || 0;
 
     $('.dashboard-main-content').css(
       {
-        'max-height': `${bodyHeight - headerHeight - footerHeight - disclaimer}px`,
+        'max-height': `${bodyHeight - headerHeight - footerHeight}px`,
       });
-
-    $('.disclaimer').css({
-      'max-height': `${bodyHeight - headerHeight - footerHeight}px`,
-    });
   }
 
   private polishDom() {

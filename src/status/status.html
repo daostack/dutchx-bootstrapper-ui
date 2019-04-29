@@ -1,12 +1,82 @@
 <template>
   <div class="status-page container animated-page au-animate">
     <h1 class="title">Initialization Period Status
-      <!-- <pageloading
-        if.bind="loading"
-        icononly="true"
-      ></pageloading> -->
     </h1>
-    <div if.bind="!loading">
+    <div
+      if.bind="!loading"
+      class="body"
+    >
+      <h4>ETH</h4>
+      <hr />
+      <dl>
+        <dt>Total staked</dt>
+        <dd>${ethStaked | ethwei}</dd>
+      </dl>
+      <dl>
+        <dt>Number of stakers</dt>
+        <dd>${numEthStakers}</dd>
+      </dl>
+      <h4>Tokens</h4>
+      <hr />
+      <dl>
+        <dt>Total value staked</dt>
+        <dd>${tokenValueStaked | ethwei}</dd>
+        <dt>Total number of stakers</dt>
+        <dd>${numTokenStakers}</dd>
+        <dd>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Value staked</th>
+                <th>Number staked</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr repeat.for="token of tokens">
+                <td>${token.symbol}</td>
+                <td>${token.stakers}</td>
+                <td>${token.staked | ethwei}</td>
+            </tbody>
+          </table>
+        </dd>
+      </dl>
+      <h4>MGN</h4>
+      <hr />
+      <dl>
+        <dt>Number of registrations</dt>
+        <dd>${mgnRegistrations}</dd>
+        <dt>Number of claims</dt>
+        <dd>${mgnClaims}</dd>
+        <dt>Total claimed</dt>
+        <dd>${mgnValueClaimed | ethwei}</dd>
+      </dl>
+      <h4>GEN</h4>
+      <hr />
+      <dl>
+        <dt>Total bid</dt>
+        <dd>${totalGenBid | ethwei}</dd>
+        <dt>Total number of bidders</dt>
+        <dd>${genBidders}</dd>
+        <dd>
+          <div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Auction</th>
+                  <th>Amount bid</th>
+                  <th>Number of bidders</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr repeat.for="auction of auctions">
+                  <td>${auction.auction+1}</td>
+                  <td>${auction.bid | ethwei}</td>
+                  <td>${auction.bidders}</td>
+              </tbody>
+            </table>
+        </dd>
+      </dl>
     </div>
   </div>
 </template>

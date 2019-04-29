@@ -102,14 +102,14 @@ export class App {
         moduleId: PLATFORM.moduleName('./liquidity/liquidity'),
         name: 'liquidity',
         nav: false,
-        route: ['liquidity'],
+        route: ['liquidity/:address?'],
         title: 'Token Liquidity',
       },
       , {
         moduleId: PLATFORM.moduleName('./status/status'),
         name: 'status',
         nav: false,
-        route: ['status'],
+        route: ['status/:address?'],
         title: 'Initialization Period Status',
       },
     ]);
