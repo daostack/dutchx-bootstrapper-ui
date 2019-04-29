@@ -2,28 +2,20 @@ import { App } from 'app';
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, computedFrom, singleton } from 'aurelia-framework';
-import axios from 'axios';
-import { EventConfig, EventConfigException, EventConfigFailure, EventMessageType } from 'entities/GeneralEvents';
+import { BaseNetworkPage } from 'baseNetworkPage';
+import { EventConfigException } from 'entities/GeneralEvents';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { BalloonService } from 'services/balloonService';
 import { DateService } from 'services/DateService';
-import { DisposableCollection } from 'services/DisposableCollection';
 import { IDisposable } from 'services/IDisposable';
 import { LockService } from 'services/lockServices';
 import { NetworkConnectionWizards } from 'services/networkConnectionWizards';
 import { Utils as UtilsInternal } from 'services/utils';
 import {
-  AccountService,
   Address,
   ArcService,
-  ConfigService,
   ExternalLocking4ReputationWrapper,
-  InitializeArcJs,
-  LockInfo,
   Locking4ReputationWrapper,
-  LogLevel,
-  Utils,
-  Web3,
   WrapperService,
 } from '../services/ArcService';
 import { DaoEx, DaoService } from '../services/DaoService';
@@ -32,21 +24,7 @@ import { BigNumber, Web3Service } from '../services/Web3Service';
 
 @singleton(false)
 @autoinject
-export class Dashboard {
-  /**
-   * true if loading the avatar or its schemes
-   */
-  @computedFrom('_loading')
-  private get loading() {
-    return this._loading;
-  }
-
-  private set loading(newValue: boolean) {
-    if (newValue !== this._loading) {
-      this.eventAggregator.publish('DAO.Loading', newValue);
-      this._loading = newValue;
-    }
-  }
+export class Dashboard extends BaseNetworkPage {
 
   @computedFrom('redeemables')
   private get totalUserReputationEarned(): BigNumber {
@@ -62,165 +40,55 @@ export class Dashboard {
   }
 
   private repSummaryCheck: IDisposable = null;
-  private address: string;
-  private orgName: string;
   private tokenSymbol: string;
-  private dutchXSchemes: Array<ISchemeInfoX>;
-  private subscriptions = new DisposableCollection();
-  private avatarLoading: boolean = true;
-  private avatarLoaded: boolean = false;
-  private schemesLoaded: boolean = false;
-  private schemesLoading: boolean = false;
   private dashboardElement: any;
   private lockingPeriodEndDate: Date;
   private governanceStartDate: Date;
+  private redeemingStartDate: Date;
   private fakeRedeem: boolean = false;
   private hasComputedReputation: boolean = false;
-  private networkName: string;
-  private options: { address?: Address };
   private redeemables: Array<IRedeemable> = new Array<IRedeemable>();
   private totalReputationAvailable: BigNumber;
-  private _loading: boolean = false;
-  private initialized: boolean = false;
   private computingRedeemables: boolean = false;
-  private org: DaoEx;
-  private timezone = App.timezone;
-  private disclaimed = false;
   private dashboardBusy: boolean = false;
   private showingDisclaimer = true;
   private canComputeReputation = false;
-
-  private dutchXSchemeConfigs = new Map<string, ISchemeConfig>([
-    ['Auction4Reputation', {
-      description: 'BID GEN',
-      hasActiveLocks: false,
-      hasContract: true,
-      icon: './gen_icon_color.svg',
-      icon_hover: './gen_icon_white.svg',
-      position: 4,
-    }],
-    ['ExternalLocking4Reputation', {
-      description: 'REGISTER MGN',
-      hasActiveLocks: false,
-      hasContract: true,
-      icon: './mgn_icon_color.svg',
-      icon_hover: './mgn_icon_white.svg',
-      position: 3,
-    }],
-    ['LockingEth4Reputation', {
-      description: 'LOCK ETH',
-      hasActiveLocks: true,
-      hasContract: true,
-      icon: './eth_icon_color.svg',
-      icon_hover: './eth_icon_white.svg',
-      position: 1,
-    }],
-    ['LockingToken4Reputation', {
-      description: 'LOCK TOKENS',
-      hasActiveLocks: true,
-      hasContract: true,
-      icon: './generic_icon_color.svg',
-      icon_hover: './generic_icon_white.svg',
-      position: 2,
-    }],
-    ['DaoStorytelling', {
-      description: 'DAO STORYTELLING',
-      hasActiveLocks: false,
-      hasContract: false,
-      icon: './t_blue.svg',
-      icon_hover: './t_white.svg',
-      position: 5,
-    }],
-  ]);
+  private scheduleModel = {
+    dao: undefined as DaoEx,
+  };
 
   constructor(
-    private daoService: DaoService,
-    private web3: Web3Service,
-    private schemeService: SchemeService,
-    private web3Service: Web3Service,
-    private eventAggregator: EventAggregator,
-    private appConfig: AureliaConfiguration,
-    private arcService: ArcService,
-    private networkConnectionWizards: NetworkConnectionWizards,
+    daoService: DaoService,
+    web3: Web3Service,
+    schemeService: SchemeService,
+    web3Service: Web3Service,
+    eventAggregator: EventAggregator,
+    appConfig: AureliaConfiguration,
+    arcService: ArcService,
+    networkConnectionWizards: NetworkConnectionWizards,
     private dateService: DateService
   ) {
+    super(
+      web3,
+      schemeService,
+      daoService,
+      eventAggregator,
+      appConfig,
+      networkConnectionWizards,
+      arcService,
+      web3Service);
+
     $(window).resize(this.fixScrollbar);
   }
 
   public async activate(options:
-    { address?: Address, fakeRedeem?: string /*, ref?: Address*/ } = {}) {
+    { address?: Address, fakeRedeem?: string } = {}): Promise<void> {
 
     // tslint:disable-next-line: no-console
     // console.time('activate');
 
-    this.options = options;
     this.fakeRedeem = !!options.fakeRedeem || false;
     // this.referrerAddress = options.ref;
-
-    /*******************
-     * Handle account change.  Load a DAO if we don't already have one.
-     * This should only happen when there was already a network and an account.
-     */
-    const subscription1 = AccountService.subscribeToAccountChanges(async (account: Address) => {
-      await this.initializeNetwork();
-      this.eventAggregator.publish('Network.Changed.Account', account);
-      /**
-       * this will notify if the new user is discaimed, and we will then load the avatar
-       * or schemes accordingly.
-       */
-      this.networkConnectionWizards.run(!!this.org, false);
-    });
-
-    this.subscriptions.push({ dispose: () => subscription1.unsubscribe() });
-
-    /*******************
-     * Handle network change.  Must load a new DAO.
-     * MM has always refreshed the entire page on network change, but it is anticipated that this will (rightly)
-     * change.  Thus the following code is maintained for that eventuality, but isn't well tested.
-     * See: https://github.com/MetaMask/metamask-extension/issues/3599
-     */
-    const subscription2 = AccountService.subscribeToNetworkChanges(async (networkId: number) => {
-      await this.initializeNetwork();
-      this.eventAggregator.publish('Network.Changed.Id', networkId);
-      if (this.disclaimed) {
-        this.networkName = this.web3.networkName;
-        if (this.fakeRedeem && this.web3Service.isConnected && (this.networkName === 'Ganache')) {
-          await UtilsInternal.increaseTime(100000000000, this.web3.web3);
-        }
-        await this.loadAvatar();
-      } else {
-        this.networkConnectionWizards.run(false, false);
-      }
-    });
-
-    this.subscriptions.push({ dispose: () => subscription2.unsubscribe() });
-
-    this.subscriptions.push(this.eventAggregator.subscribe('connect.disclaimed', (disclaimed: boolean) => {
-      this.disclaimed = disclaimed;
-      if (this.disclaimed) {
-        if (!this.org) {
-          /**
-           * this will inform the connection dialog as to what to do next
-           */
-          this.loadAvatar();
-        } else {
-          this.loadSchemes();
-        }
-      }
-    }));
-
-    /*******************
-     * Handle avatar loaded.  Load schemes.
-     */
-    this.subscriptions.push(this.eventAggregator.subscribe('Avatar.loaded', () => {
-      this.loadSchemes().then((schemesLoaded: boolean) => {
-        if (schemesLoaded) {
-          // tslint:disable-next-line: no-console
-          // console.timeStamp('Schemes Processed');
-          setTimeout(() => this.eventAggregator.publish('DAO.loaded', this.org), 0);
-        }
-      });
-    }));
 
     this.subscriptions.push(this.eventAggregator.subscribe('Lock.Released', () => {
       this.computeNumLocks();
@@ -239,24 +107,15 @@ export class Dashboard {
       this.dashboardBusy = val;
     }));
 
-    if (!this.initialized) {
-      await this.initializeNetwork();
-    }
-
-    if (this.initialized) {
-      this.networkName = this.web3.networkName;
-
-      /*******************
-       * Start wizard
-       */
-      this.networkConnectionWizards.run(!!this.org, false);
-    }
+    return super.activate(options);
 
     // tslint:disable-next-line: no-console
     // console.timeEnd('activate');
   }
 
   public async attached() {
+
+    $('body').css('overflow-y', 'hidden');
 
     // tslint:disable-next-line: no-console
     // console.time('attached');
@@ -307,235 +166,84 @@ export class Dashboard {
     // console.timeEnd('attached');
   }
 
-  public deactivate() {
-    this.subscriptions.dispose();
-    this.networkConnectionWizards.close(true);
-  }
-
-  private async initializeNetwork(): Promise<Web3 | undefined> {
-
-    let web3: Web3;
-    this.initialized = false;
-
-    try {
-
-      try {
-        // so we will at least be able to find out if we're connected and have a default account
-        await Utils.getWeb3();
-        // tslint:disable-next-line:no-empty
-      } catch (ex) {
-        this.eventAggregator.publish('handleException', new EventConfigException(`web3 is not found `, ex));
-        this.networkConnectionWizards.run(false, false);
-        return Promise.resolve(null);
-      }
-
-      const networkName = await Utils.getNetworkName();
-      this.appConfig.setEnvironment(networkName);
-      ConfigService.set('logLevel',
-        // tslint:disable-next-line: no-bitwise
-        // (networkName === 'Live') ? LogLevel.info | LogLevel.warn | LogLevel.error : LogLevel.all);
-        LogLevel.all);
-
-      if (!this.appConfig.get('lockableTokens')) {
-        this.eventAggregator.publish('handleMessage',
-          new EventConfig(`the network ${networkName} has not been configured`, EventMessageType.Exception));
-        this.networkConnectionWizards.run(false, false);
-        return Promise.resolve(null);
-      }
-
-      try {
-        web3 = await InitializeArcJs({
-          filter: {},
-          useMetamaskEthereumWeb3Provider: true,
-          watchForAccountChanges: true,
-          watchForNetworkChanges: true,
-        });
-      } catch (ex) {
-        this.eventAggregator.publish('handleMessage', new EventConfig(ex.message, EventMessageType.Exception));
-        try {
-          // so we will at least be able to find out if we're connected and have a default account
-          web3 = await Utils.getWeb3();
-          // tslint:disable-next-line:no-empty
-        } catch (ex) { }
-      }
-
-      if (networkName === 'Live') {
-        ConfigService.set('gasPriceAdjustment', async () => {
-          try {
-            const response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json');
-            // the api gives results if 10*Gwei
-            const gasPrice = response.data.fast / 10;
-            return web3.toWei(gasPrice, 'gwei');
-            // tslint:disable-next-line:no-empty
-          } catch  {
-          }
-        });
-      }
-
-      ConfigService.set('estimateGas', true);
-
-      await this.web3Service.initialize(web3);
-
-      await this.arcService.initialize();
-
-      this.initialized = true;
-
-    } catch (ex) {
-      this.eventAggregator.publish('handleMessage',
-        new EventConfig(`An error occurred starting the application: ${ex.message}`, EventMessageType.Exception));
-    }
-
-    return web3;
-  }
-
-  private async loadAvatar(): Promise<DaoEx | undefined> {
-    // tslint:disable-next-line: no-console
-    // console.time('loadAvatar');
-
+  protected async loadAvatar(): Promise<DaoEx | undefined> {
     const address = this.options.address || this.appConfig.get('daoAddress');
-
     if (!this.org || (address !== this.org.address)) {
-
       if (this.repSummaryCheck) {
         this.repSummaryCheck.dispose();
         this.repSummaryCheck = null;
       }
-
-      this.avatarLoaded = this.schemesLoaded = this.schemesLoading = false;
-      this.avatarLoading = this.loading = true;
-      this.org = undefined;
-
-      if (address) {
-        this.org = await this.daoService.daoAt(address);
-      }
-
-      if (this.org) {
-        this.address = this.org.address;
-        this.orgName = this.org.name;
-        this.avatarLoaded = true;
-      }
-
-      this.avatarLoading = false;
-      this.polishDom();
-
-      if (this.org) {
-        // tslint:disable-next-line: no-console
-        // console.timeStamp('Avatar Loaded');
-        // so setSchemes won't start before we return
-        setTimeout(() => this.eventAggregator.publish('Avatar.loaded', this.org), 0);
-      } else {
-        this.loading = false;
-        this.networkConnectionWizards.run(false, true); // noop if already running
-      }
+      return super.loadAvatar().then((dao: DaoEx): DaoEx | undefined => {
+        this.polishDom();
+        return dao;
+      });
+    } else {
+      return this.org;
     }
-
-    // tslint:disable-next-line: no-console
-    // console.timeEnd('loadAvatar');
-    return this.org;
   }
 
-  private async loadSchemes(): Promise<boolean> {
-    // tslint:disable-next-line: no-console
-    // console.time('loadSchemes');
+  protected async loadSchemes(): Promise<boolean> {
+    return super.loadSchemes().then(async (schemesLoaded: boolean): Promise<boolean> => {
+      if (schemesLoaded) {
+        this.dutchXSchemes.push(
+          {
+            address: '',
+            blockNumber: 0,
+            friendlyName: 'DAO STORYTELLING',
+            inArc: true,
+            inDao: true,
+            isRegistered: false,
+            name: 'DaoStorytelling',
+          }
+        );
 
-    this.schemesLoading = this.loading = true;
-    /**
-     * Get all schemes associated with the DAO.  These can include non-Arc schemes.
-     */
-    const schemes = (await this.schemeService.getSchemesForDao(this.address));
+        await this.computeNumLocks();
 
-    const nonArcSchemes = schemes.filter((s: SchemeInfo) => !s.inArc);
+        const mgnWrapper =
+          (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
+        this.appConfig.set('mgnWrapper', mgnWrapper as any);
 
-    // tslint:disable-next-line: no-console
-    // console.time('findNonDeployedArcScheme');
+        const lockDates = await this.getLockDates();
 
-    for (const scheme of nonArcSchemes) {
-      const foundScheme = await this.findNonDeployedArcScheme(scheme);
-      if (foundScheme) {
-        schemes[schemes.indexOf(scheme)] = foundScheme;
+        /**
+         * store away for the rest of the UI, in the config for backward-compatibility
+         */
+        this.appConfig.set('lockingPeriodStartDate', lockDates.start as any);
+        this.appConfig.set('lockingPeriodEndDate', lockDates.end as any);
+
+        this.lockingPeriodEndDate = lockDates.end;
+        this.governanceStartDate = this.dateService
+          .fromIsoString(this.appConfig.get('governanceStartDate'));
+        // one second after locking period ends
+        this.redeemingStartDate = new Date(this.lockingPeriodEndDate.getTime() + 1000);
+
+        // now that dates are set we can set this
+        this.scheduleModel.dao = this.org;
+
+        const blockNumber = await UtilsInternal.lastBlockDate(this.web3Service.web3);
+
+        if (this.fakeRedeem || this.computeCanComputeReputation(blockNumber)) {
+          this.canComputeReputation = true;
+          this.computeRedeemables();
+        } else {
+
+          this.repSummaryCheck =
+            this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
+
+              if (!this.hasComputedReputation && !this.computingRedeemables &&
+                (this.fakeRedeem || this.computeCanComputeReputation(blockDate))) {
+
+                this.canComputeReputation = true;
+                this.repSummaryCheck.dispose();
+                this.repSummaryCheck = null;
+                this.computeRedeemables();
+              }
+            });
+        }
       }
-    }
-    // tslint:disable-next-line: no-console
-    // console.timeEnd('findNonDeployedArcScheme');
-
-    this.dutchXSchemes = schemes.filter((s: SchemeInfo) => s.inArc && s.inDao)
-      // hack to remove all but the dxDAO contracts
-      .filter((s: SchemeInfo) => this.dutchXSchemeConfigs.has(s.name))
-      .sort((a: SchemeInfo, b: SchemeInfo) =>
-        this.dutchXSchemeConfigs.get(a.name).position - this.dutchXSchemeConfigs.get(b.name).position
-      );
-
-    this.dutchXSchemes.map((s) => { s.friendlyName = this.dutchXSchemeConfigs.get(s.name).description; });
-
-    this.schemesLoaded = this.dutchXSchemes.length !== this.dutchXSchemeConfigs.keys.length;
-
-    this.dutchXSchemes.push(
-      {
-        address: '',
-        blockNumber: 0,
-        friendlyName: 'DAO STORYTELLING',
-        inArc: true,
-        inDao: true,
-        isRegistered: false,
-        name: 'DaoStorytelling',
-      }
-    );
-
-    if (!this.schemesLoaded) {
-      this.org = undefined;
-      setTimeout(() => this.eventAggregator.publish('handleMessage',
-        new EventConfig(`not all of the required contracts were found`, EventMessageType.Exception)), 0);
-      this.networkConnectionWizards.run(false, true); // no-op if already running
-    } else {
-
-      await this.computeNumLocks();
-
-      const mgnWrapper =
-        (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
-      this.appConfig.set('mgnWrapper', mgnWrapper as any);
-
-      const lockDates = await this.getLockDates();
-
-      /**
-       * store away for the rest of the UI, in the config for backward-compatibility
-       */
-      this.appConfig.set('lockingPeriodStartDate', lockDates.start as any);
-      this.appConfig.set('lockingPeriodEndDate', lockDates.end as any);
-
-      this.lockingPeriodEndDate = lockDates.end;
-      this.governanceStartDate = this.dateService
-        .fromIsoString(this.appConfig.get('governanceStartDate'), App.timezone);
-
-      const blockNumber = await UtilsInternal.lastBlockDate(this.web3Service.web3);
-
-      if (this.fakeRedeem || this.computeCanComputeReputation(blockNumber)) {
-        this.canComputeReputation = true;
-        this.computeRedeemables();
-      } else {
-
-        this.repSummaryCheck =
-          this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
-
-            if (!this.hasComputedReputation && !this.computingRedeemables &&
-              (this.fakeRedeem || this.computeCanComputeReputation(blockDate))) {
-
-              this.canComputeReputation = true;
-              this.repSummaryCheck.dispose();
-              this.repSummaryCheck = null;
-              this.computeRedeemables();
-            }
-          });
-      }
-    }
-
-    this.schemesLoading = this.loading = false;
-
-    this.polishDom();
-
-    // tslint:disable-next-line: no-console
-    // console.timeEnd('loadSchemes');
-
-    return Promise.resolve(this.schemesLoaded);
+      this.polishDom();
+      return schemesLoaded;
+    });
   }
 
   private getDashboardView(scheme: SchemeInfo): string {
@@ -565,17 +273,6 @@ export class Dashboard {
       tokenSymbol: this.tokenSymbol,
     },
       scheme);
-  }
-
-  private getSchemeInfoFromName(name: string): ISchemeInfoX {
-    return this.dutchXSchemes.filter((s: ISchemeInfoX) => {
-      return s.name === name;
-    })[0];
-  }
-
-  private getSchemeWrapperFromName(name: string): Promise<Locking4ReputationWrapper> {
-    const schemeAddress = this.getSchemeInfoFromName(name).address;
-    return WrapperService.factories[name].at(schemeAddress);
   }
 
   private async computeRedeemables(): Promise<void> {
@@ -651,6 +348,11 @@ export class Dashboard {
               beneficiaryAddress: this.web3.defaultAccount,
               contractBirthBlock: schemeBirthBlock,
             }));
+        /**
+         * without this, and if the final connect prompt is closed, MM will crash during
+         * the loop.
+         */
+        await UtilsInternal.sleep(0);
       }
       contractRepReward = await auctionWrapper.getReputationReward();
       totalReputationAvailable = totalReputationAvailable.add(contractRepReward);
@@ -693,49 +395,6 @@ export class Dashboard {
       });
   }
 
-  private async findNonDeployedArcScheme(scheme: SchemeInfo): Promise<SchemeInfo | null> {
-    // tslint:disable-next-line: no-console
-    // // console.time('findNonDeployedArcScheme');
-    // see: https://solidity.readthedocs.io/en/latest/metadata.html
-    const end = 'a165627a7a72305820';
-    let code = await (Promise as any).promisify((callback: any): any =>
-      this.web3Service.web3.eth.getCode(scheme.address, callback))() as string;
-
-    code = code.substr(0, code.indexOf(end));
-
-    for (const wrapperName in WrapperService.nonUniversalSchemeFactories) {
-      if (WrapperService.nonUniversalSchemeFactories.hasOwnProperty(wrapperName)) {
-        const factory = WrapperService.nonUniversalSchemeFactories[wrapperName];
-        if (factory && this.dutchXSchemeConfigs.has(wrapperName)) {
-          /**
-           * look in Arc contracts
-           */
-          let found: boolean;
-          let contract = null;
-          // tslint:disable-next-line:no-empty
-          try { contract = await factory.ensureSolidityContract(); } catch { }
-          if (contract) {
-            const deployedBinary = contract.deployedBinary.substr(0, contract.deployedBinary.indexOf(end));
-            found = code === deployedBinary;
-          }
-
-          if (found) {
-            const wrapper = await factory.at(scheme.address);
-            // tslint:disable-next-line: no-console
-            // // console.timeEnd('findNonDeployedArcScheme');
-            return SchemeInfo.fromContractWrapper(
-              wrapper,
-              true,
-              scheme.blockNumber);
-          }
-        }
-      }
-    }
-    // tslint:disable-next-line: no-console
-    // // console.timeEnd('findNonDeployedArcScheme');
-    return null;
-  }
-
   /**
    * returns LockingEth4Reputation start and end dates
    */
@@ -757,16 +416,11 @@ export class Dashboard {
     const bodyHeight = $(window).height() || 0;
     const headerHeight = $('.header.navbar').outerHeight() || 0;
     const footerHeight = $('.footer.navbar').outerHeight() || 0;
-    const disclaimer = $('.disclaimer').outerHeight() || 0;
 
     $('.dashboard-main-content').css(
       {
-        'max-height': `${bodyHeight - headerHeight - footerHeight - disclaimer}px`,
+        'max-height': `${bodyHeight - headerHeight - footerHeight}px`,
       });
-
-    $('.disclaimer').css({
-      'max-height': `${bodyHeight - headerHeight - footerHeight}px`,
-    });
   }
 
   private polishDom() {
@@ -774,7 +428,7 @@ export class Dashboard {
   }
 
   private computeCanComputeReputation(blockDate: Date) {
-    return blockDate.getTime() >= this.lockingPeriodEndDate.getTime();
+    return blockDate.getTime() > this.lockingPeriodEndDate.getTime();
   }
 
   private toggleDisclaimer() {
@@ -791,20 +445,7 @@ interface IRedeemable {
   what: string;
 }
 
-interface ISchemeInfoX extends SchemeInfo {
-  numLocks?: number;
-}
-
 interface IContractLockDates {
   end: Date;
   start: Date;
-}
-
-interface ISchemeConfig {
-  description: string;
-  hasActiveLocks: boolean;
-  hasContract: boolean;
-  icon?: string;
-  icon_hover?: string;
-  position: number;
 }

@@ -25,7 +25,11 @@ export class ConnectToNet {
     private controller: DialogController,
     private eventAggregator: EventAggregator,
     private web3: Web3Service,
-    private walletService: WalletService) { }
+    private walletService: WalletService) {
+    $(window).resize(() => {
+      setTimeout(() => this.reposition(), 100);
+    });
+  }
 
   public async activate(model: IConnectToNetModel) {
     this.networkName = this.web3.networkName;
@@ -72,12 +76,21 @@ export class ConnectToNet {
     this.stopInterval();
   }
 
+  public attached() {
+    this.reposition();
+  }
+
   public close(cancelled: boolean = false): Promise<DialogCancelableOperationResult> {
     this.subscriptions.dispose();
     return this.controller.close(!cancelled);
   }
 
   private reposition(): void {
+    const bodyHeight = $(window).height() || 0;
+    $('ux-dialog.connections .disclaimer').css(
+      {
+        'max-height': `${bodyHeight * .7}px`,
+      });
     (this.controller.renderer as any).centerDialog();
   }
 

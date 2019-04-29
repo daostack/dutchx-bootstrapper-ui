@@ -51,16 +51,13 @@
         if.to-view="globalPeriodHasStarted && !inLockingPeriod && alreadyRegistered"
       >You have registered your wallet that contains or will contain MGN at the end of the vote staking period.</div>
 
-      <!-- DEMO, was on button
-          disabled.bind="locking"
-          -->
       <form>
         <div class="form-group">
           <spinbutton
             if.to-view="globalPeriodHasStarted
               && lockingPeriodHasNotStarted
               && !alreadyRegistered"
-            disabled="disabled"
+            disabled.bind="registering"
             onclick.call="register()"
             css="btn-submit btn-sm"
             as-button="true"
@@ -70,13 +67,10 @@
             title.to-view="registering ? 'Registering...' : 'Register'"
           ></spinbutton>
           <metamaskfeedback if.to-view="sendingRegister"></metamaskfeedback>
-          <!-- DEMO, was on button
-          disabled.bind="locking"
-          -->
           <spinbutton
             if.to-view="inLockingPeriod && !alreadyLocked"
             css="btn-submit btn-sm btn-register"
-            disabled="disabled"
+            disabled.bind="locking"
             onclick.call="lock()"
             as-button="true"
             text="Register MGN"
@@ -85,8 +79,6 @@
             title.to-view="locking ? 'Registering MGN...' : 'Register MGN'"
           ></spinbutton>
           <metamaskfeedback if.to-view="sending"></metamaskfeedback>
-          <!-- DEMO -->
-          <div class="message">This vote staking category is not available on the user interface demo.</div>
         </div>
       </form>
     </div>

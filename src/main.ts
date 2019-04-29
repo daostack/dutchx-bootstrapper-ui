@@ -8,8 +8,6 @@ import 'popper.js';
 import { ConsoleLogService } from 'services/ConsoleLogService';
 import { LockService } from 'services/lockServices';
 import { SnackbarService } from 'services/SnackbarService';
-import { WalletService } from 'services/walletService';
-import { DateService } from './services/DateService';
 
 // remove out if you don't want a Promise polyfill (remove also from webpack.config.js)
 Bluebird.config({ warnings: { wForgottenReturn: false } });

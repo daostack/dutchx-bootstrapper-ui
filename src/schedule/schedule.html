@@ -11,49 +11,62 @@
           <div
             class="body"
             if.to-view="lockingPeriodHasNotStarted"
-          >Take part in the user interface demo.</div>
+          >Getting ready to launch the dxDAO.</div>
           <div
             class="body"
-            if.to-view="inLockingPeriod"
-          >Demo vote staking period is live.</div>
+            if.to-view="isLanding && inLockingPeriod"
+          ><a route-href="route: stake-for-your-vote">Click here to stake your vote</a>.</div>
           <div
             class="body"
-            if.to-view="inRepDistributionPeriod"
-          >Demo reputation (voting power) distribution period is live.</div>
+            if.to-view="!isLanding && inLockingPeriod"
+          >Scroll down to stake your vote.</div>
+          <div
+            class="body"
+            if.to-view="isLanding && inRepDistributionPeriod"
+          ><a route-href="route: stake-for-your-vote">Click here to check out your reputation</a>.</div>
+          <div
+            class="body"
+            if.to-view="!isLanding && inRepDistributionPeriod"
+          >Scroll down to check out your reputation.</div>
           <div
             class="body"
             if.to-view="inGovernancePeriod"
-          >Demo community governance is live.</div>
+          ><a
+              href="https://alchemy.daostack.io"
+              target="_blank"
+            >Click here to take part in the dxDAO</a>.</div>
         </div>
       </div>
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
           <div class="triangle"><img src="${ getTriangle() }"></div>
-          <div class="shortdate">${lockingPeriodStartDate | date:'shortdayofmonth'}</div>
-          <div class="phase">Demo Vote Staking Period</div>
-          <div class="longdate">${lockingPeriodStartDate | date:'shortdate'} through ${lockingPeriodEndDate | date:'shortdate'}</div>
-          <div class="body">This is when you can take part in the above-mentioned demo vote staking period to gain Reputation (voting power).</div>
+          <div class="shortdate">${lockingPeriodStartDate | date:'shortdayofmonth'} <span class="time">${lockingPeriodStartDate | date:{ format: 'amPmHourTz' }}</span></div>
+          <div class="phase">Vote Staking Period</div>
+          <div class="longdate">${lockingPeriodStartDate | date:'dayofmonth'} through ${lockingPeriodEndDate | date:'shortdate'}</div>
+          <div class="body">
+            <p>This is when you can take part in the above-mentioned vote staking period to gain Reputation (voting power).</p>
+            <p>* Please participate early to avoid potential blockchain problems</p>
+          </div>
         </div>
       </div>
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
           <div class="triangle"><img src="${ getTriangle() }"></div>
-          <div class="shortdate">${lockingPeriodEndDate | date:'shortdayofmonth'}</div>
-          <div class="phase">Demo Reputation (Voting Power) Distribution Period</div>
-          <div class="longdate">${lockingPeriodEndDate | date:'shortdate'} through ${lastLockingPeriodDate | date:'shortdate'}</div>
+          <div class="shortdate">${distributionPeriodStartDate | date:'shortdayofmonth'} <span class="time">${distributionPeriodStartDate | date:{ format: 'amPmHourTz' }}</span></div>
+          <div class="phase">Reputation (Voting Power) Distribution Period</div>
+          <div class="longdate">${distributionPeriodStartDate | date:'dayofmonth'} through ${distributionPeriodEndDate | date:'shortdate'}</div>
           <div class="body">Come back to the vote staking interface to see your individual amount of Reputation!</div>
         </div>
       </div>
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
           <div class="triangle"><img src="${ getTriangle() }"></div>
-          <div class="shortdate"><span class="asterisk">*</span>${governanceStartDate | date:'shortdayofmonth'}</div>
-          <div class="phase">Demo Community Governance</div>
-          <div class="longdate">${governanceStartDate | date:'shortdate'}</div>
+          <div class="shortdate">${governanceStartDate | date:'shortdayofmonth'} <span class="time">${governanceStartDate | date:{ format: 'amPmHourTz' }}</span></div>
+          <div class="phase">Community Governance</div>
+          <div class="longdate">${governanceStartDate | date:'dayofmonth'}</div>
           <div class="body">
           </div>
           <div>Be an active stakeholder in the dxDAO.</div>
-          <div class="footnote"><sup>*</sup> Pending final approval</div>
         </div>
       </div>
     </div>

@@ -35,10 +35,8 @@ export class App {
   constructor(
     private web3Service: Web3Service,
     private signaler: BindingSignaler,
-    private eventAggregator: EventAggregator,
-    appConfig: AureliaConfiguration
+    private eventAggregator: EventAggregator
   ) {
-    App.timezone = appConfig.get('rootTimezone');
   }
 
   public activate() {
@@ -80,7 +78,16 @@ export class App {
         name: 'dashboard',
         nav: false,
         // 'address' will be present in the object passed to the 'activate' method of the viewmodel
-        route: ['dashboard/:address?', 'stake-for-your-vote/:address?'],
+        route: ['dashboard/:address?'],
+        title: 'Stake for Your Vote',
+      }
+      ,
+      {
+        moduleId: PLATFORM.moduleName('./organizations/dashboard'),
+        name: 'stake-for-your-vote',
+        nav: false,
+        // 'address' will be present in the object passed to the 'activate' method of the viewmodel
+        route: ['stake-for-your-vote/:address?'],
         title: 'Stake for Your Vote',
       }
       , {
@@ -90,6 +97,20 @@ export class App {
         nav: false,
         route: ['txInfo/:txHash'],
         title: 'Transaction Information',
+      },
+      , {
+        moduleId: PLATFORM.moduleName('./liquidity/liquidity'),
+        name: 'liquidity',
+        nav: false,
+        route: ['liquidity/:address?'],
+        title: 'Token Liquidity',
+      },
+      , {
+        moduleId: PLATFORM.moduleName('./status/status'),
+        name: 'status',
+        nav: false,
+        route: ['status/:address?'],
+        title: 'Initialization Period Status',
       },
     ]);
 

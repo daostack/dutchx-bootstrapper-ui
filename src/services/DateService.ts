@@ -47,6 +47,10 @@ export class DateService {
         key: 'amPmTime',
       },
       {
+        format: 'h:mma z',
+        key: 'amPmHourTz',
+      },
+      {
         format: 'MMM Do',
         key: 'shortdayofmonth',
       },
@@ -246,24 +250,22 @@ export class DateService {
       return null;
     }
 
-    return (timezone ? moment.tz(dt, timezone) : moment(dt)).toISOString();
+    return moment.tz(dt, timezone ? timezone : this.localTimezone).toISOString();
   }
 
   /**
    * Parse date from ISO format.
    *
    * ISO:  https://en.wikipedia.org/wiki/ISO_8601
-   * Timezone specifiers: https://github.com/moment/moment-timezone/blob/develop/data/packed/latest.json
    *
    * @param str
-   * @param timezone optional timezone specifier like "Asia/Tel_Aviv"
    */
-  public fromIsoString(str: string, timezone?: string): Date | null {
+  public fromIsoString(str: string): Date | null {
     if (!str) {
       return null;
     }
 
-    return (timezone ? moment.tz(str, timezone) : moment(str)).toDate();
+    return moment(str).toDate();
   }
 
   public nameofDay(day: number): string {
@@ -354,14 +356,7 @@ export class DateService {
    * (at least with the fetch serialized this is true).
    */
   private createMoment(date?: Date | string, utc: boolean = false): Moment {
-
-    let m: Moment = date ? moment(date) : moment();
-
-    if (utc) {
-      m = this.momentToUTC(m);
-    }
-
-    return m;
+    return moment.tz(date, utc ? 'Etc/GMT-0' : this.localTimezone);
   }
 
   private createMomentFromString(str: string, format?: string, utc: boolean = false): Moment {

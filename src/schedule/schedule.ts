@@ -1,12 +1,10 @@
-import { App } from 'app';
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
+import { DaoEx } from 'entities/DAO';
+import { AureliaHelperService } from 'services/AureliaHelperService';
 import { DateService } from 'services/DateService';
 import { DisposableCollection } from 'services/DisposableCollection';
-import { IDisposable } from 'services/IDisposable';
-import { Web3Service } from 'services/Web3Service';
-import { Web3 } from 'web3';
 
 @autoinject
 export class Schedule {
@@ -14,46 +12,46 @@ export class Schedule {
   private lockingPeriodEndDate: Date;
   private lockingPeriodStartDate: Date;
   private governanceStartDate: Date;
-  private lastLockingPeriodDate: Date;
+  private distributionPeriodStartDate: Date;
+  private distributionPeriodEndDate: Date;
   private sectionElement: HTMLElement;
-  private isLanding: boolean;
-  private lockingPeriodHasNotStarted: boolean;
-  private inLockingPeriod: boolean;
-  private inRepDistributionPeriod: boolean;
-  private inGovernancePeriod: boolean;
+  private isLanding: boolean = false;
+  private dao: DaoEx;
+  private lockingPeriodHasNotStarted: boolean = false;
+  private inLockingPeriod: boolean = false;
+  private inRepDistributionPeriod: boolean = false;
+  private inGovernancePeriod: boolean = false;
   private subscriptions = new DisposableCollection();
 
   constructor(
     private appConfig: AureliaConfiguration,
     protected eventAggregator: EventAggregator,
     private dateService: DateService,
-    private web3: Web3Service
+    private aureliaHelperService: AureliaHelperService
   ) {
   }
 
-  public activate(model: { isLanding: boolean }) {
-    this.isLanding = (model && model.isLanding) || !this.web3.isConnected;
-    this.lockingPeriodEndDate = this.dateService
-      .fromIsoString(this.appConfig.get(
-        this.isLanding ? 'Landing.lockingPeriodEndDate' : 'lockingPeriodEndDate'), App.timezone);
-    this.lockingPeriodStartDate = this.dateService
-      .fromIsoString(this.appConfig.get(
-        this.isLanding ? 'Landing.lockingPeriodStartDate' : 'lockingPeriodStartDate'), App.timezone);
-    this.governanceStartDate = this.dateService
-      .fromIsoString(this.appConfig.get('governanceStartDate'), App.timezone);
-    /**
-     * 24-hours before governance period starts
-     */
-    this.lastLockingPeriodDate = new Date(this.governanceStartDate.getTime() - 86400000);
+  public activate(model: { isLanding?: boolean, dao?: DaoEx }) {
+    this.isLanding = !!model.isLanding;
+    this.dao = model.dao;
 
     if (!this.isLanding) {
-      this.subscriptions.push(this.eventAggregator
-        .subscribe('DAO.loaded', () => {
-          this.lockingPeriodEndDate = this.dateService
-            .fromIsoString(this.appConfig.get('lockingPeriodEndDate'), App.timezone);
-          this.lockingPeriodStartDate = this.dateService
-            .fromIsoString(this.appConfig.get('lockingPeriodStartDate'), App.timezone);
-        }));
+      this.aureliaHelperService.createPropertyWatch(model, 'dao', (newDao: DaoEx) => {
+        this.dao = newDao;
+        this.initFromAppConfig();
+      });
+    }
+
+    this.governanceStartDate = this.dateService
+      .fromIsoString(this.appConfig.get('governanceStartDate'));
+
+    /**
+     * one second before governance period starts
+     */
+    this.distributionPeriodEndDate = new Date(this.governanceStartDate.getTime() - 1000);
+
+    if (this.isLanding || this.dao) {
+      this.initFromAppConfig();
     }
   }
 
@@ -61,6 +59,11 @@ export class Schedule {
     if (this.isLanding) {
       $(this.sectionElement).addClass('landing');
     }
+
+    this.getLockingPeriodHasNotStarted();
+    this.getInLockingPeriod();
+    this.getInRepDistPeriod();
+
     this.subscriptions.push(this.eventAggregator.subscribe('secondPassed', () => {
       this.getGovPeriod();
       if (this.inGovernancePeriod) {
@@ -77,6 +80,27 @@ export class Schedule {
     this.subscriptions.dispose();
   }
 
+  private initFromAppConfig() {
+    /**
+     * then the appConfig is good
+     */
+    this.lockingPeriodEndDate = this.dateService
+      .fromIsoString(this.appConfig.get(`${this.isLanding ? 'Landing.' : ''}lockingPeriodEndDate`));
+    this.lockingPeriodStartDate = this.dateService
+      .fromIsoString(this.appConfig.get(`${this.isLanding ? 'Landing.' : ''}lockingPeriodStartDate`));
+    /**
+     * one second after locking period ends
+     */
+    this.distributionPeriodStartDate = new Date(this.lockingPeriodEndDate.getTime() + 1000);
+    /** just for testing scenarios */
+    if (this.distributionPeriodStartDate > this.governanceStartDate) {
+      this.distributionPeriodStartDate = this.governanceStartDate;
+    }
+    /** just for testing scenarios */
+    if (this.distributionPeriodEndDate < this.distributionPeriodStartDate) {
+      this.distributionPeriodEndDate = this.distributionPeriodStartDate;
+    }
+  }
   private getLockingPeriodHasNotStarted(): boolean {
     const now = new Date();
     return this.lockingPeriodHasNotStarted = (now < this.lockingPeriodStartDate);
@@ -85,13 +109,13 @@ export class Schedule {
   private getInLockingPeriod(): boolean {
     const now = new Date();
     return this.inLockingPeriod =
-      (now >= this.lockingPeriodStartDate) && (now < this.lockingPeriodEndDate);
+      (now >= this.lockingPeriodStartDate) && (now <= this.lockingPeriodEndDate);
   }
 
   private getInRepDistPeriod(): boolean {
     const now = new Date();
     return this.inRepDistributionPeriod =
-      (now >= this.lockingPeriodEndDate) && (now < this.governanceStartDate);
+      (now > this.lockingPeriodEndDate) && (now < this.governanceStartDate);
   }
 
   private getGovPeriod(): boolean {

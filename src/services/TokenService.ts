@@ -1,5 +1,12 @@
 import { autoinject } from 'aurelia-framework';
-import { Address, DaoTokenWrapper, Erc20Wrapper, Utils, WrapperService } from './ArcService';
+import {
+  Address,
+  DaoTokenWrapper,
+  Erc20Wrapper,
+  LockingToken4ReputationWrapper,
+  Utils,
+  WrapperService
+} from './ArcService';
 import { BigNumber, Web3Service } from './Web3Service';
 
 @autoinject
@@ -8,6 +15,27 @@ export class TokenService {
   constructor(
     private web3: Web3Service
   ) { }
+
+  public async getTokenIsLiquid(token: Address, tokenLocker: LockingToken4ReputationWrapper): Promise<boolean> {
+    return (await this.getTokenPriceFactor(token, tokenLocker)) !== null;
+  }
+
+  public async getTokenPriceFactor(
+    token: Address,
+    tokenLocker: LockingToken4ReputationWrapper): Promise<BigNumber | null> {
+
+    const oracleAddress = await tokenLocker.getPriceOracleAddress();
+
+    const oracle = (await Utils.requireContract('PriceOracleInterface')).at(oracleAddress);
+
+    const price = (await oracle.getPrice(token)) as Array<BigNumber>;
+
+    if (price && (price.length === 2) && price[0].gt(0) && price[1].gt(0)) {
+      return price[0].div(price[1]);
+    } else {
+      return null;
+    }
+  }
 
   public async getDaoTokenSymbol(token: DaoTokenWrapper): Promise<string> {
     return await token.getTokenSymbol();

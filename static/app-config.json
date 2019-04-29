@@ -1,13 +1,13 @@
 {
-  "rootTimezone": "Asia/Tel_Aviv",
-  "governanceStartDate":      "2019-03-06T12:00:00.000",
-  "legalContractHash": "0x0",
+  "governanceStartDate":          "2019-04-16T15:00:00.000+0000",
+  "legalContractHash": "0x00000000000000000000000000000000",
+  "maxLockingPeriodDays": 365,
   "Landing": {
-    "lockingPeriodStartDate": "2019-02-18T12:00:00.000",
-    "lockingPeriodEndDate":   "2019-03-04T12:00:00.000"
+    "lockingPeriodStartDate":     "2019-04-16T09:00:00.000+0000",
+    "lockingPeriodEndDate":       "2019-04-16T14:29:59.000+0000"
   },
   "Ganache": {
-    "daoAddress": "0xcb4e66eca663fdb61818d52a152601ca6afef74f",
+    "daoAddress": "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
     "lockableTokens": [
       {
         "address": "0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab",
@@ -37,7 +37,7 @@
     ]
   },
   "Rinkeby": {
-    "daoAddress": "0x5d9dbe05164b62c66c3b4fa46156f96dda6dc916",
+    "daoAddress": "0x61a9F7b6a68684b9707CCfa8e823bEAC2c38e51B",
     "lockableTokens": [
       {
         "address": "0x3615757011112560521536258c1e7325ae3b48ae",
@@ -62,8 +62,8 @@
     ]
   },
   "Live": {
-    "daoAddress": "0xBdb281FF81C51dB8787B8504604B993e777F32Ce",
-    "DxControllerBirthBlock": "7219965",
+    "daoAddress": "0xE18717f423fd1a8F19dB71bb3037BAEaC5A6eb6d",
+    "DxControllerBirthBlock": "7539063",
     "lockableTokens": [
       {
         "symbol": "BAT",

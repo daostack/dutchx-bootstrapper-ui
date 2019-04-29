@@ -3,7 +3,7 @@
 
     <header network.to-view="networkName"></header>
 
-    <nav class="navbar navbar-expand-lg flex-column flex-sm-row delayed-warning-section disclaimer">
+    <!-- <nav class="navbar navbar-expand-lg flex-column flex-sm-row delayed-warning-section disclaimer">
       <div class="body">
         <p class="warning">
           WARNING: The dxDAO launch has been delayed for security reasons, in order to run an additional bug bounty program and audit on the codebase.<br />
@@ -44,7 +44,7 @@
           </a>
         </p>
       </div>
-    </nav>
+    </nav> -->
 
     <banner></banner>
 
@@ -95,7 +95,10 @@
       </div>
 
       <div class="schedule-section">
-        <compose view-model="../schedule/schedule"></compose>
+        <compose
+          view-model="../schedule/schedule"
+          model.to-view="scheduleModel"
+        ></compose>
       </div>
 
       <div class="initializationSection">
@@ -118,8 +121,8 @@
               <div
                 if.to-view="schemesLoaded && !canComputeReputation"
                 class="box"
-              >The vote staking period will end on ${lockingPeriodEndDate | date:'shortdate'}
-                at ${lockingPeriodEndDate | date:'amPmTime'} (GMT${lockingPeriodEndDate | date:'GmtOffset'}).
+              >The vote staking period will end on ${redeemingStartDate | date:'shortdate'}
+                at ${redeemingStartDate | date:{ format: 'amPmHourTz' }}).
                 At this time, Reputation (voting power) will be automatically distributed to participants.</div>
             </div>
           </div>
@@ -255,8 +258,8 @@
             >
               <div class="title">Voting Power (Reputation) Distribution</div>
               <div class="body">
-                The dxDAO vote staking period ended on ${lockingPeriodEndDate | date:'shortdate'}
-                at ${lockingPeriodEndDate | date:'amPmTime'} (GMT${lockingPeriodEndDate | date:'GmtOffset'}).
+                The dxDAO vote staking period ended on ${redeemingStartDate | date:'shortdate'}
+                at ${redeemingStartDate | date:{ format: 'amPmHourTz' }}).
               </div>
               <div class="redeemables">
                 <pageloading if.to-view="computingRedeemables">Thanks for waiting while we compute your earned reputation...</pageloading>

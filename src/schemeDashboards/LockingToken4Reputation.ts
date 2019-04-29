@@ -3,10 +3,8 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, signalBindings } from 'aurelia-framework';
 import { EventConfigException, EventConfigFailure, EventMessageType } from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
-import { AureliaHelperService } from 'services/AureliaHelperService';
 import { BalloonService } from 'services/balloonService';
 import { ITokenSpecification } from 'services/lockServices';
-import { SortService } from 'services/SortService';
 import { TokenService } from 'services/TokenService';
 import { Utils as UtilsInternal } from 'services/utils';
 import { BigNumber, Web3Service } from 'services/Web3Service';
@@ -35,7 +33,6 @@ export class LockingToken4Reputation extends Locking4Reputation {
     appConfig: AureliaConfiguration,
     eventAggregator: EventAggregator,
     web3Service: Web3Service,
-    private aureliaHelperService: AureliaHelperService,
     private tokenService: TokenService
   ) {
     super(appConfig, eventAggregator, web3Service);
@@ -113,43 +110,29 @@ export class LockingToken4Reputation extends Locking4Reputation {
     return false;
   }
 
-  protected async getLockBlocker(_reason?: string): Promise<boolean> {
-    let reason: string;
-    if (this.lockModel.amount) {
-      /**
-       * get token value in ETH
-       */
-      const priceFactor = await this.getTokenPriceFactor((this.lockModel as TokenLockingOptions).tokenAddress);
+  // protected async getLockBlocker(_reason?: string): Promise<boolean> {
+  //   let reason: string;
+  //   if (this.lockModel.amount) {
+  //     /**
+  //      * get token value in ETH
+  //      */
+  //     const priceFactor = await this.getTokenPriceFactor((this.lockModel as TokenLockingOptions).tokenAddress);
 
-      const ethValue = priceFactor.mul(this.lockModel.amount as BigNumber);
+  //     const ethValue = priceFactor.mul(this.lockModel.amount as BigNumber);
 
-      if (ethValue.gt(this.web3Service.toWei(0.2))) {
-        reason = `Demo lock cannot be for more than 0.2 ETH`;
-      }
-    }
-    return super.getLockBlocker(reason);
-  }
+  //     if (ethValue.gt(this.web3Service.toWei(0.2))) {
+  //       reason = `Demo lock cannot be for more than 0.2 ETH`;
+  //     }
+  //   }
+  //   return super.getLockBlocker(reason);
+  // }
 
   protected getLockUnit(lockInfo: LockInfo): Promise<string> {
     return this.lockService.getLockedTokenSymbol(lockInfo);
   }
 
   private async getTokenIsLiquid(token: Address): Promise<boolean> {
-    return (await this.getTokenPriceFactor(token)) !== null;
-  }
-
-  private async getTokenPriceFactor(token: Address): Promise<BigNumber | null> {
-    const oracleAddress = await this.wrapper.getPriceOracleAddress();
-
-    const oracle = (await Utils.requireContract('PriceOracleInterface')).at(oracleAddress);
-
-    const price = (await oracle.getPrice(token)) as Array<BigNumber>;
-
-    if (price && (price.length === 2) && price[0].gt(0) && price[1].gt(0)) {
-      return price[0].div(price[1]);
-    } else {
-      return null;
-    }
+    return this.tokenService.getTokenIsLiquid(token, this.wrapper);
   }
 
   private async selectToken(tokenSpec: ITokenSpecification) {
