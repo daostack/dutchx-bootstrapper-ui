@@ -9,5 +9,4 @@ export interface ISchemeDashboardModel {
   orgName: string;
   orgAddress: Address;
   blockNumber: number;
-  legalContractHash: Hash;
 }

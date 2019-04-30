@@ -16,7 +16,7 @@ class RouterStub {
     this.routes = routes;
   }
 
-  public fallbackRoute(route: string) { return null; }
+  public fallbackRoute(_route: string) { return null; }
 }
 
 describe('the App module', () => {
@@ -32,15 +32,14 @@ describe('the App module', () => {
     };
 
     const fakeAppConfigService = {
-      get: (name: string): string => '',
+      get: (_name: string): string => '',
     };
 
     app = new App(
       fakeWeb3Service as any,
       {} as BindingSignaler,
-      {} as EventAggregator,
-      fakeAppConfigService as any);
-    app.configureRouter(mockedRouter, mockedRouter);
+      {} as EventAggregator);
+    (app as any).configureRouter(mockedRouter, mockedRouter);
   });
 
   it('contains a router property', () => {
@@ -54,9 +53,9 @@ describe('the App module', () => {
   it('should have a dashboard route', () => {
     expect(app.router.routes).toContainEqual({
       moduleId: PLATFORM.moduleName('./organizations/dashboard'),
-      name: 'dashboard',
+      name: 'stake-for-your-vote',
       nav: false,
-      route: ['dashboard/:address?', 'stake-for-your-vote/:address?'],
+      route: ['stake-for-your-vote/:address?'],
       title: 'Stake for Your Vote',
     });
   });

@@ -203,6 +203,8 @@ export class Dashboard extends BaseNetworkPage {
           (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
         this.appConfig.set('mgnWrapper', mgnWrapper as any);
 
+        this.appConfig.set('legalContractHash', await mgnWrapper.getAgreementHash());
+
         const lockDates = await this.getLockDates();
 
         /**
@@ -266,7 +268,6 @@ export class Dashboard extends BaseNetworkPage {
 
   private schemeDashboardViewModel(scheme: SchemeInfo): ISchemeDashboardModel {
     return Object.assign({}, {
-      legalContractHash: this.appConfig.get('legalContractHash'),
       org: this.org,
       orgAddress: this.address,
       orgName: this.orgName,

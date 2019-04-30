@@ -1,4 +1,3 @@
-import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { PLATFORM } from 'aurelia-pal';

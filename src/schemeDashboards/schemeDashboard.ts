@@ -16,7 +16,6 @@ export class DaoSchemeDashboard {
   protected org: DaoEx;
   protected orgName: string;
   protected blockNumber: number;
-  protected legalContractHash: Address;
 
   protected activate(model: ISchemeDashboardModel) {
     this.friendlyName = model.friendlyName;
@@ -26,6 +25,5 @@ export class DaoSchemeDashboard {
     this.orgName = model.orgName;
     this.orgAddress = model.orgAddress;
     this.blockNumber = model.blockNumber;
-    this.legalContractHash = model.legalContractHash;
   }
 }

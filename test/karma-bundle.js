@@ -1,9 +1,12 @@
 import 'aurelia-polyfills';
 import 'aurelia-loader-webpack';
+/**
+ * isn't working, can't find jest-jasmine2/jasmine-async
 import { install as installJasmineAsync } from 'jest-jasmine2/jasmine-async';
 
 // enable running Promise-returning tests:
 installJasmineAsync(global);
+ */
 
 // enable running the same unit tests by using the Jest expect:
 installJestExpect();

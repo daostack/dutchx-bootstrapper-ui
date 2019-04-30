@@ -1,6 +1,5 @@
 {
   "governanceStartDate":       "2019-07-05T00:00:00.000+0000",
-  "legalContractHash": "0x00000000000000000000000000000000",
   "maxLockingPeriodDays": 365,
   "Landing": {
     "lockingPeriodStartDate": "2019-05-29T00:00:00.000+0000",
@@ -37,7 +36,7 @@
     ]
   },
   "Rinkeby": {
-    "daoAddress": "0x61a9F7b6a68684b9707CCfa8e823bEAC2c38e51B",
+    "daoAddress": "0xddE435081a46727D38a7C314067422bd4034bEb6",
     "lockableTokens": [
       {
         "address": "0x3615757011112560521536258c1e7325ae3b48ae",

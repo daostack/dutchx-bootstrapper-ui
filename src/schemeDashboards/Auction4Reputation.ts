@@ -1,3 +1,4 @@
+import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, computedFrom, View } from 'aurelia-framework';
 import {
@@ -12,7 +13,6 @@ import { DisposableCollection } from 'services/DisposableCollection';
 import { Utils } from 'services/utils';
 import { DecodedLogEntry } from 'web3';
 import {
-  ArcTransactionResult,
   Auction4ReputationBidEventResult,
   Auction4ReputationWrapper,
   Erc20Wrapper,
@@ -68,6 +68,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   }
 
   constructor(
+    protected appConfig: AureliaConfiguration,
     protected eventAggregator: EventAggregator,
     protected web3Service: Web3Service
   ) {
@@ -193,7 +194,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
         reason = await this.wrapper.getBidBlocker({
           amount: this.bidAmount,
           auctionId: this.currentAuctionNumber - 1,
-          legalContractHash: this.legalContractHash,
+          legalContractHash: this.appConfig.get('legalContractHash'),
         });
       }
 
@@ -223,7 +224,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
         result = await this.wrapper.bid({
           amount: this.bidAmount,
           auctionId: this.currentAuctionNumber - 1,
-          legalContractHash: this.legalContractHash,
+          legalContractHash: this.appConfig.get('legalContractHash'),
         });
 
         this.sendingBid = false;

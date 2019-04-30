@@ -15,18 +15,14 @@ import {
 } from '../entities/GeneralEvents';
 import {
   Address,
-  ArcTransactionResult,
   LockerInfo,
   LockInfo,
   Locking4ReputationWrapper,
   LockingOptions,
-  ReleaseOptions,
-  TransactionReceiptTruffle,
   WrapperService
 } from '../services/ArcService';
-import { BigNumber, Web3Service } from '../services/Web3Service';
+import { Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';
-// import { App } from 'app';
 
 @autoinject
 export abstract class Locking4Reputation extends DaoSchemeDashboard {
@@ -191,7 +187,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       if (alreadyCheckedForBlock || !(await this.getLockBlocker())) {
 
-        this.lockModel.legalContractHash = this.legalContractHash;
+        this.lockModel.legalContractHash = this.appConfig.get('legalContractHash');
 
         this.sending = true;
 
@@ -234,7 +230,6 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     try {
 
       this.releasing = lockInfo.sending = true;
-      (lockInfo as any as ReleaseOptions).legalContractHash = this.legalContractHash;
 
       const result = await (this.wrapper as any).release(lockInfo);
 
