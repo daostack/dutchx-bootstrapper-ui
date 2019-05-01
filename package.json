@@ -118,13 +118,13 @@
     "typescript": "^3.1.1",
     "url-loader": "^1.1.2",
     "wait-on": "2.0.2",
-    "webpack": "^4.26.1",
+    "webpack": "~4.28.0",
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "@daostack/arc.js": "file:../arc.js/daostack-arc.js-0.0.0-alpha.134.tgz",
+    "@daostack/arc.js": "0.0.0-alpha.134",
     "arrive": "^2.4.1",
     "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.1.1",
