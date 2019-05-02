@@ -87,7 +87,7 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
   protected async register(): Promise<boolean> {
     this.registering = true;
-    let success: boolean;
+    let success = false;
 
     try {
 
@@ -107,9 +107,8 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
       this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
         `Registration is complete`, result.transactionHash));
 
-      success = true;
       this.alreadyRegistered = true;
-
+      success = true;
     } catch (ex) {
       this.eventAggregator.publish('handleException',
         new EventConfigException(`The regisration was not recorded`, ex));
@@ -119,8 +118,6 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
         eventMessageType: EventMessageType.Exception,
         originatingUiElement: this.registerButton,
       });
-
-      success = false;
     } finally {
       this.registering = false;
       this.sendingRegister = false;

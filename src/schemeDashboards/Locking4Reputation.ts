@@ -182,6 +182,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       return false;
     }
 
+    let success = false;
+
     try {
       this.locking = true;
 
@@ -203,6 +205,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
           `The lock has been recorded`, result.transactionHash));
 
         this.eventAggregator.publish('Lock.Submitted');
+
+        success = true;
       }
 
     } catch (ex) {
@@ -217,7 +221,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       this.locking = false;
     }
 
-    return true;
+    return success;
   }
 
   protected async release(config: { lock: ILocksTableInfo, releaseButton: JQuery<EventTarget> }): Promise<boolean> {
@@ -226,6 +230,8 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     if (this.locking || this.releasing) {
       return false;
     }
+
+    let success = false;
 
     try {
 
@@ -244,7 +250,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       this.eventAggregator.publish('Lock.Released');
 
-      return true;
+      success = true;
 
     } catch (ex) {
       this.eventAggregator.publish('handleException',
@@ -257,7 +263,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     } finally {
       this.releasing = lockInfo.sending = false;
     }
-    return false;
+    return success;
   }
 
   protected abstract getLockUnit(lockInfo: LockInfo): Promise<string>;
