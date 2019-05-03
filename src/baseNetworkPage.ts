@@ -252,7 +252,7 @@ export abstract class BaseNetworkPage {
         ConfigService.set('gasPriceAdjustment', async () => {
           try {
             const response = await axios.get('https://ethgasstation.info/json/ethgasAPI.json');
-            // the api gives results if 10*Gwei
+            // the api gives results as 10*Gwei
             const gasPrice = response.data.fast / 10;
             return web3.toWei(gasPrice, 'gwei');
             // tslint:disable-next-line:no-empty

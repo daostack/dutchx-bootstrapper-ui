@@ -8,7 +8,7 @@ node_js:
 before_install:
 
 install:
-  - npm install
+  - npm ci
   - npm run lint
 
 script:
