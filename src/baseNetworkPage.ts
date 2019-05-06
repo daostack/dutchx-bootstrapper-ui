@@ -351,7 +351,8 @@ export abstract class BaseNetworkPage {
 
     this.dutchXSchemes.map((s) => { s.friendlyName = this.dutchXSchemeConfigs.get(s.name).description; });
 
-    this.schemesLoaded = this.dutchXSchemes.length !== this.dutchXSchemeConfigs.keys.length;
+    this.schemesLoaded = this.dutchXSchemes.length === Array.from(this.dutchXSchemeConfigs.values())
+      .filter((s) => s.hasContract).length;
 
     if (!this.schemesLoaded) {
       this.org = undefined;
