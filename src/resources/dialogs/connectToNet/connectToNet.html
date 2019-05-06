@@ -46,16 +46,19 @@
               target="_blank"
             >Gnosis Safe</a>,
             point it to the <span class="important">Main Ethereum Network</span>, then refresh this browser page so you can access the <a
-              href="https://daotalk.org/c/dx-dao"
+              href="https://daotalk.org/c/daos/dx-dao"
               target="_blank"
             >dxDAO</a> Vote Staking UI.
           </p>
-
           <div if.to-view="isConnected && !hasAccount">
             <p>To access the <a
-                href="https://daotalk.org/c/dx-dao"
+                href="https://daotalk.org/c/daos/dx-dao"
                 target="_blank"
               >dxDAO</a> Vote Staking Interface, please log in to ${walletService.currentWallet.name & signal:'wallet.changed'}, select your desired account and allow the dxDAO Vote Staking Interface to access your account.
+              <p>
+                <compose view="./useSafeMessage.html">
+                </compose>
+              </p>
           </div>
 
           <div if.to-view="((isConnected && !hasAccount) || (hasAccepted && !landed && hasDao))">
@@ -71,13 +74,19 @@
               ></usersaddress>.
               Please be sure that you intend to use this account in the future for voting within the dxDAO.
             </p>
-            <p
-              if.to-view="hasDao && hasApprovedAccountAccess"
-              class="buttonContainer"
-            ><button
-                class="btn btn-submit"
-                click.delegate="land()"
-              >OK</button></p>
+
+            <div if.to-view="hasDao && hasApprovedAccountAccess">
+              <p>
+                <compose view="./useSafeMessage.html">
+                </compose>
+              </p>
+              <p class="buttonContainer">
+                <button
+                  class="btn btn-submit"
+                  click.delegate="land()"
+                >OK</button>
+              </p>
+            </div>
           </div>
 
           <div if.to-view="isConnected && (!hasAccount || !hasApprovedAccountAccess)">
