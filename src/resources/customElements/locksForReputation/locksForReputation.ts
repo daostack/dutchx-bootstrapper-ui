@@ -68,7 +68,7 @@ export class LocksForReputation {
   }
 
   private async canRelease(lock: LockInfo): Promise<boolean> {
-    if (lock.lockerAddress !== this.web3Service.defaultAccount) {
+    if (lock.lockerAddress.toLowerCase() !== this.web3Service.defaultAccount.toLowerCase()) {
       return false;
     } else {
       const errMsg = await this.wrapper.getReleaseBlocker(lock.lockerAddress, lock.lockId);
