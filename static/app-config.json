@@ -1,9 +1,9 @@
 {
-  "governanceStartDate":       "2019-07-14T00:00:00.000+0000",
+  "governanceStartDate":       "2019-07-14T12:00:00.000+0000",
   "maxLockingPeriodDays": 365,
   "Landing": {
-    "lockingPeriodStartDate": "2019-05-29T00:00:00.000+0000",
-    "lockingPeriodEndDate":   "2019-06-28T23:59:59.000+0000"
+    "lockingPeriodStartDate":  "2019-05-29T12:00:00.000+0000",
+    "lockingPeriodEndDate":    "2019-06-28T11:59:59.000+0000"
   },
   "Ganache": {
     "daoAddress": "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
