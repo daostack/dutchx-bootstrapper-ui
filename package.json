@@ -1,6 +1,6 @@
 {
   "name": "dxdao-bootstrapper-ui",
-  "version": "0.0.0-rc.1",
+  "version": "0.0.0-rc.2",
   "description": "dxDAO Vote Staking Interface",
   "main": "dist_prod/index.html",
   "repository": {
