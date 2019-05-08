@@ -130,7 +130,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "@daostack/arc.js": "0.0.0-alpha.137",
+    "@daostack/arc.js": "file:../arc.js/daostack-arc.js-0.0.0-alpha.138.tgz",
     "arrive": "^2.4.1",
     "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.1.1",
@@ -145,8 +145,8 @@
     "font-awesome": "^4.7.0",
     "jquery": "^3.4.0",
     "material-icons": "^0.3.0",
-    "moment-timezone": "^0.5.23",
     "moment": "^2.0.0",
+    "moment-timezone": "^0.5.23",
     "node-waves": "^0.7.6",
     "numeral": "^2.0.6",
     "popper.js": "^1.14.7",

@@ -2,6 +2,17 @@
   <div class="status-page container animated-page au-animate">
     <h1 class="title">Initialization Period Status
     </h1>
+    <spinbutton
+      disabled.bind="loading"
+      onclick.call="load()"
+      css="btn-submit btn-sm"
+      as-button="true"
+      text.to-view="loading ? 'Loading...' : 'Refresh'"
+      id="refreshButton"
+      spin.to-view="loading"
+      title=''
+    >
+    </spinbutton>
     <div
       if.bind="!loading"
       class="body"
@@ -9,34 +20,42 @@
       <h4>ETH</h4>
       <hr />
       <dl>
-        <dt>Total staked</dt>
+        <dt>Units staked</dt>
         <dd>${ethStaked | ethwei}</dd>
-      </dl>
-      <dl>
+        <dt>Number of stakes</dt>
+        <dd>${numEthStakes}</dd>
         <dt>Number of stakers</dt>
-        <dd>${numEthStakers}</dd>
+        <dd>${ethStakers.size}</dd>
       </dl>
       <h4>Tokens</h4>
       <hr />
       <dl>
-        <dt>Total value staked</dt>
-        <dd>${tokenValueStaked | ethwei}</dd>
-        <dt>Total number of stakers</dt>
-        <dd>${numTokenStakers}</dd>
+        <dt>Units staked</dt>
+        <dd>${tokenUnitsStaked | ethwei}</dd>
+        <dt>ETH staked</dt>
+        <dd>${tokenEthStaked | ethwei}</dd>
+        <dt>Number of stakes</dt>
+        <dd>${numTokenStakes}</dd>
+        <dt>Number of stakers</dt>
+        <dd>${tokenStakers.size}</dd>
         <dd>
           <table class="table">
             <thead>
               <tr>
                 <th>Token</th>
-                <th>Value staked</th>
-                <th>Number staked</th>
+                <th>Units staked</th>
+                <th>ETH staked</th>
+                <th>Stakes</th>
+                <th>Stakers</th>
               </tr>
             </thead>
             <tbody>
               <tr repeat.for="token of tokens">
                 <td>${token.symbol}</td>
+                <td>${token.unitsStaked | ethwei}</td>
+                <td>${token.ethStaked | ethwei}</td>
+                <td>${token.stakes}</td>
                 <td>${token.stakers}</td>
-                <td>${token.staked | ethwei}</td>
             </tbody>
           </table>
         </dd>
