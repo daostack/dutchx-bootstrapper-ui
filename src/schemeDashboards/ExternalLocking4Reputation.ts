@@ -56,11 +56,39 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
         globalPeriodSubscription.dispose();
       }
     });
+
+    if (!this.lockingPeriodIsEnded && !this.alreadyLocked) {
+      /**
+       * if we find ourself in the locking period, watch for this account to be locked by bot
+       */
+      const inLockingPeriodSubscription = this.eventAggregator.subscribe('secondPassed', () => {
+        if (this.inLockingPeriod) {
+          inLockingPeriodSubscription.dispose();
+          /**
+           * Watch for Lock, most notably by bot.
+           * This should only be called if we are in the locking period.
+           * Note alreadyRegistered can still theoretically change at the contract level
+           * even if we're in the locking period, so we watch even if it is false at this point.
+           * Doesn't matter what is the source of the Lock we catch here.
+           */
+          if (!this.alreadyLocked) {
+            const fetcher = this.wrapper.getLocks()(
+              { _locker: this.web3Service.defaultAccount },
+              { fromBlock: this.blockNumber });
+            fetcher.watch(
+              () => {
+                fetcher.stopWatchingAsync();
+                this.alreadyLocked = true;
+              });
+          }
+        }
+      });
+    }
   }
 
   protected async accountChanged(account: Address) {
-    this.alreadyLocked = await this.wrapper.getAccountHasLocked(account);
     this.alreadyRegistered = await this.wrapper.isRegistered(this.web3Service.defaultAccount);
+    this.alreadyLocked = await this.wrapper.getAccountHasLocked(account);
     return super.accountChanged(account);
   }
 

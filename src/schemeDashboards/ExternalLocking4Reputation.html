@@ -33,7 +33,8 @@
         class="message"
         if.to-view="inLockingPeriod && !alreadyLocked && !alreadyRegistered"
       >
-        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining to register wallet address that contains or will contain MGN at the end of the vote staking period.
+        <p>${msRemainingInPeriodCountdown | timespan:"seconds"} remaining to register wallet address that contains or will contain MGN at the end of the vote staking period.</p>
+        <p>It is currently the last 24 hours of the Vote Staking Period. Please note that due to this, using the REGISTER button below will automatically and immediately count the amount of MGN in your wallet address.</p>
       </div>
 
       <div
