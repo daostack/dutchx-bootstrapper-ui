@@ -36,7 +36,7 @@
     ]
   },
   "Rinkeby": {
-    "daoAddress": "0xddE435081a46727D38a7C314067422bd4034bEb6",
+    "daoAddress": "0x5007A68d2825494048d248240c248146fb107e39",
     "lockableTokens": [
       {
         "address": "0x3615757011112560521536258c1e7325ae3b48ae",
