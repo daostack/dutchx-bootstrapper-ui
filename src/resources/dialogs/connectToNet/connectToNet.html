@@ -107,13 +107,17 @@
           >
             <compose view="./disclaimer.html">
             </compose>
+
+            <hr />
+            <p>Read this Participation Agreement (“Agreement”) carefully before confirming your intent to be bound by it and participating in the dxDAO. This Agreement includes the terms of participation in the dxDAO. You understand, agree and confirm that:</p>
+
             <div class="form-group checks">
               <div class="checkbox">
                 <label>
                   <input
                     type="checkbox"
                     checked.bind="checked1"
-                  > I HAVE READ AND FULLY UNDERSTOOD AND AGREE TO THE DISCLAIMERS
+                  > the dxDAO is an experiment in the field of decentralized governance structures, in which participation is entirely at your own risk
                 </label>
               </div>
               <div class="checkbox">
@@ -121,13 +125,45 @@
                   <input
                     type="checkbox"
                     checked.bind="checked2"
-                  > I AM IN FULL COMPLIANCE WITH THE RESPECTIVE LAWS AND REGULATIONS IN MY JURISDICTION
+                  > this Agreement has legal consequences and will limit your ability to bring future legal actions over your participation in the dxDAO
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked.bind="checked3"
+                  > if a dispute cannot be resolved amicably within the dxDAO, all your claims arising or in connection with this Agreement shall be settled in binding arbitration in accordance with the arbitration clause contained in this Agreement
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked.bind="checked4"
+                  > entering into this Agreement constitutes a waiver of your right, if any, to a trial by jury and participation in a class action lawsuit
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked.bind="checked5"
+                  > this agreement is cryptographically hashed by every transaction in the Vote Staking Period (as defined in the Agreement) you submit on the Ethereum blockchain whether via this interface or by direct interaction with the dxDAO Smart Contracts and any such hash shall constitute conclusive evidence of your intent to be bound by this Agreement and you waive all rights to claim otherwise or to argue against its admissibility or authenticity in any legal proceedings
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked.bind="checked6"
+                  > you have read, fully understood, and accept this disclaimer and the terms contained in the Participation Agreement
                 </label>
               </div>
               <p class="buttonContainer"><button
                   class="btn btn-submit"
                   click.delegate="accept()"
-                  disabled.to-view="!(checked1 && checked2)"
+                  disabled.to-view="!(checked1 && checked2 && checked3 && checked4 && checked5 && checked6)"
                 >Continue...</button></p>
             </div>
           </div>
