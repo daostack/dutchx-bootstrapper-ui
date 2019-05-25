@@ -20,9 +20,12 @@ export class Status extends BaseNetworkPage {
   private tokens: Array<ITokenSpecification> = [];
   private auctions: Array<IAuctionSpecification> = [];
   private ethStaked: BigNumber = new BigNumber(0);
-  private numEthStakers: number = 0;
-  private tokenValueStaked: BigNumber = new BigNumber(0);
-  private numTokenStakers: number = 0;
+  private numEthStakes: number = 0;
+  private ethStakers: Set<Address> = new Set();
+  private tokenUnitsStaked: BigNumber = new BigNumber(0);
+  private tokenEthStaked: BigNumber = new BigNumber(0);
+  private numTokenStakes: number = 0;
+  private tokenStakers: Set<Address> = new Set();
   private mgnRegistrations: number = 0;
   private mgnClaims: number = 0;
   private mgnValueClaimed: BigNumber = new BigNumber(0);
@@ -64,6 +67,11 @@ export class Status extends BaseNetworkPage {
   }
 
   public async load() {
+
+    if (this.loading) {
+      return;
+    }
+
     this.loading = true;
     let schemeInfo: SchemeInfo;
     /**
@@ -74,25 +82,40 @@ export class Status extends BaseNetworkPage {
       const ethLockingWrapper = await WrapperService.factories.LockingEth4Reputation.at(schemeInfo.address);
 
       this.ethStaked = await ethLockingWrapper.getTotalLocked();
-      this.numEthStakers = await ethLockingWrapper.getLockCount();
+      this.numEthStakes = await ethLockingWrapper.getLockCount();
+
+      const ethLocksEventFetcher = ethLockingWrapper.Lock({}, { fromBlock: schemeInfo.blockNumber });
+      const allEthLocks = await ethLocksEventFetcher.get();
+      for (const stake of allEthLocks) {
+        this.ethStakers.add(stake.args._locker);
+      }
 
       schemeInfo = this.getSchemeInfoFromName('LockingToken4Reputation');
       const tokenLockingWrapper = await WrapperService.factories.LockingToken4Reputation.at(schemeInfo.address);
 
-      this.tokenValueStaked = await tokenLockingWrapper.getTotalLocked();
-      this.numTokenStakers = await tokenLockingWrapper.getLockCount();
+      this.tokenUnitsStaked = await tokenLockingWrapper.getTotalLocked();
+      this.numTokenStakes = await tokenLockingWrapper.getLockCount();
 
       // make a copy because the original is used by the token locking dashboard
       const tokens = [...this.appConfig.get('lockableTokens')];
       const tokenInfos = new Array<ITokenSpecification>();
-      const locksEventFetcher = tokenLockingWrapper.Lock({}, { fromBlock: schemeInfo.blockNumber });
-      const allLocks = await locksEventFetcher.get();
+      const tokenLocksEventFetcher = tokenLockingWrapper.Lock({}, { fromBlock: schemeInfo.blockNumber });
+      const allTokenLocks = await tokenLocksEventFetcher.get();
+
+      const tokenLockTokenEventFetcher = tokenLockingWrapper.LockToken({}, { fromBlock: schemeInfo.blockNumber });
+      const allTokenLockLocks = await tokenLockTokenEventFetcher.get();
+
+      for (const stake of allTokenLocks) {
+        this.tokenStakers.add(stake.args._locker);
+      }
 
       for (const tokenSpec of tokens) {
         const tokenStakes = new Array<DecodedLogEntry<Locking4ReputationLockEventResult>>();
-        for (const stake of allLocks) {
+        const totalStakers = new Set();
+        for (const stake of allTokenLocks) {
           const tokenAddress = await tokenLockingWrapper.contract.lockedTokens(stake.args._lockingId);
           if (tokenSpec.address === tokenAddress) {
+            totalStakers.add(stake.args._locker);
             tokenStakes.push(stake);
           }
         }
@@ -103,10 +126,24 @@ export class Status extends BaseNetworkPage {
             return prev.add(curr);
           }, new BigNumber(0));
 
+        const stakedEth = tokenStakes
+          .map((stake) => {
+            // there should always be exactly one LockToken even per Lock event
+            const tokenLock = allTokenLockLocks.filter((tl) => tl.args._lockingId === stake.args._lockingId)[0];
+            return stake.args._amount.mul(tokenLock.args._numerator).div(tokenLock.args._denominator);
+          })
+          .reduce((prev: BigNumber, curr: BigNumber): BigNumber => {
+            return prev.add(curr);
+          }, new BigNumber(0));
+
+        this.tokenEthStaked = this.tokenEthStaked.add(stakedEth);
+
         tokenInfos.push({
-          staked: stakedAmount,
-          stakers: tokenStakes.length,
+          ethStaked: stakedEth,
+          stakers: totalStakers.size,
+          stakes: tokenStakes.length,
           symbol: tokenSpec.symbol,
+          unitsStaked: stakedAmount,
         });
       }
 
@@ -186,9 +223,11 @@ export class Status extends BaseNetworkPage {
 }
 
 interface ITokenSpecification {
-  staked: BigNumber;
+  ethStaked: BigNumber;
   stakers: number;
+  stakes: number;
   symbol: string;
+  unitsStaked: BigNumber;
 }
 
 interface IAuctionSpecification {

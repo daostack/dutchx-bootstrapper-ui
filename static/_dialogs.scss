@@ -87,11 +87,25 @@ ux-dialog.connections .disclaimer .body p:before {
 ux-dialog.connections .disclaimer .checks .checkbox label {
   white-space: normal;
   margin-right: 2rem;
+  text-transform: uppercase;
 }
 
 ux-dialog.connections .disclaimer .checks input[type=checkbox]:checked + .checkbox-decorator .check,
 label.checkbox-inline input[type=checkbox]:checked + .checkbox-decorator .check {
   color: $color-ds-green;
+}
+
+ux-dialog.connections .disclaimer .checks .checkbox-decorator {
+    padding-top: 1.05rem;
+}
+
+ux-dialog.connections .disclaimer .bmd-form-group {
+    padding-top: .5rem;
+}
+
+ux-dialog.connections .disclaimer hr {
+    margin-top: 2.5rem;
+    border-color: $color-ds-black;
 }
 
 ux-dialog-overlay.active {

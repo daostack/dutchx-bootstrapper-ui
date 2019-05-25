@@ -100,7 +100,15 @@ export class DaoEx extends DAO {
       });
     });
 
-    return foundSchemes
+    const registeredSchemes = [];
+
+    for (const scheme of foundSchemes.values()) {
+      if (scheme.address !== '0x7efe98cd09bc2d156f34b8bc17cc7c4b285e5c93') {
+        registeredSchemes.push(scheme);
+      }
+    }
+
+    return registeredSchemes
       .map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
   }
 

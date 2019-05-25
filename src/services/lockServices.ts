@@ -119,7 +119,7 @@ export class LockService {
       const tokenWrapper = (this.wrapper as LockingToken4ReputationWrapper);
       const token = await tokenWrapper.getTokenForLock(lockInfo.lockId);
       const foundTokenSpecs = this.lockableTokenSpecs.filter((tokenSpec: ITokenSpecification) => {
-        return tokenSpec.address.toLowerCase() === token.address;
+        return tokenSpec.address.toLowerCase() === token.address.toLowerCase();
       });
       if (foundTokenSpecs.length >= 1) {
         spec = foundTokenSpecs[0];

@@ -54,6 +54,8 @@ export async function configure(aurelia: Aurelia) {
     PLATFORM.moduleName('resources/valueConverters/boolean'),
     PLATFORM.moduleName('resources/valueConverters/secondsDays'),
     PLATFORM.moduleName('resources/dialogs/connectToNet/connectToNet'),
+    PLATFORM.moduleName('resources/dialogs/connectToNet/useSafeMessage.html'),
+    PLATFORM.moduleName('resources/dialogs/connectToNet/disclaimer.html'),
     PLATFORM.moduleName('resources/dialogs/alert/alert'),
     PLATFORM.moduleName('footer'),
     PLATFORM.moduleName('header'),

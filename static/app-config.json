@@ -1,9 +1,9 @@
 {
-  "governanceStartDate":       "2019-07-05T00:00:00.000+0000",
-  "maxLockingPeriodDays": 365,
+  "governanceStartDate":       "2019-07-14T12:00:00.000+0000",
+  "maxLockingPeriodDays": 30,
   "Landing": {
-    "lockingPeriodStartDate": "2019-05-29T00:00:00.000+0000",
-    "lockingPeriodEndDate":   "2019-06-29T00:00:00.000+0000"
+    "lockingPeriodStartDate":  "2019-05-29T12:00:00.000+0000",
+    "lockingPeriodEndDate":    "2019-06-28T11:59:59.000+0000"
   },
   "Ganache": {
     "daoAddress": "0xe7a2c59e134ee81d4035ae6db2254f79308e334f",
@@ -36,7 +36,7 @@
     ]
   },
   "Rinkeby": {
-    "daoAddress": "0xddE435081a46727D38a7C314067422bd4034bEb6",
+    "daoAddress": "0x1eb3BCaE24d42FdE2f90e91D26313ac3946C4764",
     "lockableTokens": [
       {
         "address": "0x3615757011112560521536258c1e7325ae3b48ae",
@@ -61,8 +61,8 @@
     ]
   },
   "Live": {
-    "daoAddress": "0xE18717f423fd1a8F19dB71bb3037BAEaC5A6eb6d",
-    "DxControllerBirthBlock": "7539063",
+    "daoAddress": "0xC96c9141b5109EA440a70DC282672E41F81b20Ab",
+    "DxControllerBirthBlock": "7709758",
     "lockableTokens": [
       {
         "symbol": "BAT",

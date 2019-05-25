@@ -31,9 +31,13 @@
 
       <div
         class="message"
-        if.to-view="inLockingPeriod && !alreadyLocked"
+        if.to-view="inLockingPeriod && !alreadyLocked && !alreadyRegistered"
       >
-        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining to register wallet address that contains or will contain MGN at the end of the vote staking period..
+        <p>${msRemainingInPeriodCountdown | timespan:"seconds"} remaining to register wallet address that contains or will contain MGN at the end of the vote staking period.</p>
+        <p><span
+          class="warning-icon"
+          style="font-size:1rem"
+        >⚠️</span> It is currently the last 24 hours of the Vote Staking Period. Please note that due to this, using the REGISTER button below will automatically and immediately count the amount of MGN in your wallet address.</p>
       </div>
 
       <div
@@ -43,12 +47,7 @@
 
       <div
         class="message"
-        if.to-view="inLockingPeriod && alreadyLocked"
-      >You have registered your wallet that contains or will contain MGN at the end of the vote staking period.</div>
-
-      <div
-        class="message"
-        if.to-view="globalPeriodHasStarted && !inLockingPeriod && alreadyRegistered"
+        if.to-view="globalPeriodHasStarted && (alreadyRegistered || alreadyLocked)"
       >You have registered your wallet that contains or will contain MGN at the end of the vote staking period.</div>
 
       <form>
@@ -68,15 +67,15 @@
           ></spinbutton>
           <metamaskfeedback if.to-view="sendingRegister"></metamaskfeedback>
           <spinbutton
-            if.to-view="inLockingPeriod && !alreadyLocked"
+            if.to-view="inLockingPeriod && !alreadyLocked && !alreadyRegistered"
             css="btn-submit btn-sm btn-register"
             disabled.bind="locking"
             onclick.call="lock()"
             as-button="true"
-            text="Register MGN"
+            text="Register"
             spin.to-view="locking"
             id="lockButton"
-            title.to-view="locking ? 'Registering MGN...' : 'Register MGN'"
+            title.to-view="locking ? 'Registering...' : 'Register'"
           ></spinbutton>
           <metamaskfeedback if.to-view="sending"></metamaskfeedback>
         </div>

@@ -2,6 +2,7 @@ import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { DaoEx } from 'entities/DAO';
+import { Address } from 'services/ArcService';
 import { AureliaHelperService } from 'services/AureliaHelperService';
 import { DateService } from 'services/DateService';
 import { DisposableCollection } from 'services/DisposableCollection';
@@ -22,6 +23,7 @@ export class Schedule {
   private inRepDistributionPeriod: boolean = false;
   private inGovernancePeriod: boolean = false;
   private subscriptions = new DisposableCollection();
+  private daoAddress: Address;
 
   constructor(
     private appConfig: AureliaConfiguration,
@@ -34,6 +36,8 @@ export class Schedule {
   public activate(model: { isLanding?: boolean, dao?: DaoEx }) {
     this.isLanding = !!model.isLanding;
     this.dao = model.dao;
+
+    this.daoAddress = model.dao ? model.dao.address : this.appConfig.get('Live.daoAddress');
 
     if (!this.isLanding) {
       this.aureliaHelperService.createPropertyWatch(model, 'dao', (newDao: DaoEx) => {
