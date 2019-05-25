@@ -18,9 +18,13 @@ $font-family-base: "DINPro";
 @import "./animations";
 @import "./dialogs";
 @import "./banner";
+@import "./src/schedule/schedule";
+@import "./balloon";
 @import "./landing";
 @import "./src/organizations/dashboard";
 @import "./src/services/snackbars";
+@import "./src/liquidity/liquidity";
+@import "./src/status/status";
 
 .color-green {
   color: $color-ds-green !important;
@@ -56,21 +60,47 @@ footer, .navbar.footer {
   background-color: $color-ds-grey-7 !important;
 }
 
+.navbar {
+  z-index: 998;
+}
+
 .navbar.header {
   background-color: $color-ds-black !important;
   padding-top: .5rem;
   padding-bottom: .5rem;
-  z-index: 998;
+  color: $color-ds-white;
 }
 
 .navbar.header .logo {
   margin-left:.2rem;
-  margin-right:1.2rem;
-  height:2rem;
+  margin-right:.6rem;
+  height:1.8rem;
  }
 
 .navbar.header .company-name {
   display: inline-block;
+  font-size: 1.1rem;
+  position: relative;
+  top: -.12rem;
+}
+
+.navbar.header a {
+  white-space: nowrap;
+}
+
+.navbar.header .nav-link {
+  font-size: .85rem;
+  padding-left: .6rem;
+  padding-right: .6rem;
+}
+
+.navbar.header .userAddress etherscanlink {
+  position: relative;
+  top: -.1rem;
+}
+
+.navbar.header .connection {
+  padding-left:.75rem;
 }
 
 .navbar.footer {
@@ -90,8 +120,14 @@ footer, .navbar.footer {
 }
 
 .navbar.footer .userBalance .balance,
-.navbar.footer .userBalance .ethbalance {
+.navbar.footer .userBalance .ethbalance,
+.navbar.header .userBalance .balance,
+.navbar.header .userBalance .ethbalance {
   color: $color-ds-yellow;
+}
+
+.navbar.footer .userBalance .balance,
+.navbar.footer .userBalance .ethbalance {
   margin-right:.5rem;
 }
 
@@ -138,6 +174,9 @@ section h4 {
 .footer .ethbalance,
 .footer  .genbalance,
 .footer etherscanlink a,
+.header .ethbalance,
+.header  .genbalance,
+.header etherscanlink a,
 .header a,
 .snackbar-action-wrapper etherscanlink a,
 .snackbar-action-wrapper .copy-to-clip-button,
@@ -231,6 +270,10 @@ a.text-warning:focus, a.text-warning:hover {
   cursor: pointer;
 }
 
+.hot:hover {
+  text-decoration: underline;
+}
+
 .inline {
   display: inline-block;
 }
@@ -286,10 +329,6 @@ form {
 
 .list-group.clean .list-group-item .material-icons:last-child {
   padding-left: unset !important;
-}
-
-.dropdown {
-  display: inline-block;
 }
 
 .table.plain-table th, .table.plain-table td {
@@ -356,7 +395,7 @@ etherscanlink {
   display: inline-block;
 }
 
-.smallEtherScanlLink {
+.smallEtherScanLink {
   display:inline-block;
   vertical-align: middle;
   width:4rem;
@@ -392,4 +431,14 @@ etherscanlink {
   position: relative;
   bottom: .1rem;
   font-size: 1.5rem;
+}
+
+button.btn-submit:disabled,
+button.btn-submit:disabled:hover {
+  @extend .btn-submit:hover;
+}
+
+.main-spinner .pageloading i {
+  font-size: 4rem;
+  margin-bottom: 2rem;
 }

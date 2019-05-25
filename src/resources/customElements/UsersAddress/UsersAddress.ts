@@ -3,7 +3,6 @@ import { autoinject, bindable, bindingMode, containerless, customElement } from 
 import { Web3Service } from '../../../services/Web3Service';
 
 @autoinject
-@containerless
 @customElement('usersaddress')
 export class UsersAddress {
 
@@ -11,6 +10,7 @@ export class UsersAddress {
    * bootstrap config for a tooltip
    */
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public tooltip?: any;
+  @bindable({ defaultBindingMode: bindingMode.oneWay }) public small?: boolean;
 
   private usersAddress: string;
 

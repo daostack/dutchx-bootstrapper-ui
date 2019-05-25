@@ -1,0 +1,31 @@
+.status-page {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.title {
+  margin-bottom: 2rem;
+}
+
+.status-page .table {
+  max-width: 30rem;
+}
+
+.status-page .table th {
+  padding-top: 0;
+}
+
+.status-page .table tr th:first-child,
+.status-page .table tr td:first-child {
+  padding-left: 0;
+}
+
+.status-page .table thead th {
+  font-weight: 700;
+  font-size: 1rem;
+  color: $color-ds-black-2;
+}
+
+h4 {
+  margin-top: 2rem;
+}

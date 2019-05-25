@@ -1,17 +1,22 @@
-import { includeEventsIn, Subscription } from 'aurelia-event-aggregator';
+import { AureliaConfiguration } from 'aurelia-configuration';
 import { LogManager } from 'aurelia-framework';
 import { SchemeInfo } from '../entities/SchemeInfo';
 import {
   ArcService,
+  ControllerRegisterSchemeEventLogEntry,
   DAO,
   DaoSchemeInfo,
+  DecodedLogEntryEvent,
+  fnVoid,
+  WrapperService,
 } from '../services/ArcService';
-import { BigNumber} from '../services/Web3Service';
+import { BigNumber } from '../services/Web3Service';
 
 export class DaoEx extends DAO {
   public static async fromArcJsDao(
-      org: DAO
-    , arcService: ArcService
+    org: DAO,
+    arcService: ArcService,
+    appSettings: AureliaConfiguration
   ): Promise<DaoEx> {
 
     const newDAO = Object.assign(new DaoEx(), org);
@@ -19,29 +24,18 @@ export class DaoEx extends DAO {
     newDAO.address = org.avatar.address;
     newDAO.name = org.name;
     newDAO.omega = await newDAO.reputation.getTotalSupply();
+    newDAO.appSettings = appSettings;
     return newDAO;
   }
-
-  /**
-   * a Scheme has been added or removed from a DAO.
-   */
-  private static daoSchemeSetChangedEvent: string = 'daoSchemeSetChanged';
 
   public address: string;
   public name: string;
   public arcService: ArcService;
   public omega: BigNumber; // in wei
+  public appSettings: AureliaConfiguration;
 
   private schemesCache: Map<string, SchemeInfo>;
-  private registerSchemeEvent;
-  private unRegisterSchemeEvent;
-  private logger = LogManager.getLogger('DxBootStrapper');
-
-  /* this is not meant to be instantiated here, only in Arc */
-  constructor() {
-    super();
-    includeEventsIn(this);
-  }
+  private logger = LogManager.getLogger('dxDAO Bootstrapper');
 
   /**
    * returns all the schemes in the Dao.
@@ -54,91 +48,83 @@ export class DaoEx extends DAO {
       for (const scheme of schemes) {
         this.schemesCache.set(scheme.address, scheme);
       }
-      this.watchSchemes();
       this.logger.debug(`Finished loading schemes for ${this.name}: ${this.address}`);
     }
 
     return Array.from(this.schemesCache.values());
   }
 
-   /**
-    * Publishes a message.
-    * @param event The event or channel to publish to.
-    * @param data The data to publish on the channel.
-    */
-  public publish(_event: string | any, _data?: any): void { return null; }
-
-   /**
-    * Subscribes to a message channel or message type.
-    * @param event The event channel or event data type.
-    * @param callback The callback to be invoked when when the specified message is published.
-    */
-  // tslint:disable-next-line: ban-types
-  public subscribe(_event: string | Function, _callback: Function): Subscription { return null; }
-
-   /**
-    * Subscribes to a message channel or message type,
-    * then disposes the subscription automatically after the first message is received.
-    * @param event The event channel or event data type.
-    * @param callback The callback to be invoked when when the specified message is published.
-    */
-  // tslint:disable-next-line: ban-types
-  public subscribeOnce(_event: string | Function, _callback: Function): Subscription { return null; }
-
-  public dispose() {
-    this.registerSchemeEvent.stopWatching();
-    this.unRegisterSchemeEvent.stopWatching();
-  }
-
   private async getCurrentSchemes(): Promise<Array<SchemeInfo>> {
-    return (await super.getSchemes()).map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
+
+    const filter = { _avatar: this.address };
+    /**
+     * temporary hack to make search for DAO schemes work faster and not crash metamask
+     */
+    // (networkName === 'Live') ? { _sender: '0x0A530100Affb0A06eDD2eD74e335aFC50624f345' } : {};
+
+    const web3Options = {
+      /**
+       * temporary hack to make search for DAO schemes work faster and not crash metamask
+       */
+      fromBlock: this.appSettings.get('DxControllerBirthBlock') || 0,
+      toBlock: 'latest',
+    };
+
+    /**
+     * For performance: By not using this.getSchemes() we are assuming that none of the DAO's schemes will have been
+     * unregistered and reregistered.  Thus we save some time by not calling controller.isSchemeRegistered().
+     */
+    const foundSchemes = new Array<DaoSchemeInfo>();
+    const controller = this.controller;
+
+    /**
+     * Another hack to get the block number.  Makes a huge difference in timing.
+     * This will work for any DAO created after this one, but not before.  It will
+     * diminish in effectiveness as time goes by.
+     */
+    const registerSchemeEvent = controller.RegisterScheme(
+      filter,
+      web3Options
+    );
+
+    await new Promise((resolve: fnVoid, reject: (error: Error) => void): void => {
+      registerSchemeEvent.get((
+        err: Error,
+        log: DecodedLogEntryEvent<ControllerRegisterSchemeEventLogEntry> |
+          Array<DecodedLogEntryEvent<ControllerRegisterSchemeEventLogEntry>>) => {
+        if (err) {
+          return reject(err);
+        }
+        this.handleSchemeEvent(log, foundSchemes);
+        return resolve();
+      });
+    });
+
+    return foundSchemes
+      .map((s: DaoSchemeInfo) => SchemeInfo.fromOrganizationSchemeInfo(s));
   }
 
-  private watchSchemes(): void {
-    this.registerSchemeEvent = this.controller.RegisterScheme({ _avatar: this.address }, { fromBlock: 'latest' });
-    this.registerSchemeEvent.watch((err, eventsArray) => this.handleSchemeEvent(err, eventsArray, true));
+  private handleSchemeEvent(
+    log: DecodedLogEntryEvent<ControllerRegisterSchemeEventLogEntry> |
+      Array<DecodedLogEntryEvent<ControllerRegisterSchemeEventLogEntry>>,
+    schemes: Array<Partial<DaoSchemeInfo>>
+  ): void {
 
-    this.unRegisterSchemeEvent = this.controller.UnregisterScheme({ _avatar: this.address }, { fromBlock: 'latest' });
-    this.unRegisterSchemeEvent.watch((err, eventsArray) => this.handleSchemeEvent(err, eventsArray, false));
-  }
-
-  private async handleSchemeEvent(_err, eventsArray, adding: boolean): Promise<void> {
-    const newSchemesArray = [];
-    if (!(eventsArray instanceof Array)) {
-      eventsArray = [eventsArray];
+    if (!Array.isArray(log)) {
+      log = [log];
     }
-    const count = eventsArray.length;
+    const count = log.length;
     for (let i = 0; i < count; i++) {
-      const schemeAddress = eventsArray[i].args._scheme;
-      let contractWrapper = this.arcService.contractWrapperFromAddress(schemeAddress) as any;
+      const address = log[i].args._scheme;
+      const wrapper = WrapperService.wrappersByAddress.get(address);
 
-      if (!contractWrapper) {
-        // then it is a non-arc scheme or TODO:
-        // is an Arc scheme that is older or newer than the one Arc is telling us about
-        contractWrapper = { address: schemeAddress } as any;
-      }
-
-      const schemeInfo = SchemeInfo.fromContractWrapper(contractWrapper, adding);
-      let changed = false;
-      // TODO: get unknown name from Arc
-      if (adding && !this.schemesCache.has(schemeAddress)) {
-        changed = true;
-        this.logger.debug(`caching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}:
-         ${contractWrapper.address}`);
-        this.schemesCache.set(schemeAddress, schemeInfo);
-      } else if (!adding && this.schemesCache.has(schemeAddress)) {
-        changed = true;
-        this.logger.debug(`uncaching scheme: ${contractWrapper.name ? contractWrapper.name : '[unknown]'}:
-         ${contractWrapper.address}`);
-        this.schemesCache.delete(schemeAddress);
-      }
-
-      if (changed) {
-        this.publish(DaoEx.daoSchemeSetChangedEvent,
-          {
-            dao: this,
-            scheme: schemeInfo,
-          });
+      if (!wrapper) { // none of the contracts we care about have been deployed by Arc
+        const schemeInfo: Partial<DaoSchemeInfo> = {
+          address,
+          blockNumber: log[i].blockNumber,
+          wrapper,
+        };
+        schemes.push(schemeInfo);
       }
     }
   }

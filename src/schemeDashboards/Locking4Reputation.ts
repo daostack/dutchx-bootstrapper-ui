@@ -1,24 +1,28 @@
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject, computedFrom } from 'aurelia-framework';
-import { ILockInfoX } from 'resources/customElements/locksForReputation/locksForReputation';
+import { autoinject, computedFrom, View } from 'aurelia-framework';
+import { ILocksTableInfo } from 'resources/customElements/locksForReputation/locksForReputation';
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
+import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LockService } from 'services/lockServices';
-import { EventConfigException, EventConfigFailure, EventConfigTransaction } from '../entities/GeneralEvents';
+import { Utils } from 'services/utils';
+import {
+  EventConfigException,
+  EventConfigFailure,
+  EventConfigTransaction,
+  EventMessageType
+} from '../entities/GeneralEvents';
 import {
   Address,
-  ArcTransactionResult,
   LockerInfo,
   LockInfo,
   Locking4ReputationWrapper,
   LockingOptions,
-  TransactionReceiptTruffle,
   WrapperService
 } from '../services/ArcService';
 import { Web3Service } from '../services/Web3Service';
 import { DaoSchemeDashboard } from './schemeDashboard';
-// import { App } from 'app';
 
 @autoinject
 export abstract class Locking4Reputation extends DaoSchemeDashboard {
@@ -37,12 +41,39 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected loaded: boolean = false;
   protected lockerInfo: LockerInfo;
   protected subscriptions = new DisposableCollection();
-  protected locks: Array<ILockInfoX>;
-  protected locking: boolean = false;
-  protected releasing: boolean = false;
+  protected locks: Array<ILocksTableInfo>;
+  protected _locking: boolean = false;
+  protected _releasing: boolean = false;
+  protected sending: boolean = false;
+  protected myView: JQuery;
+
+  @computedFrom('_locking')
+  protected get locking(): boolean {
+    return this._locking;
+  }
+
+  protected set locking(val: boolean) {
+    this._locking = val;
+    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
+  }
+
+  @computedFrom('_releasing')
+  protected get releasing(): boolean {
+    return this._releasing;
+  }
+
+  protected set releasing(val: boolean) {
+    this._releasing = val;
+    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
+  }
+
+  protected get lockButton(): HTMLElement {
+    return this.myView.find('#lockButton')[0];
+  }
 
   protected lockModel: LockingOptions = {
     amount: undefined,
+    legalContractHash: undefined,
     lockerAddress: undefined,
     period: undefined,
   };
@@ -58,6 +89,10 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     super();
   }
 
+  public created(owningView: View, _myView: View) {
+    this.myView = $((owningView as any).firstChild);
+  }
+
   public async activate(model: ISchemeDashboardModel) {
     this.wrapper = await WrapperService.factories[model.name].at(model.address);
     return super.activate(model);
@@ -65,20 +100,22 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   public async attached() {
 
-    await this.refresh();
+    this.loaded = false;
 
-    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', (account: Address) => {
-      this.accountChanged(account);
-    }));
+    try {
 
-    this.subscriptions.push(this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
-      if (this.org) {
-        this.getLockingPeriodIsEnded(blockDate);
-        this.getLockingPeriodHasNotStarted(blockDate);
-        this.getMsUntilCanLockCountdown();
-        this.getMsRemainingInPeriodCountdown();
-      }
-    }));
+      await this.refresh();
+
+      this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', (account: Address) => {
+        this.accountChanged(account);
+      }));
+
+      this.subscriptions.push(this.eventAggregator.subscribe('secondPassed', async (blockDate: Date) => {
+        this.refreshCounters(blockDate);
+      }));
+    } finally {
+      this.loaded = true;
+    }
   }
 
   public detached() {
@@ -87,27 +124,39 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
   protected async refresh() {
     this.refreshing = true;
-    this.loaded = false;
-
     this.lockingStartTime = await this.wrapper.getLockingStartTime();
     this.lockingEndTime = await this.wrapper.getLockingEndTime();
 
     await this.accountChanged(this.web3Service.defaultAccount);
+    await this.refreshCounters(await Utils.lastBlockDate(this.web3Service.web3));
     this.refreshing = false;
-    this.loaded = true;
   }
 
   protected accountChanged(account: Address) {
-    this.lockService = new LockService(this.appConfig, this.wrapper, account);
+    this.lockService = new LockService(this.wrapper, account, this.blockNumber);
     this.lockModel.lockerAddress = account;
   }
 
-  protected async getLockBlocker(): Promise<boolean> {
+  protected refreshCounters(blockDate: Date): void {
+    this.getLockingPeriodIsEnded(blockDate);
+    this.getLockingPeriodHasNotStarted(blockDate);
+    this.getMsUntilCanLockCountdown(blockDate);
+    this.getMsRemainingInPeriodCountdown(blockDate);
+  }
 
-    let reason;
+  protected async getLockBlocker(reason?: string): Promise<boolean> {
 
-    if (!Number.isInteger(this.lockModel.period)) {
-      reason = 'The desired locking period is not expressed as a number of days';
+    if (!reason) {
+      if (!Number.isInteger(this.lockModel.period)) {
+        reason = 'The desired locking period is not expressed as a number of days';
+      }
+      // else {
+      //   const maxLockingPeriodDays = this.appConfig.get('maxLockingPeriodDays');
+      //   // convert days to seconds
+      //   if (this.lockModel.period > (maxLockingPeriodDays * 86400)) {
+      //     reason = `Locking period cannot be more than ${maxLockingPeriodDays} days`;
+      //   }
+      // }
     }
 
     if (!reason) {
@@ -116,6 +165,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
     if (reason) {
       this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't lock: ${reason}`));
+      await BalloonService.show({
+        content: `Can't lock: ${reason}`,
+        eventMessageType: EventMessageType.Failure,
+        originatingUiElement: this.lockButton,
+      });
       return true;
     }
 
@@ -128,47 +182,66 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       return false;
     }
 
+    let success = false;
+
     try {
       this.locking = true;
 
       if (alreadyCheckedForBlock || !(await this.getLockBlocker())) {
 
-        const result = await ((await (this.wrapper as any).lock(this.lockModel)) as ArcTransactionResult)
-          .watchForTxMined()
-          .then((tx: TransactionReceiptTruffle) => {
-            this.getLocks();
-            return tx;
-          });
+        this.lockModel.legalContractHash = this.appConfig.get('legalContractHash');
+
+        this.sending = true;
+
+        const result = await (this.wrapper as any).lock(this.lockModel);
+
+        this.sending = false;
+
+        await result.watchForTxMined();
+
+        await this.getLocks();
 
         this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
           `The lock has been recorded`, result.transactionHash));
 
         this.eventAggregator.publish('Lock.Submitted');
 
-        return true;
+        success = true;
       }
 
     } catch (ex) {
       this.eventAggregator.publish('handleException', new EventConfigException(`The lock was not recorded`, ex));
+      await BalloonService.show({
+        content: `The lock was not recorded`,
+        eventMessageType: EventMessageType.Exception,
+        originatingUiElement: this.lockButton,
+      });
     } finally {
+      this.sending = false;
       this.locking = false;
     }
 
-    return false;
+    return success;
   }
 
-  protected async release(lock: { lock: LockInfo }): Promise<boolean> {
-    const lockInfo = lock.lock;
+  protected async release(config: { lock: ILocksTableInfo, releaseButton: JQuery<EventTarget> }): Promise<boolean> {
+    const lockInfo = config.lock;
 
     if (this.locking || this.releasing) {
       return false;
     }
 
+    let success = false;
+
     try {
 
-      this.releasing = true;
+      this.releasing = lockInfo.sending = true;
 
-      const result = await (await (this.wrapper as any).release(lockInfo)).watchForTxMined();
+      const result = await (this.wrapper as any).release(lockInfo);
+
+      lockInfo.sending = false;
+
+      await result.watchForTxMined();
 
       this.eventAggregator.publish('handleTransaction',
         new EventConfigTransaction('The lock has been released', result.transactionHash));
@@ -177,15 +250,20 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       this.eventAggregator.publish('Lock.Released');
 
-      return true;
+      success = true;
 
     } catch (ex) {
       this.eventAggregator.publish('handleException',
         new EventConfigException(`The lock was not released`, ex));
+      await BalloonService.show({
+        content: `The lock was not released`,
+        eventMessageType: EventMessageType.Exception,
+        originatingUiElement: config.releaseButton,
+      });
     } finally {
-      this.releasing = false;
+      this.releasing = lockInfo.sending = false;
     }
-    return false;
+    return success;
   }
 
   protected abstract getLockUnit(lockInfo: LockInfo): Promise<string>;
@@ -198,10 +276,12 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
      * The symbol is for the LocksForReputation table
      */
     for (const lock of locks) {
-      (lock as ILockInfoX).units = await this.getLockUnit(lock as LockInfo);
+      const lockInfoX = lock as ILocksTableInfo;
+      lockInfoX.units = await this.getLockUnit(lock as LockInfo);
+      lockInfoX.sending = false;
     }
 
-    this.locks = locks as Array<ILockInfoX>;
+    this.locks = locks as Array<ILocksTableInfo>;
   }
 
   private getLockingPeriodHasNotStarted(blockDate: Date): boolean {
@@ -212,11 +292,11 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     return this.lockingPeriodIsEnded = (blockDate > this.lockingEndTime);
   }
 
-  private getMsUntilCanLockCountdown(): number {
-    return this.msUntilCanLockCountdown = this.lockingStartTime.getTime() - Date.now();
+  private getMsUntilCanLockCountdown(_blockDate: Date): number {
+    return this.msUntilCanLockCountdown = Math.max(this.lockingStartTime.getTime() - Date.now(), 0);
   }
 
-  private getMsRemainingInPeriodCountdown(): number {
-    return this.msRemainingInPeriodCountdown = this.lockingEndTime.getTime() - Date.now();
+  private getMsRemainingInPeriodCountdown(_blockDate: Date): number {
+    return this.msRemainingInPeriodCountdown = Math.max(this.lockingEndTime.getTime() - Date.now(), 0);
   }
 }

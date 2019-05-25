@@ -6,20 +6,31 @@
     <pageloading></pageloading>
   </div>
   <div else>
-    <instructions if.to-view="!lockingPeriodIsEnded">Select a token, the number of tokens you would like to lock and the length you wish to lock it for.
-      You can lock as many tokens as you like, for up to one year.
-      At the end of the initialization period, your reputation will be calculated pro rata according to the total locked tokens and the value of each token at the time of locking.</instructions>
-
-    <div class="scheme-dashboard-body">
+    <instructions if.to-view="!lockingPeriodIsEnded">
+      <p>Select a token, the number of tokens you would like to lock and the length you wish to lock, for up to one year.</p>
+      <p>At the end of the vote staking period, you will be awarded Reputation proportionally to the total amount of locked tokens, the value of each token at the time of locking, and the length of the locking period.</p>
+    </instructions>
+    <div
+      class="scheme-dashboard-body lockingTokens"
+      ref="dashboard"
+    >
 
       <div
         class="message"
         if.to-view="lockingPeriodHasNotStarted"
-      >The initialization period has not yet begun, you can't yet lock.</div>
+      >The vote staking period has not yet begun. Return between ${lockingStartTime | date:'dayofmonth'} and ${lockingEndTime | date:'dayofmonth'} to lock tokens.</div>
+
+      <div
+        class="message"
+        if.to-view="inLockingPeriod"
+      >
+        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining in the vote staking period.
+      </div>
+
       <div
         class="message"
         if.to-view="lockingPeriodIsEnded"
-      >The initialization period has ended.</div>
+      >The vote staking period has ended.</div>
 
       <form
         if.to-view="inLockingPeriod"
@@ -38,31 +49,45 @@
                   aria-expanded="false"
                 >${selectedToken ? "Selected token: " + selectedToken.symbol : "Select a
                   Token to Lock"}</a>
-                <ul
+                <div
                   class="dropdown-menu"
                   aria-labelledby="lockableTokensDdl"
                 >
-                  <li
+                  <a
+                    href="#"
                     class="dropdown-item"
                     click.delegate="selectToken.call($parent.$parent, tokenSpec)"
-                    repeat.for="tokenSpec of $parent.lockableTokens"
-                  >${tokenSpec.symbol}</li>
-                </ul>
+                    repeat.for="tokenSpec of $parent.lockableTokens | sortTokens & debounce:1000 "
+                  >${tokenSpec.symbol} (<tokenbalance
+                      token.to-view="tokenSpec.address"
+                      balance.bind="tokenSpec.balance"
+                      trailing-zeroes.to-view="0"
+                      balance-changed.call="balanceChanged($last)"
+                    ></tokenbalance>)
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div if.to-view="selectedToken">
+        <div show.to-view="selectedToken">
           <div
             class="message"
             if.to-view="!selectedTokenIsLiquid"
-          >
-            At this point in time, there isn't sufficient trading for ETH/${selectedToken.symbol} on the DutchX.
-            Please choose another token or try again another time. You can read more about this here: <a
-              href="https://dutchx.readthedocs.io"
+          >There currently isn’t sufficient trading for ETH/${selectedToken.symbol} on the DutchX. Please choose another token or try again later.
+            To provide liquidity for ETH/${selectedToken.symbol} on the DutchX, trade on <a
               target="_blank"
-            >https://dutchx.readthedocs.io</a>.
+              href="https://slow.trade"
+            >slow.trade</a>,
+            <a
+              target="_blank"
+              href="https://fairdex.net/"
+            >FairDEX</a>,
+            or visit the <a
+              target="_blank"
+              href="https://dutchx.readthedocs.io/en/latest/price-oracle.html"
+            >DutchX documentation</a> for more information.
           </div>
           <div else>
             <div class="row">
@@ -97,25 +122,21 @@
                     as-button="true"
                     text="Submit"
                     spin.to-view="locking"
+                    id="lockButton"
                     title.to-view="locking ? 'Locking...' : 'Submit Lock'"
                   ></spinbutton>
+                  <metamaskfeedback if.to-view="sending"></metamaskfeedback>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <!-- <div if.bind="lockingPeriodIsEnded">
-            <div if.to-view="!userScore" class="mb-3">You have nothing to redeem</div>
-            <div else class="form-group bmd-form-group">
-              <button class="btn-submit" click.delegate="redeem()">Redeem Reputation</button>
-            </div>
-          </div> -->
       </form>
 
       <div if.to-view="locks.length">
         <locks-for-reputation
           locks.to-view="locks"
-          release.call="release({lock})"
+          release.call="release({lock, releaseButton })"
           wrapper.one-time="wrapper"
           refresh.call="getLocks()"
         ></locks-for-reputation>

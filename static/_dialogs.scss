@@ -46,11 +46,52 @@ ux-dialog {
   border-width: 0 !important;
 }
 
+ux-dialog-container>div>div {
+  min-width: 10rem;
+}
+
 ux-dialog.connections,
 ux-dialog.alert {
   border-top-width: .5rem !important;
   border-top-color: $color-ds-black !important;
-  max-width: 50rem;
+  max-width: 53rem;
+  min-width: 10rem;
+}
+
+ux-dialog.connections .disclaimer {
+  overflow-y: auto;
+}
+
+ux-dialog.connections .disclaimer .checks {
+  margin-left: 1rem;
+}
+
+ux-dialog.connections .disclaimer .checks label {
+  padding-left: 1.75rem;
+  font-weight: 500;
+  color: $color-ds-black-2;
+}
+
+ux-dialog.connections .disclaimer .title {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+ux-dialog.connections .disclaimer .body p:before {
+  content: "\2022";
+  margin-right: .35rem;
+}
+
+ux-dialog.connections .disclaimer .checks .checkbox label {
+  white-space: normal;
+  margin-right: 2rem;
+}
+
+ux-dialog.connections .disclaimer .checks input[type=checkbox]:checked + .checkbox-decorator .check,
+label.checkbox-inline input[type=checkbox]:checked + .checkbox-decorator .check {
+  color: $color-ds-green;
 }
 
 ux-dialog-overlay.active {

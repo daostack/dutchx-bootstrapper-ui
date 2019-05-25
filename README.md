@@ -1,10 +1,10 @@
 [![Build Status](https://api.travis-ci.org/daostack/dutchx-bootstrapper-ui.svg?branch=master)](https://travis-ci.org/daostack/dutchx-bootstrapper-ui)
 
-# DutchX Initializer
+# dxDAO Initializer
 
 ## Introduction
 
-[@DAOstack/dutchx-bootstrapper-ui](https://github.com/daostack/dutchx-bootstrapper-ui) is a web application enabling anyone to earn reputation by several means in the GNOSIS DutchX DAO.
+[@DAOstack/dutchx-bootstrapper-ui](https://github.com/daostack/dutchx-bootstrapper-ui) is a web application enabling anyone to earn reputation by several means in the GNOSIS dxDAO.
 
 ## Implementation
 The application code uses the standards-compliant and highly modular browser-side framework [Aurelia](http://aurelia.io).

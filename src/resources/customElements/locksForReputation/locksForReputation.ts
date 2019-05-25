@@ -1,14 +1,18 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, bindingMode } from 'aurelia-framework';
 import { LockInfo, Locking4ReputationWrapper } from 'services/ArcService';
+import { DateService } from 'services/DateService';
+import { ILockInfoX } from 'services/lockServices';
 import { Web3Service } from 'services/Web3Service';
 
 @autoinject
 export class LocksForReputation {
 
-  @bindable({ defaultBindingMode: bindingMode.oneWay }) public locks: Array<LockInfo>;
+  @bindable({ defaultBindingMode: bindingMode.oneWay })
+  public locks: Array<LockInfo> = [];
   // tslint:disable-next-line: variable-name
-  @bindable({ defaultBindingMode: bindingMode.oneTime }) public release: ({ lock: LockInfo }) => Promise<boolean>;
+  @bindable({ defaultBindingMode: bindingMode.oneTime })
+  public release: (config: { lock: LockInfo, releaseButton: JQuery<EventTarget> }) => Promise<boolean>;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public wrapper: Locking4ReputationWrapper;
   @bindable({ defaultBindingMode: bindingMode.oneTime }) public refresh: () => Promise<void>;
 
@@ -18,7 +22,8 @@ export class LocksForReputation {
 
   constructor(
     private web3Service: Web3Service,
-    private eventAggregator: EventAggregator
+    private eventAggregator: EventAggregator,
+    private dateService: DateService
   ) {
   }
 
@@ -36,7 +41,6 @@ export class LocksForReputation {
     const tmpLocks = newLocks as Array<ILockInfoInternal>;
 
     for (const lock of tmpLocks) {
-      // lock.canRedeem = await this.canRedeem(lock);
       lock.canRelease = await this.canRelease(lock);
       lock.releasableToday = this.releasableToday(lock.releaseTime);
     }
@@ -45,12 +49,15 @@ export class LocksForReputation {
     this.loading = false;
   }
 
-  private async _release(lock: ILockInfoInternal) {
+  private async _release(lock: ILockInfoInternal, event: Event) {
     if (!lock.canRelease) { return; }
 
-    lock.releasing = true;
     try {
-      const success = await this.release({ lock });
+      lock.releasing = true;
+
+      const releaseButton = $(event.target).next();
+
+      const success = await this.release({ lock, releaseButton });
       if (success) {
         lock.canRelease = false; // await this.canRelease(lock);
         lock.amount = (await this.wrapper.getLockInfo(lock.lockerAddress, lock.lockId)).amount;
@@ -81,6 +88,12 @@ export class LocksForReputation {
       (releaseTime.getFullYear() === now.getFullYear());
   }
 
+  private releaseDate(lock: ILockInfoInternal): string {
+
+    // tslint:disable-next-line: max-line-length
+    return `${this.dateService.toString(lock.releaseTime, lock.releasableToday ? 'table-time' : 'table-date')}${lock.releasableToday ? ' today' : ''}`;
+  }
+
   private async _refresh(): Promise<void> {
     this.loading = true;
     try {
@@ -92,11 +105,12 @@ export class LocksForReputation {
   }
 }
 
-export interface ILockInfoX extends LockInfo {
+export interface ILocksTableInfo extends ILockInfoX {
   units: string;
+  sending: boolean;
 }
 
-interface ILockInfoInternal extends ILockInfoX {
+interface ILockInfoInternal extends ILocksTableInfo {
   canRelease: boolean;
   releasing: boolean;
   releasableToday: boolean;

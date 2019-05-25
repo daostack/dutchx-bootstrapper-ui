@@ -6,23 +6,35 @@
     <pageloading></pageloading>
   </div>
   <div else>
-    <instructions if.to-view="!lockingPeriodIsEnded">Select the amount of ETH you would like to lock and the length you wish to lock it for. You can lock
-      as much ETH as you like, for up to one year. At the end of the initialization period, your reputation will be
-      calculated pro rata according to the total locked ETH.</instructions>
-    <div class="scheme-dashboard-body">
+    <instructions if.to-view="!lockingPeriodIsEnded">
+      <p>Select the amount of ETH you would like to lock and the length you wish to lock it, for up to one year.</p>
+      <p>At the end of the vote staking period, you will be awarded Reputation proportionally according to the total amount of ETH locked by all participants and the length of the locking period.</p>
+    </instructions>
+    <div
+      class="scheme-dashboard-body"
+      ref="dashboard"
+    >
       <div
         class="message"
         if.to-view="lockingPeriodHasNotStarted"
-      >The initialization period has not yet begun, you can't yet lock.</div>
+      >The vote staking period has not yet begun. Return between ${lockingStartTime | date:'dayofmonth'} and ${lockingEndTime | date:'dayofmonth'} to lock ETH.</div>
+
+      <div
+        class="message"
+        if.to-view="inLockingPeriod"
+      >
+        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining in the vote staking period.
+      </div>
+
       <div
         class="message"
         if.to-view="lockingPeriodIsEnded"
-      >The initialization period has ended.</div>
-      <form
-        if.to-view="inLockingPeriod"
-        with.bind="lockModel"
-      >
-        <div class="row">
+      >The vote staking period has ended.</div>
+      <form if.to-view="inLockingPeriod">
+        <div
+          class="row"
+          with.bind="lockModel"
+        >
           <div class="col-5">
             <div class="form-group bmd-form-group">
               <label for="lockAmount">ETH to lock</label>
@@ -58,25 +70,20 @@
                   as-button="true"
                   text="Submit"
                   spin.to-view="locking"
+                  id="lockButton"
                   title.to-view="locking ? 'Locking...' : 'Submit Lock'"
                 ></spinbutton>
+                <metamaskfeedback if.to-view="sending"></metamaskfeedback>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- <div if.bind="lockingPeriodIsEnded">
-            <div if.to-view="!userScore" class="mb-3">You have nothing to redeem</div>
-            <div else class="form-group bmd-form-group">
-              <button class="btn-submit" click.delegate="redeem()">Redeem Reputation</button>
-            </div>
-          </div> -->
       </form>
 
       <div if.to-view="locks.length">
         <locks-for-reputation
           locks.to-view="locks"
-          release.call="release({lock})"
+          release.call="release({lock, releaseButton })"
           wrapper.one-time="wrapper"
           refresh.call="getLocks()"
         ></locks-for-reputation>

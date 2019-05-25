@@ -16,7 +16,7 @@ const when = (condition, config, negativeConfig) =>
   condition ? ensureArray(config) : ensureArray(negativeConfig)
 
 // primary config:
-const title = 'DutchX Initializer';
+const title = 'dxDAO';
 let outDir;
 const srcDir = path.resolve(__dirname, 'src');
 const nodeModulesDir = path.resolve(__dirname, 'node_modules');
@@ -177,8 +177,17 @@ module.exports = ({ production, server, coverage } = {}) => {
         { from: 'static/mgn_icon_color.svg' },
         { from: 'static/gen_icon_white.svg' },
         { from: 'static/gen_icon_color.svg' },
+        { from: 'src/schedule/DS_DXDAO_ARROW_ICON_white.svg' },
+        { from: 'src/schedule/DS_DXDAO_ARROW_ICON_black.svg' },
+        { from: 'static/t_blue.svg' },
+        { from: 'static/t_white.svg' },
         { from: 'static/base.css' },
         { from: 'node_modules/font-awesome/fonts', to: 'fonts' },
+        { from: 'node_modules/material-icons/iconfont/material-icons.css', to: 'fonts'},
+        { from: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.eot', to: 'fonts'},
+        { from: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.woff2', to: 'fonts'},
+        { from: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.woff', to: 'fonts'},
+        { from: 'node_modules/material-icons/iconfont/MaterialIcons-Regular.ttf', to: 'fonts'},
         { from: 'static/fonts/dinpro', to: 'fonts' },
         { from: 'node_modules/font-awesome/css/font-awesome.min.css', to: 'font-awesome.min.css' },
         { from: 'node_modules/snackbarjs/dist/snackbar.min.css' },

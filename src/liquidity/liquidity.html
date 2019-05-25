@@ -1,0 +1,32 @@
+<template>
+  <div class="liquidity-page container animated-page au-animate">
+    <h1 class="title">Token Liquidity
+    </h1>
+    <div if.bind="!loading">
+      <table class="table">
+        <thead>
+          <th>Symbol</th>
+          <!-- <th style="white-space: nowrap">Is Liquid</th> -->
+          <th>Price (ETH)</th>
+        </thead>
+        <tbody>
+          <tr repeat.for="token of tokens">
+            <td>${token.symbol}</td>
+            <!-- <td style>${token.isLiquid ? "yes" : "no"}</td> -->
+            <td>
+              <floating-point-number
+                if.to-view="!!token.price"
+                trailing-zeroes="2"
+                value.to-view="token.price"
+              ></floating-point-number>
+              <div
+                else
+                class="noprice"
+              >no liquidity</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>

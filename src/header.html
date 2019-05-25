@@ -1,51 +1,112 @@
 <template>
-  <nav class="header navbar navbar-expand-lg navbar-dark flex-column flex-sm-row">
-
-    <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigationDutchX">
-      <span class="navbar-toggler-icon"></span>
-    </button> -->
+  <nav class="header navbar navbar-expand-lg navbar-dark">
 
     <a
-      class="navbar-brand flex-sm-shrink-1 text-sm-left"
-      href="#"
+      class="navbar-brand"
+      route-href="route: landing"
     >
       <img
         src="../static/dutchx-blue.svg"
         class="logo d-inline-block align-top"
-        alt="DutchX"
+        alt="dxDAO"
       >
-      <div class="company-name">DutchX Initializer</div>
+      <div class="company-name">dxDAO Vote Staking</div>
     </a>
 
-    <!-- <div class="flex-sm-grow-1 text-sm-center nav-link">
-      <etherscanlink show.bind="avatarAddress" css="header-link" tooltip.one-time="avatarAddressTooltip"
-        address.to-view="avatarAddress"></etherscanlink>
-    </div> -->
+    <button
+      class="navbar-toggler"
+      id="collapseButton"
+      click.trigger="collapse()"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarToggler"
+      aria-controls="navbarToggler"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <a
-      href="#"
-      target="_blank"
-      class="anchor-secondary flex-sm-grow-1 text-sm-right nav-link nowrap"
-    >Report Bug</a>
+    <div
+      class="collapse navbar-collapse text-center"
+      ref="collapsePanel"
+      id="navbarToggler"
+    >
 
-    <a
-      href="https://daotalk.org/"
-      target="_blank"
-      class="anchor-secondary text-sm-right nav-link"
-    >Forum</a>
+      <networkfeedback
+        class="d-lg-none"
+        network.to-view="network"
+        connected.to-view="connected"
+      ></networkfeedback>
 
-    <div if.to-view="connected">
-      <div
-        if.bind="network !== 'Live'"
-        class="text-sm-right navbar-text color-red nowrap"
-      >
-        Testing (${network})
+      <a
+        class="anchor-secondary nav-link nowrap"
+        href="https://github.com/gnosis/dx-daostack/blob/master/dxdao-whitepaper-v1.pdf"
+        target="_blank"
+      >White Paper</a>
+
+      <a
+        class="anchor-secondary nav-link nowrap"
+        href="https://blog.gnosis.pm/step-by-step-guide-to-earn-reputation-for-the-dxdao-with-the-gnosis-safe-cc54f3a93f3e"
+        target="_blank"
+      >Walkthrough</a>
+
+      <!-- <a
+        href="https://gnosis1.typeform.com/to/B93QUO"
+        target="_blank"
+        class="anchor-secondary nav-link"
+      >Usability Survey</a> -->
+
+      <!-- <a
+        href=""
+        target="_blank"
+        class="anchor-secondary nav-link"
+      >Report Bug</a> -->
+
+      <a
+        href="https://daotalk.org/c/daos/dx-dao"
+        target="_blank"
+        class="anchor-secondary nav-link"
+      >Forum</a>
+
+      <a
+        href="https://t.me/dxDAO"
+        target="_blank"
+        class="anchor-secondary nav-link"
+      >Telegram</a>
+
+      <div if.to-view="!collapsed">
+        <div>
+          <div class="userAddress nav-link">Your address:
+            <usersaddress small="true"></usersaddress>
+          </div>
+
+          <span class="userBalance nav-link inline">MGN:
+            <mgnbalance></mgnbalance>
+          </span>
+          <span class="userBalance nav-link inline">ETH:
+            <ethbalance></ethbalance>
+          </span>
+          <span class="userBalance nav-link inline">GEN:
+            <tokenbalance token.to-view="genAddress"></tokenbalance>
+          </span>
+        </div>
+        <div class="navbar-text">Powered by <a
+            target="_blank"
+            href="http://daostack.io"
+          >DAOstack</a>
+          <img
+            class="logo"
+            src="../static/daostack-icon-white.svg"
+          /></div>
       </div>
-      <div
-        else
-        class="text-sm-right navbar-text color-green nowrap"
-      >Live (mainnet)</div>
+
+      <networkfeedback
+        class="d-none d-lg-inline-block"
+        network.to-view="network"
+        connected.to-view="connected"
+      ></networkfeedback>
+
     </div>
   </nav>
 </template>

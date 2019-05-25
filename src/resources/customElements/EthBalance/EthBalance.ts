@@ -1,78 +1,78 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject, containerless, customElement } from 'aurelia-framework';
-import { Web3Service } from '../../../services/Web3Service';
+import { autoinject, bindable, bindingMode, containerless, customElement } from 'aurelia-framework';
+import { Address } from 'services/ArcService';
+import { DisposableCollection } from 'services/DisposableCollection';
+import { BigNumber, Web3Service } from '../../../services/Web3Service';
 
 @autoinject
 @containerless
 @customElement('ethbalance')
 export class EthBalance {
+  @bindable({ defaultBindingMode: bindingMode.toView }) public placement: string = 'top';
 
-  private text: string;
-  private ethBalance: string = '';
-  private rawBalance: string = '';
+  private balance: BigNumber = null;
   private filter: any;
-  private textElement: HTMLElement;
+  private subscriptions = new DisposableCollection();
+  private checking: boolean = false;
+  private account: Address;
 
-  constructor(private web3: Web3Service,
-              eventAggregator: EventAggregator) {
-    eventAggregator.subscribe('Network.Changed.Account', () => { this.initialize(); });
-    eventAggregator.subscribe('Network.Changed.Id', () => { this.initialize(); });
+  constructor(
+    private web3: Web3Service,
+    private eventAggregator: EventAggregator) {
   }
 
   public attached() {
+    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account',
+      (account: Address) => {
+        this.account = account;
+        this.getBalance();
+      }));
+    this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id',
+      () => { this.initialize(); }));
     this.initialize();
   }
 
-  private initialize(): Promise<void> {
+  private initialize(): void {
     this.stop();
-    return this.readBalance().then(() => {
-      ($(this.textElement) as any).tooltip('dispose');
-      ($(this.textElement) as any).tooltip(
-        {
-          placement: 'left',
-          title: this.rawBalance,
-          toggle: 'tooltip',
-          trigger: 'hover',
-        }
-      );
+    this.account = this.web3.defaultAccount;
+    /**
+     * this is supposed to fire whenever a new block is created
+     */
+    this.filter = this.web3.eth.filter('latest', () => {
+      this.getBalance();
     });
+    this.getBalance();
   }
 
-  private stop() {
+  private stop(): void {
     if (this.filter) {
       this.filter.stopWatching();
       this.filter = null;
     }
   }
 
-  private detached() {
+  private detached(): void {
+    if (this.subscriptions) {
+      this.subscriptions.dispose();
+    }
+
     this.stop();
   }
 
-  private async readBalance() {
-    /**
-     * this is supposed to fire whenever a new block is created
-     */
-    this.filter = this.web3.eth.filter({ fromBlock: 'latest' }).watch(() => {
-      this.getBalance();
-    });
-    return this.getBalance();
-  }
-
   private async getBalance() {
-    try {
-      const ethAddress = this.web3.defaultAccount;
-      const balance = this.web3.fromWei(await this.web3.getBalance(ethAddress));
-      this.rawBalance = `${balance.toString(10)} ETH`;
-      if (balance.eq(0) || (balance.lt(999)) && (balance.gt('0.001'))) {
-        this.ethBalance = balance.toFixed(3);
-      } else {
-        this.ethBalance = balance.toExponential(2);
+    if (!this.checking) {
+      try {
+        this.checking = true;
+        if (this.account) {
+          this.balance = await this.web3.getBalance(this.account);
+        } else {
+          this.balance = null;
+        }
+        // tslint:disable-next-line:no-empty
+      } catch (ex) {
+      } finally {
+        this.checking = false;
       }
-
-      this.text = `${this.ethBalance} ETH`;
-      // tslint:disable-next-line:no-empty
-    } catch (ex) {
     }
   }
 }

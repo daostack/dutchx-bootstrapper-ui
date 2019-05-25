@@ -6,27 +6,54 @@ import { DateService } from 'services/DateService';
 @autoinject
 export class Landing {
 
-  private lockingPeriodEndDate: Date;
   private lockingPeriodStartDate: Date;
   private governanceStartDate: Date;
+  private scheduleModel = {
+    isLanding: true,
+  };
 
   constructor(
-      private appConfig: AureliaConfiguration
-    , private dateService: DateService
+    private appConfig: AureliaConfiguration,
+    private dateService: DateService
   ) {
-     this.lockingPeriodEndDate = this.dateService
-          .fromIsoString(this.appConfig.get('Landing.lockingPeriodEndDate'), App.timezone);
-     this.lockingPeriodStartDate = this.dateService
-          .fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'), App.timezone);
-     this.governanceStartDate = this.dateService
-          .fromIsoString(this.appConfig.get('Landing.governanceStartDate'), App.timezone);
+    this.lockingPeriodStartDate = this.dateService
+      .fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'));
+    this.governanceStartDate = this.dateService
+      .fromIsoString(this.appConfig.get('governanceStartDate'));
   }
 
   public activate() {
-    $('body').css('overflow', 'auto');
+    setTimeout(() => $('body').css('overflow-y', 'scroll'), 0);
   }
+
+  // public attached() {
+  //   this.fixScrollbar();
+  // }
 
   private msUntilCanLockCountdown(): number {
     return this.lockingPeriodStartDate.getTime() - Date.now();
   }
+
+  private inGovernancePeriod(): boolean {
+    return Date.now() >= this.governanceStartDate.getTime();
+  }
+
+  private countdownUnits(): string {
+    return (this.msUntilCanLockCountdown() >= 86400000) ? 'days' :
+      ((this.msUntilCanLockCountdown() >= 3600000) ? 'hours' :
+        (this.msUntilCanLockCountdown() >= 60000 ? 'minutes' : 'seconds')
+      );
+  }
+
+  // private fixScrollbar() {
+
+  //   const bodyHeight = $(window).outerHeight() || 0;
+  //   const headerHeight = $('.landing-page .navbar').outerHeight() || 0;
+
+  //   $('.landing-page .main-content').css(
+  //     {
+  //       'max-height': `${bodyHeight - headerHeight}px`,
+  //     });
+  // }
+
 }

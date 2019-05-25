@@ -26,9 +26,9 @@ export class NetworkConnectionWizards {
   private dialogViewModel: ConnectToNet;
 
   constructor(
-      private dialogService: DialogService
-    , private web3: Web3Service
-    , private eventAggregator: EventAggregator
+    private dialogService: DialogService,
+    private web3: Web3Service,
+    private eventAggregator: EventAggregator
   ) {
     this.subscriptions = new DisposableCollection();
   }
@@ -69,31 +69,31 @@ export class NetworkConnectionWizards {
            *
            * See: https://github.com/MetaMask/metamask-extension/pull/4703#issuecomment-430814765
            */
-          const enabled = !theWindow.ethereum._metamask.isEnabled ||
-                          (await theWindow.ethereum._metamask.isEnabled());
-          const approved = !theWindow.ethereum._metamask.isApproved ||
-                          (await theWindow.ethereum._metamask.isApproved());
+          const enabled = !(theWindow.ethereum && theWindow.ethereum._metamask.isEnabled) ||
+            (await theWindow.ethereum._metamask.isEnabled());
+          const approved = !(theWindow.ethereum && theWindow.ethereum._metamask.isApproved) ||
+            (await theWindow.ethereum._metamask.isApproved());
 
+          /**
+           * `window.ethereum` is supplied by MM and Safe.  It is not supplied by ganache.
+           * We are configuring Arc.js to use the metamask provider,
+           * thus `theWindow.ethereum._metamask` is always present *and functioning* even with Safe.
+           */
           this.hasApprovedAccountAccess =
-            /**
-             * !theWindow.ethereum happens when there is a local server or otherwise not using metamask.
-             * We return true in this case because MM is thus not present and we don't want to trigger
-             * any interaction with it.  If there is no connection we'll do the right thing.
-             */
             !theWindow.ethereum || (enabled || approved);
         }
       };
 
       this.subscriptions.push(this.eventAggregator
-                        .subscribe('Network.Changed.Id', () => { this.hasDao = false; connectionChanged(); }));
+        .subscribe('Network.Changed.Id', () => { this.hasDao = false; connectionChanged(); }));
       this.subscriptions.push(this.eventAggregator
-                              .subscribe('Network.Changed.Account', () => connectionChanged()));
+        .subscribe('Network.Changed.Account', () => connectionChanged()));
       this.subscriptions.push(this.eventAggregator
-                              .subscribe('DAO.loaded', () => { this.hasDao = true; }));
+        .subscribe('DAO.loaded', () => { this.hasDao = true; }));
       this.subscriptions.push(this.eventAggregator
-                              .subscribe('DAO.Loading', (onOff: boolean): void => {
-        this.loading = onOff;
-      }));
+        .subscribe('DAO.Loading', (onOff: boolean): void => {
+          this.loading = onOff;
+        }));
 
       await connectionChanged();
 

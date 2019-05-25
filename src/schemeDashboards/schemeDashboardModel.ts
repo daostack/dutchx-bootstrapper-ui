@@ -1,4 +1,4 @@
-import { Address } from 'services/ArcService';
+import { Address, Hash } from 'services/ArcService';
 import { DaoEx } from 'services/DaoService';
 
 export interface ISchemeDashboardModel {
@@ -8,4 +8,5 @@ export interface ISchemeDashboardModel {
   org: DaoEx;
   orgName: string;
   orgAddress: Address;
+  blockNumber: number;
 }

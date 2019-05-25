@@ -5,62 +5,72 @@
   >
     <ux-dialog-header>
       <div
-        if.to-view="!(hasDao && hasApprovedAccountAccess)"
+        if.to-view="loading || (!hasDao && (hasAccepted || !isConnected || !hasAccount || !hasApprovedAccountAccess))"
         class="d-inline-block"
       >
         <img
           src="../../../../static/dutchx-blue.svg"
           class="logo d-inline-block align-top"
-          alt="DutchX"
+          alt="dxDAO"
         >
-        Welcome to the DutchX Initializer</div>
+        Welcome to the dxDAO Vote Staking Interface
+      </div>
+
       <div
-        else
+        if.to-view="!loading && (hasAccepted && hasDao && hasApprovedAccountAccess)"
         class="d-inline"
       >
         <div class="d-inline-block warning-icon">⚠️</div>Important Notice: Reputation is Not Transferable
       </div>
+
+      <div
+        if.to-view="!loading && (!hasAccepted && isConnected && hasAccount && hasApprovedAccountAccess)"
+        class="d-inline"
+      >
+        <div class="d-inline-block warning-icon">⚠️</div>Disclaimer
+      </div>
+
     </ux-dialog-header>
     <ux-dialog-body>
       <div class="body">
         <div if.to-view="loading">
-          <pageloading><img
-              src="../../../../static/dutchx-blue.svg"
-              class="logo d-inline-block align-top"
-              alt="DutchX"
-            >
-            Fetching the DutchX DAO...</pageloading>
+          <pageloading></pageloading>
         </div>
         <div else>
           <p if.to-view="!isConnected">
-            There seems to be no connection to the blockchain. Please install and/or enable the <a
+            There seems to be no connection to the blockchain. Please install and/or enable a web3 wallet such as <a
               href="https://metamask.io/"
               target="_blank"
-            >MetaMask browser extension</a>,
-            point it to the <span class="important">Main Ethereum Network</span>, then refresh this browser page so you can access the <a
-              href="https://daotalk.org/c/dutchx-dao"
+            >MetaMask</a>, or the <a
+              href="https://safe.gnosis.io/"
               target="_blank"
-            >DutchX</a>
-            Initializer.
+            >Gnosis Safe</a>,
+            point it to the <span class="important">Main Ethereum Network</span>, then refresh this browser page so you can access the <a
+              href="https://daotalk.org/c/dx-dao"
+              target="_blank"
+            >dxDAO</a> Vote Staking UI.
           </p>
 
           <div if.to-view="isConnected && !hasAccount">
             <p>To access the <a
-                href="https://daotalk.org/c/dutchx-dao"
+                href="https://daotalk.org/c/dx-dao"
                 target="_blank"
-              >DutchX</a> Initializer, please log in to MetaMask, select your desired account and allow the DutchX Initializer to access your account.
+              >dxDAO</a> Vote Staking Interface, please log in to ${walletService.currentWallet.name & signal:'wallet.changed'}, select your desired account and allow the dxDAO Vote Staking Interface to access your account.
           </div>
 
-          <div if.to-view="((isConnected && !hasAccount) || (!landed && hasDao))">
-            <p><span class="important">Important</span>: Reputation earned by locking tokens cannot be transferred.
+          <div if.to-view="((isConnected && !hasAccount) || (hasAccepted && !landed && hasDao))">
+            <p><span class="important">Important</span>: Reputation cannot be transferred.
               <span if.to-view="!hasAccount">Please ensure you have selected the account (ETH Address) you intend to use in the future for voting within the DAO.</span>
             </p>
             <p if.to-view="hasAccount">
               You are currently using the following account:
-              <usersaddress></usersaddress>.
-              Please be sure that you intend to use this account in the future for voting within the DutchX DAO.
+              <usersaddress class="d-none d-sm-inline-block"></usersaddress>
+              <usersaddress
+                class="d-sm-none"
+                small="true"
+              ></usersaddress>.
+              Please be sure that you intend to use this account in the future for voting within the dxDAO.
             </p>
-            <!-- "OK" (`land`) will take us off the info panel -->
             <p
               if.to-view="hasDao && hasApprovedAccountAccess"
               class="buttonContainer"
@@ -73,22 +83,82 @@
           <div if.to-view="isConnected && (!hasAccount || !hasApprovedAccountAccess)">
             <p class="buttonContainer"><button
                 class="btn btn-submit"
+                style="white-space: normal"
                 click.delegate="confirm()"
-              >Allow the DutchX Initializer to Access Your Account on MetaMask</button></p>
+              >Allow the dxDAO Vote Staking Interface to Access Your Account on ${walletService.currentWallet.name & signal:'wallet.changed'}</button></p>
           </div>
 
-          <div if.to-view="isConnected && hasAccount">
-            <p if.to-view="!hasDao">
-              Please check MetaMask and make sure you are connected to the Main Ethereum Network.
-            </p>
+          <div if.to-view="hasAccepted && isConnected && hasAccount && !hasDao">
+            Please check ${walletService.currentWallet.name & signal:'wallet.changed'} and make sure you are connected to the Main Ethereum Network.
+          </div>
 
-            <div if.to-view="landed && hasDao">
-              <!-- we have a DAO -->
-              <p style="text-align: center">[Disclaimer]</p>
+          <div
+            if.to-view="!hasAccepted && isConnected && hasAccount && hasApprovedAccountAccess"
+            class="disclaimer"
+          >
+            <div class="title">Required technical ‘know how’</div>
+
+            <div class="body">
+              <p>First and foremost, this <span style="font-weight:500">is not</span> a tutorial to using the Vote Staking graphical user interface (“<span style='font-weight:500'>Vote Staking GUI</span>”) or Ethereum Blockchain technology. At their current state, both require preliminary knowledge in order to operate safely and correctly, and to avoid user induced error and/or the dangers of uninformed use.</p>
+            </div>
+
+            <div class="title">Technological uncertainty</div>
+
+            <div class="body">
+              <p>Be aware, due to the early stages of Ethereum Blockchain technology and third party use cases, there is an heightened possibility of software bugs, security breaches, potential exploits by malicious actors and user induced error due to uninformed use.</p>
+              <p>All use is susceptible to fraud\theft\loss of tokens. As such, use of the Vote Staking GUI is at your own risk.</p>
+            </div>
+
+            <div class="title">Vote Staking GUI Vs. Ethereum Blockchain (distributed ledger)</div>
+
+            <div class="body">
+              <p>All actions are performed solely on the Ethereum Blockchain, and can be performed directly without any use of the Vote Staking GUI.</p>
+              <p>The Vote Staking GUI is <span style="font-weight:500">only</span> a graphical user interface which can facilitate the <span style="font-weight:500">interaction</span> with the Ethereum Blockchain.</p>
+              <p>The Vote Staking GUI does not replace the Ethereum Blockchain nor act as a necessary intermediary for actions performed on it, but only as a possible facilitator for ease of use.</p>
+            </div>
+
+            <div class="title">Smart contracts and irreversibility of actions performed on the blockchain</div>
+
+            <div class="body">
+              <p>Actions performed on the Ethereum Blockchain are executed by smart contracts , without any third party interference.</p>
+              <p>Actions performed on the Ethereum Blockchain are <span style="font-weight:500">irreversible</span> and cannot be undone, including in the case of user induced error and/or uninformed use.</p>
+            </div>
+
+            <div class="title">Legal and regulatory uncertainty</div>
+
+            <div class="body">
+              <p>Laws and regulations as well as their application and impact are constantly evolving, vary to a wide degree between jurisdictions and may even be deemed under certain jurisdictions (in part, or as a whole) as unlawful. You hereby confirm that in your use of the Vote Staking GUI you are in full compliance with the respective laws and regulations.</p>
+            </div>
+
+            <div class="title">Exclusion of liability</div>
+
+            <div class="body">
+              <p>You expressly understand and agree that you alone assume full and sole responsibility for your use of the Vote Staking GUI. You acknowledge and agree that any information you send or receive during your use of the Vote Staking GUI may not be secure and may be intercepted or later acquired by unauthorized parties. you acknowledge and agree that your use of the Vote Staking GUI is at your own risk.</p>
+              <p>The Vote Staking GUI is provided on an “AS IS” basis, without any warranties of any kind, direct or implied. In no event shall we or our affiliates, be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with your use of or other dealings in the Vote Staking GUI.</p>
+            </div>
+
+            <div class="form-group checks">
+              <div class="checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked.bind="checked1"
+                  > I HAVE READ AND FULLY UNDERSTOOD AND AGREE TO THE DISCLAIMERS
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked.bind="checked2"
+                  > I AM IN FULL COMPLIANCE WITH THE RESPECTIVE LAWS AND REGULATIONS IN MY JURISDICTION
+                </label>
+              </div>
               <p class="buttonContainer"><button
                   class="btn btn-submit"
                   click.delegate="accept()"
-                >Accept</button></p>
+                  disabled.to-view="!(checked1 && checked2)"
+                >Continue...</button></p>
             </div>
           </div>
         </div>

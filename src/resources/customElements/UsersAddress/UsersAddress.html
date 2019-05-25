@@ -1,3 +1,7 @@
 <template>
-  <etherscanlink address.to-view="usersAddress" tooltip.one-time="tooltip"></etherscanlink>
+  <etherscanlink
+    css="${small ? 'smallEtherScanLink' : ''}"
+    address.to-view="usersAddress"
+    tooltip.one-time="tooltip"
+  ></etherscanlink>
 </template>

@@ -1,4 +1,3 @@
-import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { PLATFORM } from 'aurelia-pal';
@@ -19,15 +18,10 @@ export class App {
 
   private static schemeDashboards = [
     'Auction4Reputation',
-    'ContributionReward',
     'ExternalLocking4Reputation',
-    'GenesisProtocol',
-    'GlobalConstraintRegistrar',
     'LockingEth4Reputation',
     'LockingToken4Reputation',
-    'NonArc',
-    'SchemeRegistrar',
-    'UpgradeScheme',
+    'DaoStorytelling',
   ];
 
   /**
@@ -38,46 +32,34 @@ export class App {
   private intervalId: any;
 
   constructor(
-      private web3Service: Web3Service
-    , private signaler: BindingSignaler
-    , private eventAggregator: EventAggregator
-    , appConfig: AureliaConfiguration
+    private web3Service: Web3Service,
+    private signaler: BindingSignaler,
+    private eventAggregator: EventAggregator
   ) {
-    App.timezone = appConfig.get('rootTimezone');
   }
 
   public activate() {
     this.intervalId = setInterval(async () => {
       this.signaler.signal('secondPassed');
+      let blockDate;
       if (this.web3Service.isConnected) {
-        const blockDate = await Utils.lastBlockDate(this.web3Service.web3);
-        this.eventAggregator.publish('secondPassed', blockDate);
+        blockDate = await Utils.lastBlockDate(this.web3Service.web3);
       }
+      this.eventAggregator.publish('secondPassed', blockDate);
     }, 1000);
   }
 
   public attached() {
     ($('body') as any)
-      /* override the body style set in the splash screen */
-      // .css({
-      //   "color": "black",
-      //   "background-color": "white"
-      // })
       .bootstrapMaterialDesign({ global: { label: { className: 'bmd-label-floating' } } });
 
   }
 
-  public deactivate() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-    }
-  }
-
   private configureRouter(config: RouterConfiguration, router: Router) {
 
-    config.title = 'DutchX Initializer';
-
+    config.title = 'dxDAO';
+    config.options.pushState = true;
+    config.options.root = '/';
     /**
      * first set the landing page.
      * it is possible to be connected but have the wrong chain.
@@ -87,17 +69,25 @@ export class App {
         moduleId: PLATFORM.moduleName('./landing'),
         name: 'landing',
         nav: false,
-        route: ['', 'landing'],
-        title: 'Home',
+        route: ['', '/', 'landing', 'home'],
+        title: '',
       },
       {
         moduleId: PLATFORM.moduleName('./organizations/dashboard'),
         name: 'dashboard',
         nav: false,
         // 'address' will be present in the object passed to the 'activate' method of the viewmodel
-        // DutchX: set address to be optional, and this page as the default (instead of Home)
         route: ['dashboard/:address?'],
-        title: 'Dashboard',
+        title: 'Stake for Your Vote',
+      }
+      ,
+      {
+        moduleId: PLATFORM.moduleName('./organizations/dashboard'),
+        name: 'stake-for-your-vote',
+        nav: false,
+        // 'address' will be present in the object passed to the 'activate' method of the viewmodel
+        route: ['stake-for-your-vote/:address?'],
+        title: 'Stake for Your Vote',
       }
       , {
         moduleId: PLATFORM.moduleName('./txInfo/txInfo'),
@@ -106,6 +96,20 @@ export class App {
         nav: false,
         route: ['txInfo/:txHash'],
         title: 'Transaction Information',
+      },
+      , {
+        moduleId: PLATFORM.moduleName('./liquidity/liquidity'),
+        name: 'liquidity',
+        nav: false,
+        route: ['liquidity/:address?'],
+        title: 'Token Liquidity',
+      },
+      , {
+        moduleId: PLATFORM.moduleName('./status/status'),
+        name: 'status',
+        nav: false,
+        route: ['status/:address?'],
+        title: 'Initialization Period Status',
       },
     ]);
 

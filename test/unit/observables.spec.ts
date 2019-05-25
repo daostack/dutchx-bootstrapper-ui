@@ -2,7 +2,7 @@ import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/operator/map';
-import { Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 /* tslint:disable:no-console */
 describe('Observables', () => {
@@ -13,7 +13,7 @@ describe('Observables', () => {
   });
 
   it('can map an observable', () => {
-    const observable = Observable.from([2]).map((o) => 1);
+    const observable = Observable.from([2]).map((_o) => 1);
     expect(observable).not.toBeFalsy();
   });
 
@@ -21,19 +21,19 @@ describe('Observables', () => {
     const observable = Observable.from([2]);
     expect(observable).not.toBeFalsy();
     observable.subscribe(
-    {
-      complete: () => {
-        console.log('Observer got a complete notification');
+      {
+        complete: () => {
+          console.log('Observer got a complete notification');
         },
-      error: (err) => {
-        console.log('Observer got an error: ' + err);
-        expect(true).toBeFalsy();
-      },
-      next: (x) => {
-        console.log('Observer got a value: ' + x);
-        expect(x).toBe(2);
-      },
-    });
+        error: (err) => {
+          console.log('Observer got an error: ' + err);
+          expect(true).toBeFalsy();
+        },
+        next: (x) => {
+          console.log('Observer got a value: ' + x);
+          expect(x).toBe(2);
+        },
+      });
   });
 
   it('can subscribe to an dynamic array of objects', () => {
@@ -41,21 +41,21 @@ describe('Observables', () => {
     expect(subject).not.toBeFalsy();
 
     subject.subscribe(
-    {
-      complete: () => {
-        console.log('Observer got a complete notification');
+      {
+        complete: () => {
+          console.log('Observer got a complete notification');
         },
-      error: (err) => {
-        console.log('Observer got an error: ' + err);
-        expect(true).toBeFalsy();
-      },
-      next: (x: { name: string }) => {
-        console.log('Observer got a value: ' + x.name);
-        expect(x.name).toBe('Gabrielle');
-      },
-    });
+        error: (err) => {
+          console.log('Observer got an error: ' + err);
+          expect(true).toBeFalsy();
+        },
+        next: (x: { name: string }) => {
+          console.log('Observer got a value: ' + x.name);
+          expect(x.name).toBe('Gabrielle');
+        },
+      });
 
-    subject.next({ name: 'Gabrielle'});
+    subject.next({ name: 'Gabrielle' });
 
   });
 
@@ -65,32 +65,32 @@ describe('Observables', () => {
     expect(input).not.toBeFalsy();
     const throttledInput = input
       .concatMap((x) => {
-          return Observable.fromPromise(new Promise(function(resolve, reject) {
-              setTimeout(() => {
-                console.log('resolving to: ' + x);
-                resolve(x);
-              }, 1000);
-          }));
-        });
+        return Observable.fromPromise(new Promise(function(resolve, _reject) {
+          setTimeout(() => {
+            console.log('resolving to: ' + x);
+            resolve(x);
+          }, 1000);
+        }));
+      });
 
     expect(throttledInput).not.toBeFalsy();
 
     let count = 1;
 
     throttledInput.subscribe(
-    {
-      complete: () => {
-        console.log('throttledInput sent a complete notification');
+      {
+        complete: () => {
+          console.log('throttledInput sent a complete notification');
         },
-      error: (err) => {
-        console.log('throttledInput generated an error: ' + err);
-        expect(true).toBeFalsy();
-      },
-      next: (x) => {
-        console.log(`throttledInput emitted: ${x} at ${new Date().getSeconds()} seconds after the minute`);
-        expect(x).toBe(count++);
-      },
-    });
+        error: (err) => {
+          console.log('throttledInput generated an error: ' + err);
+          expect(true).toBeFalsy();
+        },
+        next: (x) => {
+          console.log(`throttledInput emitted: ${x} at ${new Date().getSeconds()} seconds after the minute`);
+          expect(x).toBe(count++);
+        },
+      });
 
     input.next(1);
     input.next(2);

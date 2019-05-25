@@ -1,4 +1,5 @@
-﻿import * as numeral from 'numeral';
+﻿import BigNumber from 'bignumber.js';
+import * as numeral from 'numeral';
 
 export class NumberService {
 
@@ -7,7 +8,32 @@ export class NumberService {
    * @param value
    * @param format
    */
-  public toString(value: number, format?: string): string | null | undefined {
+  public toString(value: number | string, format?: string): string | null | undefined {
+
+    // this helps to display the erroneus value in the GUI
+    if ((typeof value === 'string') || (value === null) || (typeof value === 'undefined')) {
+      return value as any;
+    }
+
+    if (Number.isNaN(value)) {
+      return null;
+    }
+
+    return numeral(value).format(format);
+  }
+
+  /**
+   * returns number with `digits` number of digits.
+   * @param value the value
+   * @param precision Round to the given precision
+   * @param exponentialAt Go exponential at the given magnitude, or low and high values
+   * @param roundUp 0 to round up, 1 to round down
+   */
+  public toFixedNumberString(
+    value: BigNumber | number,
+    precision: number = 5,
+    exponentialAt: number | [number, number] = [-7, 20],
+    roundUp: boolean = false): string | null | undefined {
 
     // this helps to display the erroneus value in the GUI
     if (typeof value === 'string') {
@@ -18,12 +44,29 @@ export class NumberService {
       return value as any;
     }
 
-    if (Number.isNaN(value)) {
-      return null;
-    }
-    return numeral(value).format(format);
-  }
+    const isNum = typeof value === 'number';
 
+    if (isNum) {
+      if (Number.isNaN(value as number)) {
+        return null;
+      } else {
+        value = new BigNumber(value);
+      }
+    } else {
+      if ((value as BigNumber).isNaN()) {
+        return null;
+      }
+    }
+
+    const saveConfig = BigNumber.config();
+    BigNumber.config({ EXPONENTIAL_AT: exponentialAt });
+
+    const result = (value as BigNumber).toPrecision(precision, roundUp ? 0 : 1);
+
+    BigNumber.config(saveConfig);
+
+    return result;
+  }
   public fromString(value: string, decimalPlaces: number = 1000): number {
 
     // this helps to display the erroneus value in the GUI
@@ -31,7 +74,14 @@ export class NumberService {
       return value as any;
     }
 
-    return numeral(value).value();
+    if (value && value.match(/^\.0{0,}$/)) {
+      /**
+       * numeral returns `null` for stuff like '.', '.0', '.000', etc
+       */
+      return 0;
+    } else {
+      return numeral(value).value();
+    }
   }
 
   /**

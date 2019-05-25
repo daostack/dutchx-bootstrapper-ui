@@ -1,3 +1,4 @@
+import { AureliaConfiguration } from 'aurelia-configuration';
 import { includeEventsIn } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { LogManager } from 'aurelia-framework';
@@ -11,9 +12,10 @@ import {
 export class DaoService {
 
   private daoCache = new Map<string, DaoEx>();
-  private logger = LogManager.getLogger('DxBootStrapper');
+  private logger = LogManager.getLogger('dxDAO Bootstrapper');
   constructor(
-    private arcService: ArcService
+    private arcService: ArcService,
+    private appSettings: AureliaConfiguration
   ) {
     includeEventsIn(this);
   }
@@ -30,12 +32,12 @@ export class DaoService {
         const org = await DAO.at(avatarAddress);
 
         if (org) {
-          dao = await DaoEx.fromArcJsDao(org, this.arcService);
+          dao = await DaoEx.fromArcJsDao(org, this.arcService, this.appSettings);
           this.logger.debug(`loaded dao ${dao.name}: ${dao.address}`);
         } // else error will already have been logged by arc.js
       } catch (ex) {
         // don't force the user to see this as a snack every time.
-         // A corrupt DAO may never be repaired.  A message will go to the console.
+        // A corrupt DAO may never be repaired.  A message will go to the console.
         this.logger.error(`Error loading DAO: ${avatarAddress}: ${ex}`);
         return null;
       }

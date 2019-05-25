@@ -1,19 +1,46 @@
-.main-spinner .pageloading i {
-  font-size: 4rem;
-  margin-bottom: 2rem;
+.dashboard-page .disclaimer {
+  padding-top: 1rem;
+  padding-bottom: .5rem;
+  padding-left: .5rem;
+  padding-right: .5rem;
+  overflow-y: auto;
+}
+
+.dashboard-page .disclaimer,
+.dashboard-page .disclaimer .contract {
+  background-color: $color-ds-red-2;
+}
+
+.dashboard-page .disclaimer .body {
+  width:100%;
+}
+
+.dashboard-page .disclaimer .warning {
+  font-weight: 500;
+  font-size: .8rem;
+}
+
+.dashboard-page .disclaimer .contract {
+  text-align: justify;
+  margin-top: 1rem;
+  font-size: .75rem;
+}
+
+.dashboard-page .disclaimer a {
+  color: $color-ds-white;
 }
 
 .dashboard-main-content {
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: scroll;
   /* so top can be repositioned when header height changes (see fixScrollbar) */
   position: relative;
 }
 
-.dashboard-main-content .row,
- {
-  /* avoids overflow in x for the entire page and the appearance of a horix scrollbar */
-  margin-left:0;
-  margin-right:0;
+.dashboard-main-content .row {
+  /* avoids overflow in x for the entire page and the appearance of a horiz scrollbar */
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .dashboard-header {
@@ -45,7 +72,7 @@
 
 .initializationSection {
   padding-top:4rem;
-  padding-bottom:4rem;
+  padding-bottom:2rem;
 }
 
 .schemesSection {
@@ -57,9 +84,12 @@
   border-top-color: $color-ds-bluegreen;
   border-top-width: .3rem;
   border-top-style: solid;
+  padding-bottom: 2rem;
 }
 
-.schemesSection .body {
+.schemesSection .body,
+.schemesSection .title
+ {
   font-size: 1.25rem;
   margin-bottom: 1.25rem;
 }
@@ -112,7 +142,6 @@ text-align: center;
 
 .dashboard-schemes li.list-group-item div.row {
   width:100%;
-  cursor: pointer; 
 }
 
 .dashboard-schemes li.list-group-item:not(.selected) {
@@ -125,12 +154,42 @@ text-align: center;
   background-color: $color-ds-grey-1;
 }
 
+.dashboard-schemes li.list-group-item:not(.selected).frozen .scheme-use-button {
+  cursor: not-allowed; 
+}
+
+.dashboard-schemes li.list-group-item:not(.selected).frozen .scheme-use-button:hover {
+  background-color: $color-ds-grey-1;
+}
+
+.dashboard-schemes li.list-group-item:not(.selected).frozen:hover .scheme-name.activeLocks {
+  color: $color-ds-orange;
+}
+
+.dashboard-schemes li.list-group-item:not(.selected).frozen:hover .scheme-icon img.not-selected {
+  display: inline-block;
+}
+
+.dashboard-schemes li.list-group-item:not(.selected).frozen:hover .scheme-icon img.selected {
+  display: none;
+}
+
+.dashboard-schemes li.list-group-item:not(.selected).frozen:hover {
+  color: inherit;
+}
+
+.dashboard-schemes li.list-group-item.frozen .scheme-arrow-up,
+.dashboard-schemes li.list-group-item.frozen .scheme-arrow-down {
+  display:none;
+}
+
 .dashboard-schemes li.list-group-item .scheme-use-button {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
   width: 100%;
+  cursor: pointer; 
  }
 
 .dashboard-schemes li.list-group-item .scheme-use-button table {
@@ -151,7 +210,7 @@ text-align: center;
   color: $color-ds-white;
 }
 
-.dashboard-schemes li.list-group-item:not(.selected) .scheme-icon .selected {
+.dashboard-schemes li.list-group-item:not(.selected) .scheme-icon img.selected {
   display: none;
 }
 
@@ -216,6 +275,11 @@ text-align: center;
   padding-top: 1rem;
 }
 
+.scheme-dashboard-body.pageloader {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
 .scheme-dashboard .scheme-dashboard-body {
   border-bottom-color: $color-ds-lightblue;
   border-bottom-width: .2rem;
@@ -231,22 +295,34 @@ text-align: center;
   text-align: center;
 }
 
+.scheme-dashboard .scheme-dashboard-body div.message {
+  line-height: 1.2rem;
+}
+
 .scheme-dashboard .scheme-dashboard-body .btn-submit,
 .scheme-dashboard .scheme-dashboard-body .spinbutton {
+  white-space: nowrap;
   width: 6.1rem;
+}
+
+.scheme-dashboard .scheme-dashboard-body .btn-submit.btn-register {
+  width: 8.7rem;
+}
+
+.scheme-dashboard .scheme-dashboard-body.lockingTokens .dropdown .dropdown-menu {
+  overflow-y: auto;
+  max-height: 30rem;
+  margin-right: 1.2rem !important;
 }
 
 .redeemSection {
   background-color: $color-ds-darkblue;
-}
-
-.redeemSection {
   color: $color-ds-white;
   vertical-align: middle;
   display: inline-block;
   width:100%;
   padding-top: 4rem;
-  padding-bottom: 2rem;
+  padding-bottom: 3rem;
 }
 
 .propositionsSection .title {
@@ -299,15 +375,43 @@ text-align: center;
   margin-bottom: 1.5rem;
 }
 
+.redeemSection .body a {
+  color: $color-ds-yellow;
+}
+
 .redeemSection .redeemables {
   text-align:center;
-  padding-bottom: 3rem;
+}
+
+.redeemSection .redeemables .title {
+  font-weight: 400;
+  font-size: 1.3rem;
+  color: $color-ds-yellow;
+  margin-bottom: 1rem;
+  background-color: transparent;
 }
 
 .redeemSection .redeemables .body .breakdown {
   text-align:left;
-  margin-bottom: 2rem;
   display: inline-block;
+}
+
+.redeemSection .redeemables .body .breakdown table th {
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+.redeemSection .redeemables .body .breakdown table td {
+  padding-top: .1rem;
+  padding-bottom: .1rem;
+}
+
+.redeemSection .redeemables .body .breakdown table th {
+  text-decoration: underline;
+}
+
+.redeemSection .redeemables .body .breakdown table th {
+  color: $color-ds-white;
+  font-size: 1rem;
 }
 
 #globalRedeemBtn:hover,
@@ -326,16 +430,22 @@ text-align: center;
 .pie-chart {
   padding-left:1rem;
   padding-right:1rem;
+  text-align: center;
+}
+
+.pie-chart .title {
+  margin-bottom: 1rem;
 }
 
 .pie-chart .body {
-  text-align: center;
+  margin-bottom: 2rem;
 }
 
 .pie-chart img {
   max-width:100%;
   max-height:auto;
   margin-bottom: 2rem;
+  margin-top: 1.5rem;
 }
 
 // Small devices (landscape phones, 576px and up)
@@ -362,10 +472,21 @@ text-align: center;
     padding-right:2rem;
   }
 
+  .dashboard-page .disclaimer .body {
+    font-size: .9rem;
+  }
+
+  .dashboard-page .disclaimer .contract {
+    font-size: .9rem;
+  }
 }
 
 // Extra large devices (large desktops, 1200px and up)
-// @media (min-width: 1200px) { ... }
+@media (min-width: 1200px) {
+  .dashboard-page .schemesSection #accordion_arc_schemes {
+    min-width: 25rem;
+  }
+}
 
 table.locksForRep {
   border-top: solid $color-ds-black 1px;
@@ -375,6 +496,7 @@ table.locksForRep td {
   vertical-align: middle;
   padding-bottom: 0;
   padding-top: 0;
+  height: 2.5rem;
 }
 
 table.locksForRep td .fa-spin {
@@ -382,9 +504,17 @@ table.locksForRep td .fa-spin {
   margin-bottom: .55rem;
 }
 
-table.locksForRep td button {
+table.locksForRep td.actions {
+  text-align:center;
+  padding-left:0;
+  padding-right:0;
+  white-space:nowrap;
+}
+
+table.locksForRep td.actions button {
   margin-bottom: 0;
   font-size: 1rem;
+  padding-left: .2rem;
 }
 
 table.locksForRep td button:disabled,
@@ -392,13 +522,55 @@ table.locksForRep td button:disabled:hover {
   color: inherit;
 }
 
-button.spinbutton.btn-submit:disabled, 
+table.locksForRep td button.btn-link.release:disabled {
+  cursor: not-allowed;
+  text-decoration: none;
+  pointer-events: all; // weird bootstrap bug requires this
+}
+
+table.locksForRep td button.btn-link.complete {
+  color: $color-ds-green;
+}
+
 button.spinbutton.btn-submit:disabled:hover {
-  @extend .btn-submit:hover;
+  cursor: not-allowed;
 }
 
 .locksRefreshButton .spinbutton-icon {
   color: $color-ds-darkblue !important;
   margin-bottom: .5rem;
   margin-left: .25rem;
+}
+
+.redeemSection .pageloading i {
+  color: $color-ds-green;
+}
+
+metamaskfeedback .metamask-feedback {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+metamaskfeedback .metamask-icon {
+  width: 1.5rem;
+  margin-left: .5rem !important;
+  padding-bottom: .4rem;
+}
+
+metamaskfeedback .metamask-icon-only {
+  width: 1.5rem;
+  margin-left: .5rem !important;
+  padding-bottom: .1rem;
+}
+
+metamaskfeedback .metamask-text {
+  margin-left: .5rem !important;
+  display: inline-block;
+}
+
+.schedule-section {
+  padding-top:4.5rem;
+  padding-left: 4rem;
+  padding-right: 4rem;
+  background: $color-ds-grey-1;
 }

@@ -1,3 +1,14 @@
 <template>
-  <span class="balance">${text}</span>
+  <floating-point-number
+    class="balance"
+    if.to-view="balance !== null"
+    value.bind="balance | ethwei"
+    precision="6"
+    placement.to-view="placement"
+    trailing-zeroes.to-view="trailingZeroes"
+  ></floating-point-number>
+  <span
+    else
+    class="balance"
+  >N/A</span>
 </template>

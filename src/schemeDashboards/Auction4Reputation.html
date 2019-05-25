@@ -1,34 +1,46 @@
 <template>
   <div
     class="pageloader"
-    if.bind="!loaded"
+    if.to-view="!loaded"
   >
     <pageloading></pageloading>
   </div>
   <div else>
-    <instructions if.to-view="!auctionIsOver">You can receive reputation by bidding GEN tokens. There will be 10 auctions, each will run for 9 days
-      and offer 10,000 REP. The DutchX DAO will receive all the GEN collected in the auctions. To participate all you
-      need to do is enter the amount of GEN you wish to bid and click "Bid". The reputation will be distributed pro
-      rata once the auction is complete.
+    <instructions if.to-view="!auctionIsOver">
+      <p>Participate by bidding GEN tokens in any of the 10 auctions, each lasting approximately 3 days and running throughout the course of the vote staking period.</p>
+      <p>At the end of the vote staking period, you will be awarded Reputation proportionally to the amount of GEN tokens you bid in an auction relative to the amount of total GEN tokens bid in the same auction.</p>
     </instructions>
 
-    <div class="scheme-dashboard-body">
+    <div
+      class="pageloader scheme-dashboard-body"
+      id="auctionDashboardSwitchingSpinner"
+      show.to-view="_switchingAuctions"
+    >
+      <pageloading>Thanks for waiting while we fetch data for the next auction...</pageloading>
+    </div>
+
+    <div
+      show.to-view="!_switchingAuctions"
+      ref="dashboard"
+      class="scheme-dashboard-body"
+    >
 
       <div
         class="message"
         if.to-view="auctionNotBegun"
-      >The initialization period has not yet begun, you can't bid</div>
+      >The vote staking period has not yet begun. Return between ${auctionsStartTime | date:'dayofmonth'} and ${auctionsEndTime | date:'dayofmonth'} to bid GEN.</div>
       <div
         class="message"
         if.to-view="auctionIsOver"
-      >The initialization period has ended</div>
+      >The vote staking period has ended.</div>
 
       <div
         class="message"
+        style="text-align: left"
         if.to-view="!auctionNotBegun && !auctionIsOver"
       >
-        ${msRemainingInAuctionCountdown | timespan:"seconds"} left in the current auction ${currentAuctionNumber} of ${auctionCount}.
-        You have already bid ${amountBid | ethwei} out of a total ${totalAmountBid | ethwei} GEN bid in this auction.
+        <div>Current auction: ${currentAuctionNumber} of ${auctionCount}</div>
+        <div>Time left: ${msRemainingInAuctionCountdown | timespan:"seconds"}</div>
       </div>
 
       <form if.bind="!auctionNotBegun && !auctionIsOver">
@@ -42,6 +54,10 @@
                 value.bind="bidAmount | ethwei"
               ></numeric-input>
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
             <div class="form-group">
               <spinbutton
                 disabled.bind="bidding"
@@ -49,13 +65,51 @@
                 css="btn-submit btn-sm"
                 as-button="true"
                 text="Bid"
+                id="bidButton"
                 spin.to-view="bidding"
                 title.to-view="bidding ? 'Submitting bid...' : 'Submit Bid'"
               ></spinbutton>
+              <metamaskfeedback if.to-view="sendingBid"></metamaskfeedback>
             </div>
           </div>
         </div>
       </form>
+
+      <div if.to-view="!auctionNotBegun">
+        <div style="padding-left: .5rem; padding-right: .5rem">
+          <div
+            class="inline"
+            style="font-weight: 500;"
+          >Your GEN Bids</div>
+          <div class="pull-right">
+            <spinbutton
+              onclick.call="getAccountBids()"
+              class="locksRefreshButton"
+              spin.to-view="refreshingBids"
+              title="Refresh Bids List"
+            ></spinbutton>
+          </div>
+        </div>
+
+        <table class="table locksForRep">
+          <thead class="thead-light">
+            <tr>
+              <th>Auction #</th>
+              <th>You Have Bid</th>
+              <th>Total Bid</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr repeat.for="bid of allBids">
+              <td>${bid.auctionNum}</td>
+              <td>${bid.bidAmount | ethwei}</td>
+              <td>${bid.totalAuctionBidAmount| ethwei}</td>
+              <td>${bid.auctionStatus}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>

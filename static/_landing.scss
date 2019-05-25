@@ -1,12 +1,23 @@
 @import "./colors";
 
-.landing-page {
-  padding-top: 4rem;
-  padding-left: 0;
-  padding-right: 0;
+.landing-page .delayed-warning-section {
+  background-color: $color-ds-red;
+  padding-top: 2rem;
+  padding-bottom: .5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  text-align: center;
+  font-weight: 500;
+  font-size: 1.25rem;
+}
+
+.landing-page .delayed-warning-section .body {
+  text-align:center;
+  width:100%;
 }
 
 .landing-page .countdown {
+  padding-top: 4rem;
   padding-left: 1rem;
   padding-right: 1rem;
   font-size:3rem;
@@ -53,7 +64,7 @@
 }
 
 .landing-page .primary-section .body-text {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .landing-page .secondary-sections {
@@ -113,57 +124,6 @@
   margin-bottom: 4rem;
   line-height: 2.6rem;
 }
-
-.landing-page .participation-dates-section {
-  padding-bottom: 1.5rem;
-  color: $color-ds-white;
-}
-
-.landing-page .participation-dates-section .section {
-  text-align: left;
-  padding-top: 1rem;
-  margin-bottom: 3rem;
-}
-
-.landing-page .participation-dates-section .section .container {
-  padding-left: 0;
-  border-top-width: .5rem;
-  border-top-style: solid;
-  border-top-color: $color-ds-lightblue;
-}
-
-.landing-page .participation-dates-section .shortdate .asterisk {
-  position: absolute;
-  top: 2.7rem;
-  left: 0rem;
-}
-
-.landing-page .participation-dates-section .footnote {
-  font-style: italic;
-}
-
-.landing-page .participation-dates-section .triangle img {
-  width: .5rem;
-  margin-left: .2rem;
-  margin-bottom: -15px;
-}
-
-.landing-page .participation-dates-section .shortdate {
-  text-transform: uppercase;
-  font-weight: 300;
-  font-size: 1.6rem;
-  margin-bottom: .75rem;
-}
-
-.landing-page .participation-dates-section .phase {
-  font-weight: 500;
-}
-
-.landing-page .participation-dates-section .longdate {
-  font-weight: 400;
-  margin-bottom: .75rem;
-}
-
 .landing-page .pie-chart-section .pie-chart {
   margin-bottom: 2rem;
   padding-left: 1rem;
@@ -238,4 +198,17 @@
   text-align: center;
   color: $color-ds-white;
   font-size: 2.6rem;
+}
+
+.landing-page .btn-container {
+  text-align: center;
+}
+
+.landing-page .btn-container .btn-primary {
+  background-color: $color-ds-darkblue !important;
+}
+
+.landing-page .btn-container .btn-primary:hover {
+  background: $color-ds-white !important;
+  color: $color-ds-darkblue !important;
 }
