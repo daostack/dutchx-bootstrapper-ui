@@ -2,6 +2,17 @@
   <div class="liquidity-page container animated-page au-animate">
     <h1 class="title">Token Liquidity
     </h1>
+    <spinbutton
+      disabled.bind="loading"
+      onclick.call="load()"
+      css="btn-submit btn-sm"
+      as-button="true"
+      text.to-view="loading ? 'Loading...' : 'Refresh'"
+      id="refreshButton"
+      spin.to-view="loading"
+      title=''
+    >
+    </spinbutton>
     <div if.bind="!loading">
       <table class="table">
         <thead>

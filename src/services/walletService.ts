@@ -19,6 +19,12 @@ export class WalletService {
       name: 'Gnosis Safe',
     };
 
+  private static IMTOKEN: IWalletInfo =
+    {
+      icon: 'imToken.png',
+      name: 'imToken',
+    };
+
   private static UNKNOWN: IWalletInfo =
     {
       icon: 'Unknown.svg',
@@ -63,6 +69,8 @@ export class WalletService {
        */
       if (this.web3 && (this.web3.currentProvider as any).isSafe) {
         this.setCurrentWallet(WalletService.SAFE);
+      } else if (!!theWindow.imToken) {
+        this.setCurrentWallet(WalletService.IMTOKEN);
       } else if (theWindow.ethereum && theWindow.ethereum._metamask) {
         this.setCurrentWallet(WalletService.METAMASK);
       } else {

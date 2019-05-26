@@ -55,6 +55,10 @@ export class Liquidity extends BaseNetworkPage {
   }
 
   public async load() {
+    if (this.loading) {
+      return;
+    }
+
     this.loading = true;
     let schemeInfo: SchemeInfo;
     /**

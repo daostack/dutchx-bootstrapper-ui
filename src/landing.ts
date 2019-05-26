@@ -1,6 +1,6 @@
-import { App } from 'app';
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { autoinject } from 'aurelia-framework';
+import { Address } from 'services/ArcService';
 import { DateService } from 'services/DateService';
 
 @autoinject
@@ -8,6 +8,7 @@ export class Landing {
 
   private lockingPeriodStartDate: Date;
   private governanceStartDate: Date;
+  private daoAddress: Address;
   private scheduleModel = {
     isLanding: true,
   };
@@ -20,6 +21,7 @@ export class Landing {
       .fromIsoString(this.appConfig.get('Landing.lockingPeriodStartDate'));
     this.governanceStartDate = this.dateService
       .fromIsoString(this.appConfig.get('governanceStartDate'));
+    this.daoAddress = this.appConfig.get('Live.daoAddress');
   }
 
   public activate() {
@@ -39,10 +41,9 @@ export class Landing {
   }
 
   private countdownUnits(): string {
-    return (this.msUntilCanLockCountdown() >= 86400000) ? 'days' :
-      ((this.msUntilCanLockCountdown() >= 3600000) ? 'hours' :
-        (this.msUntilCanLockCountdown() >= 60000 ? 'minutes' : 'seconds')
-      );
+    return ((this.msUntilCanLockCountdown() >= 3600000) ? 'hours' :
+      (this.msUntilCanLockCountdown() >= 60000 ? 'minutes' : 'seconds')
+    );
   }
 
   // private fixScrollbar() {

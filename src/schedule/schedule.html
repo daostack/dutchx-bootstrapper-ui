@@ -32,7 +32,7 @@
             class="body"
             if.to-view="inGovernancePeriod"
           ><a
-              href="https://alchemy.daostack.io"
+              href="https://alchemy.daostack.io/${daoAddress}"
               target="_blank"
             >Click here to take part in the dxDAO</a>.</div>
         </div>
@@ -44,8 +44,8 @@
           <div class="phase">Vote Staking Period</div>
           <div class="longdate">${lockingPeriodStartDate | date:'dayofmonth'} through ${lockingPeriodEndDate | date:'shortdate'}</div>
           <div class="body">
-            <p>This is when you can take part in the above-mentioned vote staking period to gain Reputation (voting power).</p>
-            <p>* Please participate early to avoid potential blockchain problems</p>
+            <p>This is when you can take part in the Vote Staking Period to earn Reputation (voting power).</p>
+            <p>* To avoid last minute network congestion, make sure you can earn Reputation by participating well in advance of the Vote Staking Period’s ending time.</p>
           </div>
         </div>
       </div>
@@ -53,20 +53,20 @@
         <div class="container">
           <div class="triangle"><img src="${ getTriangle() }"></div>
           <div class="shortdate">${distributionPeriodStartDate | date:'shortdayofmonth'} <span class="time">${distributionPeriodStartDate | date:{ format: 'amPmHourTz' }}</span></div>
-          <div class="phase">Reputation (Voting Power) Distribution Period</div>
+          <div class="phase">Reputation (Voting Power) Distribution</div>
           <div class="longdate">${distributionPeriodStartDate | date:'dayofmonth'} through ${distributionPeriodEndDate | date:'shortdate'}</div>
-          <div class="body">Come back to the vote staking interface to see your individual amount of Reputation!</div>
+          <div class="body">During this time, return to this page to see how much Reputation you earned. This will be a 2-week pause until the Governance Phase is live. Prepare your proposals!</div>
         </div>
       </div>
       <div class="col-12 col-md-6 col-xl-3 section">
         <div class="container">
           <div class="triangle"><img src="${ getTriangle() }"></div>
           <div class="shortdate">${governanceStartDate | date:'shortdayofmonth'} <span class="time">${governanceStartDate | date:{ format: 'amPmHourTz' }}</span></div>
-          <div class="phase">Community Governance</div>
+          <div class="phase">Governance Phase</div>
           <div class="longdate">${governanceStartDate | date:'dayofmonth'}</div>
           <div class="body">
           </div>
-          <div>Be an active stakeholder in the dxDAO.</div>
+          <div>In this open-ended Governance Phase, the dxDAO starts accepting proposals and has full autonomy over its processes and the assets it controls. Become an active dxDAO Stakeholder!</div>
         </div>
       </div>
     </div>

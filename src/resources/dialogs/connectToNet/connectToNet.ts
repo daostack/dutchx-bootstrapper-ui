@@ -18,6 +18,10 @@ export class ConnectToNet {
   private landed: boolean;
   private checked1: boolean = false;
   private checked2: boolean = false;
+  private checked3: boolean = false;
+  private checked4: boolean = false;
+  private checked5: boolean = false;
+  private checked6: boolean = false;
   private checkStateChangeTimerId: any;
   private hasAccepted: boolean = false;
 
@@ -40,12 +44,12 @@ export class ConnectToNet {
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Id', () => {
       this.networkName = this.web3.networkName;
       this.userAccount = this.web3.defaultAccount;
-      this.checked1 = this.checked2 = false;
+      this.checked1 = this.checked2 = this.checked3 = this.checked4 = this.checked5 = this.checked6 = false;
       this.setHasAccepted(this.getHasAccepted());
     }));
     this.subscriptions.push(this.eventAggregator.subscribe('Network.Changed.Account', () => {
       this.userAccount = this.web3.defaultAccount;
-      this.checked1 = this.checked2 = false;
+      this.checked1 = this.checked2 = this.checked3 = this.checked4 = this.checked5 = this.checked6 = false;
       this.setHasAccepted(this.getHasAccepted());
     }));
 
@@ -130,7 +134,7 @@ export class ConnectToNet {
   }
 
   private async accept() {
-    if (this.checked1 && this.checked2) {
+    if (this.checked1 && this.checked2 && this.checked3 && this.checked4 && this.checked5 && this.checked6) {
       this.setHasAccepted(true);
       setTimeout(() => this.reposition(), 0);
     }

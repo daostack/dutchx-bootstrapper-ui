@@ -1,35 +1,3 @@
-.dashboard-page .disclaimer {
-  padding-top: 1rem;
-  padding-bottom: .5rem;
-  padding-left: .5rem;
-  padding-right: .5rem;
-  overflow-y: auto;
-}
-
-.dashboard-page .disclaimer,
-.dashboard-page .disclaimer .contract {
-  background-color: $color-ds-red-2;
-}
-
-.dashboard-page .disclaimer .body {
-  width:100%;
-}
-
-.dashboard-page .disclaimer .warning {
-  font-weight: 500;
-  font-size: .8rem;
-}
-
-.dashboard-page .disclaimer .contract {
-  text-align: justify;
-  margin-top: 1rem;
-  font-size: .75rem;
-}
-
-.dashboard-page .disclaimer a {
-  color: $color-ds-white;
-}
-
 .dashboard-main-content {
   overflow-x: auto;
   overflow-y: scroll;
@@ -129,6 +97,10 @@ text-align: center;
   border-style: solid;
   padding: 1.5rem;
   font-style: italic;
+}
+
+.initializationSection .box a {
+  color: $color-ds-yellow;
 }
 
 .schemes-loading {
@@ -471,14 +443,6 @@ text-align: center;
     padding-left:2rem;
     padding-right:2rem;
   }
-
-  .dashboard-page .disclaimer .body {
-    font-size: .9rem;
-  }
-
-  .dashboard-page .disclaimer .contract {
-    font-size: .9rem;
-  }
 }
 
 // Extra large devices (large desktops, 1200px and up)
@@ -573,4 +537,9 @@ metamaskfeedback .metamask-text {
   padding-left: 4rem;
   padding-right: 4rem;
   background: $color-ds-grey-1;
+}
+
+.warning {
+  color: $color-ds-red;
+  font-weight: 400;
 }
