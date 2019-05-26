@@ -85,9 +85,9 @@
                 <p>See the <a
                     href="https://github.com/gnosis/dx-daostack/blob/master/dxdao-whitepaper-v1.pdf"
                     target="_blank"
-                  >dxDAO whitepaper</a> for detailed information on all categories.</p>
+                  >dxDAO whitepaper</a> and Participation Agreement for detailed information on all categories.</p>
                 <p>
-                  The vote staking period will end on ${redeemingStartDate | date:'shortdate'}
+                  The Vote Staking Period will end on ${redeemingStartDate | date:'shortdate'}
                   at ${redeemingStartDate | date:{ format: 'amPmHourTz' }}).
                   After this time, earned Reputation (voting power) will be automatically distributed to participants.
                 </p>
@@ -195,8 +195,8 @@
                       <p>To participate, you can lock ETH or tokens whitelisted on the DutchX trading protocol, register Magnolia (MGN) earned by trading on the DutchX protocol, or <a
                           target="_blank"
                           href="https://medium.com/daostack/on-the-utility-of-the-gen-token-eb4f341d770e"
-                        >bid GEN</a> in any of ten auctions throughout the 30 day vote staking period.</p>
-                      <p>You may participate with more than one method of staking your vote, and you may bid GEN and lock ETH or tokens multiple times, with Reputation accumulating additively. You only need to register Magnolia (MGN) once, with the final amount of Magnolia registered in your wallet at the end of the vote staking period calculated toward your final Reputation award.</p>
+                        >bid GEN</a> in any of ten auctions throughout the 30 day Vote Staking Period.</p>
+                      <p>You may participate with more than one method of staking for your vote, and you may bid GEN and lock ETH or tokens multiple times, with Reputation accumulating additively. You only need to register Magnolia (MGN) once, with the final amount of Magnolia registered in your wallet during the last 24 hours of the Vote Staking Period contributing toward your final Reputation award.</p>
                     </div>
                   </div>
                 </div>
@@ -211,9 +211,9 @@
               class="col-6 offset-3"
               if.to-view="!canComputeReputation"
             >
-              <div class="title">Voting Power (Reputation) Distribution</div>
+              <div class="title">Reputation (Voting Power) Distribution</div>
               <div class="body">
-                <p>When the dxDAO vote staking period ends, the total amount of Reputation (voting power) you have earned will be transferred to the wallet address you used to participate during the vote staking period. To benefit the most from future functionality, use the <a
+                <p>When the dxDAO Vote Staking Period ends, the total amount of Reputation (voting power) you have earned will be assigned to the wallet address you used to participate during the Vote Staking Period. To benefit the most from future functionality, use the <a
                     target="_blank"
                     href="https://safe.gnosis.io/"
                   >Gnosis Safe</a> to stake for your vote.</p>
@@ -224,9 +224,9 @@
               class="col-6 offset-3"
               if.to-view="canComputeReputation"
             >
-              <div class="title">Voting Power (Reputation) Distribution</div>
+              <div class="title">Reputation (Voting Power) Distribution</div>
               <div class="body">
-                The dxDAO vote staking period ended on ${redeemingStartDate | date:'shortdate'}
+                The dxDAO Vote Staking Period ended on ${redeemingStartDate | date:'shortdate'}
                 at ${redeemingStartDate | date:{ format: 'amPmHourTz' }}).
               </div>
               <div class="redeemables">
@@ -266,7 +266,7 @@
                         </table>
                       </div>
                       <div>
-                        <p>Now wait for the governance phase to begin ${governanceStartDate | date:'shortdayofmonth'} - what will the first proposals be?</p>
+                        <p>Now get ready for the Governance Phase to begin ${governanceStartDate | date:'shortdayofmonth'}. What will the first proposals be?</p>
                         <p>Reputation is not an ERC-20 token and will not appear in most wallets. To confirm on Etherscan you’ve received Reputation, follow [this tutorial].</p>
                       </div>
                     </div>

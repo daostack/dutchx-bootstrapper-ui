@@ -63,7 +63,7 @@
 
           <div if.to-view="((isConnected && !hasAccount) || (hasAccepted && !landed && hasDao))">
             <p><span class="important">Important</span>: Reputation cannot be transferred.
-              <span if.to-view="!hasAccount">Please ensure you have selected the account (ETH Address) you intend to use in the future for voting within the DAO.</span>
+              <span if.to-view="!hasAccount">Please ensure you have selected the wallet (ETH Address) you intend to use in the future for voting within the DAO.</span>
             </p>
             <p if.to-view="hasAccount">
               You are currently using the following account:
@@ -109,7 +109,7 @@
             </compose>
 
             <hr />
-            <p>Read this Participation Agreement (“Agreement”) carefully before confirming your intent to be bound by it and participating in the dxDAO. This Agreement includes the terms of participation in the dxDAO. You understand, agree and confirm that:</p>
+            <p>Read the above Participation Agreement ("Agreement") carefully before confirming your intent to be bound by it and participating in the dxDAO. This Agreement includes the terms of participation in the dxDAO. You understand, agree and confirm that:</p>
 
             <div class="form-group checks">
               <div class="checkbox">
@@ -157,7 +157,7 @@
                   <input
                     type="checkbox"
                     checked.bind="checked6"
-                  > you have read, fully understood, and accept this disclaimer and the terms contained in the Participation Agreement
+                  > you have read, fully understood, and accept this Participation Agreement and the terms contained in the Participation Agreement
                 </label>
               </div>
               <p class="buttonContainer"><button
