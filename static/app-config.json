@@ -65,6 +65,18 @@
     "DxControllerBirthBlock": "7709758",
     "lockableTokens": [
       {
+        "symbol": "WETH",
+        "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+      },
+      {
+        "symbol": "IDEX",
+        "address": "0xB705268213D593B8FD88d3FDEFF93AFF5CbDcfAE"
+      },
+      {
+        "symbol": "OCEAN",
+        "address": "0x985dd3d42de1e256d09e1c10f112bccb8015ad41"
+      },
+      {
         "symbol": "BAT",
         "address": "0x0d8775f648430679a709e98d2b0cb6250d2887ef"
       },
@@ -165,10 +177,6 @@
         "address": "0x960b236A07cf122663c4303350609A66A7B288C0"
       },
       {
-        "symbol": "AURA",
-        "address": "0xcdcfc0f66c522fd086a1b725ea3c0eeb9f9e8814"
-      },
-      {
         "symbol": "BLZ",
         "address": "0x5732046a883704404f284ce41ffadd5b007fd668"
       },
@@ -202,7 +210,7 @@
       },
       {
         "symbol": "LRC",
-        "address": "0xef68e7c694f40c8202821edf525de3782458639f"
+        "address": "0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD"
       },
       {
         "symbol": "OST",
