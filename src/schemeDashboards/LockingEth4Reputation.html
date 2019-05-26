@@ -7,8 +7,8 @@
   </div>
   <div else>
     <instructions if.to-view="!lockingPeriodIsEnded">
-      <p>Select the amount of ETH you would like to lock and the length you wish to lock it, for up to thirty days.</p>
-      <p>At the end of the vote staking period, you will be awarded Reputation proportionally according to the total amount of ETH locked by all participants and the length of the locking period.</p>
+      <p>Select the amount of ETH you would like to lock and the length you wish to lock it, for up to 30 days.</p>
+      <p>At the end of the Vote Staking Period, you will be awarded Reputation proportionally according to the total amount of ETH locked and the length of the locking period of all participants.</p>
     </instructions>
     <div
       class="scheme-dashboard-body"
@@ -17,19 +17,19 @@
       <div
         class="message"
         if.to-view="lockingPeriodHasNotStarted"
-      >The vote staking period has not yet begun. Return between ${lockingStartTime | date:'dayofmonth'} and ${lockingEndTime | date:'dayofmonth'} to lock ETH.</div>
+      >The Vote Staking Period has not yet begun. Please return between ${lockingStartTime | date:'dayofmonth'} and ${lockingEndTime | date:'dayofmonth'} to lock ETH.</div>
 
       <div
         class="message"
         if.to-view="inLockingPeriod"
       >
-        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining in the vote staking period.
+        ${msRemainingInPeriodCountdown | timespan:"seconds"} remaining in the Vote Staking Period.
       </div>
 
       <div
         class="message"
         if.to-view="lockingPeriodIsEnded"
-      >The vote staking period has ended.</div>
+      >The Vote Staking Period has ended.</div>
       <form if.to-view="inLockingPeriod">
         <div
           class="row"

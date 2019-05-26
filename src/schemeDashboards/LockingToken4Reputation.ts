@@ -131,8 +131,8 @@ export class LockingToken4Reputation extends Locking4Reputation {
     return this.lockService.getLockedTokenSymbol(lockInfo);
   }
 
-  private async getTokenIsLiquid(token: Address): Promise<boolean> {
-    return this.tokenService.getTokenIsLiquid(token, this.wrapper);
+  private async getTokenIsLiquid(_token: Address): Promise<boolean> {
+    return false; // this.tokenService.getTokenIsLiquid(token, this.wrapper);
   }
 
   private async selectToken(tokenSpec: ITokenSpecification) {

@@ -7,20 +7,20 @@
   </div>
   <div else>
     <instructions if.to-view="!lockingPeriodIsEnded">
-      <p>Register your wallet address that contains Magnolia (MGN) here.</p>
-      <p>At the end of the vote staking period, you will be awarded Reputation proportional to the amount of MGN in the registered wallet address at the end of the Reputation period.</p>
+      <p if.to-view="!alreadyRegistered && !alreadyLocked">Register your wallet address that contains or will contain Magnolia (MGN) here.</p>
+      <p>At the end of the Vote Staking Period, <span style="font-weight:500">you will be awarded Reputation according to the amount of MGN in the registered wallet address <span style="text-decoration:underline">during the last 24 hours</span> of the Vote Staking Period</span> in proportion to the total amount of MGN registered by all participants.</p>
 
       <p>️️️️<span
           class="warning-icon"
           style="font-size:1rem"
-        >⚠️</span>&nbsp;Please make sure you are connected in ${walletService.currentWallet.name & signal:'wallet.changed'} with the same ETH address that holds or will hold your MGN tokens.</p>
+        >⚠️</span>&nbsp;Please make sure you are connected ${walletService.currentWallet.name & signal:'wallet.changed'} to the same wallet address that holds or will hold your MGN tokens.</p>
     </instructions>
 
     <div class="scheme-dashboard-body">
       <div
         class="message"
         if.to-view="!globalPeriodHasStarted"
-      >The vote staking period has not yet begun. Return between ${lockingStartTime | date:'dayofmonth'} and ${lockingEndTime | date:'dayofmonth'} to register MGN.</div>
+      >The Vote Staking Period has not yet begun. Return between ${lockingStartTime | date:'dayofmonth'} and ${lockingEndTime | date:'dayofmonth'} to register MGN.</div>
 
       <div
         class="message"
@@ -33,22 +33,22 @@
         class="message"
         if.to-view="inLockingPeriod && !alreadyLocked && !alreadyRegistered"
       >
-        <p>${msRemainingInPeriodCountdown | timespan:"seconds"} remaining to register wallet address that contains or will contain MGN at the end of the vote staking period.</p>
+        <p>${msRemainingInPeriodCountdown | timespan:"seconds"} remaining to register wallet address.</p>
         <p><span
-          class="warning-icon"
-          style="font-size:1rem"
-        >⚠️</span> It is currently the last 24 hours of the Vote Staking Period. Please note that due to this, using the REGISTER button below will automatically and immediately count the amount of MGN in your wallet address.</p>
+            class="warning-icon"
+            style="font-size:1rem"
+          >⚠️</span> It is currently the last 24 hours of the Vote Staking Period. Please note that due to this, using the REGISTER button below will automatically and immediately count the amount of MGN in your wallet address.</p>
       </div>
 
       <div
         class="message"
         if.to-view="lockingPeriodIsEnded"
-      >The vote staking period has ended.</div>
+      >The Vote Staking Period has ended.</div>
 
       <div
         class="message"
         if.to-view="globalPeriodHasStarted && (alreadyRegistered || alreadyLocked)"
-      >You have registered your wallet that contains or will contain MGN at the end of the vote staking period.</div>
+      >You have registered the wallet address.</div>
 
       <form>
         <div class="form-group">
