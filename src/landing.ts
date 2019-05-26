@@ -41,10 +41,9 @@ export class Landing {
   }
 
   private countdownUnits(): string {
-    return (this.msUntilCanLockCountdown() >= 86400000) ? 'days' :
-      ((this.msUntilCanLockCountdown() >= 3600000) ? 'hours' :
-        (this.msUntilCanLockCountdown() >= 60000 ? 'minutes' : 'seconds')
-      );
+    return ((this.msUntilCanLockCountdown() >= 3600000) ? 'hours' :
+      (this.msUntilCanLockCountdown() >= 60000 ? 'minutes' : 'seconds')
+    );
   }
 
   // private fixScrollbar() {
