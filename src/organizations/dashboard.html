@@ -156,7 +156,12 @@
                             if.to-view="dutchXSchemeConfigs.get(scheme.name).hasActiveLocks && scheme.numLocks"
                             class="scheme-name activeLocks"
                           >${scheme.numLocks} active locks</div>
-                          <div else>&nbsp;</div>
+                          <div
+                            if.to-view="dutchXSchemeConfigs.get(scheme.name).hasAddressRegistered && scheme.mgnRegistered"
+                            class="scheme-name activeLocks"
+                          >address registered</div>
+                          <div if.to-view="!dutchXSchemeConfigs.get(scheme.name).hasActiveLocks && !dutchXSchemeConfigs.get(scheme.name).hasAddressRegistered">&nbsp;
+                          </div>
                         </div>
                         <div
                           class="col-1"

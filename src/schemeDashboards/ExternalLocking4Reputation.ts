@@ -135,6 +135,8 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
       this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
         `Registration is complete`, result.transactionHash));
 
+      this.eventAggregator.publish('MgnRegistered');
+
       this.alreadyRegistered = true;
       success = true;
     } catch (ex) {
