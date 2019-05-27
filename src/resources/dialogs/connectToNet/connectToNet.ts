@@ -6,7 +6,6 @@ import { EventMessageType } from 'entities/GeneralEvents';
 import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LocalStorageService } from 'services/localStorageService';
-import { WalletService } from 'services/walletService';
 import { Web3Service } from 'services/Web3Service';
 
 @autoinject
@@ -30,8 +29,7 @@ export class ConnectToNet {
   constructor(
     private controller: DialogController,
     private eventAggregator: EventAggregator,
-    private web3: Web3Service,
-    private walletService: WalletService) {
+    private web3: Web3Service) {
     $(window).resize(() => {
       setTimeout(() => this.reposition(), 100);
     });
