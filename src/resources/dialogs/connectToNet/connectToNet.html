@@ -27,7 +27,10 @@
         if.to-view="!loading && (!hasAccepted && isConnected && hasAccount && hasApprovedAccountAccess)"
         class="d-inline"
       >
-        <div class="d-inline-block warning-icon">⚠️</div>Participation Agreement
+        <div class="d-inline-block warning-icon">⚠️</div>Participation Agreement <span style="font-size: .75rem"><a
+            href.to-view="paUrl"
+            target="_blank"
+          >download as pdf</a></span>
       </div>
 
     </ux-dialog-header>
@@ -109,7 +112,11 @@
             </compose>
 
             <hr />
-            <p>Read the above Participation Agreement ("Agreement") carefully before confirming your intent to be bound by it and participating in the dxDAO. This Agreement includes the terms of participation in the dxDAO. You understand, agree and confirm that:</p>
+            <p>Read the above Participation Agreement ("Agreement") carefully before confirming your intent to be bound by it and participating in the dxDAO. You may verify the Agreement by downloading the
+              <a
+                href.to-view="paUrl"
+                target="_blank"
+              >original hashed PDF</a>. This Agreement includes the terms of participation in the dxDAO. You understand, agree and confirm that:</p>
 
             <div class="form-group checks">
               <div class="checkbox">

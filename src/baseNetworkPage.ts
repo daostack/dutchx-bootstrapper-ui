@@ -437,7 +437,7 @@ interface ISchemeInfoX extends SchemeInfo {
 interface ISchemeConfig {
   description: string;
   hasActiveLocks: boolean;
-  hasAddressRegistered: boolean,
+  hasAddressRegistered: boolean;
   hasContract: boolean;
   icon?: string;
   icon_hover?: string;

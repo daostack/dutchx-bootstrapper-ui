@@ -1,4 +1,5 @@
 import { Address } from '@daostack/arc.js';
+import { AureliaConfiguration } from 'aurelia-configuration';
 import { DialogCancelableOperationResult, DialogController } from 'aurelia-dialog';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, computedFrom, View } from 'aurelia-framework';
@@ -25,11 +26,16 @@ export class ConnectToNet {
   private checked6: boolean = false;
   private checkStateChangeTimerId: any;
   private hasAccepted: boolean = false;
+  private paUrl: string;
 
   constructor(
     private controller: DialogController,
     private eventAggregator: EventAggregator,
-    private web3: Web3Service) {
+    private web3: Web3Service,
+    appConfig: AureliaConfiguration) {
+
+    this.paUrl = appConfig.get('paUrl');
+
     $(window).resize(() => {
       setTimeout(() => this.reposition(), 100);
     });

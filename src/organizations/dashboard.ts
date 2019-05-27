@@ -212,13 +212,8 @@ export class Dashboard extends BaseNetworkPage {
         this.appConfig.set('mgnWrapper', mgnWrapper as any);
 
         const hash = await mgnWrapper.getAgreementHash();
-        if (hash) {
-          const bytes = Buffer.from(`1220${hash.substr(2, hash.length - 2)}`, 'hex');
-          const ipfsHash = bs58.encode(bytes);
-          this.paUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
-          this.appConfig.set('paUrl', this.paUrl);
-        }
         this.appConfig.set('legalContractHash', hash);
+        this.paUrl = this.appConfig.get('paUrl');
 
         const lockDates = await this.getLockDates();
 
