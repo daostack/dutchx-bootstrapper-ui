@@ -216,6 +216,7 @@ export class Dashboard extends BaseNetworkPage {
           const bytes = Buffer.from(`1220${hash.substr(2, hash.length - 2)}`, 'hex');
           const ipfsHash = bs58.encode(bytes);
           this.paUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
+          this.appConfig.set('paUrl', this.paUrl);
         }
         this.appConfig.set('legalContractHash', hash);
 
