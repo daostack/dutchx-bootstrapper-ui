@@ -21,6 +21,7 @@ import {
 import { DaoEx, DaoService } from '../services/DaoService';
 import { SchemeInfo, SchemeService } from '../services/SchemeService';
 import { BigNumber, Web3Service } from '../services/Web3Service';
+const bs58 = require('bs58');
 
 @singleton(false)
 @autoinject
@@ -56,6 +57,7 @@ export class Dashboard extends BaseNetworkPage {
   private scheduleModel = {
     dao: undefined as DaoEx,
   };
+  private paUrl: string;
 
   constructor(
     daoService: DaoService,
@@ -209,7 +211,13 @@ export class Dashboard extends BaseNetworkPage {
           (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
         this.appConfig.set('mgnWrapper', mgnWrapper as any);
 
-        this.appConfig.set('legalContractHash', await mgnWrapper.getAgreementHash());
+        const hash = await mgnWrapper.getAgreementHash();
+        if (hash) {
+          const bytes = Buffer.from(`1220${hash.substr(2, hash.length - 2)}`, 'hex');
+          const ipfsHash = bs58.encode(bytes);
+          this.paUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
+        }
+        this.appConfig.set('legalContractHash', hash);
 
         const lockDates = await this.getLockDates();
 
