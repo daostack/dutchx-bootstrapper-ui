@@ -1,7 +1,9 @@
 import { Address } from '@daostack/arc.js';
 import { DialogCancelableOperationResult, DialogController } from 'aurelia-dialog';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject, computedFrom } from 'aurelia-framework';
+import { autoinject, computedFrom, View } from 'aurelia-framework';
+import { EventMessageType } from 'entities/GeneralEvents';
+import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LocalStorageService } from 'services/localStorageService';
 import { WalletService } from 'services/walletService';
@@ -133,10 +135,20 @@ export class ConnectToNet {
     }
   }
 
+  private get disclaimerSubmitButton(): HTMLElement {
+    return $('ux-dialog #disclaimerSubmitButton')[0];
+  }
+
   private async accept() {
     if (this.checked1 && this.checked2 && this.checked3 && this.checked4 && this.checked5 && this.checked6) {
       this.setHasAccepted(true);
       setTimeout(() => this.reposition(), 0);
+    } else {
+      await BalloonService.show({
+        content: `To continue - please agree with all the terms`,
+        eventMessageType: EventMessageType.Warning,
+        originatingUiElement: this.disclaimerSubmitButton,
+      });
     }
   }
 

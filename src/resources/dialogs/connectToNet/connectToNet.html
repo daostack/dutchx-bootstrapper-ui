@@ -161,9 +161,9 @@
                 </label>
               </div>
               <p class="buttonContainer"><button
-                  class="btn btn-submit"
+                  id="disclaimerSubmitButton"
+                  class="btn btn-submit ${(checked1 && checked2 && checked3 && checked4 && checked5 && checked6) ? '' : 'disabled'}"
                   click.delegate="accept()"
-                  disabled.to-view="!(checked1 && checked2 && checked3 && checked4 && checked5 && checked6)"
                 >Continue...</button></p>
             </div>
           </div>
