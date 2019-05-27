@@ -65,10 +65,6 @@
     "DxControllerBirthBlock": "7709758",
     "lockableTokens": [
       {
-        "symbol": "WETH",
-        "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-      },
-      {
         "symbol": "IDEX",
         "address": "0xB705268213D593B8FD88d3FDEFF93AFF5CbDcfAE"
       },
