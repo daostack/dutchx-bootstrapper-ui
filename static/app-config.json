@@ -1,7 +1,7 @@
 {
   "governanceStartDate":       "2019-07-14T12:00:00.000+0000",
   "maxLockingPeriodDays": 30,
-  "paUrl": "https://ipfs.io/ipfs/QmYannFYzK78ndnJDUrVAuUjzNvonvA7YRn26vvUZC5HX6",
+  "paUrl": "https://ipfs.io/ipfs/QmRQhXUKKfUCgsAf5jre18T3bz5921fSfvnZCB5rR8mCKj",
   "Landing": {
     "lockingPeriodStartDate":  "2019-05-29T12:00:00.000+0000",
     "lockingPeriodEndDate":    "2019-06-28T11:59:59.000+0000"
@@ -62,8 +62,8 @@
     ]
   },
   "Live": {
-    "daoAddress": "0xa5Ad838E10bbCAa1812513F3825f5813aa73AB28",
-    "DxControllerBirthBlock": "7841701",
+    "daoAddress": "0x519b70055af55A007110B4Ff99b0eA33071c720a",
+    "DxControllerBirthBlock": "7850183",
     "lockableTokens": [
       {
         "symbol": "IDEX",
