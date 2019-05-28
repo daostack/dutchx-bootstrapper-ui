@@ -8,6 +8,7 @@ import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LocalStorageService } from 'services/localStorageService';
 import { Web3Service } from 'services/Web3Service';
+import { WalletService } from 'services/walletService';
 
 @autoinject
 export class ConnectToNet {
@@ -32,6 +33,7 @@ export class ConnectToNet {
     private controller: DialogController,
     private eventAggregator: EventAggregator,
     private web3: Web3Service,
+    private walletService: WalletService, // this is required to initialize the service, and is used in the HTML
     appConfig: AureliaConfiguration) {
 
     this.paUrl = appConfig.get('paUrl');
