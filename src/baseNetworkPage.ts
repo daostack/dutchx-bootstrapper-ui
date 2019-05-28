@@ -228,8 +228,7 @@ export abstract class BaseNetworkPage {
       this.appConfig.setEnvironment(networkName);
       ConfigService.set('logLevel',
         // tslint:disable-next-line: no-bitwise
-        // (networkName === 'Live') ? LogLevel.info | LogLevel.warn | LogLevel.error : LogLevel.all);
-        LogLevel.all);
+        (networkName === 'Live') ? LogLevel.info | LogLevel.warn | LogLevel.error : LogLevel.all);
 
       if (!this.appConfig.get('lockableTokens')) {
         this.eventAggregator.publish('handleMessage',
