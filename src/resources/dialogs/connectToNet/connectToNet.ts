@@ -149,7 +149,7 @@ export class ConnectToNet {
       setTimeout(() => this.reposition(), 0);
     } else {
       await BalloonService.show({
-        content: `To continue - please agree with all the terms`,
+        content: `To continue please acknowledge your intent to be bound by the Agreement by ticking the boxes`,
         eventMessageType: EventMessageType.Warning,
         originatingUiElement: this.disclaimerSubmitButton,
       });
