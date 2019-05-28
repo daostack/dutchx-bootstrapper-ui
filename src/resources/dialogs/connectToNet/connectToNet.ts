@@ -7,8 +7,8 @@ import { EventMessageType } from 'entities/GeneralEvents';
 import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LocalStorageService } from 'services/localStorageService';
-import { Web3Service } from 'services/Web3Service';
 import { WalletService } from 'services/walletService';
+import { Web3Service } from 'services/Web3Service';
 
 @autoinject
 export class ConnectToNet {
