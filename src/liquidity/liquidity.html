@@ -2,6 +2,20 @@
   <div class="liquidity-page container animated-page au-animate">
     <h1 class="title">Token Liquidity
     </h1>
+    <div style="margin-bottom: 2rem">
+    <h4>To provide liquidity for ETH/${selectedToken.symbol} on the DutchX, trade on <a
+              target="_blank"
+              href="https://slow.trade"
+            >slow.trade</a>,
+            <a
+              target="_blank"
+              href="https://fairdex.net/"
+            >FairDEX</a>,
+            or visit the <a
+              target="_blank"
+              href="https://dutchx.readthedocs.io/en/latest/cli.html"
+            >DutchX documentation</a> for more information.</h4>
+      </div>
     <spinbutton
       disabled.bind="loading"
       onclick.call="load()"

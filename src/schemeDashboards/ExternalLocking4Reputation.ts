@@ -10,7 +10,6 @@ import {
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { Address, ArcTransactionResult, ExternalLocking4ReputationWrapper, LockInfo } from 'services/ArcService';
 import { BalloonService } from 'services/balloonService';
-import { WalletService } from 'services/walletService';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 
 @autoinject
@@ -134,6 +133,8 @@ export class ExternalLocking4ReputationDashboard extends Locking4Reputation {
 
       this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
         `Registration is complete`, result.transactionHash));
+
+      this.eventAggregator.publish('MgnRegistered');
 
       this.alreadyRegistered = true;
       success = true;

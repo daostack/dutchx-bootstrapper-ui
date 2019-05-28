@@ -33,7 +33,7 @@ export class DaoService {
 
         if (org) {
           dao = await DaoEx.fromArcJsDao(org, this.arcService, this.appSettings);
-          this.logger.debug(`loaded dao ${dao.name}: ${dao.address}`);
+          this.logger.info(`loaded dao ${dao.name}: ${dao.address}`);
         } // else error will already have been logged by arc.js
       } catch (ex) {
         // don't force the user to see this as a snack every time.

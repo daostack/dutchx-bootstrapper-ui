@@ -1,10 +1,12 @@
 import { Address } from '@daostack/arc.js';
+import { AureliaConfiguration } from 'aurelia-configuration';
 import { DialogCancelableOperationResult, DialogController } from 'aurelia-dialog';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject, computedFrom } from 'aurelia-framework';
+import { autoinject, computedFrom, View } from 'aurelia-framework';
+import { EventMessageType } from 'entities/GeneralEvents';
+import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
 import { LocalStorageService } from 'services/localStorageService';
-import { WalletService } from 'services/walletService';
 import { Web3Service } from 'services/Web3Service';
 
 @autoinject
@@ -24,12 +26,16 @@ export class ConnectToNet {
   private checked6: boolean = false;
   private checkStateChangeTimerId: any;
   private hasAccepted: boolean = false;
+  private paUrl: string;
 
   constructor(
     private controller: DialogController,
     private eventAggregator: EventAggregator,
     private web3: Web3Service,
-    private walletService: WalletService) {
+    appConfig: AureliaConfiguration) {
+
+    this.paUrl = appConfig.get('paUrl');
+
     $(window).resize(() => {
       setTimeout(() => this.reposition(), 100);
     });
@@ -133,10 +139,20 @@ export class ConnectToNet {
     }
   }
 
+  private get disclaimerSubmitButton(): HTMLElement {
+    return $('ux-dialog #disclaimerSubmitButton')[0];
+  }
+
   private async accept() {
     if (this.checked1 && this.checked2 && this.checked3 && this.checked4 && this.checked5 && this.checked6) {
       this.setHasAccepted(true);
       setTimeout(() => this.reposition(), 0);
+    } else {
+      await BalloonService.show({
+        content: `To continue please acknowledge your intent to be bound by the Agreement by ticking the boxes`,
+        eventMessageType: EventMessageType.Warning,
+        originatingUiElement: this.disclaimerSubmitButton,
+      });
     }
   }
 

@@ -49,6 +49,7 @@ export abstract class BaseNetworkPage {
     ['Auction4Reputation', {
       description: 'BID GEN',
       hasActiveLocks: false,
+      hasAddressRegistered: false,
       hasContract: true,
       icon: './gen_icon_color.svg',
       icon_hover: './gen_icon_white.svg',
@@ -57,6 +58,7 @@ export abstract class BaseNetworkPage {
     ['ExternalLocking4Reputation', {
       description: 'REGISTER MGN',
       hasActiveLocks: false,
+      hasAddressRegistered: true,
       hasContract: true,
       icon: './mgn_icon_color.svg',
       icon_hover: './mgn_icon_white.svg',
@@ -65,6 +67,7 @@ export abstract class BaseNetworkPage {
     ['LockingEth4Reputation', {
       description: 'LOCK ETH',
       hasActiveLocks: true,
+      hasAddressRegistered: false,
       hasContract: true,
       icon: './eth_icon_color.svg',
       icon_hover: './eth_icon_white.svg',
@@ -73,6 +76,7 @@ export abstract class BaseNetworkPage {
     ['LockingToken4Reputation', {
       description: 'LOCK TOKENS',
       hasActiveLocks: true,
+      hasAddressRegistered: false,
       hasContract: true,
       icon: './generic_icon_color.svg',
       icon_hover: './generic_icon_white.svg',
@@ -81,6 +85,7 @@ export abstract class BaseNetworkPage {
     ['DaoStorytelling', {
       description: 'DAO STORYTELLING',
       hasActiveLocks: false,
+      hasAddressRegistered: false,
       hasContract: false,
       icon: './t_blue.svg',
       icon_hover: './t_white.svg',
@@ -223,8 +228,7 @@ export abstract class BaseNetworkPage {
       this.appConfig.setEnvironment(networkName);
       ConfigService.set('logLevel',
         // tslint:disable-next-line: no-bitwise
-        // (networkName === 'Live') ? LogLevel.info | LogLevel.warn | LogLevel.error : LogLevel.all);
-        LogLevel.all);
+        (networkName === 'Live') ? LogLevel.info | LogLevel.warn | LogLevel.error : LogLevel.all);
 
       if (!this.appConfig.get('lockableTokens')) {
         this.eventAggregator.publish('handleMessage',
@@ -426,11 +430,13 @@ export abstract class BaseNetworkPage {
 
 interface ISchemeInfoX extends SchemeInfo {
   numLocks?: number;
+  mgnRegistered?: boolean;
 }
 
 interface ISchemeConfig {
   description: string;
   hasActiveLocks: boolean;
+  hasAddressRegistered: boolean;
   hasContract: boolean;
   icon?: string;
   icon_hover?: string;

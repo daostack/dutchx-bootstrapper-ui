@@ -27,9 +27,7 @@ export async function configure(aurelia: Aurelia) {
       configuration.settings.keyboard = false;
     });
 
-  if (process.env.env === 'development') {
-    aurelia.use.developmentLogging();
-  }
+  aurelia.use.developmentLogging(process.env.env === 'development' ? 'debug' : 'info');
 
   aurelia.use.globalResources([
     PLATFORM.moduleName('resources/customElements/EtherscanLink/EtherscanLink'),

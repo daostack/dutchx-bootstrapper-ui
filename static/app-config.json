@@ -1,6 +1,7 @@
 {
   "governanceStartDate":       "2019-07-14T12:00:00.000+0000",
   "maxLockingPeriodDays": 30,
+  "paUrl": "https://ipfs.io/ipfs/QmYannFYzK78ndnJDUrVAuUjzNvonvA7YRn26vvUZC5HX6",
   "Landing": {
     "lockingPeriodStartDate":  "2019-05-29T12:00:00.000+0000",
     "lockingPeriodEndDate":    "2019-06-28T11:59:59.000+0000"
@@ -61,9 +62,17 @@
     ]
   },
   "Live": {
-    "daoAddress": "0xC96c9141b5109EA440a70DC282672E41F81b20Ab",
-    "DxControllerBirthBlock": "7709758",
+    "daoAddress": "0xa5Ad838E10bbCAa1812513F3825f5813aa73AB28",
+    "DxControllerBirthBlock": "7841701",
     "lockableTokens": [
+      {
+        "symbol": "IDEX",
+        "address": "0xB705268213D593B8FD88d3FDEFF93AFF5CbDcfAE"
+      },
+      {
+        "symbol": "OCEAN",
+        "address": "0x985dd3d42de1e256d09e1c10f112bccb8015ad41"
+      },
       {
         "symbol": "BAT",
         "address": "0x0d8775f648430679a709e98d2b0cb6250d2887ef"
@@ -165,10 +174,6 @@
         "address": "0x960b236A07cf122663c4303350609A66A7B288C0"
       },
       {
-        "symbol": "AURA",
-        "address": "0xcdcfc0f66c522fd086a1b725ea3c0eeb9f9e8814"
-      },
-      {
         "symbol": "BLZ",
         "address": "0x5732046a883704404f284ce41ffadd5b007fd668"
       },
@@ -202,7 +207,7 @@
       },
       {
         "symbol": "LRC",
-        "address": "0xef68e7c694f40c8202821edf525de3782458639f"
+        "address": "0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD"
       },
       {
         "symbol": "OST",

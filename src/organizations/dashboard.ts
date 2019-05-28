@@ -21,6 +21,7 @@ import {
 import { DaoEx, DaoService } from '../services/DaoService';
 import { SchemeInfo, SchemeService } from '../services/SchemeService';
 import { BigNumber, Web3Service } from '../services/Web3Service';
+const bs58 = require('bs58');
 
 @singleton(false)
 @autoinject
@@ -56,6 +57,7 @@ export class Dashboard extends BaseNetworkPage {
   private scheduleModel = {
     dao: undefined as DaoEx,
   };
+  private paUrl: string;
 
   constructor(
     daoService: DaoService,
@@ -96,6 +98,11 @@ export class Dashboard extends BaseNetworkPage {
 
     this.subscriptions.push(this.eventAggregator.subscribe('Lock.Submitted', () => {
       this.computeNumLocks();
+      this.computeMgnRegistered();
+    }));
+
+    this.subscriptions.push(this.eventAggregator.subscribe('MgnRegistered', () => {
+      this.computeMgnRegistered();
     }));
 
     this.subscriptions.push(this.eventAggregator.subscribe('dashboard.busy', (val: boolean) => {
@@ -198,12 +205,15 @@ export class Dashboard extends BaseNetworkPage {
         );
 
         await this.computeNumLocks();
+        await this.computeMgnRegistered();
 
         const mgnWrapper =
           (await this.getSchemeWrapperFromName('ExternalLocking4Reputation')) as ExternalLocking4ReputationWrapper;
         this.appConfig.set('mgnWrapper', mgnWrapper as any);
 
-        this.appConfig.set('legalContractHash', await mgnWrapper.getAgreementHash());
+        const hash = await mgnWrapper.getAgreementHash();
+        this.appConfig.set('legalContractHash', hash);
+        this.paUrl = this.appConfig.get('paUrl');
 
         const lockDates = await this.getLockDates();
 
@@ -393,6 +403,15 @@ export class Dashboard extends BaseNetworkPage {
           .then((numLocks: number) => {
             schemeInfo2.numLocks = numLocks;
           });
+      });
+  }
+
+  private computeMgnRegistered(): void {
+    this.getSchemeWrapperFromName('ExternalLocking4Reputation')
+      .then(async (wrapper: ExternalLocking4ReputationWrapper) => {
+        const schemeInfo = this.getSchemeInfoFromName('ExternalLocking4Reputation');
+        schemeInfo.mgnRegistered = await wrapper.isRegistered(this.web3Service.defaultAccount) ||
+          await wrapper.getAccountHasLocked(this.web3Service.defaultAccount);
       });
   }
 
