@@ -164,6 +164,7 @@ module.exports = ({ production, server, coverage } = {}) => {
       }),
       new CopyWebpackPlugin([
         { from: 'static/favicon.ico' },
+        { from: 'static/app-config.json' },
         { from: 'static/daostack-icon-white.svg' },
         { from: 'static/daostack-icon-black.svg' },
         { from: 'static/dutchx-white.svg' },

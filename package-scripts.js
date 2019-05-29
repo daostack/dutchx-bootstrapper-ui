@@ -83,7 +83,7 @@ module.exports = {
     },
     browse: {
       production: {
-        default: "http-server dist_prod --cors -o -p 8091"
+        default: "http-server dist_prod --cors -p 8091 -g"
       },
       development: {
         default: "http-server dist --cors -o -p 8090"
