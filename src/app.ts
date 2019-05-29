@@ -53,7 +53,7 @@ export class App {
         nav: false,
         route: ['', '/', 'landing', 'home'],
         title: '',
-      }
+      },
     ]);
 
     config.fallbackRoute('');
