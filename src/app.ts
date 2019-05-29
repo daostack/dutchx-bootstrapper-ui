@@ -77,7 +77,7 @@ export class App {
         name: 'dashboard',
         nav: false,
         // 'address' will be present in the object passed to the 'activate' method of the viewmodel
-        route: ['dashboard/:address?'],
+        route: ['dashboard'],
         title: 'Stake for Your Vote',
       }
       ,
@@ -86,7 +86,7 @@ export class App {
         name: 'stake-for-your-vote',
         nav: false,
         // 'address' will be present in the object passed to the 'activate' method of the viewmodel
-        route: ['stake-for-your-vote/:address?'],
+        route: ['stake-for-your-vote'],
         title: 'Stake for Your Vote',
       }
       , {
@@ -101,14 +101,14 @@ export class App {
         moduleId: PLATFORM.moduleName('./liquidity/liquidity'),
         name: 'liquidity',
         nav: false,
-        route: ['liquidity/:address?'],
+        route: ['liquidity'],
         title: 'Token Liquidity',
       },
       , {
         moduleId: PLATFORM.moduleName('./status/status'),
         name: 'status',
         nav: false,
-        route: ['status/:address?'],
+        route: ['status'],
         title: 'Initialization Period Status',
       },
     ]);

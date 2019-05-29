@@ -174,7 +174,7 @@ export class Dashboard extends BaseNetworkPage {
   }
 
   protected async loadAvatar(): Promise<DaoEx | undefined> {
-    const address = this.options.address || this.appConfig.get('daoAddress');
+    const address = this.appConfig.get('daoAddress');
     if (!this.org || (address !== this.org.address)) {
       if (this.repSummaryCheck) {
         this.repSummaryCheck.dispose();

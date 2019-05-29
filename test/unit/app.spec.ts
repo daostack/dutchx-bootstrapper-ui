@@ -55,7 +55,7 @@ describe('the App module', () => {
       moduleId: PLATFORM.moduleName('./organizations/dashboard'),
       name: 'stake-for-your-vote',
       nav: false,
-      route: ['stake-for-your-vote/:address?'],
+      route: ['stake-for-your-vote'],
       title: 'Stake for Your Vote',
     });
   });
