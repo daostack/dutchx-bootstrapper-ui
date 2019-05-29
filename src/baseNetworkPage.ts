@@ -120,7 +120,7 @@ export abstract class BaseNetworkPage {
     }
   }
 
-  protected async activate(options: { address?: Address } = {}): Promise<void> {
+  protected async activate(options: {} = {}): Promise<void> {
 
     // tslint:disable-next-line: no-console
     // console.time('activate');
@@ -286,7 +286,7 @@ export abstract class BaseNetworkPage {
     // tslint:disable-next-line: no-console
     // console.time('loadAvatar');
 
-    const address = this.options.address || this.appConfig.get('daoAddress');
+    const address = this.appConfig.get('daoAddress');
 
     if (!this.org || (address !== this.org.address)) {
 
