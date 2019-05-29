@@ -15,16 +15,7 @@ $font-family-base: "DINPro";
 
 @import "~BMD/core"; 
 
-@import "./animations";
-@import "./dialogs";
-@import "./banner";
-@import "./src/schedule/schedule";
-@import "./balloon";
 @import "./landing";
-@import "./src/organizations/dashboard";
-@import "./src/services/snackbars";
-@import "./src/liquidity/liquidity";
-@import "./src/status/status";
 
 .color-green {
   color: $color-ds-green !important;

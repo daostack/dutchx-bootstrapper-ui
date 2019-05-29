@@ -3,9 +3,7 @@ import { autoinject } from 'aurelia-framework';
 import { PLATFORM } from 'aurelia-pal';
 import { Router, RouterConfiguration } from 'aurelia-router';
 import { BindingSignaler } from 'aurelia-templating-resources';
-import { Utils } from 'services/utils';
 import '../static/styles.scss';
-import { Web3Service } from './services/Web3Service';
 
 @autoinject
 export class App {
@@ -32,21 +30,9 @@ export class App {
   private intervalId: any;
 
   constructor(
-    private web3Service: Web3Service,
     private signaler: BindingSignaler,
     private eventAggregator: EventAggregator
   ) {
-  }
-
-  public activate() {
-    this.intervalId = setInterval(async () => {
-      this.signaler.signal('secondPassed');
-      let blockDate;
-      if (this.web3Service.isConnected) {
-        blockDate = await Utils.lastBlockDate(this.web3Service.web3);
-      }
-      this.eventAggregator.publish('secondPassed', blockDate);
-    }, 1000);
   }
 
   public attached() {

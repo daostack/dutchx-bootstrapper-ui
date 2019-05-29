@@ -1,8 +1,6 @@
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, bindingMode } from 'aurelia-framework';
-import { Address } from 'services/ArcService';
-import { Web3Service } from 'services/Web3Service';
 
 @autoinject
 export class Header {
@@ -15,15 +13,13 @@ export class Header {
   private collapseButtonVisible: boolean = false;
 
   constructor(
-    eventAggregator: EventAggregator,
-    private web3Service: Web3Service
+    eventAggregator: EventAggregator
   ) {
     this.initialize();
     eventAggregator.subscribe('Network.Changed.Id', () => { this.initialize(); });
   }
 
   private initialize() {
-    this.connected = this.web3Service.isConnected;
     this.windowResized();
     $(window).resize(() => this.windowResized());
   }
