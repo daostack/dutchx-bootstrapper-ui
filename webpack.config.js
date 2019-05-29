@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const { AureliaPlugin } = require('aurelia-webpack-plugin');
-const { ProvidePlugin, DefinePlugin, IgnorePlugin, ContextReplacementPlugin, SourceMapDevToolPlugin }
+const { ProvidePlugin, DefinePlugin, IgnorePlugin, SourceMapDevToolPlugin }
   = require('webpack');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
