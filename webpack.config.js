@@ -189,10 +189,6 @@ module.exports = ({ production, server, coverage } = {}) => {
       ]),
       // remove all moment.js locale files
       new IgnorePlugin(/^\.\/locale$/, /moment$/),
-      // filter ABI contract files
-      new ContextReplacementPlugin(
-        /@daostack[/\\]arc.js[/\\]migrated_contracts$/,
-        /Controller.json|Avatar.json|DAOToken.json|Reputation.json|ERC20.json|Auction4Reputation.json|ExternalLocking4Reputation.json|Locking4Reputation.json|LockingEth4Reputation.json|LockingToken4Reputation.json|PriceOracleInterface.json/),
       new MiniCssExtractPlugin({
         filename: production ? '[name].[hash].css' : '[name].css',
         chunkFilename: production ? '[id].[hash].css' : '[id].css',
