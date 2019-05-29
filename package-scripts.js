@@ -12,17 +12,6 @@ module.exports = {
     default: series(
       "nps build.production.andServe"
     ),
-    "arc-js": {
-      ganache: "npm explore @daostack/arc.js -- npm start ganache",
-      ganacheDb: {
-        default: "npm explore @daostack/arc.js -- npm start ganacheDb",
-        clean: "npm explore @daostack/arc.js -- npm start ganacheDb.clean",
-        zip: "npm explore @daostack/arc.js -- npm start ganacheDb.zip",
-        unzip: "npm explore @daostack/arc.js -- npm start ganacheDb.unzip",
-        restoreFromZip: "npm explore @daostack/arc.js -- npm start ganacheDb.restoreFromZip"
-      },
-      migrateContracts: "npm explore @daostack/arc.js -- npm start migrateContracts"
-    },
     lint: {
       default: lintCommand.replace('{args}',''),
       andFix: lintCommand.replace('{args}','--fix')

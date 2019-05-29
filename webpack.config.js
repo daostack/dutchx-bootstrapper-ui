@@ -49,11 +49,7 @@ module.exports = ({ production, server, coverage } = {}) => {
     },
     devtool: production ? 'source-map' : 'eval-source-map',
     entry: {
-      app: ['aurelia-bootstrapper'],
-      vendor: [
-        'bluebird',
-        '@daostack/arc.js'
-      ],
+      app: ['aurelia-bootstrapper']
     },
     output: {
       path: outDir,

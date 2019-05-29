@@ -40,9 +40,6 @@
       "^.+\\.(ts)$": "ts-jest",
       "^.+\\.(js)$": "babel-jest"
     },
-    "transformIgnorePatterns": [
-      "<rootDir>/node_modules/(?!(@daostack/arc.js)/)"
-    ],
     "testRegex": "\\.spec\\.(ts|js)x?$",
     "setupFiles": [
       "<rootDir>/test/jest-pretest.ts"
@@ -130,17 +127,13 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "@daostack/arc.js": "0.0.0-alpha.138",
     "arrive": "^2.4.1",
     "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.1.1",
     "aurelia-configuration": "^2.0.0",
     "aurelia-dialog": "^2.0.0-rc.5",
-    "axios": "^0.18.0",
-    "bluebird": "^3.5.2",
     "bootstrap": "4.2.1",
     "bootstrap-material-design": "^4.1.1",
-    "bs58": "^4.0.1",
     "es6-promisify": "^6.0.0",
     "express": "^4.16.4",
     "font-awesome": "^4.7.0",
@@ -151,14 +144,7 @@
     "node-waves": "^0.7.6",
     "numeral": "^2.0.6",
     "popper.js": "^1.14.7",
-    "rxjs": "^5.5.6",
     "snackbarjs": "^1.1.0",
     "tslint": "^5.12.0"
-  },
-  "resolutions": {
-    "tar": "4.4.2",
-    "ecstatic": "4.1.2",
-    "braces": "2.3.1",
-    "fstream": "1.0.12"
   }
 }

@@ -2,12 +2,7 @@
 /// <reference types="aurelia-loader-webpack/src/webpack-hot-interface"/>
 import { Aurelia } from 'aurelia-framework';
 import { PLATFORM } from 'aurelia-pal';
-import * as Bluebird from 'bluebird';
 import 'bootstrap-material-design';
-import 'popper.js';
-
-// remove out if you don't want a Promise polyfill (remove also from webpack.config.js)
-Bluebird.config({ warnings: { wForgottenReturn: false } });
 
 // supplied by Webpack
 export async function configure(aurelia: Aurelia) {
