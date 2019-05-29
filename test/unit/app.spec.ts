@@ -52,11 +52,11 @@ describe('the App module', () => {
 
   it('should have a dashboard route', () => {
     expect(app.router.routes).toContainEqual({
-      moduleId: PLATFORM.moduleName('./organizations/dashboard'),
-      name: 'stake-for-your-vote',
+      moduleId: PLATFORM.moduleName('./landing'),
+      name: 'landing',
       nav: false,
-      route: ['stake-for-your-vote/:address?'],
-      title: 'Stake for Your Vote',
+      route: ['', '/', 'landing', 'home'],
+      title: '',
     });
   });
 });
