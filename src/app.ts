@@ -60,10 +60,6 @@ export class App {
     config.title = 'dxDAO';
     config.options.pushState = true;
     config.options.root = '/';
-    /**
-     * first set the landing page.
-     * it is possible to be connected but have the wrong chain.
-     */
     config.map([
       {
         moduleId: PLATFORM.moduleName('./landing'),
@@ -71,46 +67,7 @@ export class App {
         nav: false,
         route: ['', '/', 'landing', 'home'],
         title: '',
-      },
-      {
-        moduleId: PLATFORM.moduleName('./organizations/dashboard'),
-        name: 'dashboard',
-        nav: false,
-        // 'address' will be present in the object passed to the 'activate' method of the viewmodel
-        route: ['dashboard/:address?'],
-        title: 'Stake for Your Vote',
       }
-      ,
-      {
-        moduleId: PLATFORM.moduleName('./organizations/dashboard'),
-        name: 'stake-for-your-vote',
-        nav: false,
-        // 'address' will be present in the object passed to the 'activate' method of the viewmodel
-        route: ['stake-for-your-vote/:address?'],
-        title: 'Stake for Your Vote',
-      }
-      , {
-        moduleId: PLATFORM.moduleName('./txInfo/txInfo'),
-        // 'txHash' will be present in the object passed to the 'activate' method of the viewmodel
-        name: 'txInfo',
-        nav: false,
-        route: ['txInfo/:txHash'],
-        title: 'Transaction Information',
-      },
-      , {
-        moduleId: PLATFORM.moduleName('./liquidity/liquidity'),
-        name: 'liquidity',
-        nav: false,
-        route: ['liquidity/:address?'],
-        title: 'Token Liquidity',
-      },
-      , {
-        moduleId: PLATFORM.moduleName('./status/status'),
-        name: 'status',
-        nav: false,
-        route: ['status/:address?'],
-        title: 'Initialization Period Status',
-      },
     ]);
 
     config.fallbackRoute('');

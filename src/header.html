@@ -10,7 +10,7 @@
         class="logo d-inline-block align-top"
         alt="dxDAO"
       >
-      <div class="company-name">dxDAO Vote Staking</div>
+      <div class="company-name">dxDAO Announcement</div>
     </a>
 
     <button
@@ -32,37 +32,6 @@
       ref="collapsePanel"
       id="navbarToggler"
     >
-
-      <networkfeedback
-        class="d-lg-none"
-        network.to-view="network"
-        connected.to-view="connected"
-      ></networkfeedback>
-
-      <a
-        class="anchor-secondary nav-link nowrap"
-        href="https://github.com/gnosis/dx-daostack/blob/master/dxdao-whitepaper-v1.pdf"
-        target="_blank"
-      >White Paper</a>
-
-      <a
-        class="anchor-secondary nav-link nowrap"
-        href="https://blog.gnosis.pm/step-by-step-guide-to-earn-reputation-for-the-dxdao-with-the-gnosis-safe-cc54f3a93f3e"
-        target="_blank"
-      >Walkthrough</a>
-
-      <!-- <a
-        href="https://gnosis1.typeform.com/to/B93QUO"
-        target="_blank"
-        class="anchor-secondary nav-link"
-      >Usability Survey</a> -->
-
-      <!-- <a
-        href=""
-        target="_blank"
-        class="anchor-secondary nav-link"
-      >Report Bug</a> -->
-
       <a
         href="https://daotalk.org/c/daos/dx-dao"
         target="_blank"
@@ -74,44 +43,6 @@
         target="_blank"
         class="anchor-secondary nav-link"
       >Telegram</a>
-
-      <a
-        href="https://drive.google.com/file/d/1xRoczorD113nRdZasvFXnoQeZ3V68leF"
-        target="_blank"
-        class="anchor-secondary nav-link"
-      >Privacy Policy</a>
-
-      <div if.to-view="!collapsed">
-        <div>
-          <div class="userAddress nav-link">Your address:
-            <usersaddress small="true"></usersaddress>
-          </div>
-
-          <span class="userBalance nav-link inline">MGN:
-            <mgnbalance></mgnbalance>
-          </span>
-          <span class="userBalance nav-link inline">ETH:
-            <ethbalance></ethbalance>
-          </span>
-          <span class="userBalance nav-link inline">GEN:
-            <tokenbalance token.to-view="genAddress"></tokenbalance>
-          </span>
-        </div>
-        <div class="navbar-text">Powered by <a
-            target="_blank"
-            href="http://daostack.io"
-          >DAOstack</a>
-          <img
-            class="logo"
-            src="../static/daostack-icon-white.svg"
-          /></div>
-      </div>
-
-      <networkfeedback
-        class="d-none d-lg-inline-block"
-        network.to-view="network"
-        connected.to-view="connected"
-      ></networkfeedback>
 
     </div>
   </nav>
