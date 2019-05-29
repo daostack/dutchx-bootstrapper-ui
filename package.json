@@ -139,7 +139,7 @@
     "axios": "^0.18.0",
     "bluebird": "^3.5.2",
     "bootstrap": "4.2.1",
-    "bootstrap-material-design": "^4.1.1",
+    "bootstrap-material-design": "4.1.1",
     "bs58": "^4.0.1",
     "es6-promisify": "^6.0.0",
     "express": "^4.16.4",
@@ -154,11 +154,5 @@
     "rxjs": "^5.5.6",
     "snackbarjs": "^1.1.0",
     "tslint": "^5.12.0"
-  },
-  "resolutions": {
-    "tar": "4.4.2",
-    "ecstatic": "4.1.2",
-    "braces": "2.3.1",
-    "fstream": "1.0.12"
   }
 }
