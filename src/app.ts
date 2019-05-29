@@ -8,20 +8,6 @@ import '../static/styles.scss';
 @autoinject
 export class App {
 
-  public static timezone: any;
-
-  public static hasDashboard(schemeName: string): boolean {
-    return App.schemeDashboards.indexOf(schemeName) !== -1;
-  }
-
-  private static schemeDashboards = [
-    'Auction4Reputation',
-    'ExternalLocking4Reputation',
-    'LockingEth4Reputation',
-    'LockingToken4Reputation',
-    'DaoStorytelling',
-  ];
-
   /**
    * public for tests
    */

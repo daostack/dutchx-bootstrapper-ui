@@ -20,7 +20,6 @@ export async function configure(aurelia: Aurelia) {
 
   aurelia.use.globalResources([
     PLATFORM.moduleName('header'),
-    PLATFORM.moduleName('resources/valueConverters/date'),
   ]);
 
   await aurelia.start();
