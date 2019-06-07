@@ -11,7 +11,7 @@ import { TokenService } from 'services/TokenService';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 import { DecodedLogEntry } from 'web3';
 import {
-  Address, ArcService, Locking4ReputationLockEventResult, LockingToken4ReputationWrapper, WrapperService
+  Address, ArcService, Locking4ReputationLockEventResult, WrapperService
 } from '../services/ArcService';
 
 @autoinject
@@ -77,24 +77,37 @@ export class Status extends BaseNetworkPage {
     /**
      * presumes the Dashboard page has previously been loaded
      */
+    // tslint:disable: no-console
+    console.time('entire process');
     try {
       schemeInfo = this.getSchemeInfoFromName('LockingEth4Reputation');
       const ethLockingWrapper = await WrapperService.factories.LockingEth4Reputation.at(schemeInfo.address);
 
+      console.time('eth getTotalLocked');
       this.ethStaked = await ethLockingWrapper.getTotalLocked();
+      console.timeEnd('eth getTotalLocked');
+      console.time('eth getLockCount');
       this.numEthStakes = await ethLockingWrapper.getLockCount();
+      console.timeEnd('eth getLockCount');
+
+      console.time('get eth locks');
 
       const ethLocksEventFetcher = ethLockingWrapper.Lock({}, { fromBlock: schemeInfo.blockNumber });
       const allEthLocks = await ethLocksEventFetcher.get();
       for (const stake of allEthLocks) {
         this.ethStakers.add(stake.args._locker);
       }
+      console.timeEnd('get eth locks');
 
       schemeInfo = this.getSchemeInfoFromName('LockingToken4Reputation');
       const tokenLockingWrapper = await WrapperService.factories.LockingToken4Reputation.at(schemeInfo.address);
 
+      console.time('tokens getTotalLocked');
       this.tokenUnitsStaked = await tokenLockingWrapper.getTotalLocked();
+      console.timeEnd('tokens getTotalLocked');
+      console.time('tokens getLockCount');
       this.numTokenStakes = await tokenLockingWrapper.getLockCount();
+      console.timeEnd('tokens getLockCount');
 
       // make a copy because the original is used by the token locking dashboard
       const tokens = [...this.appConfig.get('lockableTokens')];
@@ -102,23 +115,35 @@ export class Status extends BaseNetworkPage {
       const tokenLocksEventFetcher = tokenLockingWrapper.Lock({}, { fromBlock: schemeInfo.blockNumber });
       const allTokenLocks = await tokenLocksEventFetcher.get();
 
+      console.time('get LockToken events');
       const tokenLockTokenEventFetcher = tokenLockingWrapper.LockToken({}, { fromBlock: schemeInfo.blockNumber });
       const allTokenLockLocks = await tokenLockTokenEventFetcher.get();
+      console.timeEnd('get LockToken events');
 
       for (const stake of allTokenLocks) {
         this.tokenStakers.add(stake.args._locker);
       }
 
+      console.time('get tokens');
+
       for (const tokenSpec of tokens) {
+        console.time('get lockedTokens');
         const tokenStakes = new Array<DecodedLogEntry<Locking4ReputationLockEventResult>>();
         const totalStakers = new Set();
-        for (const stake of allTokenLocks) {
-          const tokenAddress = await tokenLockingWrapper.contract.lockedTokens(stake.args._lockingId);
-          if (tokenSpec.address === tokenAddress) {
-            totalStakers.add(stake.args._locker);
-            tokenStakes.push(stake);
+        const price = await this.tokenService.getTokenPriceFactor(tokenSpec.address, tokenLockingWrapper);
+
+        if (!!price) {
+          for (const stake of allTokenLocks) {
+            const tokenAddress = await tokenLockingWrapper.contract.lockedTokens(stake.args._lockingId);
+            if (tokenSpec.address === tokenAddress) {
+              totalStakers.add(stake.args._locker);
+              tokenStakes.push(stake);
+            }
           }
         }
+        console.timeEnd('get lockedTokens');
+
+        console.time('get tokenEthStaked');
 
         const stakedAmount = tokenStakes
           .map((stake) => stake.args._amount)
@@ -137,6 +162,7 @@ export class Status extends BaseNetworkPage {
           }, new BigNumber(0));
 
         this.tokenEthStaked = this.tokenEthStaked.add(stakedEth);
+        console.timeEnd('get tokenEthStaked');
 
         tokenInfos.push({
           ethStaked: stakedEth,
@@ -163,6 +189,7 @@ export class Status extends BaseNetworkPage {
             return SortService.evaluateString(a.symbol, b.symbol);
           }),
       ];
+      console.timeEnd('get tokens');
 
       schemeInfo = this.getSchemeInfoFromName('ExternalLocking4Reputation');
       const mgnLockingWrapper = await WrapperService.factories.ExternalLocking4Reputation.at(schemeInfo.address);
@@ -218,6 +245,7 @@ export class Status extends BaseNetworkPage {
       this.auctions = auctions;
     } finally {
       this.loading = false;
+      console.timeEnd('entire process');
     }
   }
 }
