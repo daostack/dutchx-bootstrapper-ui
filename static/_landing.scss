@@ -1,14 +1,17 @@
 @import "./colors";
 
+.landing-page .main-content {
+  overflow-x: auto;
+  overflow-y: scroll;
+  /* so top can be repositioned when header height changes (see fixScrollbar) */
+  position: relative;
+}
+
 .landing-page .delayed-warning-section {
-  background-color: $color-ds-red;
-  padding-top: 2rem;
   padding-bottom: .5rem;
   padding-left: 2rem;
   padding-right: 2rem;
   text-align: center;
-  font-weight: 500;
-  font-size: 1.25rem;
 }
 
 .landing-page .delayed-warning-section .body {
@@ -17,12 +20,12 @@
 }
 
 .landing-page .countdown {
-  padding-top: 4rem;
+  padding-top: 3.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
   font-size:3rem;
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 3.5rem;
 }
 
 .landing-page .count {
