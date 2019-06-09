@@ -92,6 +92,28 @@ export class TokenService {
     return this.getErc20TokenBalance(token, accountAddress, inEth);
   }
 
+  public async getTokenAllowance(
+    tokenAddress: Address,
+    accountAddress: Address,
+    spender: Address,
+    inEth: boolean = false): Promise<BigNumber> {
+
+    const token = await this.getErc20Token(tokenAddress);
+
+    if (!token) {
+      return null;
+    }
+
+    let amount = await token.getAllowance({
+      owner: accountAddress,
+      spender,
+    });
+    if (inEth) {
+      amount = this.web3.fromWei(amount);
+    }
+    return amount;
+  }
+
   public getGenTokenBalance(): Promise<BigNumber | undefined> {
     try {
       const userAddress = this.web3.defaultAccount;

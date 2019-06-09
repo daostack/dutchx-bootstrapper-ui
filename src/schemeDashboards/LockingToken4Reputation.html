@@ -76,19 +76,19 @@
             class="message"
             if.to-view="!selectedTokenIsLiquid"
           >
-          <p>There currently isn’t sufficient trading for ETH/${selectedToken.symbol} on the DutchX. Please choose another token or try again later.
-            To provide liquidity for ETH/${selectedToken.symbol} on the DutchX, trade on <a
-              target="_blank"
-              href="https://slow.trade"
-            >slow.trade</a>,
-            <a
-              target="_blank"
-              href="https://fairdex.net/"
-            >FairDEX</a>,
-            or visit the <a
-              target="_blank"
-              href="https://dutchx.readthedocs.io/en/latest/cli.html"
-            >DutchX documentation</a> for more information.</p>
+            <p>There currently isn’t sufficient trading for ETH/${selectedToken.symbol} on the DutchX. Please choose another token or try again later.
+              To provide liquidity for ETH/${selectedToken.symbol} on the DutchX, trade on <a
+                target="_blank"
+                href="https://slow.trade"
+              >slow.trade</a>,
+              <a
+                target="_blank"
+                href="https://fairdex.net/"
+              >FairDEX</a>,
+              or visit the <a
+                target="_blank"
+                href="https://dutchx.readthedocs.io/en/latest/cli.html"
+              >DutchX documentation</a> for more information.</p>
 
             <p><a
                 href="https://dxdao.daostack.io/liquidity"
@@ -122,6 +122,18 @@
               <div class="col-12">
                 <div class="form-group">
                   <spinbutton
+                    show.to-view="!approved"
+                    onclick.call="approve()"
+                    disabled.bind="approving"
+                    css="btn-submit btn-sm approveTokenButton"
+                    as-button="true"
+                    text="Approve Token"
+                    spin.to-view="approving"
+                    id="approveButton"
+                    title.to-view="approving? 'Approving...' : 'Approve Token'"
+                  ></spinbutton>
+                  <spinbutton
+                    show.to-view="approved"
                     onclick.call="lock()"
                     disabled.bind="locking"
                     css="btn-submit btn-sm"

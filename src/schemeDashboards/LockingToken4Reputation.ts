@@ -1,22 +1,25 @@
 import { AureliaConfiguration } from 'aurelia-configuration';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, signalBindings } from 'aurelia-framework';
-import { EventConfigException, EventConfigFailure, EventMessageType } from 'entities/GeneralEvents';
+import {
+  EventConfigException,
+  EventConfigFailure,
+  EventConfigTransaction,
+  EventMessageType
+} from 'entities/GeneralEvents';
 import { Locking4Reputation } from 'schemeDashboards/Locking4Reputation';
 import { BalloonService } from 'services/balloonService';
-import { ITokenSpecification } from 'services/lockServices';
+import { ITokenSpecification, LockService } from 'services/lockServices';
 import { TokenService } from 'services/TokenService';
 import { Utils as UtilsInternal } from 'services/utils';
 import { BigNumber, Web3Service } from 'services/Web3Service';
 import {
   Address,
-  ArcTransactionResult,
   Erc20Factory,
   Erc20Wrapper,
   LockInfo,
   LockingToken4ReputationWrapper,
   TokenLockingOptions,
-  Utils
 } from '../services/ArcService';
 
 @autoinject
@@ -28,6 +31,7 @@ export class LockingToken4Reputation extends Locking4Reputation {
   private selectedTokenIsLiquid: boolean = false;
   private dashboard: HTMLElement;
   private tokensInited = false;
+  private approved: boolean = false;
 
   constructor(
     appConfig: AureliaConfiguration,
@@ -57,6 +61,58 @@ export class LockingToken4Reputation extends Locking4Reputation {
     return this.getLocks();
   }
 
+  protected async approve(): Promise<boolean> {
+
+    if (!this.selectedToken) {
+      this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Please select a token`));
+      return;
+    }
+
+    (this.lockModel as TokenLockingOptions).tokenAddress = this.selectedToken.address;
+
+    try {
+
+      // const allowance = await this.tokenService.getTokenAllowance(
+      //   this.selectedToken.address,
+      //   this.web3Service.defaultAccount,
+      //   this.address
+      // );
+      // this.approved = allowance.gte(this.lockModel.amount);
+
+      this.approving = true;
+
+      if (!(await this.getLockBlocker())) {
+
+        const token = (await Erc20Factory.at(this.selectedToken.address)) as Erc20Wrapper;
+
+        this.sending = true;
+
+        const result = await (await token.approve({
+          amount: LockService.maxTokenApprovalAmount,
+          owner: this.lockModel.lockerAddress,
+          spender: this.wrapper.address,
+        })).watchForTxMined();
+
+        this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
+          `The token approval has been recorded`, result.transactionHash));
+
+        return true;
+      }
+    } catch (ex) {
+      this.eventAggregator.publish('handleException',
+        new EventConfigException(`The token approval was not approved`, ex));
+      await BalloonService.show({
+        content: `The token approval was not approved`,
+        eventMessageType: EventMessageType.Exception,
+        originatingUiElement: this.approveButton,
+      });
+    } finally {
+      this.approving = false;
+      this.sending = false;
+    }
+    return false;
+  }
+
   protected async lock(): Promise<boolean> {
 
     if (!this.selectedToken) {
@@ -68,25 +124,9 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
     try {
 
-      this.locking = true;
-
       if (!(await this.getLockBlocker())) {
 
-        const token = (await Erc20Factory.at(this.selectedToken.address)) as Erc20Wrapper;
-
         this.sending = true;
-        await (await token.approve({
-          amount: this.lockModel.amount,
-          owner: this.lockModel.lockerAddress,
-          spender: this.wrapper.address,
-        })
-          .then((tx: ArcTransactionResult) => {
-            this.sending = false;
-            return tx;
-          }))
-          .watchForTxMined();
-
-        this.locking = false; // so will execute lock
 
         const success = await super.lock(true);
         if (success) {
