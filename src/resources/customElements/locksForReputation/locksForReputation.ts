@@ -94,6 +94,12 @@ export class LocksForReputation {
     return `${this.dateService.toString(lock.releaseTime, lock.releasableToday ? 'table-time' : 'table-date')}${lock.releasableToday ? ' today' : ''}`;
   }
 
+  private releaseTitle(lock: ILockInfoInternal): string {
+    return lock.releasableToday ?
+      this.releaseDate(lock) :
+      `${this.dateService.toString(lock.releaseTime, 'table-datetime')}`;
+  }
+
   private async _refresh(): Promise<void> {
     this.loading = true;
     try {

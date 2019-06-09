@@ -71,7 +71,7 @@ export class DateService {
         key: 'table-date',
       },
       {
-        format: 'YYYY-MM-DD mm:ss.sss',
+        format: 'YYYY-MM-DD HH:mm:ss',
         key: 'table-datetime',
       },
       {
