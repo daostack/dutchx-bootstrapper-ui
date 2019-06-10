@@ -35,6 +35,10 @@
           <td style="white-space: nowrap">${lock.amount | ethwei} ${lock.units}</td>
           <td
             style="text-align: center; white-space:nowrap;max-width:3rem; overflow: hidden; text-overflow: ellipsis;"
+            data-placement='top'
+            data-trigger='hover'
+            data-toggle="tooltip"
+            data-release-time="true"
             title="${releaseTitle(lock)}"
           >
             ${releaseDate(lock)}

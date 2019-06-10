@@ -47,6 +47,7 @@ export class LocksForReputation {
     this.anyCanRelease = tmpLocks.filter((l: ILockInfoInternal) => l.canRelease).length > 0;
     this._locks = tmpLocks;
     this.loading = false;
+    setTimeout(() => $('[data-release-time="true"]').tooltip(), 0);
   }
 
   private async _release(lock: ILockInfoInternal, event: Event) {
@@ -95,9 +96,7 @@ export class LocksForReputation {
   }
 
   private releaseTitle(lock: ILockInfoInternal): string {
-    return lock.releasableToday ?
-      this.releaseDate(lock) :
-      `${this.dateService.toString(lock.releaseTime, 'table-datetime')}`;
+    return `${this.dateService.toString(lock.releaseTime, 'table-datetime')}`;
   }
 
   private async _refresh(): Promise<void> {
