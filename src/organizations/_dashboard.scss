@@ -543,3 +543,14 @@ metamaskfeedback .metamask-text {
   color: $color-ds-red;
   font-weight: 400;
 }
+
+.usdWidget {
+  width:720px;
+  height:391px;
+  margin:auto;
+  border-width: 0;
+}
+
+.usdWidget body {
+  background-color: yellow !important;
+}
