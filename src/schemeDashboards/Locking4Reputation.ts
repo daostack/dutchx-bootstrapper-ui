@@ -82,10 +82,6 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     return this.myView.find('#lockButton')[0];
   }
 
-  protected get approveButton(): HTMLElement {
-    return this.myView.find('#approveButton')[0];
-  }
-
   protected lockModel: LockingOptions = {
     amount: undefined,
     legalContractHash: undefined,
@@ -184,7 +180,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
       await BalloonService.show({
         content: `Can't ${this.approving ? 'approve' : 'lock'}: ${reason}`,
         eventMessageType: EventMessageType.Failure,
-        originatingUiElement: this.approving ? this.approveButton : this.lockButton,
+        originatingUiElement: this.lockButton,
       });
       return true;
     }

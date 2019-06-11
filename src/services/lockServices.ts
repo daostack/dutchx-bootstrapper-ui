@@ -11,8 +11,6 @@ import { Address, LockInfo, Locking4ReputationWrapper } from 'services/ArcServic
 
 export class LockService {
 
-  public static maxTokenApprovalAmount = new BigNumber('999999999999999999999999999999999999999999999999');
-
   public static initialize(container: Container) {
     this.appConfig = container.get(AureliaConfiguration);
   }
