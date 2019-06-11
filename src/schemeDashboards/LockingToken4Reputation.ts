@@ -32,6 +32,17 @@ export class LockingToken4Reputation extends Locking4Reputation {
   private dashboard: HTMLElement;
   private tokensInited = false;
   private allowance = new BigNumber(0);
+  private _approving: boolean = false;
+
+  @computedFrom('_approving')
+  protected get approving(): boolean {
+    return this._approving;
+  }
+
+  protected set approving(val: boolean) {
+    this._approving = val;
+    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
+  }
 
   private get approveButton(): HTMLElement {
     return this.myView.find('#approveButton')[0];

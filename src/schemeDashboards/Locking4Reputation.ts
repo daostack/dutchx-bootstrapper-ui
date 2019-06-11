@@ -46,17 +46,6 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
   protected _releasing: boolean = false;
   protected sending: boolean = false;
   protected myView: JQuery;
-  protected _approving: boolean = false;
-
-  @computedFrom('_approving')
-  protected get approving(): boolean {
-    return this._approving;
-  }
-
-  protected set approving(val: boolean) {
-    this._approving = val;
-    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
-  }
 
   @computedFrom('_locking')
   protected get locking(): boolean {
@@ -176,9 +165,9 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
     if (reason) {
       this.eventAggregator.publish('handleFailure',
-        new EventConfigFailure(`Can't ${this.approving ? 'approve' : 'lock'}: ${reason}`));
+        new EventConfigFailure(`Can't lock: ${reason}`));
       await BalloonService.show({
-        content: `Can't ${this.approving ? 'approve' : 'lock'}: ${reason}`,
+        content: `Can't lock: ${reason}`,
         eventMessageType: EventMessageType.Failure,
         originatingUiElement: this.lockButton,
       });
