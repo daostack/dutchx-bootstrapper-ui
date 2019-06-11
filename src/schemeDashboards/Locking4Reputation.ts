@@ -164,8 +164,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
     }
 
     if (reason) {
-      this.eventAggregator.publish('handleFailure',
-        new EventConfigFailure(`Can't lock: ${reason}`));
+      this.eventAggregator.publish('handleFailure', new EventConfigFailure(`Can't lock: ${reason}`));
       await BalloonService.show({
         content: `Can't lock: ${reason}`,
         eventMessageType: EventMessageType.Failure,
