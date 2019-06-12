@@ -166,18 +166,22 @@ export class LockingToken4Reputation extends Locking4Reputation {
 
       const token = (await Erc20Factory.at(this.selectedToken.address)) as Erc20Wrapper;
 
-      this.sending = true;
-
       const totalSupply = await token.getTotalSupply();
 
-      const result = await (await token.approve({
+      this.sending = true;
+
+      const result = await token.approve({
         amount: totalSupply,
-        owner: this.lockModel.lockerAddress,
+        owner: this.web3Service.defaultAccount,
         spender: this.wrapper.address,
-      })).watchForTxMined();
+      });
+
+      this.sending = false;
+
+      await result.watchForTxMined();
 
       this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
-        `The token approval has been recorded`, result.transactionHash));
+        `The token approval has been recorded`, result.tx));
 
       return true;
 
