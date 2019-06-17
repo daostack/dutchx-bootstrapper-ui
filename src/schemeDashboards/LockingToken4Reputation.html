@@ -96,8 +96,11 @@
                 target="_blank"
               >See current Token Liquidity here</a>.</p>
           </div>
-          <div else>
-            <div class="row">
+          <div>
+            <div
+              class="row"
+              show.to-view="hasPartialAllowance || sufficientAllowance"
+            >
               <div class="col-5">
                 <div class="form-group bmd-form-group">
                   <label for="lockAmount">Tokens to lock</label>
@@ -119,18 +122,40 @@
                 </div>
               </div>
             </div>
+            <div
+              class="row"
+              show.to-view="hasPartialAllowance"
+            >
+              <div class="col-12">
+                <div class="form-group">
+                  <div>${allowance | ethwei} ${selectedToken.symbol} already approved for locking</div>
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="col-12">
                 <div class="form-group">
                   <spinbutton
+                    if.to-view="hasPartialAllowance || noAllowance"
+                    onclick.call="approve()"
+                    disabled.bind="approving"
+                    css="btn-submit btn-sm tokenSubmitButton"
+                    as-button="true"
+                    text="Approve Token"
+                    spin.to-view="approving"
+                    id="approveButton"
+                    title.to-view="approving ? 'Approving token...' : 'Approve Token'"
+                  ></spinbutton>
+                  <spinbutton
+                    else
                     onclick.call="lock()"
                     disabled.bind="locking"
-                    css="btn-submit btn-sm"
+                    css="btn-submit btn-sm tokenSubmitButton"
                     as-button="true"
-                    text="Submit"
+                    text="Lock Tokens"
                     spin.to-view="locking"
                     id="lockButton"
-                    title.to-view="locking ? 'Locking...' : 'Submit Lock'"
+                    title.to-view="locking ? 'Locking tokens...' : 'Submit Lock'"
                   ></spinbutton>
                   <metamaskfeedback if.to-view="sending"></metamaskfeedback>
                 </div>

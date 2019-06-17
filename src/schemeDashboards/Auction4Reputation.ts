@@ -10,6 +10,7 @@ import {
 import { ISchemeDashboardModel } from 'schemeDashboards/schemeDashboardModel';
 import { BalloonService } from 'services/balloonService';
 import { DisposableCollection } from 'services/DisposableCollection';
+import { TokenService } from 'services/TokenService';
 import { Utils } from 'services/utils';
 import { DecodedLogEntry } from 'web3';
 import {
@@ -37,8 +38,6 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private currentAuctionNumber: number;
   private auctionCount: number;
   private auctionEndTime: Date;
-  private amountBid: BigNumber = new BigNumber(0);
-  private totalAmountBid: BigNumber = new BigNumber(0);
   private msRemainingInAuctionCountdown: number;
   private auctionPeriod: number;
   private bidAmount: BigNumber = undefined;
@@ -48,6 +47,38 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   private dashboard: HTMLElement;
   private sendingBid: boolean = false;
   private myView: JQuery;
+  private allowance = new BigNumber(0);
+  private _approving: boolean = false;
+
+  @computedFrom('_approving')
+  protected get approving(): boolean {
+    return this._approving;
+  }
+
+  protected set approving(val: boolean) {
+    this._approving = val;
+    setTimeout(() => this.eventAggregator.publish('dashboard.busy', val), 0);
+  }
+
+  private get approveButton(): HTMLElement {
+    return this.myView.find('#approveButton')[0];
+  }
+
+  @computedFrom('allowance')
+  private get noAllowance(): boolean {
+    return this.allowance.eq('0');
+  }
+
+  @computedFrom('allowance', 'bidAmount')
+  private get sufficientAllowance(): boolean {
+    return this.allowance.gt('0') && this.allowance.gte(this.bidAmount || 0);
+  }
+
+  @computedFrom('allowance', 'bidAmount')
+  private get hasPartialAllowance(): boolean {
+    return this.allowance.gt('0') && this.allowance.lt(this.bidAmount || 0);
+  }
+
   private get bidButton(): HTMLElement {
     return this.myView.find('#bidButton')[0];
   }
@@ -70,7 +101,8 @@ export class Auction4Reputation extends DaoSchemeDashboard {
   constructor(
     protected appConfig: AureliaConfiguration,
     protected eventAggregator: EventAggregator,
-    protected web3Service: Web3Service
+    protected web3Service: Web3Service,
+    private tokenService: TokenService
   ) {
     super();
   }
@@ -167,12 +199,21 @@ export class Auction4Reputation extends DaoSchemeDashboard {
     if (!this.auctionNotBegun) {
       await this.getAccountBids();
     }
+    await this.getTokenAllowance();
     this.refreshing = false;
   }
 
   protected async bid(): Promise<void> {
 
     if (this.bidding) {
+      return;
+    }
+
+    /**
+     * just to be sure we're up-to-date
+     */
+    await this.getTokenAllowance();
+    if (!this.sufficientAllowance) {
       return;
     }
 
@@ -209,19 +250,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
 
         this.sendingBid = true;
 
-        let result = await this.token.approve({
-          amount: this.bidAmount,
-          owner: currentAccount,
-          spender: this.wrapper.address,
-        });
-
-        this.sendingBid = false;
-
-        await result.watchForTxMined();
-
-        this.sendingBid = true;
-
-        result = await this.wrapper.bid({
+        const result = await this.wrapper.bid({
           amount: this.bidAmount,
           auctionId: this.currentAuctionNumber - 1,
           legalContractHash: this.appConfig.get('legalContractHash'),
@@ -232,7 +261,7 @@ export class Auction4Reputation extends DaoSchemeDashboard {
         await result.watchForTxMined();
 
         this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
-          `The bid has been recorded`, (result as any).transactionHash));
+          `The bid has been recorded`, result.tx));
 
         Utils.resetInputField(this.dashboard, 'bidAmount', null);
       }
@@ -247,9 +276,64 @@ export class Auction4Reputation extends DaoSchemeDashboard {
       });
 
     } finally {
+      await this.getTokenAllowance();
       this.sendingBid = false;
       this.bidding = false;
     }
+  }
+
+  private async approve(): Promise<void> {
+
+    if (this.sufficientAllowance) {
+      /**
+       * this shouldn't happen
+       */
+      this.eventAggregator.publish('handleFailure',
+        new EventConfigFailure(`GEN already has sufficient allowance`));
+      return;
+    }
+
+    try {
+
+      this.approving = true;
+
+      const totalSupply = await this.token.getTotalSupply();
+
+      this.sendingBid = true;
+
+      const result = await this.token.approve({
+        amount: totalSupply,
+        owner: this.web3Service.defaultAccount,
+        spender: this.wrapper.address,
+      });
+
+      this.sendingBid = false;
+
+      await result.watchForTxMined();
+
+      this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
+        `The GEN approval has been recorded`, result.tx));
+    } catch (ex) {
+      this.eventAggregator.publish('handleException',
+        new EventConfigException(`The GEN approval was not accepted`, ex));
+      await BalloonService.show({
+        content: `The GEN approval was not accepted`,
+        eventMessageType: EventMessageType.Exception,
+        originatingUiElement: this.approveButton,
+      });
+    } finally {
+      await this.getTokenAllowance();
+      this.approving = false;
+      this.sendingBid = false;
+    }
+  }
+
+  private async getTokenAllowance() {
+    this.allowance = await this.tokenService.getTokenAllowance(
+      this.token.address,
+      this.web3Service.defaultAccount,
+      this.address
+    );
   }
 
   private getAuctionNotBegun(blockDate: Date): boolean {

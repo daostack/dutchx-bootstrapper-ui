@@ -15,6 +15,8 @@ import {
 } from '../entities/GeneralEvents';
 import {
   Address,
+  ArcTransactionDataResult,
+  ArcTransactionResult,
   LockerInfo,
   LockInfo,
   Locking4ReputationWrapper,
@@ -193,7 +195,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
         this.sending = true;
 
-        const result = await (this.wrapper as any).lock(this.lockModel);
+        const result = await (this.wrapper as any).lock(this.lockModel) as ArcTransactionResult;
 
         this.sending = false;
 
@@ -202,7 +204,7 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
         await this.getLocks();
 
         this.eventAggregator.publish('handleTransaction', new EventConfigTransaction(
-          `The lock has been recorded`, result.transactionHash));
+          `The lock has been recorded`, result.tx));
 
         this.eventAggregator.publish('Lock.Submitted');
 
@@ -237,14 +239,14 @@ export abstract class Locking4Reputation extends DaoSchemeDashboard {
 
       this.releasing = lockInfo.sending = true;
 
-      const result = await (this.wrapper as any).release(lockInfo);
+      const result = await (this.wrapper as any).release(lockInfo) as ArcTransactionResult;
 
       lockInfo.sending = false;
 
       await result.watchForTxMined();
 
       this.eventAggregator.publish('handleTransaction',
-        new EventConfigTransaction('The lock has been released', result.transactionHash));
+        new EventConfigTransaction('The lock has been released', result.tx));
 
       lockInfo.released = true;
 
