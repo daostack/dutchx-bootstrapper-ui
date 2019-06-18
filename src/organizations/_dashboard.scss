@@ -549,7 +549,21 @@ button.spinbutton.tokenSubmitButton {
 }
 
 .usdWidget {
-  width:720px;
-  height:339px;
+  height:420px;
   border-width: 0;
 }
+
+@media (min-width: 450px) {
+  .usdWidget {
+    width:380px;
+    height:380px;
+  }
+}
+
+@media (min-width: 760px) {
+  .usdWidget {
+    width:720px;
+    height:339px;
+  }
+}
+
