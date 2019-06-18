@@ -14,6 +14,7 @@ export class LockService {
   public static initialize(container: Container) {
     this.appConfig = container.get(AureliaConfiguration);
   }
+
   private static lockableTokens: Map<Address, ITokenSpecification> = new Map<Address, ITokenSpecification>();
 
   private static appConfig: AureliaConfiguration;

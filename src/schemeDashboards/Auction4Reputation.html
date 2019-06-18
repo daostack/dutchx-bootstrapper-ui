@@ -8,7 +8,7 @@
   <div else>
     <instructions if.to-view="!auctionIsOver">
       <p>Participate by bidding GEN tokens in any of the 10 auctions, each lasting approximately 3 days and running throughout the course of the Vote Staking Period.</p>
-      <p>At the end of the Vote Staking Period, you will be awarded Reputation according to the amount of GEN tokens you bid in an auction relative to the amount of total GEN tokens bid in the <span style="font-style:italic">same</span> auction.</p>
+      <p>At the end of the vote staking period you will be awarded Reputation according to the amount of GEN tokens you bid in an auction relative to the amount of total GEN tokens bid in the <span style="font-style:italic">same</span> auction.</p>
     </instructions>
 
     <div
@@ -43,8 +43,11 @@
         <div>Time left: ${msRemainingInAuctionCountdown | timespan:"seconds"}</div>
       </div>
 
-      <form if.bind="!auctionNotBegun && !auctionIsOver">
-        <div class="row">
+      <form if.to-view="!auctionNotBegun && !auctionIsOver">
+        <div
+          class="row"
+          show.to-view="hasPartialAllowance || sufficientAllowance"
+        >
           <div class="col-5">
             <div class="form-group bmd-form-group">
               <label for="bidAmount">Tokens to bid</label>
@@ -56,10 +59,32 @@
             </div>
           </div>
         </div>
+        <div
+          class="row"
+          show.to-view="hasPartialAllowance"
+        >
+          <div class="col-12">
+            <div class="form-group">
+              <div>${allowance | ethwei} GEN already approved for bidding</div>
+            </div>
+          </div>
+        </div>
         <div class="row">
           <div class="col-12">
             <div class="form-group">
               <spinbutton
+                if.to-view="hasPartialAllowance || noAllowance"
+                onclick.call="approve()"
+                disabled.bind="approving"
+                css="btn-submit btn-sm tokenSubmitButton"
+                as-button="true"
+                text="Approve GEN"
+                spin.to-view="approving"
+                id="approveButton"
+                title.to-view="approving ? 'Approving GEN...' : 'Approve GEN'"
+              ></spinbutton>
+              <spinbutton
+                else
                 disabled.bind="bidding"
                 onclick.call="bid()"
                 css="btn-submit btn-sm"

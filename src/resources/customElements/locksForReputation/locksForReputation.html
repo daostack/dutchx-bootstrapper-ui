@@ -33,11 +33,15 @@
         </tr>
         <tr repeat.for="lock of _locks">
           <td style="white-space: nowrap">${lock.amount | ethwei} ${lock.units}</td>
-          <td
-            style="text-align: center; white-space:nowrap;max-width:3rem; overflow: hidden; text-overflow: ellipsis;"
-            title="${releaseDate(lock)}"
-          >
-            ${releaseDate(lock)}
+          <td style="text-align: center; white-space:nowrap;max-width:3rem; overflow: hidden; text-overflow: ellipsis;">
+            <span
+              data-placement='top'
+              data-trigger='hover'
+              data-toggle="tooltip"
+              data-release-time="true"
+              data-container='body'
+              title="${releaseTitle(lock)}"
+            >${releaseDate(lock)}</span>
           </td>
           <td class="actions">
             <button

@@ -9,6 +9,14 @@
       ref="dashboardElement"
       class="dashboard-main-content"
     >
+
+      <div style="text-align:center">
+        <iframe
+          src="https://explore.duneanalytics.com/embed/query/227/visualization/361?api_key=jQ2aNOSNM0Maz4TKcUAvTmP3gGVZbS0Evacl9L6y&"
+          class="usdWidget"
+        ></iframe>
+      </div>
+
       <div class="dashboard-header">
         <pageloading
           if.bind="loading"
@@ -275,7 +283,11 @@
                       </div>
                       <div>
                         <p>Now get ready for the Governance Phase to begin ${governanceStartDate | date:'shortdayofmonth'}. What will the first proposals be?</p>
-                        <p>Reputation is not an ERC-20 token and will not appear in most wallets. To confirm on Etherscan you’ve received Reputation, follow [this tutorial].</p>
+                        <p>Reputation is not an ERC-20 token and will not appear in most wallets. To confirm on Etherscan you’ve received Reputation,
+                          follow <a
+                            href="https://medium.com/@gnosisPM/dfb3ee995d95"
+                            target="_blank"
+                          >this tutorial</a>.</p>
                       </div>
                     </div>
                   </div>

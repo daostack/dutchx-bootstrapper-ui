@@ -8,7 +8,8 @@
   <div else>
     <instructions if.to-view="!lockingPeriodIsEnded">
       <p>Select a token, the number of tokens you would like to lock and the length you wish to lock, for up to 30 days.</p>
-      <p>At the end of the Vote Staking Period, you will be awarded Reputation proportionally according to the total amount of locked tokens, the value of each token at the time of locking, and the length of the locking period of all participants.</p>
+      <p>At the end of the vote staking period you will be awarded Reputation proportionally according to the total amount of locked tokens, the value of each token at the time of locking, and the length of the locking period of all participants.</p>
+      <p>After the locking period you’ve specified is over, return to this interface to release the tokens. You will receive back the same amount of tokens you've locked.</p>
     </instructions>
     <div
       class="scheme-dashboard-body lockingTokens"
@@ -76,27 +77,30 @@
             class="message"
             if.to-view="!selectedTokenIsLiquid"
           >
-          <p>There currently isn’t sufficient trading for ETH/${selectedToken.symbol} on the DutchX. Please choose another token or try again later.
-            To provide liquidity for ETH/${selectedToken.symbol} on the DutchX, trade on <a
-              target="_blank"
-              href="https://slow.trade"
-            >slow.trade</a>,
-            <a
-              target="_blank"
-              href="https://fairdex.net/"
-            >FairDEX</a>,
-            or visit the <a
-              target="_blank"
-              href="https://dutchx.readthedocs.io/en/latest/cli.html"
-            >DutchX documentation</a> for more information.</p>
+            <p>There currently isn’t sufficient trading for ETH/${selectedToken.symbol} on the DutchX. Please choose another token or try again later.
+              To provide liquidity for ETH/${selectedToken.symbol} on the DutchX, trade on <a
+                target="_blank"
+                href="https://slow.trade"
+              >slow.trade</a>,
+              <a
+                target="_blank"
+                href="https://fairdex.net/"
+              >FairDEX</a>,
+              or visit the <a
+                target="_blank"
+                href="https://dutchx.readthedocs.io/en/latest/cli.html"
+              >DutchX documentation</a> for more information.</p>
 
             <p><a
                 href="https://dxdao.daostack.io/liquidity"
                 target="_blank"
               >See current Token Liquidity here</a>.</p>
           </div>
-          <div else>
-            <div class="row">
+          <div>
+            <div
+              class="row"
+              show.to-view="hasPartialAllowance || sufficientAllowance"
+            >
               <div class="col-5">
                 <div class="form-group bmd-form-group">
                   <label for="lockAmount">Tokens to lock</label>
@@ -118,18 +122,40 @@
                 </div>
               </div>
             </div>
+            <div
+              class="row"
+              show.to-view="hasPartialAllowance"
+            >
+              <div class="col-12">
+                <div class="form-group">
+                  <div>${allowance | ethwei} ${selectedToken.symbol} already approved for locking</div>
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="col-12">
                 <div class="form-group">
                   <spinbutton
+                    if.to-view="hasPartialAllowance || noAllowance"
+                    onclick.call="approve()"
+                    disabled.bind="approving"
+                    css="btn-submit btn-sm tokenSubmitButton"
+                    as-button="true"
+                    text="Approve Token"
+                    spin.to-view="approving"
+                    id="approveButton"
+                    title.to-view="approving ? 'Approving token...' : 'Approve Token'"
+                  ></spinbutton>
+                  <spinbutton
+                    else
                     onclick.call="lock()"
                     disabled.bind="locking"
-                    css="btn-submit btn-sm"
+                    css="btn-submit btn-sm tokenSubmitButton"
                     as-button="true"
-                    text="Submit"
+                    text="Lock Tokens"
                     spin.to-view="locking"
                     id="lockButton"
-                    title.to-view="locking ? 'Locking...' : 'Submit Lock'"
+                    title.to-view="locking ? 'Locking tokens...' : 'Submit Lock'"
                   ></spinbutton>
                   <metamaskfeedback if.to-view="sending"></metamaskfeedback>
                 </div>
