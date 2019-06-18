@@ -43,8 +43,7 @@
               title="${releaseTitle(lock)}"
             >${releaseDate(lock)}</span>
           </td>
-          <td class="
-              actions">
+          <td class="actions">
             <button
               click.delegate="_release(lock, $event)"
               disabled.bind="!lock.canRelease"
