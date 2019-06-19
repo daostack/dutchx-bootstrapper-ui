@@ -22,15 +22,17 @@ export class Landing {
     this.governanceStartDate = this.dateService
       .fromIsoString(this.appConfig.get('governanceStartDate'));
     this.daoAddress = this.appConfig.get('Live.daoAddress');
+    $(window).resize(this.fixScrollbar);
   }
 
-  public activate() {
-    setTimeout(() => $('body').css('overflow-y', 'scroll'), 0);
-  }
+  public attached() {
+    $('body').css('overflow-y', 'hidden');
 
-  // public attached() {
-  //   this.fixScrollbar();
-  // }
+    /**
+     * prevents some jitter
+     */
+    this.fixScrollbar();
+  }
 
   private msUntilCanLockCountdown(): number {
     return this.lockingPeriodStartDate.getTime() - Date.now();
@@ -46,15 +48,15 @@ export class Landing {
     );
   }
 
-  // private fixScrollbar() {
+  private fixScrollbar() {
 
-  //   const bodyHeight = $(window).outerHeight() || 0;
-  //   const headerHeight = $('.landing-page .navbar').outerHeight() || 0;
+    const bodyHeight = $(window).outerHeight() || 0;
+    const headerHeight = $('.landing-page .navbar').outerHeight() || 0;
 
-  //   $('.landing-page .main-content').css(
-  //     {
-  //       'max-height': `${bodyHeight - headerHeight}px`,
-  //     });
-  // }
+    $('.landing-page .main-content').css(
+      {
+        'max-height': `${bodyHeight - headerHeight}px`,
+      });
+  }
 
 }

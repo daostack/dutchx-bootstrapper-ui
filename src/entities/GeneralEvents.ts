@@ -123,7 +123,7 @@ export class EventConfigAddress extends EventConfig {
 export class EventConfigTransaction extends EventConfig {
   constructor(
     message: string,
-    public _address: string
+    public address: string
   ) {
     super(message);
     /**

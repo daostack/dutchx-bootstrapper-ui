@@ -1,7 +1,7 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { LogManager } from 'aurelia-framework';
-import { EventConfig, EventConfigException, EventMessageType } from '../entities/GeneralEvents';
+import { EventConfig, EventConfigException, EventConfigTransaction, EventMessageType } from '../entities/GeneralEvents';
 import { DisposableCollection } from './DisposableCollection';
 
 @autoinject
@@ -21,7 +21,7 @@ export class ConsoleLogService {
       .subscribe('handleSuccess', (config: EventConfig | string) => this.handleSuccess(config)));
     this.subscriptions.push(eventAggregator
       .subscribe('handleTransaction',
-        (config: EventConfig | string) => this.handleSuccess(config)));
+        (config: EventConfigTransaction | string) => this.handleTransaction(config)));
     this.subscriptions.push(eventAggregator
       .subscribe('handleWarning', (config: EventConfig | string) => this.handleWarning(config)));
     this.subscriptions.push(eventAggregator
@@ -37,6 +37,14 @@ export class ConsoleLogService {
 
   private handleSuccess(config: EventConfig | string) {
     this.logger.debug(this.getMessage(config));
+  }
+
+  private handleTransaction(config: EventConfigTransaction | string) {
+    if (typeof config === 'string') {
+      this.logger.debug(config);
+    } else {
+      this.logger.debug(`${config.message}: ${config.address}`);
+    }
   }
 
   private handleException(config: EventConfigException | any) {
