@@ -1,1 +1,1 @@
-web: node ./bin/launch-server.js
+web: node ./src/server.js
