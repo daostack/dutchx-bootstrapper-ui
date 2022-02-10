@@ -105,7 +105,7 @@
     "karma-mocha-reporter": "2.2.3",
     "karma-webpack": "^3.0.5",
     "mini-css-extract-plugin": "^0.5.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "nps": "^5.9.3",
     "nps-utils": "^1.7.0",
     "path.join": "^1.0.0",
